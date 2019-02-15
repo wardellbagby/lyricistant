@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "outDir": "out/js",
+        "baseUrl": ".",
+        "allowJs": true,
+        "lib": [
+            "esnext",
+            "dom"
+        ],
+        "paths": {
+            "*": [
+                "node_modules/*"
+            ]
+        }
+    },
+    "include": [
+        "./src/ts/**/*"
+    ]
+}
