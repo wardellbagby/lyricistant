@@ -8,8 +8,8 @@ var fs = require('fs');
 
 var ace = require('ace-builds/src/ace');
 var twilightTheme = require('ace-builds/src/theme-twilight');
-import { fromEvent } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { fromEvent, merge } from 'rxjs';
+import { debounceTime, switchMap, tap, mapTo, map } from 'rxjs/operators';
 
 var currentWindow = remote.getCurrentWindow();
 var editorInstance: AceAjax.Editor = ace.edit('editor');
@@ -81,6 +81,7 @@ function setupEditor() {
     editorInstance.setTheme(twilightTheme);
     editorInstance.setFontSize("14px")
     editorInstance.setBehavioursEnabled(false)
+    editorInstance.setShowPrintMargin(false);
     editorInstance.setOptions({
         fontSize: "12pt"
     });
@@ -95,14 +96,26 @@ function setupEditor() {
 
 function attachRhymeCompleter(editorInstance: AceAjax.Editor) {
     var util = ace.require("ace/autocomplete/util")
-    var rhymeCompleter = new RhymeCompleter(document.getElementById("rhyme_table") as HTMLTableElement)
-    fromEvent(editorInstance.selection, "changeCursor").pipe(
-        debounceTime(200),
-        switchMap((_value, _index) => {
-            var prefix = util.getCompletionPrefix(editorInstance);
-            return rhymeCompleter.showRhymes(prefix, editorInstance)
-        })
-    )
+    var rhymeTable = document.getElementById("rhyme-table") as HTMLTableElement
+    var rhymeCompleter = new RhymeCompleter(rhymeTable)
+    var cursorChanges = fromEvent(editorInstance.selection, "changeCursor")
+        .pipe(mapTo(undefined))
+    var selectionChanges = fromEvent(editorInstance.selection, "changeSelection")
+        .pipe(map((_value, _index) => {
+            var selectionRange = editorInstance.selection.getRange()
+            return editorInstance.session.getTextRange(selectionRange)
+        }))
+    merge(cursorChanges, selectionChanges)
+        .pipe(
+            tap((_rhymes) => { rhymeCompleter.clearRhymes() }),
+            debounceTime(200),
+            switchMap((value: string | undefined, _index) => {
+                if (value === undefined || value.length === 0) {
+                    value = util.getCompletionPrefix(editorInstance);
+                }
+                return rhymeCompleter.showRhymes(value, editorInstance)
+            })
+        )
         .subscribe((_event: any) => { })
 }
 

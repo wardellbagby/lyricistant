@@ -13,38 +13,41 @@ body {
     width: 100%;
 }
 
+.container {
+    display: grid;
+    grid-template: "editor vdivider details" 100% / 70% 4px 1fr;
+    height: 100%;
+}
+
+.vdivider {
+    grid-area: vdivider;
+    color: #F8F8F8;
+    border-left: 4px solid #232323;
+}
+
 #editor {
+    grid-area: editor;
     font-family: 'Roboto Mono', monospace;
     margin: 0;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 30%;
 }
 
 #detail-column {
-    position: absolute;
-    left: 70%;
-    margin: 0;
-    height: 100%;
-    width: 30%;
-    float: right;
+    grid-area: details;
     background-color: #141414;
     color: #F8F8F8;
     overflow-y: scroll;
-    border-left: 4px solid rgba(255, 255, 255, 0.25)
 }
 
 #rhyme-table {
     width: 100%;
     height: 100%;
     padding: 0;
+    margin: -1;
     overflow-y: scroll
 }
 
 td {
-    width: 100%;
+    width: 400%;
     font-family: 'Roboto Mono', monospace;
     padding: 16px;
     text-align: left;
