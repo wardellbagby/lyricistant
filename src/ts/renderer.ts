@@ -1,59 +1,78 @@
-import { RhymeCompleter } from "./rhyme-completer";
-import { SyllableCountRenderer } from "./syllable-count-renderer";
+import { RhymeCompleter } from './RhymeCompleter';
+import { SyllableCountRenderer } from './SyllableCountRenderer';
 
-import { MenuItemConstructorOptions } from "electron";
-var remote = require('electron').remote;
-var Menu = remote.Menu;
-var fs = require('fs');
+import { BrowserWindow, Menu, MenuItemConstructorOptions, remote } from 'electron';
+import { readFile, writeFile } from 'fs';
 
-var ace = require('ace-builds/src/ace');
-var twilightTheme = require('ace-builds/src/theme-twilight');
-import { fromEvent, merge } from 'rxjs';
-import { debounceTime, switchMap, tap, mapTo, map } from 'rxjs/operators';
+import { acequire, edit, Editor, Range } from 'brace';
+import 'brace/ext/language_tools';
+import 'brace/theme/twilight';
+import { fromEvent, merge, Observable } from 'rxjs';
+import { debounceTime, map, mapTo, switchMap, tap } from 'rxjs/operators';
 
-var currentWindow = remote.getCurrentWindow();
-var editorInstance: AceAjax.Editor = ace.edit('editor');
+const currentWindow: BrowserWindow = remote.getCurrentWindow();
+const editorInstance: Editor = edit('editor');
 
-setMenu()
-setupEditor()
-attachRhymeCompleter(editorInstance)
-attachSyllableCountRenderer(editorInstance)
+setMenu();
+setupEditor();
+attachRhymeCompleter(editorInstance);
+attachSyllableCountRenderer(editorInstance);
 
-function openHandler() {
-    var fileNames = remote.dialog.showOpenDialog(currentWindow, { properties: ['openFile'] });
+function openHandler(): void {
+    const fileNames: string[] = remote.dialog.showOpenDialog(currentWindow, { properties: ['openFile'] });
 
     if (fileNames !== undefined) {
-        var fileName = fileNames[0];
-        fs.readFile(fileName, 'utf8', function (err: Error, data: string) {
-            if (!err) {
+        const fileName: string = fileNames[0];
+        readFile(fileName, 'utf8', (err: Error, data: string) => {
+            if (err !== undefined) {
                 editorInstance.setValue(data);
-                document.title = fileName
-                editorInstance.session.getUndoManager().reset()
+                document.title = fileName;
+                editorInstance.session.getUndoManager()
+                    .reset();
             }
         });
     }
 }
 
-function saveHandler() {
-    var fileName = remote.dialog.showSaveDialog(currentWindow, null, null);
+function saveHandler(): void {
+    const fileName: string = remote.dialog.showSaveDialog(currentWindow, undefined, undefined);
 
     if (fileName !== undefined) {
-        fs.writeFile(fileName, editorInstance.getValue());
-        document.title = fileName
+        writeFile(fileName, editorInstance.getValue(), () => undefined);
+        document.title = fileName;
     }
 }
 
-function setMenu() {
-    var menuTemplate: MenuItemConstructorOptions[] = [{
+function setMenu(): void {
+    const menuTemplate: MenuItemConstructorOptions[] = [{
         label: 'File',
         submenu: [{
             label: 'Open',
-            click: openHandler
+            click: openHandler,
+            accelerator: 'CmdOrCtrl+O'
         }, {
             label: 'Save As',
-            click: saveHandler
-        }],
-    }]
+            click: saveHandler,
+            accelerator: 'Shift+CmdOrCtrl+S'
+        }]
+    }, {
+        label: 'Edit',
+        submenu: [
+            { role: 'undo' },
+            { role: 'redo' },
+            { type: 'separator' },
+            { role: 'cut' },
+            { role: 'copy' },
+            { role: 'paste' },
+            { role: 'delete' },
+            { role: 'selectall' }
+        ]
+    }, {
+        role: 'window',
+        submenu: [
+            { role: 'minimize' }
+        ]
+    }];
     if (process.platform === 'darwin') {
         menuTemplate.unshift({
             label: remote.app.getName(),
@@ -68,59 +87,67 @@ function setMenu() {
                 { type: 'separator' },
                 { role: 'quit' }
             ]
-        })
+        });
     }
-    var mainMenu = Menu.buildFromTemplate(menuTemplate);
-    Menu.setApplicationMenu(mainMenu);
+
+    const mainMenu: Menu = remote.Menu.buildFromTemplate(menuTemplate);
+
+    remote.Menu.setApplicationMenu(mainMenu);
 }
 
-function setupEditor() {
-    var langTools = require('ace-builds/src/ext-language_tools');
-    langTools.setCompleters([])
+function setupEditor(): void {
+    const setCompleters: (completers: undefined[]) => void = acequire('ace/ext/language_tools').setCompleters;
+    setCompleters([]);
 
-    editorInstance.setTheme(twilightTheme);
-    editorInstance.setFontSize("14px")
-    editorInstance.setBehavioursEnabled(false)
+    editorInstance.setTheme('ace/theme/twilight');
+    editorInstance.setFontSize('14px');
+    editorInstance.setBehavioursEnabled(false);
     editorInstance.setShowPrintMargin(false);
     editorInstance.setOptions({
-        fontSize: "12pt"
+        fontSize: '12pt'
     });
-    editorInstance.session.setUseWrapMode(true)
+    editorInstance.session.setUseWrapMode(true);
     editorInstance.setOptions({
         enableLiveAutocompletion: true,
         enableBasicAutocompletion: false,
         enableSnippets: false
     });
-
 }
 
-function attachRhymeCompleter(editorInstance: AceAjax.Editor) {
-    var util = ace.require("ace/autocomplete/util")
-    var rhymeTable = document.getElementById("rhyme-table") as HTMLTableElement
-    var rhymeCompleter = new RhymeCompleter(rhymeTable)
-    var cursorChanges = fromEvent(editorInstance.selection, "changeCursor")
-        .pipe(mapTo(undefined))
-    var selectionChanges = fromEvent(editorInstance.selection, "changeSelection")
-        .pipe(map((_value, _index) => {
-            var selectionRange = editorInstance.selection.getRange()
-            return editorInstance.session.getTextRange(selectionRange)
-        }))
+function attachRhymeCompleter(editor: Editor): void {
+    const util: IAutocompleteUtil = acequire('ace/autocomplete/util');
+
+    const rhymeTable: HTMLTableElement = <HTMLTableElement>document.getElementById('rhyme-table');
+    const rhymeCompleter: RhymeCompleter = new RhymeCompleter(rhymeTable);
+    const cursorChanges: Observable<{}> = fromEvent(editor.selection, 'changeCursor')
+        .pipe(mapTo(undefined));
+    const selectionChanges: Observable<{}> = fromEvent(editor.selection, 'changeSelection')
+        .pipe(map(() => {
+            const selectionRange: Range = editor.selection.getRange();
+
+            return editor.session.getTextRange(selectionRange);
+        }));
     merge(cursorChanges, selectionChanges)
         .pipe(
-            tap((_rhymes) => { rhymeCompleter.clearRhymes() }),
+            tap(() => { rhymeCompleter.clearRhymes(); }),
             debounceTime(200),
-            switchMap((value: string | undefined, _index) => {
+            switchMap((value: string | undefined) => {
+                let prefix: string = value;
                 if (value === undefined || value.length === 0) {
-                    value = util.getCompletionPrefix(editorInstance);
+                    prefix = util.getCompletionPrefix(editor);
                 }
-                return rhymeCompleter.showRhymes(value, editorInstance)
+
+                return rhymeCompleter.showRhymes(prefix, editor);
             })
         )
-        .subscribe((_event: any) => { })
+        .subscribe(() => undefined);
 }
 
-function attachSyllableCountRenderer(editorInstance: AceAjax.Editor) {
-    var syllableCountRenderer = new SyllableCountRenderer()
-    syllableCountRenderer.attach(editorInstance)
+function attachSyllableCountRenderer(editor: Editor): void {
+    const syllableCountRenderer: SyllableCountRenderer = new SyllableCountRenderer();
+    syllableCountRenderer.attach(editor);
 }
 
+interface IAutocompleteUtil {
+    getCompletionPrefix(editor: Editor): string;
+}

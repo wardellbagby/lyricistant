@@ -1,0 +1,32 @@
+{
+    "linterOptions": {
+        "exclude": [
+            "node_modules"
+        ]
+    },
+    "rulesDirectory": [
+        "node_modules/tslint-microsoft-contrib"
+    ],
+    "extends": [
+        "tslint:recommended",
+        "tslint-microsoft-contrib/recommended_ruleset",
+        "typestrict"
+    ],
+    "rules": {
+        "no-relative-imports": false,
+        "no-implicit-dependencies": [
+            true,
+            "dev"
+        ],
+        "no-submodule-imports": [
+            true,
+            "rxjs",
+            "brace"
+        ],
+        "no-import-side-effect": [
+            true,
+            "brace"
+        ],
+        "no-any": false
+    }
+}

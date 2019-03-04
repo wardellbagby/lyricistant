@@ -4,8 +4,9 @@
         "noImplicitAny": true,
         "sourceMap": true,
         "outDir": "out/js",
-        "baseUrl": ".",
-        "allowJs": true,
+        "baseUrl": "src/ts",
+        "allowJs": false,
+        "esModuleInterop": true,
         "lib": [
             "esnext",
             "dom"

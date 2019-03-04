@@ -1,15 +1,20 @@
 {
   "name": "rhymer",
   "version": "0.0.1",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "description": "An app that gets out of your way and let's you write the lyrics or poems that you want to!",
   "author": "Wardell Bagby",
+  "repository": {
+    "type": "git",
+    "url": "git://https://github.com/wardellbagby/rhymer.git"
+  },
+  "homepage": "https://github.com/wardellbagby/rhymer",
   "main": "out/js/main.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "postinstall": "install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "start": "npm run build && electron .",
     "pack": "build --dir",
     "dist": "build"
@@ -31,11 +36,12 @@
   },
   "devDependencies": {
     "electron": "^4.0.3",
-    "electron-builder": "^20.38.5"
+    "electron-builder": "^20.38.5",
+    "tslint-microsoft-contrib": "^6.0.0",
+    "typestrict": "^1.0.2"
   },
   "dependencies": {
-    "@types/ace": "0.0.42",
-    "ace-builds": "^1.4.2",
+    "brace": "^0.11.1",
     "datamuse": "^1.0.5",
     "rxjs": "^6.4.0",
     "syllable": "^3.4.0",

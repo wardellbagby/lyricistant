@@ -1,8 +1,8 @@
 class Rhyme {
-    word: string
-    score: number
+    public word: string;
+    public score: number;
     constructor(word: string, score: number) {
-        this.word = word
-        this.score = score
+        this.word = word;
+        this.score = score;
     }
 }
