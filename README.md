@@ -33,6 +33,11 @@ Lint can be run using:
 npm run lint
 ```
 
+## Installing
+Check the [releases page](https://github.com/wardellbagby/rhymer/releases) for releases.
+
+Note: Only the macOS version is officially supported and tested. Linux and Windows versions are available, but not currently officially supported.
+
 ## License
 
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE.md) file for details

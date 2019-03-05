@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "license": "GPL-3.0-or-later",
   "description": "An app that gets out of your way and let's you write the lyrics or poems that you want to!",
-  "author": "Wardell Bagby",
+  "author": {
+    "name": "Wardell Bagby",
+    "email": "dev@wardellbagby.com"
+  },
   "repository": {
     "type": "git",
     "url": "git://https://github.com/wardellbagby/rhymer.git"
@@ -17,7 +20,8 @@
     "postinstall": "electron-builder install-app-deps",
     "start": "npm run build && electron .",
     "pack": "build --dir",
-    "dist": "build"
+    "dist": "build",
+    "dist-all": "build --win --mac --linux"
   },
   "build": {
     "appId": "com.wardellbagby.rhymer",
