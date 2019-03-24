@@ -13,6 +13,8 @@ import { debounceTime, map, mapTo, switchMap, tap } from 'rxjs/operators';
 const currentWindow: BrowserWindow = remote.getCurrentWindow();
 const editorInstance: Editor = edit('editor');
 
+let currentFile: string;
+
 setMenu();
 setupEditor();
 attachRhymeCompleter(editorInstance);
@@ -35,11 +37,32 @@ function openHandler(): void {
 }
 
 function saveHandler(): void {
-    const fileName: string = remote.dialog.showSaveDialog(currentWindow, undefined, undefined);
+    if (currentFile === undefined) {
+        saveAsHandler();
+    } else {
+        writeFile(currentFile, editorInstance.getValue(), (error: NodeJS.ErrnoException) => {
+            if (error !== undefined) {
+                alertError(error);
+            }
+        });
+    }
+}
+
+function saveAsHandler(): void {
+    const fileName: string = remote.dialog.showSaveDialog(
+        currentWindow,
+        { filters: [{ name: 'Text Files', extensions: ['txt'] }] },
+        undefined);
 
     if (fileName !== undefined) {
-        writeFile(fileName, editorInstance.getValue(), () => undefined);
-        document.title = fileName;
+        writeFile(fileName, editorInstance.getValue(), (error: NodeJS.ErrnoException) => {
+            if (error !== undefined) {
+                alertError(error);
+            } else {
+                currentFile = fileName;
+                document.title = fileName;
+            }
+        });
     }
 }
 
@@ -51,8 +74,12 @@ function setMenu(): void {
             click: openHandler,
             accelerator: 'CmdOrCtrl+O'
         }, {
-            label: 'Save As',
+            label: 'Save',
             click: saveHandler,
+            accelerator: 'CmdOrCtrl+S'
+        }, {
+            label: 'Save As',
+            click: saveAsHandler,
             accelerator: 'Shift+CmdOrCtrl+S'
         }]
     }, {
@@ -146,6 +173,10 @@ function attachRhymeCompleter(editor: Editor): void {
 function attachSyllableCountRenderer(editor: Editor): void {
     const syllableCountRenderer: SyllableCountRenderer = new SyllableCountRenderer();
     syllableCountRenderer.attach(editor);
+}
+
+function alertError(error: NodeJS.ErrnoException): void {
+    alert(`Failed to save file. \n\nError: ${error.message}`);
 }
 
 interface IAutocompleteUtil {
