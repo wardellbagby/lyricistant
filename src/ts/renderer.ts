@@ -1,139 +1,101 @@
 import { RhymeCompleter } from './RhymeCompleter';
 import { SyllableCountRenderer } from './SyllableCountRenderer';
 
-import { BrowserWindow, Menu, MenuItemConstructorOptions, remote } from 'electron';
-import { readFile, writeFile } from 'fs';
+import { ipcRenderer } from 'electron';
 
 import { acequire, edit, Editor, Range } from 'brace';
 import 'brace/ext/language_tools';
+import 'brace/ext/searchbox';
 import 'brace/theme/twilight';
 import { fromEvent, merge, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, delay, map, mapTo, switchMap, tap } from 'rxjs/operators';
 
-const currentWindow: BrowserWindow = remote.getCurrentWindow();
 const editorInstance: Editor = edit('editor');
 const footer: HTMLElement = document.getElementById('footer');
 
-let currentFile: string;
 let footerTextUpdateSubscription: Subscription = Subscription.EMPTY;
 
-setMenu();
 setupEditor();
+setupNewFile();
 attachRhymeCompleter(editorInstance);
 attachSyllableCountRenderer(editorInstance);
 
-function openHandler(): void {
-    const fileNames: string[] = remote.dialog.showOpenDialog(currentWindow, { properties: ['openFile'] });
-
-    if (fileNames !== undefined) {
-        const fileName: string = fileNames[0];
-        readFile(fileName, 'utf8', (error: Error, data: string) => {
-            if (error) {
-                alertError(error);
-            } else {
-                editorInstance.setValue(data);
-                editorInstance.session.getUndoManager()
-                    .reset();
-                setCurrentFile(fileName);
-            }
-        });
-    }
-}
-
-function saveHandler(): void {
-    footerTextUpdateSubscription.unsubscribe();
-    if (!currentFile) {
-        saveAsHandler();
+ipcRenderer.on('new-file', (_: any) => {
+    if (!editorInstance.session.getUndoManager().isClean) {
+        ipcRenderer.send('prompt-save-file-for-new');
     } else {
-        footer.innerText = `Saving file ${currentFile}...`;
-        writeFile(currentFile, editorInstance.getValue(), (error: NodeJS.ErrnoException) => {
-            if (error) {
-                alertError(error);
+        setupNewFile();
+    }
+});
+
+ipcRenderer.on('attempt-quit', (_: any) => {
+    if (!editorInstance.session
+        .getUndoManager()
+        .isClean()) {
+        ipcRenderer.send('prompt-save-file-for-quit');
+    } else {
+        ipcRenderer.send('quit');
+    }
+});
+
+ipcRenderer.on('force-new-file', (_: any) => {
+    setupNewFile();
+});
+
+ipcRenderer.on('file-save-ended', (_: any, error: Error, currentFilePath: string) => {
+    footerTextUpdateSubscription.unsubscribe();
+    if (error) {
+        alertError(error);
+    } else {
+        editorInstance.session
+            .getUndoManager()
+            .markClean();
+
+        document.title = currentFilePath;
+        footer.innerText = `${currentFilePath} saved.`;
+        footerTextUpdateSubscription = of(undefined)
+            .pipe(delay(3000))
+            .subscribe(() => {
                 footer.innerText = '';
-            } else {
-                footer.innerText = `${currentFile} saved.`;
-                footerTextUpdateSubscription = of(undefined)
-                    .pipe(delay(3000))
-                    .subscribe((_: undefined) => {
-                        footer.innerText = '';
-                    });
-            }
-        });
+            });
     }
-}
+});
 
-function saveAsHandler(): void {
-    const fileName: string = remote.dialog.showSaveDialog(
-        currentWindow,
-        { filters: [{ name: 'Text Files', extensions: ['txt'] }] },
-        undefined);
+ipcRenderer.on('file-save-started', (_: any, currentFileName: string) => {
+    footer.innerText = `Saving file ${currentFileName}...`;
+});
 
-    if (fileName) {
-        writeFile(fileName, editorInstance.getValue(), (error: NodeJS.ErrnoException) => {
-            if (error) {
-                alertError(error);
-            } else {
-                setCurrentFile(fileName);
-            }
-        });
+ipcRenderer.on('request-editor-text', (_: any) => {
+    ipcRenderer.send('editor-text', editorInstance.getValue());
+});
+
+ipcRenderer.on('file-opened', (_: any, error: Error, currentFileName: string, data: string) => {
+    if (error) {
+        alertError(error);
+    } else {
+        document.title = currentFileName;
+        editorInstance.setValue(data, -1);
+        editorInstance.session
+            .getUndoManager()
+            .reset();
     }
-}
+});
 
-function setMenu(): void {
-    const menuTemplate: MenuItemConstructorOptions[] = [{
-        label: 'File',
-        submenu: [{
-            label: 'Open',
-            click: openHandler,
-            accelerator: 'CmdOrCtrl+O'
-        }, {
-            label: 'Save',
-            click: saveHandler,
-            accelerator: 'CmdOrCtrl+S'
-        }, {
-            label: 'Save As',
-            click: saveAsHandler,
-            accelerator: 'Shift+CmdOrCtrl+S'
-        }]
-    }, {
-        label: 'Edit',
-        submenu: [
-            { role: 'undo' },
-            { role: 'redo' },
-            { type: 'separator' },
-            { role: 'cut' },
-            { role: 'copy' },
-            { role: 'paste' },
-            { role: 'delete' },
-            { role: 'selectall' }
-        ]
-    }, {
-        role: 'window',
-        submenu: [
-            { role: 'minimize' }
-        ]
-    }];
-    if (process.platform === 'darwin') {
-        menuTemplate.unshift({
-            label: remote.app.getName(),
-            submenu: [
-                { role: 'about' },
-                { type: 'separator' },
-                { role: 'services' },
-                { type: 'separator' },
-                { role: 'hide' },
-                { role: 'hideothers' },
-                { role: 'unhide' },
-                { type: 'separator' },
-                { role: 'quit' }
-            ]
-        });
-    }
+ipcRenderer.on('undo', (_: any) => {
+    undo();
+});
 
-    const mainMenu: Menu = remote.Menu.buildFromTemplate(menuTemplate);
+ipcRenderer.on('redo', (_: any) => {
+    redo();
+});
 
-    remote.Menu.setApplicationMenu(mainMenu);
-}
+ipcRenderer.on('find', (_: any) => {
+    editorInstance.execCommand('find');
+});
+
+ipcRenderer.on('replace', (_: any) => {
+    editorInstance.execCommand('replace');
+});
 
 function setupEditor(): void {
     const setCompleters: (completers: undefined[]) => void = acequire('ace/ext/language_tools').setCompleters;
@@ -151,6 +113,29 @@ function setupEditor(): void {
         enableLiveAutocompletion: true,
         enableBasicAutocompletion: false,
         enableSnippets: false
+    });
+
+    /*
+    Redeclare the undo and redo methods to make them not select the text when undo/redo is done.
+    */
+    editorInstance.undo = (_?: boolean): Range => {
+        return editorInstance.session
+            .getUndoManager()
+            .undo(true);
+    };
+    editorInstance.redo = (_?: boolean): void => {
+        editorInstance.session
+            .getUndoManager()
+            .redo(true);
+    };
+
+    editorInstance.commands.addCommand({
+        name: 'replace',
+        bindKey: { win: 'Ctrl-R', mac: 'Cmd-R' },
+        exec: (editor: Editor): void => {
+            acequire('ace/config')
+                .loadModule('ace/ext/searchbox', (e: any) => { e.Search(editor, true); });
+        }
     });
 }
 
@@ -180,7 +165,7 @@ function attachRhymeCompleter(editor: Editor): void {
                 return rhymeCompleter.showRhymes(prefix, editor);
             })
         )
-        .subscribe(() => undefined);
+        .subscribe((): void => undefined);
 }
 
 function attachSyllableCountRenderer(editor: Editor): void {
@@ -188,13 +173,25 @@ function attachSyllableCountRenderer(editor: Editor): void {
     syllableCountRenderer.attach(editor);
 }
 
+function setupNewFile(): void {
+    document.title = 'Untitled';
+    editorInstance.setValue('');
+    editorInstance.session
+        .getUndoManager()
+        .reset();
+    ipcRenderer.send('new-file-created');
+}
+
 function alertError(error: NodeJS.ErrnoException): void {
     alert(`Failed to save file. \n\nError: ${error.message}`);
 }
 
-function setCurrentFile(fileName: string): void {
-    currentFile = fileName;
-    document.title = fileName;
+function undo(): void {
+    editorInstance.undo();
+}
+
+function redo(): void {
+    editorInstance.redo();
 }
 
 interface IAutocompleteUtil {
