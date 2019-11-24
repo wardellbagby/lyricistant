@@ -2,9 +2,15 @@ import { app, BrowserWindow } from 'electron';
 let mainWindow: BrowserWindow;
 
 function createWindow(): void {
-  mainWindow = new BrowserWindow({ width: 800, height: 600 });
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
   mainWindow.loadFile('src/html/index.html');
-  // mainWindow.webContents.openDevTools()
+// mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows

@@ -3,6 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'none'; 
+    style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
+    font-src https://fonts.gstatic.com;
+    img-src 'self' data:;
+    script-src 'sha256-mouDSMHKlEpNWCQivVZu0GxyYJv0fzJxERI0z3ZFwv4=';" />
   <title>Untitled</title>
 </head>
 
@@ -15,10 +21,11 @@
         <table id="rhyme-table"></table>
       </div>
     </div>
+    <div id="footer"></div>
   </div>
 
   <link href="../css/default.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono&display=swap" rel="stylesheet">
   <script>
     require('../../out/js/renderer.js')
   </script>

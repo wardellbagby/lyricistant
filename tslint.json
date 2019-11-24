@@ -27,6 +27,7 @@
             true,
             "brace"
         ],
-        "no-any": false
+        "no-any": false,
+        "interface-name": false
     }
 }
