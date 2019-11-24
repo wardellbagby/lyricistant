@@ -15,7 +15,12 @@ body {
 
 .container {
     display: grid;
-    grid-template: "editor vdivider details" 100% / 70% 4px 1fr;
+    grid-template-areas:
+        "editor vdivider details"
+        "footer footer footer";
+    grid-template-rows: 1fr 28px;
+    grid-template-columns: 70% 4px 1fr;
+    /* grid-template: "editor vdivider details"100% / 70% 4px 1fr; */
     height: 100%;
 }
 
@@ -35,7 +40,7 @@ body {
     grid-area: details;
     background-color: #141414;
     color: #F8F8F8;
-    overflow-y: scroll;
+    overflow-y: overlay;
 }
 
 #rhyme-table {
@@ -43,7 +48,19 @@ body {
     height: 100%;
     padding: 0;
     margin: -1;
-    overflow-y: scroll
+    overflow-y: overlay;
+    scrollbar-color: #F8F8F8 #141414;
+}
+
+#footer {
+    grid-area: footer;
+    background-color: #232323;
+    color: #bdbdbd;
+    font-family: 'Roboto', sans-serif;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 td {

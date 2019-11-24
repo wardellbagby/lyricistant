@@ -7,13 +7,15 @@ import { readFile, writeFile } from 'fs';
 import { acequire, edit, Editor, Range } from 'brace';
 import 'brace/ext/language_tools';
 import 'brace/theme/twilight';
-import { fromEvent, merge, Observable } from 'rxjs';
-import { debounceTime, map, mapTo, switchMap, tap } from 'rxjs/operators';
+import { fromEvent, merge, Observable, of, Subscription } from 'rxjs';
+import { debounceTime, delay, map, mapTo, switchMap, tap } from 'rxjs/operators';
 
 const currentWindow: BrowserWindow = remote.getCurrentWindow();
 const editorInstance: Editor = edit('editor');
+const footer: HTMLElement = document.getElementById('footer');
 
 let currentFile: string;
+let footerTextUpdateSubscription: Subscription = Subscription.EMPTY;
 
 setMenu();
 setupEditor();
@@ -25,24 +27,36 @@ function openHandler(): void {
 
     if (fileNames !== undefined) {
         const fileName: string = fileNames[0];
-        readFile(fileName, 'utf8', (err: Error, data: string) => {
-            if (err !== undefined) {
+        readFile(fileName, 'utf8', (error: Error, data: string) => {
+            if (error) {
+                alertError(error);
+            } else {
                 editorInstance.setValue(data);
-                document.title = fileName;
                 editorInstance.session.getUndoManager()
                     .reset();
+                setCurrentFile(fileName);
             }
         });
     }
 }
 
 function saveHandler(): void {
-    if (currentFile === undefined) {
+    footerTextUpdateSubscription.unsubscribe();
+    if (!currentFile) {
         saveAsHandler();
     } else {
+        footer.innerText = `Saving file ${currentFile}...`;
         writeFile(currentFile, editorInstance.getValue(), (error: NodeJS.ErrnoException) => {
-            if (error !== undefined) {
+            if (error) {
                 alertError(error);
+                footer.innerText = '';
+            } else {
+                footer.innerText = `${currentFile} saved.`;
+                footerTextUpdateSubscription = of(undefined)
+                    .pipe(delay(3000))
+                    .subscribe((_: undefined) => {
+                        footer.innerText = '';
+                    });
             }
         });
     }
@@ -54,13 +68,12 @@ function saveAsHandler(): void {
         { filters: [{ name: 'Text Files', extensions: ['txt'] }] },
         undefined);
 
-    if (fileName !== undefined) {
+    if (fileName) {
         writeFile(fileName, editorInstance.getValue(), (error: NodeJS.ErrnoException) => {
-            if (error !== undefined) {
+            if (error) {
                 alertError(error);
             } else {
-                currentFile = fileName;
-                document.title = fileName;
+                setCurrentFile(fileName);
             }
         });
     }
@@ -177,6 +190,11 @@ function attachSyllableCountRenderer(editor: Editor): void {
 
 function alertError(error: NodeJS.ErrnoException): void {
     alert(`Failed to save file. \n\nError: ${error.message}`);
+}
+
+function setCurrentFile(fileName: string): void {
+    currentFile = fileName;
+    document.title = fileName;
 }
 
 interface IAutocompleteUtil {
