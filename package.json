@@ -1,5 +1,7 @@
 {
-  "name": "rhymer",
+  "name": "rhymer-text-editor",
+  "productName": "Rhymer",
+  "displayName": "Rhymer",
   "version": "0.0.3",
   "license": "GPL-3.0-or-later",
   "description": "An app that gets out of your way and let's you write the lyrics or poems that you want to!",
@@ -19,13 +21,12 @@
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "postinstall": "electron-builder install-app-deps",
     "start": "npm run build && electron .",
-    "pack": "build --dir",
-    "dist": "build",
-    "dist-all": "build --win --mac --linux"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist-all": "electron-builder --win --mac --linux"
   },
   "build": {
     "appId": "com.wardellbagby.rhymer",
-    "productName": "Rhymer",
     "artifactName": "Rhymer.${ext}",
     "mac": {
       "category": "public.app-category.utilities"
