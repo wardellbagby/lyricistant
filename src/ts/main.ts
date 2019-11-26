@@ -258,7 +258,8 @@ function redoHandler(): void {
 function createRecentFilesSubmenu(loadedRecentFiles?: string[]): MenuItemConstructorOptions[] {
   let validRecentFiles: string[];
   if (!loadedRecentFiles) {
-    const recentFilesFileContents: string = readFileSync(recentFilesFilePath, { encoding: 'utf8', flag: 'w+' });
+    // flag is a+ even though we're only reading so that the file is created if it doesn't exist.
+    const recentFilesFileContents: string = readFileSync(recentFilesFilePath, { encoding: 'utf8', flag: 'a+' });
     if (recentFilesFileContents.length === 0) {
       validRecentFiles = [];
     } else {
@@ -289,10 +290,11 @@ function addToRecentFiles(filePath: string): void {
     if (recentFiles.length > 10) {
       recentFiles.pop();
     }
+    // Want this to be unique, but need this to be a list 'cause can't stringify a Set.
+    recentFiles = [...new Set(recentFiles)];
 
     writeFile(recentFilesFilePath, JSON.stringify(recentFiles), () => {
-      // Want this to be unique, but can't JSONify a set.
-      setMenu([...new Set(recentFiles)]);
+      setMenu(recentFiles);
     });
   });
 
