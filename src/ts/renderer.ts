@@ -3,12 +3,15 @@ import { SyllableCountRenderer } from './SyllableCountRenderer';
 
 import { ipcRenderer } from 'electron';
 
-import { acequire, edit, Editor, Range } from 'brace';
+import { acequire, edit, Editor, Position, Range } from 'brace';
 import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
 import 'brace/theme/twilight';
 import { fromEvent, merge, Observable, of, Subscription } from 'rxjs';
-import { debounceTime, delay, map, mapTo, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+
+const validWordCharacters: RegExp = /[\w'\-&]/;
+const nonTraditionalWordCharacters: RegExp = /['\-&]/;
 
 const editorInstance: Editor = edit('editor');
 const footer: HTMLElement = document.getElementById('footer');
@@ -109,6 +112,7 @@ function setupEditor(): void {
         fontSize: '12pt'
     });
     editorInstance.session.setUseWrapMode(true);
+    editorInstance.session.setMode('ace/mode/text');
     editorInstance.setOptions({
         enableLiveAutocompletion: true,
         enableBasicAutocompletion: false,
@@ -144,25 +148,42 @@ function attachRhymeCompleter(editor: Editor): void {
 
     const rhymeTable: HTMLTableElement = <HTMLTableElement>document.getElementById('rhyme-table');
     const rhymeCompleter: RhymeCompleter = new RhymeCompleter(rhymeTable);
-    const cursorChanges: Observable<{}> = fromEvent(editor.selection, 'changeCursor')
-        .pipe(mapTo(undefined));
-    const selectionChanges: Observable<{}> = fromEvent(editor.selection, 'changeSelection')
-        .pipe(map(() => {
-            const selectionRange: Range = editor.selection.getRange();
-
-            return editor.session.getTextRange(selectionRange);
-        }));
-    merge(cursorChanges, selectionChanges)
+    const cursorChanges: Observable<string> = fromEvent(editor.selection, 'changeCursor')
         .pipe(
+            map(() => {
+                const cursorPosition: Position = editor.getCursorPosition();
+
+                return getWordUnderCursor(editorInstance, cursorPosition);
+            })
+        );
+    const selectionChanges: Observable<string> = fromEvent(editor.selection, 'changeSelection')
+        .pipe(
+            map(() => {
+                const selectionRange: Range = editor.selection.getRange();
+
+                return trimNonTraditionalWordCharacters(editor.session.getTextRange(selectionRange));
+            }),
+            filter((value: string) => {
+                return value.length > 0 &&
+                    !!value
+                        .charAt(0)
+                        .match(/\w/);
+            })
+        );
+    merge(selectionChanges, cursorChanges)
+        .pipe(
+            distinctUntilChanged(),
             tap(() => { rhymeCompleter.clearRhymes(); }),
             debounceTime(200),
-            switchMap((value: string | undefined) => {
-                let prefix: string = value;
+            switchMap((value: string) => {
+                let selectedWord: string = value;
+                // tslint:disable-next-line:no-console
+                console.log(selectedWord);
                 if (value === undefined || value.length === 0) {
-                    prefix = util.getCompletionPrefix(editor);
+                    selectedWord = util.getCompletionPrefix(editor);
                 }
 
-                return rhymeCompleter.showRhymes(prefix, editor);
+                return rhymeCompleter.showRhymes(selectedWord, editor);
             })
         )
         .subscribe((): void => undefined);
@@ -192,6 +213,50 @@ function undo(): void {
 
 function redo(): void {
     editorInstance.redo();
+}
+
+function getWordUnderCursor(editor: Editor, cursorPosition: Position): string {
+    const line: string = editor.session.getLine(cursorPosition.row);
+    let startIndex: number = cursorPosition.column;
+    let endIndex: number = cursorPosition.column;
+    let hasSeenWordCharacter: boolean = false;
+
+    for (let i: number = cursorPosition.column; i >= 0; i -= 1) {
+        const character: string = line.charAt(i);
+        if (character.match(validWordCharacters)) {
+            startIndex = i;
+            hasSeenWordCharacter = true;
+        } else if (hasSeenWordCharacter) {
+            break;
+        }
+    }
+
+    for (let i: number = startIndex; i < line.length; i += 1) {
+        const character: string = line.charAt(i);
+        if (!character.match(validWordCharacters)) {
+            endIndex = i;
+            break;
+        }
+    }
+
+    return trimNonTraditionalWordCharacters(line.substring(startIndex, endIndex));
+}
+
+function trimNonTraditionalWordCharacters(value: string): string {
+    let trimmedString: string = value;
+    while (trimmedString
+        .charAt(0)
+        .match(nonTraditionalWordCharacters)) {
+        trimmedString = trimmedString.substring(1);
+    }
+
+    while (trimmedString
+        .charAt(trimmedString.length - 1)
+        .match(nonTraditionalWordCharacters)) {
+        trimmedString = trimmedString.substring(0, trimmedString.length - 1);
+    }
+
+    return trimmedString.trim();
 }
 
 interface IAutocompleteUtil {

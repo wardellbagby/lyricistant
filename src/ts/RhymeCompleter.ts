@@ -1,6 +1,7 @@
 import { Editor, Position, Range } from 'brace';
 import { words } from 'datamuse';
 import { from as rxFrom, Observable, of } from 'rxjs';
+
 export class RhymeCompleter {
     private readonly table: HTMLTableElement;
 
@@ -8,15 +9,15 @@ export class RhymeCompleter {
         this.table = table;
     }
 
-    public showRhymes(prefix: String, editorInstance: Editor): Observable<void> {
-        if (prefix.length === 0) {
+    public showRhymes(word: String, editorInstance: Editor): Observable<void> {
+        if (word.length === 0) {
             return of();
         }
         const cursorPositionAtStart: Position = editorInstance.getCursorPosition();
-        const beginIndex: Position = { row: cursorPositionAtStart.row, column: cursorPositionAtStart.column - prefix.length };
+        const beginIndex: Position = { row: cursorPositionAtStart.row, column: cursorPositionAtStart.column - word.length };
 
         return rxFrom(
-            Promise.all<Rhyme[]>([words({ rel_rhy: prefix }), words({ rel_nry: prefix })])
+            Promise.all<Rhyme[]>([words({ rel_rhy: word }), words({ rel_nry: word })])
                 .then((results: Rhyme[][]) => {
                     const rhymeList: Rhyme[] = results.flat()
                         .filter((rhyme: Rhyme) => {
@@ -30,7 +31,7 @@ export class RhymeCompleter {
                         cell.appendChild(document.createTextNode(x.word));
                         cell.classList.add('rhyme');
                         cell.onclick = (): void => {
-                            const endColumn: number = beginIndex.column + prefix.length;
+                            const endColumn: number = beginIndex.column + word.length;
                             editorInstance.focus();
                             editorInstance.session.replace(new Range(beginIndex.row, beginIndex.column, beginIndex.row, endColumn), x.word);
                             editorInstance.moveCursorTo(beginIndex.row, beginIndex.column + x.word.length);

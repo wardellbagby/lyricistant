@@ -28,6 +28,7 @@
             "brace"
         ],
         "no-any": false,
-        "interface-name": false
+        "interface-name": false,
+        "completed-docs": false
     }
 }

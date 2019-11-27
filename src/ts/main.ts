@@ -21,7 +21,7 @@ function createWindow(): void {
     }
   });
   mainWindow.loadFile('src/html/index.html');
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows
