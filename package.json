@@ -23,25 +23,34 @@
     "start": "npm run build && electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "dist-all": "electron-builder --win --mac --linux"
+    "dist-all": "electron-builder --win --mac --linux && node bin/remove_unneeded_artifacts.js"
   },
   "build": {
     "appId": "com.wardellbagby.rhymer",
     "artifactName": "Rhymer.${ext}",
-    "mac": {
-      "category": "public.app-category.utilities"
+    "directories": {
+      "output": "dist"
     },
-    "dmg": {},
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "dmg"
+    },
     "linux": {
       "target": [
         "AppImage",
         "deb"
       ]
+    },
+    "win": {
+      "target": "nsis"
     }
+  },
+  "engines": {
+    "node": ">= 12.10"
   },
   "devDependencies": {
     "electron": "^7.1.2",
-    "electron-builder": "^21.2.0",
+    "electron-builder": "^22.2.0",
     "tslint-microsoft-contrib": "^6.2.0",
     "typestrict": "^1.0.2"
   },

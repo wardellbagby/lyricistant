@@ -9,7 +9,7 @@ export class RhymeCompleter {
         this.table = table;
     }
 
-    public showRhymes(word: String, editorInstance: Editor): Observable<void> {
+    public showRhymes(word: string, editorInstance: Editor): Observable<void> {
         if (word.length === 0) {
             return of();
         }
