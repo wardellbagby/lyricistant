@@ -9,9 +9,9 @@ jobs:
 
     steps:
     - name: Checkout the current branch.
-      uses: actions/checkout@v1
+      uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
     - name: Setup Node.js - 12.x.x
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@b6651e20e530d6e6b845a9828606779e89f5529c
       with:
         node-version: '>=12.10'
     - name: Install project dependencies.
@@ -21,7 +21,7 @@ jobs:
     - name: Build artifacts for all supported OSes.
       run: sudo npm run dist-all
     - name: Upload artifacts
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5
       with:
         name: artifacts
         path: dist/

@@ -1,10 +1,10 @@
 {
-  "name": "rhymer",
-  "productName": "Rhymer",
-  "displayName": "Rhymer",
+  "name": "lyricistant",
+  "productName": "Lyricistant",
+  "displayName": "Lyricistant",
   "version": "0.0.3",
   "license": "GPL-3.0-or-later",
-  "description": "An app that gets out of your way and let's you write the lyrics or poems that you want to!",
+  "description": "An app that gets out of your way and let's you write the lyrics you want to!",
   "author": {
     "name": "Wardell Bagby",
     "email": "dev@wardellbagby.com"

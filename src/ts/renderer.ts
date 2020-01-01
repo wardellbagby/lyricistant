@@ -23,8 +23,8 @@ let footerTextUpdateSubscription: Subscription = Subscription.EMPTY;
 
 setupEditor();
 setupNewFile();
-attachRhymeCompleter(editorInstance);
-attachSyllableCountRenderer(editorInstance);
+attachRhymeCompleter();
+attachSyllableCountRenderer();
 
 ipcRenderer.on('new-file', (_: any) => {
     if (!editorInstance.session.getUndoManager().isClean) {
@@ -109,7 +109,6 @@ function setupEditor(): void {
     setCompleters([]);
 
     editorInstance.setTheme('ace/theme/twilight');
-    editorInstance.setFontSize('14px');
     editorInstance.setBehavioursEnabled(false);
     editorInstance.setShowPrintMargin(false);
     editorInstance.setOptions({
@@ -150,30 +149,30 @@ function setupEditor(): void {
     });
 }
 
-function attachRhymeCompleter(editor: Editor): void {
+function attachRhymeCompleter(): void {
     const util: IAutocompleteUtil = <IAutocompleteUtil>acequire('ace/autocomplete/util');
 
     const rhymeTable: HTMLTableElement = <HTMLTableElement>document.getElementById('rhyme-table');
-    const cursorChanges: Observable<string> = fromEvent(editor.selection, 'changeCursor')
+    const cursorChanges: Observable<string> = fromEvent(editorInstance.selection, 'changeCursor')
         .pipe(
             map(() => {
-                const cursorPosition: Position = editor.getCursorPosition();
+                const cursorPosition: Position = editorInstance.getCursorPosition();
 
                 return getWordUnderCursor(editorInstance, cursorPosition);
             })
         );
-    const selectionChanges: Observable<string> = fromEvent(editor.selection, 'changeSelection')
+    const selectionChanges: Observable<string> = fromEvent(editorInstance.selection, 'changeSelection')
         .pipe(
             map(() => {
-                const selectionRange: Range = editor.selection.getRange();
+                const selectionRange: Range = editorInstance.selection.getRange();
 
-                return trimNonTraditionalWordCharacters(editor.session.getTextRange(selectionRange));
+                return trimNonTraditionalWordCharacters(editorInstance.session.getTextRange(selectionRange));
             }),
             filter((value: string) => {
                 // The selection changed event loves to fire after a cursor change with a selection of 1 character.
                 // We ignore those here, even though those are technically valid. Users probably don't care to look up
                 // rhymes for single characters?
-                return !editor.selection.isEmpty() &&
+                return !editorInstance.selection.isEmpty() &&
                     value.length > 1 &&
                     value
                         .charAt(0)
@@ -192,7 +191,7 @@ function attachRhymeCompleter(editor: Editor): void {
             switchMap((value: string) => {
                 let selectedWord: string = value;
                 if (value === undefined || value.length === 0) {
-                    selectedWord = util.getCompletionPrefix(editor);
+                    selectedWord = util.getCompletionPrefix(editorInstance);
                 }
 
                 return fetchRhymes(selectedWord)
@@ -225,9 +224,9 @@ function attachRhymeCompleter(editor: Editor): void {
         });
 }
 
-function attachSyllableCountRenderer(editor: Editor): void {
+function attachSyllableCountRenderer(): void {
     const syllableCountRenderer: SyllableCountRenderer = new SyllableCountRenderer();
-    syllableCountRenderer.attach(editor);
+    syllableCountRenderer.attach(editorInstance);
 }
 
 function setupNewFile(): void {
@@ -240,13 +239,13 @@ function setupNewFile(): void {
 }
 
 function alertError(error: NodeJS.ErrnoException): void {
-    alert(`Failed to save file. \n\nError: ${error.message}`);
+    alert(`Error: ${error.message}`);
 }
 
 function getWordUnderCursor(editor: Editor, cursorPosition: Position): string {
     const line: string = editor.session.getLine(cursorPosition.row);
     let startIndex: number = cursorPosition.column;
-    let endIndex: number = cursorPosition.column;
+    let endIndex: number = line.length;
     let hasSeenWordCharacter: boolean = false;
 
     for (let i: number = cursorPosition.column; i >= 0; i -= 1) {
