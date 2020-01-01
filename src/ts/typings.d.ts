@@ -3,6 +3,11 @@ declare module 'datamuse' {
         rel_rhy?: string,
         rel_nry?: string
     }
+    export interface Rhyme {
+        word: string;
+        score: number;
+    }
+    
     export function words(params: Params): Promise<Rhyme[]>
 }
 

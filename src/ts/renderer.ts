@@ -1,4 +1,4 @@
-import { RhymeCompleter } from './RhymeCompleter';
+import { fetchRhymes } from './fetchRhymes';
 import { SyllableCountRenderer } from './SyllableCountRenderer';
 
 import { ipcRenderer } from 'electron';
@@ -9,6 +9,9 @@ import 'brace/ext/searchbox';
 import 'brace/theme/twilight';
 import { fromEvent, merge, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { Rhyme, RhymeResult } from './Rhyme';
+// tslint:disable-next-line: no-unsafe-any variable-name
+const AceRange: any = acequire('ace/range').Range;
 
 const validWordCharacters: RegExp = /[\w'\-&]/;
 const nonTraditionalWordCharacters: RegExp = /['\-&]/;
@@ -85,11 +88,11 @@ ipcRenderer.on('file-opened', (_: any, error: Error, currentFileName: string, da
 });
 
 ipcRenderer.on('undo', (_: any) => {
-    undo();
+    editorInstance.undo();
 });
 
 ipcRenderer.on('redo', (_: any) => {
-    redo();
+    editorInstance.redo();
 });
 
 ipcRenderer.on('find', (_: any) => {
@@ -141,16 +144,16 @@ function setupEditor(): void {
         exec: (editor: Editor): void => {
             // tslint:disable-next-line: no-unsafe-any
             acequire('ace/config')
+                // tslint:disable-next-line: no-unsafe-any
                 .loadModule('ace/ext/searchbox', (e: any) => { e.Search(editor, true); });
         }
     });
 }
 
 function attachRhymeCompleter(editor: Editor): void {
-    const util: IAutocompleteUtil = acequire('ace/autocomplete/util');
+    const util: IAutocompleteUtil = <IAutocompleteUtil>acequire('ace/autocomplete/util');
 
     const rhymeTable: HTMLTableElement = <HTMLTableElement>document.getElementById('rhyme-table');
-    const rhymeCompleter: RhymeCompleter = new RhymeCompleter(rhymeTable);
     const cursorChanges: Observable<string> = fromEvent(editor.selection, 'changeCursor')
         .pipe(
             map(() => {
@@ -167,7 +170,11 @@ function attachRhymeCompleter(editor: Editor): void {
                 return trimNonTraditionalWordCharacters(editor.session.getTextRange(selectionRange));
             }),
             filter((value: string) => {
-                return value.length > 0 &&
+                // The selection changed event loves to fire after a cursor change with a selection of 1 character.
+                // We ignore those here, even though those are technically valid. Users probably don't care to look up
+                // rhymes for single characters?
+                return !editor.selection.isEmpty() &&
+                    value.length > 1 &&
                     value
                         .charAt(0)
                         .match(/\w/) !== undefined;
@@ -176,20 +183,46 @@ function attachRhymeCompleter(editor: Editor): void {
     merge(selectionChanges, cursorChanges)
         .pipe(
             distinctUntilChanged(),
-            tap(() => { rhymeCompleter.clearRhymes(); }),
+            tap(() => {
+                while (rhymeTable.hasChildNodes()) {
+                    rhymeTable.removeChild(rhymeTable.lastChild);
+                }
+            }),
             debounceTime(200),
             switchMap((value: string) => {
                 let selectedWord: string = value;
-                // tslint:disable-next-line:no-console
-                console.log(selectedWord);
                 if (value === undefined || value.length === 0) {
                     selectedWord = util.getCompletionPrefix(editor);
                 }
 
-                return rhymeCompleter.showRhymes(selectedWord, editor);
+                return fetchRhymes(selectedWord)
+                    .pipe(
+                        map((rhymes: Rhyme[]) => new RhymeResult(selectedWord, rhymes))
+                    );
             })
         )
-        .subscribe((): void => undefined);
+        .subscribe((result: RhymeResult): void => {
+            const cursorPositionAtStart: Position = editorInstance.getCursorPosition();
+            const beginIndex: Position = {
+                row: cursorPositionAtStart.row,
+                column: cursorPositionAtStart.column - result.searchedWord.length
+            };
+
+            result.rhymes.forEach((x: Rhyme) => {
+                const row: HTMLTableRowElement = rhymeTable.insertRow(-1);
+                const cell: HTMLTableCellElement = row.insertCell();
+                cell.appendChild(document.createTextNode(x.word));
+                cell.classList.add('rhyme');
+                cell.onclick = (): void => {
+                    const endColumn: number = beginIndex.column + result.searchedWord.length;
+                    editorInstance.focus();
+                    editorInstance.session.replace(
+                        // tslint:disable-next-line: no-unsafe-any
+                        new AceRange(beginIndex.row, beginIndex.column, beginIndex.row, endColumn), x.word);
+                    editorInstance.moveCursorTo(beginIndex.row, beginIndex.column + x.word.length);
+                };
+            });
+        });
 }
 
 function attachSyllableCountRenderer(editor: Editor): void {
@@ -208,14 +241,6 @@ function setupNewFile(): void {
 
 function alertError(error: NodeJS.ErrnoException): void {
     alert(`Failed to save file. \n\nError: ${error.message}`);
-}
-
-function undo(): void {
-    editorInstance.undo();
-}
-
-function redo(): void {
-    editorInstance.redo();
 }
 
 function getWordUnderCursor(editor: Editor, cursorPosition: Position): string {
