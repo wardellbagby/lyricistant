@@ -19,10 +19,12 @@ export class SyllableCountRenderer {
 
     public update(event: EditorChangeEvent, editor: Editor): void {
         const renderer: any = <any>editor.renderer;
+        // tslint:disable-next-line: no-unsafe-any
         renderer.$loop.schedule(renderer.CHANGE_GUTTER);
     }
 
     public attach(editor: Editor): void {
+        // tslint:disable-next-line: no-unsafe-any
         (<any>editor.renderer).$gutterLayer.$renderer = this;
         editor.on('changeSelection', <(e: any) => any>this.update);
         this.update(undefined, editor);
@@ -30,7 +32,9 @@ export class SyllableCountRenderer {
 
     public detach(editor: Editor): void {
         const renderer: any = <any>editor.renderer;
+        // tslint:disable-next-line: no-unsafe-any
         if (renderer.$gutterLayer.$renderer === this) {
+            // tslint:disable-next-line: no-unsafe-any
             renderer.$gutterLayer.$renderer = undefined;
         }
         editor.off('changeSelection', this.update);

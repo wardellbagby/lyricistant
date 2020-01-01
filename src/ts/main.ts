@@ -62,6 +62,9 @@ ipcMain.on('prompt-save-file-for-new', () => {
       if (value.response === 0) {
         mainWindow.webContents.send('force-new-file');
       }
+    })
+    .catch(() => {
+      dialog.showErrorBox('Error', 'Error trying to show the confirm quit dialog for creating a new file.');
     });
 });
 
@@ -79,6 +82,9 @@ ipcMain.on('prompt-save-file-for-quit', () => {
       if (value.response === 0) {
         app.quit();
       }
+    })
+    .catch(() => {
+      dialog.showErrorBox('Error', 'Error trying to show the confirm quit dialog for quiting the app.');
     });
 });
 
@@ -209,6 +215,9 @@ function openMenuItemHandler(): void {
         const filePath: string = value.filePaths[0];
         openFile(filePath);
       }
+    })
+    .catch(() => {
+      dialog.showErrorBox('Error', 'Error trying to show the open file dialog.');
     });
 }
 
@@ -240,6 +249,9 @@ function saveAsHandler(): void {
         mainWindow.webContents.send('request-editor-text');
         addToRecentFiles(value.filePath);
       }
+    })
+    .catch(() => {
+      dialog.showErrorBox('Error', 'Error trying to show the save as dialog.');
     });
 }
 
@@ -263,7 +275,7 @@ function createRecentFilesSubmenu(loadedRecentFiles?: string[]): MenuItemConstru
     if (recentFilesFileContents.length === 0) {
       validRecentFiles = [];
     } else {
-      validRecentFiles = JSON.parse(recentFilesFileContents);
+      validRecentFiles = <string[]>JSON.parse(recentFilesFileContents);
     }
   } else {
     validRecentFiles = loadedRecentFiles;
@@ -283,7 +295,7 @@ function addToRecentFiles(filePath: string): void {
     if (data.length === 0) {
       recentFiles = [];
     } else {
-      recentFiles = JSON.parse(data);
+      recentFiles = <string[]>JSON.parse(data);
     }
 
     recentFiles.unshift(filePath);

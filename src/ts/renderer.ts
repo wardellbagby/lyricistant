@@ -101,6 +101,7 @@ ipcRenderer.on('replace', (_: any) => {
 });
 
 function setupEditor(): void {
+    // tslint:disable-next-line: no-unsafe-any
     const setCompleters: (completers: undefined[]) => void = acequire('ace/ext/language_tools').setCompleters;
     setCompleters([]);
 
@@ -165,9 +166,9 @@ function attachRhymeCompleter(editor: Editor): void {
             }),
             filter((value: string) => {
                 return value.length > 0 &&
-                    !!value
+                    value
                         .charAt(0)
-                        .match(/\w/);
+                        .match(/\w/) !== undefined;
             })
         );
     merge(selectionChanges, cursorChanges)
