@@ -15,24 +15,20 @@ body {
 .container {
     display: grid;
     grid-template-areas:
-        "editor vdivider details"
-        "footer footer footer";
+        "editor details"
+        "footer footer";
     grid-template-rows: 1fr 28px;
-    grid-template-columns: 70% 4px 1fr;
-    /* grid-template: "editor vdivider details"100% / 70% 4px 1fr; */
+    grid-template-columns: 70% 1fr;
     height: 100%;
+    overflow: hidden;
 }
 
-.vdivider {
-    grid-area: vdivider;
-    color: #F8F8F8;
-    border-left: 4px solid #232323;
-}
 
 #editor {
     grid-area: editor;
     font-family: 'Roboto Mono', monospace;
     margin: 0;
+    overflow: visible
 }
 
 #detail-column {
@@ -48,7 +44,6 @@ body {
     padding: 0;
     margin: -1;
     overflow-y: overlay;
-    scrollbar-color: #F8F8F8 #141414;
 }
 
 #footer {
@@ -74,6 +69,17 @@ td {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+::-webkit-scrollbar {
+    background-color: #232323;
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #757575;
+    border-radius: 16px;
+    width: 8px;
 }
 
 td:hover {

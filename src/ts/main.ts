@@ -20,8 +20,11 @@ function createWindow(): void {
       nodeIntegration: true
     }
   });
-  mainWindow.loadFile('src/html/index.html');
-  mainWindow.webContents.openDevTools();
+  mainWindow
+    .loadFile('src/html/index.html')
+    .catch(() => {
+      dialog.showErrorBox('Error', 'Error trying to load the main page.');
+    });
 
   mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows
@@ -169,7 +172,7 @@ function setMenu(recentFiles?: string[]): void {
   }];
   if (process.platform === 'darwin') {
     menuTemplate.unshift({
-      label: app.getName(),
+      label: app.name,
       submenu: [
         { role: 'about' },
         { type: 'separator' },

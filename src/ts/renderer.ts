@@ -117,7 +117,8 @@ function setupEditor(): void {
     editorInstance.setOptions({
         enableLiveAutocompletion: true,
         enableBasicAutocompletion: false,
-        enableSnippets: false
+        enableSnippets: false,
+        vScrollBarAlwaysVisible: true
     });
 
     /*
@@ -138,6 +139,7 @@ function setupEditor(): void {
         name: 'replace',
         bindKey: { win: 'Ctrl-R', mac: 'Cmd-R' },
         exec: (editor: Editor): void => {
+            // tslint:disable-next-line: no-unsafe-any
             acequire('ace/config')
                 .loadModule('ace/ext/searchbox', (e: any) => { e.Search(editor, true); });
         }
