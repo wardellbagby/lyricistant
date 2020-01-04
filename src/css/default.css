@@ -6,9 +6,9 @@
     --secondary-text-color: #bdbdbd;
     --tertiary-text-color: #9e9e9e;
 
-    --selected-item-background-color: #4f4f4f;
+    --selected-item-background-color: #264F78;
 
-    --scrollbar-thumb-color: #4c4c4c;
+    --scrollbar-thumb-color: #79797966;
 
     --editor-text-size: 14px;
     --details-text-size: 16px;
@@ -16,14 +16,16 @@
 
 @media (prefers-color-scheme: light) {
     :root {
-        --primary-background-color: #f8f8f8;
-        --secondary-background-color: #bdbdbd;
+        --primary-background-color: #fafafa;
+        --secondary-background-color: #e0e0e0;
 
-        --primary-text-color: #141414;
-        --secondary-text-color: #232323;
-        --tertiary-text-color: #323232;
+        --primary-text-color: #212121;
+        --secondary-text-color: #424242;
+        --tertiary-text-color: #616161;
 
-        --selected-item-background-color: #cccccc;
+        --selected-item-background-color: #ADD6FF;
+
+        --scrollbar-thumb-color: #64646466;
     }
 }
 
@@ -64,7 +66,7 @@ body {
     background-color: var(--primary-background-color);
     color: var(--tertiary-text-color);
     font-size: var(--details-text-size);
-    overflow-y: overlay;
+    overflow-y: auto;
 }
 
 #detail-column:hover {
@@ -103,7 +105,6 @@ td {
 }
 
 ::-webkit-scrollbar {
-    background-color: var(--secondary-background-color);
     width: 8px;
 }
 
@@ -113,6 +114,7 @@ td {
 }
 
 td:hover {
+    border-radius: 4px;
     background-color: var(--selected-item-background-color);
 }
 

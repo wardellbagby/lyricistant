@@ -14,7 +14,7 @@ function createWindow(): void {
   if (nativeTheme.shouldUseDarkColors) {
     windowBackgroundColor = '#141414';
   } else {
-    windowBackgroundColor = '#f8f8f8';
+    windowBackgroundColor = '#fafafa';
   }
 
   mainWindow = new BrowserWindow({

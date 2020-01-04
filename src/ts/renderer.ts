@@ -10,7 +10,7 @@ import { editor, IPosition, IRange } from 'monaco-editor';
 import { fromEventPattern, merge, Observable, of, Subscription } from 'rxjs';
 import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
 import { debounceTime, delay, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
-import { defineLyricistantLanguage as createLyricistantLanguage, defineLyricistantTheme as createLyricistantTheme } from './monaco-helpers';
+import { createLyricistantLanguage, createLyricistantTheme } from './monaco-helpers';
 import { Rhyme } from './Rhyme';
 
 let editorInstance: import('monaco-editor').editor.ICodeEditor;
@@ -185,26 +185,25 @@ function attachRhymeCompleter(): void {
     merge(selectionChanges, cursorChanges)
         .pipe(
             distinctUntilChanged(),
+            debounceTime(200),
+            switchMap((data: WordAtPosition) =>
+                fetchRhymes(data.word)
+                    .pipe(
+                        map((rhymes: Rhyme[]) => {
+                            return {
+                                searchedWordData: data,
+                                rhymes: rhymes
+                            };
+                        })
+                    )
+            ),
             tap(() => {
                 while (rhymeTable.hasChildNodes()) {
                     rhymeTable.removeChild(rhymeTable.lastChild);
                 }
-            }),
-            debounceTime(200),
-            switchMap((data: WordAtPosition) => {
-
-                return fetchRhymes(data.word)
-                    .pipe(
-                        map((rhymes: Rhyme[]) => {
-                            return {
-                                searchedWord: data,
-                                rhymes: rhymes
-                            };
-                        })
-                    );
             })
         )
-        .subscribe((result: { searchedWord: WordAtPosition; rhymes: Rhyme[] }): void => {
+        .subscribe((result: { searchedWordData: WordAtPosition; rhymes: Rhyme[] }): void => {
             result.rhymes.forEach((rhyme: Rhyme) => {
                 const row: HTMLTableRowElement = rhymeTable.insertRow(-1);
                 const cell: HTMLTableCellElement = row.insertCell();
@@ -213,10 +212,10 @@ function attachRhymeCompleter(): void {
                     editorInstance.focus();
                     const op: editor.IIdentifiedSingleEditOperation = {
                         range: new monaco.Range(
-                            result.searchedWord.range.startLineNumber,
-                            result.searchedWord.range.startColumn,
-                            result.searchedWord.range.endLineNumber,
-                            result.searchedWord.range.endColumn
+                            result.searchedWordData.range.startLineNumber,
+                            result.searchedWordData.range.startColumn,
+                            result.searchedWordData.range.endLineNumber,
+                            result.searchedWordData.range.endColumn
                         ),
                         text: rhyme.word,
                         forceMoveMarkers: true
