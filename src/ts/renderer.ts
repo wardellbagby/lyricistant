@@ -30,7 +30,10 @@ monacoLoader()
                 .getLineContent(lineNumber))
                 .toString(),
             language: createLyricistantLanguage(monaco),
-            fontSize: 14,
+            fontSize: parseInt(
+                getComputedStyle(document.documentElement)
+                    .getPropertyValue('--editor-text-size'),
+                10),
             overviewRulerBorder: false,
             occurrencesHighlight: false,
             renderLineHighlight: 'none',
@@ -125,6 +128,12 @@ ipcRenderer.on('replace', (_: any) => {
     editorInstance.trigger('', 'replace', '');
 });
 
+ipcRenderer.on('dark-mode-toggled', (_: any) => {
+    if (editorInstance) {
+        monaco.editor.setTheme(createLyricistantTheme(monaco));
+    }
+});
+
 function attachRhymeCompleter(): void {
     const rhymeTable: HTMLTableElement = <HTMLTableElement>document.getElementById('rhyme-table');
     fromEventPattern((handler: NodeEventHandler) => editorInstance.onDidChangeCursorPosition(handler));
@@ -200,7 +209,6 @@ function attachRhymeCompleter(): void {
                 const row: HTMLTableRowElement = rhymeTable.insertRow(-1);
                 const cell: HTMLTableCellElement = row.insertCell();
                 cell.appendChild(document.createTextNode(rhyme.word));
-                cell.classList.add('rhyme');
                 cell.onclick = (): void => {
                     editorInstance.focus();
                     const op: editor.IIdentifiedSingleEditOperation = {

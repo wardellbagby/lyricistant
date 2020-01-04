@@ -3,11 +3,14 @@ export function defineLyricistantTheme(monaco: typeof import('monaco-editor')): 
     monaco.editor.defineTheme(themeName, {
         base: 'vs-dark',
         inherit: true,
-        rules: [{ token: '', background: '141414', foreground: 'F8F8F8' }],
+        rules: [{
+            token: '',
+            background: getCssColor('--primary-background-color'),
+            foreground: getCssColor('--primary-text-color')
+        }],
         colors: {
-            'editor.color': '#FF0000',
-            'editor.foreground': '#F8F8F8',
-            'editor.background': '#141414'
+            'editor.background': getCssColor('--primary-background-color'),
+            'editor.foreground': getCssColor('--primary-text-color')
         }
     });
 
@@ -24,4 +27,10 @@ export function defineLyricistantLanguage(monaco: typeof import('monaco-editor')
     });
 
     return languageName;
+}
+
+function getCssColor(variableName: string): string {
+    return getComputedStyle(document.documentElement)
+        .getPropertyValue(variableName)
+        .trim();
 }

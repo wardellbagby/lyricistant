@@ -1,6 +1,6 @@
 import {
   app, BrowserWindow, dialog, ipcMain, IpcMainEvent, Menu, MenuItemConstructorOptions, MessageBoxReturnValue,
-  OpenDialogReturnValue, SaveDialogReturnValue
+  nativeTheme, OpenDialogReturnValue, SaveDialogReturnValue, systemPreferences
 } from 'electron';
 import { readFile, readFileSync, writeFile } from 'fs';
 
@@ -10,16 +10,24 @@ let mainWindow: BrowserWindow;
 let currentFilePath: string;
 
 function createWindow(): void {
+  let windowBackgroundColor: string;
+  if (nativeTheme.shouldUseDarkColors) {
+    windowBackgroundColor = '#141414';
+  } else {
+    windowBackgroundColor = '#f8f8f8';
+  }
+
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 600,
     minHeight: 400,
-    backgroundColor: '#141414',
+    backgroundColor: windowBackgroundColor,
     webPreferences: {
       nodeIntegration: true
     }
   });
+  mainWindow.webContents.send('dark-mode-toggled', nativeTheme.shouldUseDarkColors);
   mainWindow
     .loadFile('src/html/index.html')
     .catch(() => {
@@ -34,6 +42,13 @@ function createWindow(): void {
   });
   setMenu();
 }
+
+systemPreferences.subscribeNotification(
+  'AppleInterfaceThemeChangedNotification',
+  () => {
+    mainWindow?.webContents.send('dark-mode-toggled');
+  }
+);
 
 app.on('ready', createWindow);
 

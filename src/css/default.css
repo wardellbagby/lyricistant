@@ -1,3 +1,32 @@
+:root {
+    --primary-background-color: #141414;
+    --secondary-background-color: #232323;
+
+    --primary-text-color: #f8f8f8;
+    --secondary-text-color: #bdbdbd;
+    --tertiary-text-color: #9e9e9e;
+
+    --selected-item-background-color: #4f4f4f;
+
+    --scrollbar-thumb-color: #4c4c4c;
+
+    --editor-text-size: 14px;
+    --details-text-size: 16px;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --primary-background-color: #f8f8f8;
+        --secondary-background-color: #bdbdbd;
+
+        --primary-text-color: #141414;
+        --secondary-text-color: #232323;
+        --tertiary-text-color: #323232;
+
+        --selected-item-background-color: #cccccc;
+    }
+}
+
 html {
     height: 100%;
     width: 100%;
@@ -32,27 +61,26 @@ body {
 
 #detail-column {
     grid-area: details;
-    background-color: #141414;
-    color: #9e9e9e;
+    background-color: var(--primary-background-color);
+    color: var(--tertiary-text-color);
+    font-size: var(--details-text-size);
     overflow-y: overlay;
 }
 
 #detail-column:hover {
-    color: #F8F8F8;
+    color: var(--primary-text-color);
 }
 
 #rhyme-table {
     width: 100%;
     height: 100%;
-    padding: 0;
-    margin: -1;
     overflow-y: overlay;
 }
 
 #footer {
     grid-area: footer;
-    background-color: #232323;
-    color: #bdbdbd;
+    background-color: var(--secondary-background-color);
+    color: var(--secondary-text-color);
     font-family: 'Roboto', sans-serif;
     padding-left: 8px;
     padding-right: 8px;
@@ -61,7 +89,6 @@ body {
 }
 
 td {
-    width: 400%;
     font-family: 'Roboto Mono', monospace;
     padding: 16px;
     text-align: left;
@@ -76,17 +103,17 @@ td {
 }
 
 ::-webkit-scrollbar {
-    background-color: #232323;
+    background-color: var(--secondary-background-color);
     width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #4c4c4c;
+    background: var(--scrollbar-thumb-color);
     width: 8px;
 }
 
 td:hover {
-    background-color: rgba(255, 255, 255, 0.25)
+    background-color: var(--selected-item-background-color);
 }
 
 @keyframes slide-up {
