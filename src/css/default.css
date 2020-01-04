@@ -48,17 +48,22 @@ body {
     grid-template-areas:
         "editor details"
         "footer footer";
-    grid-template-rows: 1fr 28px;
-    grid-template-columns: 70% 1fr;
+    grid-template-rows: minmax(200px, 1fr) 28px;
+    grid-template-columns: minmax(200px, 1fr) minmax(20%, 150px);
     height: 100%;
-    overflow: hidden;
+    width: 100%;
+}
+
+.container>* {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 #editor {
     grid-area: editor;
     font-family: 'Roboto Mono', monospace;
     margin: 0;
-    overflow: visible
+    overflow: hidden;
 }
 
 #detail-column {
@@ -66,7 +71,9 @@ body {
     background-color: var(--primary-background-color);
     color: var(--tertiary-text-color);
     font-size: var(--details-text-size);
-    overflow-y: auto;
+    overflow-y: overlay;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 #detail-column:hover {
@@ -74,9 +81,9 @@ body {
 }
 
 #rhyme-table {
-    width: 100%;
+    width: calc(100% - 12px);
     height: 100%;
-    overflow-y: overlay;
+    table-layout: fixed;
 }
 
 #footer {
@@ -95,6 +102,7 @@ td {
     padding: 16px;
     text-align: left;
     cursor: default;
+    word-wrap: break-word;
     animation: slide-up 0.2s ease;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -105,12 +113,11 @@ td {
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 12px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: var(--scrollbar-thumb-color);
-    width: 8px;
 }
 
 td:hover {

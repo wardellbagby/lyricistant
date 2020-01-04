@@ -27,7 +27,7 @@ function createWindow(): void {
       nodeIntegration: true
     }
   });
-  mainWindow.webContents.send('dark-mode-toggled', nativeTheme.shouldUseDarkColors);
+  mainWindow.webContents.send('dark-mode-toggled');
   mainWindow
     .loadFile('src/html/index.html')
     .catch(() => {

@@ -25,7 +25,9 @@ monacoLoader()
 
         monaco.editor.setTheme(createLyricistantTheme(monaco));
 
-        editorInstance = monaco.editor.create(document.getElementById('editor'), {
+        const editorElement: HTMLElement = document.getElementById('editor');
+
+        editorInstance = monaco.editor.create(editorElement, {
             lineNumbers: (lineNumber: number): string => syllable(editorInstance.getModel()
                 .getLineContent(lineNumber))
                 .toString(),
@@ -37,13 +39,20 @@ monacoLoader()
             overviewRulerBorder: false,
             occurrencesHighlight: false,
             renderLineHighlight: 'none',
+            scrollBeyondLastLine: false,
             quickSuggestions: false,
             hideCursorInOverviewRuler: true,
             minimap: {
                 enabled: false
             }
-
         });
+
+        window.onresize = (): void => {
+            editorInstance.layout({
+                width: editorElement.clientWidth,
+                height: editorElement.clientHeight
+            });
+        };
 
         setupNewFile();
         attachRhymeCompleter();
