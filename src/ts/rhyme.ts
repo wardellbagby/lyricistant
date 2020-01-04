@@ -8,12 +8,3 @@ export class Rhyme implements ApiRhyme {
         this.score = score;
     }
 }
-
-export class RhymeResult {
-    public rhymes: Rhyme[];
-    public searchedWord: string;
-    constructor(searchedWord: string, rhymes: Rhyme[]) {
-        this.searchedWord = searchedWord;
-        this.rhymes = rhymes;
-    }
-}

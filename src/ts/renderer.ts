@@ -1,33 +1,57 @@
+
+import monacoLoader from 'monaco-loader';
+let monaco: typeof import('monaco-editor');
+import syllable from 'syllable';
 import { fetchRhymes } from './fetchRhymes';
-import { SyllableCountRenderer } from './SyllableCountRenderer';
 
 import { ipcRenderer } from 'electron';
 
-import { acequire, edit, Editor, Position, Range } from 'brace';
-import 'brace/ext/language_tools';
-import 'brace/ext/searchbox';
-import 'brace/theme/twilight';
-import { fromEvent, merge, Observable, of, Subscription } from 'rxjs';
+import { editor, IPosition, IRange } from 'monaco-editor';
+import { fromEventPattern, merge, Observable, of, Subscription } from 'rxjs';
+import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
 import { debounceTime, delay, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
-import { Rhyme, RhymeResult } from './Rhyme';
-// tslint:disable-next-line: no-unsafe-any variable-name
-const AceRange: any = acequire('ace/range').Range;
+import { defineLyricistantLanguage as createLyricistantLanguage, defineLyricistantTheme as createLyricistantTheme } from './monaco-helpers';
+import { Rhyme } from './Rhyme';
 
-const validWordCharacters: RegExp = /[\w'\-&]/;
-const nonTraditionalWordCharacters: RegExp = /['\-&]/;
-
-const editorInstance: Editor = edit('editor');
+let editorInstance: import('monaco-editor').editor.ICodeEditor;
+let modelVersion: number;
 const footer: HTMLElement = document.getElementById('footer');
 
 let footerTextUpdateSubscription: Subscription = Subscription.EMPTY;
 
-setupEditor();
-setupNewFile();
-attachRhymeCompleter();
-attachSyllableCountRenderer();
+monacoLoader()
+    .then((loadedMonaco: typeof import('monaco-editor')) => {
+        monaco = loadedMonaco;
+
+        monaco.editor.setTheme(createLyricistantTheme(monaco));
+
+        editorInstance = monaco.editor.create(document.getElementById('editor'), {
+            lineNumbers: (lineNumber: number): string => syllable(editorInstance.getModel()
+                .getLineContent(lineNumber))
+                .toString(),
+            language: createLyricistantLanguage(monaco),
+            fontSize: 14,
+            overviewRulerBorder: false,
+            occurrencesHighlight: false,
+            renderLineHighlight: 'none',
+            quickSuggestions: false,
+            hideCursorInOverviewRuler: true,
+            minimap: {
+                enabled: false
+            }
+
+        });
+
+        setupNewFile();
+        attachRhymeCompleter();
+    })
+    .catch((reason: any) => {
+        alert(`Error loading monaco. \n${reason}`);
+    });
 
 ipcRenderer.on('new-file', (_: any) => {
-    if (!editorInstance.session.getUndoManager().isClean) {
+    if (modelVersion !== editorInstance.getModel()
+        .getAlternativeVersionId()) {
         ipcRenderer.send('prompt-save-file-for-new');
     } else {
         setupNewFile();
@@ -35,9 +59,8 @@ ipcRenderer.on('new-file', (_: any) => {
 });
 
 ipcRenderer.on('attempt-quit', (_: any) => {
-    if (!editorInstance.session
-        .getUndoManager()
-        .isClean()) {
+    if (modelVersion !== editorInstance.getModel()
+        .getAlternativeVersionId()) {
         ipcRenderer.send('prompt-save-file-for-quit');
     } else {
         ipcRenderer.send('quit');
@@ -53,9 +76,9 @@ ipcRenderer.on('file-save-ended', (_: any, error: Error, currentFilePath: string
     if (error) {
         alertError(error);
     } else {
-        editorInstance.session
-            .getUndoManager()
-            .markClean();
+        modelVersion = editorInstance
+            .getModel()
+            .getAlternativeVersionId();
 
         document.title = currentFilePath;
         footer.innerText = `${currentFilePath} saved.`;
@@ -80,105 +103,76 @@ ipcRenderer.on('file-opened', (_: any, error: Error, currentFileName: string, da
         alertError(error);
     } else {
         document.title = currentFileName;
-        editorInstance.setValue(data, -1);
-        editorInstance.session
-            .getUndoManager()
-            .reset();
+        editorInstance.setValue(data);
+        modelVersion = editorInstance.getModel()
+            .getAlternativeVersionId();
     }
 });
 
 ipcRenderer.on('undo', (_: any) => {
-    editorInstance.undo();
+    editorInstance.trigger('', 'undo', '');
 });
 
 ipcRenderer.on('redo', (_: any) => {
-    editorInstance.redo();
+    editorInstance.trigger('', 'redo', '');
 });
 
 ipcRenderer.on('find', (_: any) => {
-    editorInstance.execCommand('find');
+    editorInstance.trigger('', 'find', '');
 });
 
 ipcRenderer.on('replace', (_: any) => {
-    editorInstance.execCommand('replace');
+    editorInstance.trigger('', 'replace', '');
 });
 
-function setupEditor(): void {
-    // tslint:disable-next-line: no-unsafe-any
-    const setCompleters: (completers: undefined[]) => void = acequire('ace/ext/language_tools').setCompleters;
-    setCompleters([]);
-
-    editorInstance.setTheme('ace/theme/twilight');
-    editorInstance.setBehavioursEnabled(false);
-    editorInstance.setShowPrintMargin(false);
-    editorInstance.setOptions({
-        fontSize: '12pt'
-    });
-    editorInstance.session.setUseWrapMode(true);
-    editorInstance.session.setMode('ace/mode/text');
-    editorInstance.setOptions({
-        enableLiveAutocompletion: true,
-        enableBasicAutocompletion: false,
-        enableSnippets: false,
-        vScrollBarAlwaysVisible: true
-    });
-
-    /*
-    Redeclare the undo and redo methods to make them not select the text when undo/redo is done.
-    */
-    editorInstance.undo = (_?: boolean): Range => {
-        return editorInstance.session
-            .getUndoManager()
-            .undo(true);
-    };
-    editorInstance.redo = (_?: boolean): void => {
-        editorInstance.session
-            .getUndoManager()
-            .redo(true);
-    };
-
-    editorInstance.commands.addCommand({
-        name: 'replace',
-        bindKey: { win: 'Ctrl-R', mac: 'Cmd-R' },
-        exec: (editor: Editor): void => {
-            // tslint:disable-next-line: no-unsafe-any
-            acequire('ace/config')
-                // tslint:disable-next-line: no-unsafe-any
-                .loadModule('ace/ext/searchbox', (e: any) => { e.Search(editor, true); });
-        }
-    });
-}
-
 function attachRhymeCompleter(): void {
-    const util: IAutocompleteUtil = <IAutocompleteUtil>acequire('ace/autocomplete/util');
-
     const rhymeTable: HTMLTableElement = <HTMLTableElement>document.getElementById('rhyme-table');
-    const cursorChanges: Observable<string> = fromEvent(editorInstance.selection, 'changeCursor')
-        .pipe(
-            map(() => {
-                const cursorPosition: Position = editorInstance.getCursorPosition();
+    fromEventPattern((handler: NodeEventHandler) => editorInstance.onDidChangeCursorPosition(handler));
+    const cursorChanges: Observable<WordAtPosition> =
+        fromEventPattern((handler: NodeEventHandler) => editorInstance.onDidChangeCursorPosition(handler))
+            .pipe(
+                map((): WordAtPosition => {
+                    const cursorPosition: IPosition = editorInstance.getPosition();
+                    const wordAndColumns: editor.IWordAtPosition | null = editorInstance.getModel()
+                        .getWordAtPosition(cursorPosition);
 
-                return getWordUnderCursor(editorInstance, cursorPosition);
-            })
-        );
-    const selectionChanges: Observable<string> = fromEvent(editorInstance.selection, 'changeSelection')
-        .pipe(
-            map(() => {
-                const selectionRange: Range = editorInstance.selection.getRange();
+                    if (!wordAndColumns) {
+                        return undefined;
+                    }
 
-                return trimNonTraditionalWordCharacters(editorInstance.session.getTextRange(selectionRange));
-            }),
-            filter((value: string) => {
-                // The selection changed event loves to fire after a cursor change with a selection of 1 character.
-                // We ignore those here, even though those are technically valid. Users probably don't care to look up
-                // rhymes for single characters?
-                return !editorInstance.selection.isEmpty() &&
-                    value.length > 1 &&
-                    value
-                        .charAt(0)
-                        .match(/\w/) !== undefined;
-            })
-        );
+                    return {
+                        word: wordAndColumns.word,
+                        range: new monaco.Range(
+                            cursorPosition.lineNumber,
+                            wordAndColumns.startColumn,
+                            cursorPosition.lineNumber,
+                            wordAndColumns.endColumn
+                        )
+                    };
+                }),
+                filter((value: WordAtPosition) => !!value)
+            );
+    const selectionChanges: Observable<WordAtPosition> =
+        fromEventPattern((handler: NodeEventHandler) => editorInstance.onDidChangeCursorSelection(handler))
+            .pipe(
+                map(() => {
+                    const selectionRange: IRange = editorInstance.getSelection();
+
+                    return {
+                        word: editorInstance.getModel()
+                            .getValueInRange(selectionRange),
+                        range: selectionRange
+
+                    };
+                }),
+                filter((value: WordAtPosition) => {
+                    return value.word.length > 1 &&
+                        value
+                            .word
+                            .charAt(0)
+                            .match(/\w/) !== undefined;
+                })
+            );
     merge(selectionChanges, cursorChanges)
         .pipe(
             distinctUntilChanged(),
@@ -188,104 +182,58 @@ function attachRhymeCompleter(): void {
                 }
             }),
             debounceTime(200),
-            switchMap((value: string) => {
-                let selectedWord: string = value;
-                if (value === undefined || value.length === 0) {
-                    selectedWord = util.getCompletionPrefix(editorInstance);
-                }
+            switchMap((data: WordAtPosition) => {
 
-                return fetchRhymes(selectedWord)
+                return fetchRhymes(data.word)
                     .pipe(
-                        map((rhymes: Rhyme[]) => new RhymeResult(selectedWord, rhymes))
+                        map((rhymes: Rhyme[]) => {
+                            return {
+                                searchedWord: data,
+                                rhymes: rhymes
+                            };
+                        })
                     );
             })
         )
-        .subscribe((result: RhymeResult): void => {
-            const cursorPositionAtStart: Position = editorInstance.getCursorPosition();
-            const beginIndex: Position = {
-                row: cursorPositionAtStart.row,
-                column: cursorPositionAtStart.column - result.searchedWord.length
-            };
-
-            result.rhymes.forEach((x: Rhyme) => {
+        .subscribe((result: { searchedWord: WordAtPosition; rhymes: Rhyme[] }): void => {
+            result.rhymes.forEach((rhyme: Rhyme) => {
                 const row: HTMLTableRowElement = rhymeTable.insertRow(-1);
                 const cell: HTMLTableCellElement = row.insertCell();
-                cell.appendChild(document.createTextNode(x.word));
+                cell.appendChild(document.createTextNode(rhyme.word));
                 cell.classList.add('rhyme');
                 cell.onclick = (): void => {
-                    const endColumn: number = beginIndex.column + result.searchedWord.length;
                     editorInstance.focus();
-                    editorInstance.session.replace(
-                        // tslint:disable-next-line: no-unsafe-any
-                        new AceRange(beginIndex.row, beginIndex.column, beginIndex.row, endColumn), x.word);
-                    editorInstance.moveCursorTo(beginIndex.row, beginIndex.column + x.word.length);
+                    const op: editor.IIdentifiedSingleEditOperation = {
+                        range: new monaco.Range(
+                            result.searchedWord.range.startLineNumber,
+                            result.searchedWord.range.startColumn,
+                            result.searchedWord.range.endLineNumber,
+                            result.searchedWord.range.endColumn
+                        ),
+                        text: rhyme.word,
+                        forceMoveMarkers: true
+                    };
+                    editorInstance.executeEdits('', [op]);
                 };
             });
         });
 }
 
-function attachSyllableCountRenderer(): void {
-    const syllableCountRenderer: SyllableCountRenderer = new SyllableCountRenderer();
-    syllableCountRenderer.attach(editorInstance);
-}
-
 function setupNewFile(): void {
     document.title = 'Untitled';
     editorInstance.setValue('');
-    editorInstance.session
-        .getUndoManager()
-        .reset();
     ipcRenderer.send('new-file-created');
+
+    modelVersion = editorInstance
+        .getModel()
+        .getAlternativeVersionId();
 }
 
 function alertError(error: NodeJS.ErrnoException): void {
     alert(`Error: ${error.message}`);
 }
 
-function getWordUnderCursor(editor: Editor, cursorPosition: Position): string {
-    const line: string = editor.session.getLine(cursorPosition.row);
-    let startIndex: number = cursorPosition.column;
-    let endIndex: number = line.length;
-    let hasSeenWordCharacter: boolean = false;
-
-    for (let i: number = cursorPosition.column; i >= 0; i -= 1) {
-        const character: string = line.charAt(i);
-        if (character.match(validWordCharacters)) {
-            startIndex = i;
-            hasSeenWordCharacter = true;
-        } else if (hasSeenWordCharacter) {
-            break;
-        }
-    }
-
-    for (let i: number = startIndex; i < line.length; i += 1) {
-        const character: string = line.charAt(i);
-        if (!character.match(validWordCharacters)) {
-            endIndex = i;
-            break;
-        }
-    }
-
-    return trimNonTraditionalWordCharacters(line.substring(startIndex, endIndex));
-}
-
-function trimNonTraditionalWordCharacters(value: string): string {
-    let trimmedString: string = value;
-    while (trimmedString
-        .charAt(0)
-        .match(nonTraditionalWordCharacters)) {
-        trimmedString = trimmedString.substring(1);
-    }
-
-    while (trimmedString
-        .charAt(trimmedString.length - 1)
-        .match(nonTraditionalWordCharacters)) {
-        trimmedString = trimmedString.substring(0, trimmedString.length - 1);
-    }
-
-    return trimmedString.trim();
-}
-
-interface IAutocompleteUtil {
-    getCompletionPrefix(editor: Editor): string;
+interface WordAtPosition {
+    range: IRange;
+    word: string;
 }

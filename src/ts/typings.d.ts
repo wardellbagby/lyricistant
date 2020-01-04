@@ -1,3 +1,5 @@
+declare var monaco: typeof import("monaco-editor");
+
 declare module 'datamuse' {
     export interface Params {
         rel_rhy?: string,
@@ -14,4 +16,8 @@ declare module 'datamuse' {
 
 declare module 'syllable' {
     export default function syllable(word: string): number
+}
+
+declare module 'monaco-loader' {
+    export default function monacoLoader(): Promise<typeof monaco>
 }

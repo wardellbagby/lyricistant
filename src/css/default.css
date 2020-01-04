@@ -23,7 +23,6 @@ body {
     overflow: hidden;
 }
 
-
 #editor {
     grid-area: editor;
     font-family: 'Roboto Mono', monospace;
@@ -34,8 +33,12 @@ body {
 #detail-column {
     grid-area: details;
     background-color: #141414;
-    color: #F8F8F8;
+    color: #9e9e9e;
     overflow-y: overlay;
+}
+
+#detail-column:hover {
+    color: #F8F8F8;
 }
 
 #rhyme-table {
@@ -63,6 +66,7 @@ td {
     padding: 16px;
     text-align: left;
     cursor: default;
+    animation: slide-up 0.2s ease;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -77,11 +81,22 @@ td {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #757575;
-    border-radius: 16px;
+    background: #4c4c4c;
     width: 8px;
 }
 
 td:hover {
     background-color: rgba(255, 255, 255, 0.25)
+}
+
+@keyframes slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
