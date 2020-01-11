@@ -14,13 +14,17 @@
     "url": "git://https://github.com/wardellbagby/rhymer.git"
   },
   "homepage": "https://github.com/wardellbagby/rhymer",
-  "main": "out/js/main.js",
+  "electronWebpack": {
+    "renderer": {
+      "webpackConfig": "custom.webpack.additions.js"
+    }
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "electron-webpack",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "postinstall": "electron-builder install-app-deps",
-    "start": "npm run build && electron .",
+    "start": "electron-webpack dev",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist-all": "electron-builder --win --mac --linux && node bin/remove_unneeded_artifacts.js"
@@ -49,16 +53,24 @@
     "node": ">= 12.10"
   },
   "devDependencies": {
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
     "electron": "^7.1.2",
     "electron-builder": "^22.2.0",
+    "electron-webpack": "^2.7.4",
+    "electron-webpack-ts": "^3.2.0",
     "tslint-microsoft-contrib": "^6.2.0",
-    "typestrict": "^1.0.2"
+    "monaco-editor-webpack-plugin": "^1.8.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
     "datamuse": "^1.0.5",
-    "monaco-editor": "^0.19.0",
-    "monaco-loader": "^1.0.0",
+    "monaco-editor": "^0.19.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "rxjs": "^6.5.3",
+    "source-map-support": "^0.5.16",
     "syllable": "^4.0.0",
     "tslint": "^5.20.1",
     "typescript": "^3.7.2"

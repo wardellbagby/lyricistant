@@ -5,28 +5,21 @@
             "type": "node",
             "request": "launch",
             "name": "Electron: Main",
-            "protocol": "inspector",
-            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-            "program": "${workspaceRoot}/src/ts/main.ts",
-            "preLaunchTask": "build",
-            "outFiles": [
-                "${workspaceRoot}/out/js/**/*.js"
-            ],
-            "sourceMaps": true,
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron-webpack",
             "runtimeArgs": [
-                "--remote-debugging-port=9223",
-                "."
+                "dev",
+                "--remote-debugging-port=9223"
             ],
-            "windows": {
-                "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-            }
+            "autoAttachChildProcesses": true,
+            "internalConsoleOptions": "openOnFirstSessionStart",
+            "console": "integratedTerminal"
         },
         {
             "name": "Electron: Renderer",
             "type": "chrome",
             "request": "attach",
             "port": 9223,
-            "webRoot": "${workspaceFolder}",
+            "webRoot": "${workspaceFolder}/out",
             "timeout": 30000
         }
     ],

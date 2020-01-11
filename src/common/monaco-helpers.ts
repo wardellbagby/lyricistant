@@ -1,9 +1,9 @@
-import { editor } from 'monaco-editor';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-export function createLyricistantTheme(monaco: typeof import('monaco-editor')): string {
+export function createLyricistantTheme(): string {
     const themeName: string = 'lyricistant';
 
-    let baseTheme: editor.BuiltinTheme;
+    let baseTheme: monaco.editor.BuiltinTheme;
     if (window.matchMedia('(prefers-color-scheme: light)').matches) {
         baseTheme = 'vs';
     } else {
@@ -28,7 +28,7 @@ export function createLyricistantTheme(monaco: typeof import('monaco-editor')): 
     return themeName;
 }
 
-export function createLyricistantLanguage(monaco: typeof import('monaco-editor')): string {
+export function createLyricistantLanguage(): string {
     const languageName: string = 'lyricistant';
     monaco.languages.register({
         id: languageName

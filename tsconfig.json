@@ -1,10 +1,11 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "target": "es2017",
+        "module": "esnext",
+        "moduleResolution": "node",
         "noImplicitAny": true,
         "sourceMap": true,
         "outDir": "out/js",
-        "baseUrl": "src/ts",
         "allowJs": false,
         "esModuleInterop": true,
         "downlevelIteration": true,
@@ -12,13 +13,11 @@
             "esnext",
             "dom"
         ],
+        "baseUrl": "./",
         "paths": {
-            "*": [
-                "node_modules/*"
+            "common/*": [
+                "src/common/*"
             ]
         }
-    },
-    "include": [
-        "./src/ts/**/*"
-    ]
+    }
 }

@@ -1,65 +1,61 @@
-
-import monacoLoader from 'monaco-loader';
-let monaco: typeof import('monaco-editor');
+import { fetchRhymes } from 'common/fetchRhymes';
 import syllable from 'syllable';
-import { fetchRhymes } from './fetchRhymes';
+import '../css/default.css';
 
 import { ipcRenderer } from 'electron';
 
-import { editor, IPosition, IRange } from 'monaco-editor';
+import { createLyricistantLanguage, createLyricistantTheme } from 'common/monaco-helpers';
+import { Rhyme } from 'common/rhyme';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { fromEventPattern, merge, Observable, of, Subscription } from 'rxjs';
 import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
 import { debounceTime, delay, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
-import { createLyricistantLanguage, createLyricistantTheme } from './monaco-helpers';
-import { Rhyme } from './Rhyme';
 
-let editorInstance: import('monaco-editor').editor.ICodeEditor;
+let editorInstance: monaco.editor.ICodeEditor;
 let modelVersion: number;
 const footer: HTMLElement = document.getElementById('footer');
 
 let footerTextUpdateSubscription: Subscription = Subscription.EMPTY;
 
-monacoLoader()
-    .then((loadedMonaco: typeof import('monaco-editor')) => {
-        monaco = loadedMonaco;
+if (module.hot) {
+    module.hot.accept();
+}
 
-        monaco.editor.setTheme(createLyricistantTheme(monaco));
+setupDOM();
 
-        const editorElement: HTMLElement = document.getElementById('editor');
+monaco.editor.setTheme(createLyricistantTheme());
 
-        editorInstance = monaco.editor.create(editorElement, {
-            lineNumbers: (lineNumber: number): string => syllable(editorInstance.getModel()
-                .getLineContent(lineNumber))
-                .toString(),
-            language: createLyricistantLanguage(monaco),
-            fontSize: parseInt(
-                getComputedStyle(document.documentElement)
-                    .getPropertyValue('--editor-text-size'),
-                10),
-            overviewRulerBorder: false,
-            occurrencesHighlight: false,
-            renderLineHighlight: 'none',
-            scrollBeyondLastLine: false,
-            quickSuggestions: false,
-            hideCursorInOverviewRuler: true,
-            minimap: {
-                enabled: false
-            }
-        });
+const editorElement: HTMLElement = document.getElementById('editor');
 
-        window.onresize = (): void => {
-            editorInstance.layout({
-                width: editorElement.clientWidth,
-                height: editorElement.clientHeight
-            });
-        };
+editorInstance = monaco.editor.create(editorElement, {
+    lineNumbers: (lineNumber: number): string => syllable(editorInstance.getModel()
+        .getLineContent(lineNumber))
+        .toString(),
+    language: createLyricistantLanguage(),
+    fontSize: parseInt(
+        getComputedStyle(document.documentElement)
+            .getPropertyValue('--editor-text-size'),
+        10),
+    overviewRulerBorder: false,
+    occurrencesHighlight: false,
+    renderLineHighlight: 'none',
+    scrollBeyondLastLine: false,
+    quickSuggestions: false,
+    hideCursorInOverviewRuler: true,
+    minimap: {
+        enabled: false
+    }
+});
 
-        setupNewFile();
-        attachRhymeCompleter();
-    })
-    .catch((reason: any) => {
-        alert(`Error loading monaco. \n${reason}`);
+window.onresize = (): void => {
+    editorInstance.layout({
+        width: editorElement.clientWidth,
+        height: editorElement.clientHeight
     });
+};
+
+setupNewFile();
+attachRhymeCompleter();
 
 ipcRenderer.on('new-file', (_: any) => {
     if (modelVersion !== editorInstance.getModel()
@@ -139,19 +135,19 @@ ipcRenderer.on('replace', (_: any) => {
 
 ipcRenderer.on('dark-mode-toggled', (_: any) => {
     if (editorInstance) {
-        monaco.editor.setTheme(createLyricistantTheme(monaco));
+        monaco.editor.setTheme(createLyricistantTheme());
     }
 });
 
 function attachRhymeCompleter(): void {
-    const rhymeTable: HTMLTableElement = <HTMLTableElement>document.getElementById('rhyme-table');
+    const rhymeTable: HTMLTableElement =  document.getElementById('rhyme-table') as HTMLTableElement;
     fromEventPattern((handler: NodeEventHandler) => editorInstance.onDidChangeCursorPosition(handler));
     const cursorChanges: Observable<WordAtPosition> =
         fromEventPattern((handler: NodeEventHandler) => editorInstance.onDidChangeCursorPosition(handler))
             .pipe(
                 map((): WordAtPosition => {
-                    const cursorPosition: IPosition = editorInstance.getPosition();
-                    const wordAndColumns: editor.IWordAtPosition | null = editorInstance.getModel()
+                    const cursorPosition: monaco.IPosition = editorInstance.getPosition();
+                    const wordAndColumns: monaco.editor.IWordAtPosition | null = editorInstance.getModel()
                         .getWordAtPosition(cursorPosition);
 
                     if (!wordAndColumns) {
@@ -174,7 +170,7 @@ function attachRhymeCompleter(): void {
         fromEventPattern((handler: NodeEventHandler) => editorInstance.onDidChangeCursorSelection(handler))
             .pipe(
                 map(() => {
-                    const selectionRange: IRange = editorInstance.getSelection();
+                    const selectionRange: monaco.IRange = editorInstance.getSelection();
 
                     return {
                         word: editorInstance.getModel()
@@ -201,7 +197,7 @@ function attachRhymeCompleter(): void {
                         map((rhymes: Rhyme[]) => {
                             return {
                                 searchedWordData: data,
-                                rhymes: rhymes
+                                rhymes
                             };
                         })
                     )
@@ -219,7 +215,7 @@ function attachRhymeCompleter(): void {
                 cell.appendChild(document.createTextNode(rhyme.word));
                 cell.onclick = (): void => {
                     editorInstance.focus();
-                    const op: editor.IIdentifiedSingleEditOperation = {
+                    const op: monaco.editor.IIdentifiedSingleEditOperation = {
                         range: new monaco.Range(
                             result.searchedWordData.range.startLineNumber,
                             result.searchedWordData.range.startColumn,
@@ -249,7 +245,29 @@ function alertError(error: NodeJS.ErrnoException): void {
     alert(`Error: ${error.message}`);
 }
 
+function setupDOM(): void {
+    const container: HTMLElement = document.getElementById('app');
+
+    const editorContainer: HTMLElement = document.createElement('div');
+    editorContainer.id = 'editor';
+
+    const detailColumn: HTMLElement = document.createElement('div');
+    detailColumn.id = 'detail-column';
+
+    const rhymeTable: HTMLElement = document.createElement('table');
+    rhymeTable.id = 'rhyme-table';
+
+    const footerContainer: HTMLElement = document.createElement('div');
+    footerContainer.id = 'footer';
+
+    detailColumn.appendChild(rhymeTable);
+    container.appendChild(editorContainer);
+    container.appendChild(detailColumn);
+    container.appendChild(footerContainer);
+    document.body.appendChild(container);
+}
+
 interface WordAtPosition {
-    range: IRange;
+    range: monaco.IRange;
     word: string;
 }

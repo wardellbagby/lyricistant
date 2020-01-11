@@ -3,11 +3,18 @@ import {
   nativeTheme, OpenDialogReturnValue, SaveDialogReturnValue, systemPreferences
 } from 'electron';
 import { readFile, readFileSync, writeFile } from 'fs';
+import * as path from 'path';
+import { format as formatUrl } from 'url';
 
+const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
 const recentFilesFilePath: string = `${app.getPath('userData')}/recent_files.json`;
 
 let mainWindow: BrowserWindow;
 let currentFilePath: string;
+
+if (module.hot) {
+  module.hot.accept();
+}
 
 function createWindow(): void {
   let windowBackgroundColor: string;
@@ -28,11 +35,23 @@ function createWindow(): void {
     }
   });
   mainWindow.webContents.send('dark-mode-toggled');
-  mainWindow
-    .loadFile('src/html/index.html')
-    .catch(() => {
-      dialog.showErrorBox('Error', 'Error trying to load the main page.');
-    });
+  mainWindow.webContents.openDevTools();
+
+  // tslint:disable-next-line: no-floating-promises
+  // mainWindow
+  //   .loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+
+  if (isDevelopment) {
+    // tslint:disable-next-line: no-floating-promises
+    mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+  } else {
+    // tslint:disable-next-line: no-floating-promises
+    mainWindow.loadURL(formatUrl({
+      pathname: path.join(__dirname, 'index.html'),
+      protocol: 'file',
+      slashes: true
+    }));
+  }
 
   mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows
@@ -205,7 +224,7 @@ function setMenu(recentFiles?: string[]): void {
       ]
     });
   } else {
-    (<MenuItemConstructorOptions[]>menuTemplate[0].submenu).push(
+    (menuTemplate[0].submenu as MenuItemConstructorOptions[]).push(
       { type: 'separator' },
       {
         label: 'Quit',
@@ -293,7 +312,7 @@ function createRecentFilesSubmenu(loadedRecentFiles?: string[]): MenuItemConstru
     if (recentFilesFileContents.length === 0) {
       validRecentFiles = [];
     } else {
-      validRecentFiles = <string[]>JSON.parse(recentFilesFileContents);
+      validRecentFiles = (JSON.parse(recentFilesFileContents) as string[]);
     }
   } else {
     validRecentFiles = loadedRecentFiles;
@@ -313,7 +332,7 @@ function addToRecentFiles(filePath: string): void {
     if (data.length === 0) {
       recentFiles = [];
     } else {
-      recentFiles = <string[]>JSON.parse(data);
+      recentFiles = (JSON.parse(data) as string[]);
     }
 
     recentFiles.unshift(filePath);
