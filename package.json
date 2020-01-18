@@ -17,7 +17,10 @@
   "electronWebpack": {
     "renderer": {
       "webpackConfig": "custom.webpack.additions.js"
-    }
+    },
+    "whiteListedModules": [
+      "react-monaco-editor"
+    ]
   },
   "scripts": {
     "build": "electron-webpack",
@@ -65,10 +68,17 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
+    "@material-ui/core": "^4.8.3",
+    "@types/react-virtualized-auto-sizer": "^1.0.0",
+    "@types/react-window": "^1.8.1",
     "datamuse": "^1.0.5",
+    "electron-debug": "^3.0.1",
     "monaco-editor": "^0.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-monaco-editor": "^0.33.0",
+    "react-virtualized-auto-sizer": "^1.0.2",
+    "react-window": "^1.8.5",
     "rxjs": "^6.5.3",
     "source-map-support": "^0.5.16",
     "syllable": "^4.0.0",

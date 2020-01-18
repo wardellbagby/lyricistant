@@ -1,7 +1,9 @@
+import { IpcChannels } from 'common/ipc-channels';
 import {
   app, BrowserWindow, dialog, ipcMain, IpcMainEvent, Menu, MenuItemConstructorOptions, MessageBoxReturnValue,
   nativeTheme, OpenDialogReturnValue, SaveDialogReturnValue, systemPreferences
 } from 'electron';
+import debug from 'electron-debug';
 import { readFile, readFileSync, writeFile } from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
@@ -13,33 +15,21 @@ let mainWindow: BrowserWindow;
 let currentFilePath: string;
 
 if (module.hot) {
+  debug();
   module.hot.accept();
 }
 
 function createWindow(): void {
-  let windowBackgroundColor: string;
-  if (nativeTheme.shouldUseDarkColors) {
-    windowBackgroundColor = '#141414';
-  } else {
-    windowBackgroundColor = '#fafafa';
-  }
-
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 600,
     minHeight: 400,
-    backgroundColor: windowBackgroundColor,
+    backgroundColor: "#00000000",
     webPreferences: {
       nodeIntegration: true
     }
   });
-  mainWindow.webContents.send('dark-mode-toggled');
-  mainWindow.webContents.openDevTools();
-
-  // tslint:disable-next-line: no-floating-promises
-  // mainWindow
-  //   .loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
 
   if (isDevelopment) {
     // tslint:disable-next-line: no-floating-promises
@@ -62,12 +52,11 @@ function createWindow(): void {
   setMenu();
 }
 
-systemPreferences.subscribeNotification(
-  'AppleInterfaceThemeChangedNotification',
-  () => {
-    mainWindow?.webContents.send('dark-mode-toggled');
-  }
-);
+nativeTheme.on('updated', () => {
+  mainWindow.webContents.send(IpcChannels.THEME_CHANGED, nativeTheme.shouldUseDarkColors);
+  mainWindow.blur();
+  mainWindow.focus();
+});
 
 app.on('ready', createWindow);
 
@@ -79,13 +68,18 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.on('editor-text', (_: IpcMainEvent, text: string) => {
+ipcMain.on(IpcChannels.READY_FOR_EVENTS, () => {
+  mainWindow.webContents.send(IpcChannels.THEME_CHANGED, nativeTheme.shouldUseDarkColors);
+  mainWindow.webContents.send(IpcChannels.NEW_FILE_CREATED);
+});
+
+ipcMain.on(IpcChannels.EDITOR_TEXT, (_: IpcMainEvent, text: string) => {
   writeFile(currentFilePath, text, (error: NodeJS.ErrnoException) => {
-    mainWindow.webContents.send('file-save-ended', error, currentFilePath);
+    mainWindow.webContents.send(IpcChannels.FILE_SAVE_ENDED, error, currentFilePath);
   });
 });
 
-ipcMain.on('prompt-save-file-for-new', () => {
+ipcMain.on(IpcChannels.PROMPT_SAVE_FOR_NEW, () => {
   dialog.showMessageBox(
     mainWindow,
     {
@@ -97,7 +91,7 @@ ipcMain.on('prompt-save-file-for-new', () => {
     })
     .then((value: MessageBoxReturnValue) => {
       if (value.response === 0) {
-        mainWindow.webContents.send('force-new-file');
+        mainWindow.webContents.send(IpcChannels.NEW_FILE_CREATED);
       }
     })
     .catch(() => {
@@ -105,7 +99,7 @@ ipcMain.on('prompt-save-file-for-new', () => {
     });
 });
 
-ipcMain.on('prompt-save-file-for-quit', () => {
+ipcMain.on(IpcChannels.PROMPT_SAVE_FOR_QUIT, () => {
   dialog.showMessageBox(
     mainWindow,
     {
@@ -125,11 +119,12 @@ ipcMain.on('prompt-save-file-for-quit', () => {
     });
 });
 
-ipcMain.on('new-file-created', () => {
+ipcMain.on(IpcChannels.OKAY_FOR_NEW_FILE, () => {
   currentFilePath = undefined;
+  mainWindow.webContents.send(IpcChannels.NEW_FILE_CREATED);
 });
 
-ipcMain.on('quit', () => {
+ipcMain.on(IpcChannels.OKAY_FOR_QUIT, () => {
   app.quit();
 });
 
@@ -184,14 +179,14 @@ function setMenu(recentFiles?: string[]): void {
         label: 'Find',
         accelerator: 'CmdOrCtrl+F',
         click: (): void => {
-          mainWindow.webContents.send('find');
+          mainWindow.webContents.send(IpcChannels.FIND);
         }
       },
       {
         label: 'Replace',
         accelerator: 'CmdOrCtrl+R',
         click: (): void => {
-          mainWindow.webContents.send('replace');
+          mainWindow.webContents.send(IpcChannels.REPLACE);
         }
       },
       { type: 'separator' },
@@ -239,7 +234,7 @@ function setMenu(recentFiles?: string[]): void {
 }
 
 function newMenuItemHandler(): void {
-  mainWindow.webContents.send('new-file');
+  mainWindow.webContents.send(IpcChannels.ATTEMPT_NEW_FILE);
 }
 
 function openMenuItemHandler(): void {
@@ -261,7 +256,7 @@ function openMenuItemHandler(): void {
 function openFile(filePath: string): void {
   readFile(filePath, 'utf8', (error: Error, data: string) => {
     currentFilePath = filePath;
-    mainWindow.webContents.send('file-opened', error, filePath, data);
+    mainWindow.webContents.send(IpcChannels.FILE_OPENED, error, filePath, data);
     addToRecentFiles(filePath);
   });
 }
@@ -270,8 +265,8 @@ function saveMenuItemHandler(): void {
   if (!currentFilePath) {
     saveAsHandler();
   } else {
-    mainWindow.webContents.send('file-save-started', currentFilePath);
-    mainWindow.webContents.send('request-editor-text');
+    mainWindow.webContents.send(IpcChannels.FILE_SAVE_STARTED, currentFilePath);
+    mainWindow.webContents.send(IpcChannels.REQUEST_EDITOR_TEXT);
   }
 }
 
@@ -283,7 +278,7 @@ function saveAsHandler(): void {
     .then((value: SaveDialogReturnValue) => {
       if (value.filePath) {
         currentFilePath = value.filePath;
-        mainWindow.webContents.send('request-editor-text');
+        mainWindow.webContents.send(IpcChannels.REQUEST_EDITOR_TEXT);
         addToRecentFiles(value.filePath);
       }
     })
@@ -293,15 +288,15 @@ function saveAsHandler(): void {
 }
 
 function quitHandler(): void {
-  mainWindow.webContents.send('attempt-quit');
+  mainWindow.webContents.send(IpcChannels.ATTEMPT_QUIT);
 }
 
 function undoHandler(): void {
-  mainWindow.webContents.send('undo');
+  mainWindow.webContents.send(IpcChannels.UNDO);
 }
 
 function redoHandler(): void {
-  mainWindow.webContents.send('redo');
+  mainWindow.webContents.send(IpcChannels.REDO);
 }
 
 function createRecentFilesSubmenu(loadedRecentFiles?: string[]): MenuItemConstructorOptions[] {
@@ -346,5 +341,12 @@ function addToRecentFiles(filePath: string): void {
       setMenu(recentFiles);
     });
   });
+}
 
+function getWindowBackgroundColor(): string {
+  if (nativeTheme.shouldUseDarkColors) {
+    return '#141414';
+  } else {
+    return '#fafafa';
+  }
 }

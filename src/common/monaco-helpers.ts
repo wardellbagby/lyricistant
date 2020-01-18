@@ -1,13 +1,16 @@
+import { getCssColor } from 'common/css-helpers';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-export function createLyricistantTheme(): string {
+export const LYRICISTANT_LANGUAGE = 'lyricistant';
+
+export function createLyricistantTheme(useDarkTheme: boolean): string {
     const themeName: string = 'lyricistant';
 
     let baseTheme: monaco.editor.BuiltinTheme;
-    if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-        baseTheme = 'vs';
-    } else {
+    if (useDarkTheme) {
         baseTheme = 'vs-dark';
+    } else {
+        baseTheme = 'vs';
     }
 
     monaco.editor.defineTheme(themeName, {
@@ -28,20 +31,11 @@ export function createLyricistantTheme(): string {
     return themeName;
 }
 
-export function createLyricistantLanguage(): string {
-    const languageName: string = 'lyricistant';
+export function createLyricistantLanguage() {
     monaco.languages.register({
-        id: languageName
+        id: LYRICISTANT_LANGUAGE
     });
-    monaco.languages.setLanguageConfiguration(languageName, {
+    monaco.languages.setLanguageConfiguration(LYRICISTANT_LANGUAGE, {
         wordPattern: /'?\w[\w'\-]*/
     });
-
-    return languageName;
-}
-
-function getCssColor(variableName: string): string {
-    return getComputedStyle(document.documentElement)
-        .getPropertyValue(variableName)
-        .trim();
 }

@@ -5,9 +5,9 @@
         "moduleResolution": "node",
         "noImplicitAny": true,
         "sourceMap": true,
-        "outDir": "out/js",
         "allowJs": false,
         "esModuleInterop": true,
+        "jsx": "react",
         "downlevelIteration": true,
         "lib": [
             "esnext",

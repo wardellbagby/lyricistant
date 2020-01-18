@@ -12,15 +12,18 @@
             ],
             "autoAttachChildProcesses": true,
             "internalConsoleOptions": "openOnFirstSessionStart",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "sourceMaps": true
         },
         {
             "name": "Electron: Renderer",
             "type": "chrome",
             "request": "attach",
             "port": 9223,
-            "webRoot": "${workspaceFolder}/out",
-            "timeout": 30000
+            "webRoot": "${workspaceFolder}",
+            "timeout": 30000,
+            "sourceMaps": true,
+            "disableNetworkCache": true,
         }
     ],
     "compounds": [

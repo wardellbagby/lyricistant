@@ -16,7 +16,8 @@
             true,
             "rxjs",
             "monaco-editor",
-            "common"
+            "common",
+            "@material-ui"
         ],
         "no-any": false,
         "interface-name": false,
