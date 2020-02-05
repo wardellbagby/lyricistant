@@ -8,6 +8,7 @@ import { fromEventPattern, merge, Observable, Subject } from 'rxjs';
 import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
+import { toast } from 'react-toastify';
 
 export interface TextReplacement {
     word: string;
@@ -158,10 +159,14 @@ function handleEditorEvents(
             return;
         }
 
-        const onFileSaveEnded = () => {
+        const onFileSaveEnded = (event: any, error: any, path : String) => {
             // Resets the undo stack.
             editor.getModel().setValue(editor.getModel().getValue());
             setVersion(editor.getModel().getAlternativeVersionId());
+
+            if (path) {
+                toast.info(`${path} saved`);
+            }
         };
         ipcRenderer.on(IpcChannels.FILE_SAVE_ENDED, onFileSaveEnded);
 
