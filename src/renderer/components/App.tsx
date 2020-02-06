@@ -10,6 +10,9 @@ import { Subject } from 'rxjs';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
 import { Rhymes } from './Rhymes';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 createLyricistantLanguage();
 
 const createTheme = (): Theme => createMuiTheme({
@@ -59,7 +62,7 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
                 <div id={'detail-column'} >
                     <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
                 </div>
-                <div id={'footer'} />
+                <ToastContainer autoClose={3000} />
             </Fragment>
         </ThemeProvider>
     );

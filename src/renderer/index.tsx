@@ -28,12 +28,8 @@ function setupDOM(): void {
     const rhymeTable: HTMLElement = document.createElement('table');
     rhymeTable.id = 'rhyme-table';
 
-    const footerContainer: HTMLElement = document.createElement('div');
-    footerContainer.id = 'footer';
-
     detailColumn.appendChild(rhymeTable);
     container.appendChild(editorContainer);
     container.appendChild(detailColumn);
-    container.appendChild(footerContainer);
     document.body.appendChild(container);
 }

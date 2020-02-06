@@ -16,9 +16,7 @@ body {
 
 #app {
     display: grid;
-    grid-template-areas:
-        "editor details"
-        "footer footer";
+    grid-template-areas: "editor details";
     grid-template-rows: minmax(200px, 1fr) 28px;
     grid-template-columns: minmax(200px, 1fr) minmax(20%, 150px);
     height: 100%;
@@ -44,18 +42,6 @@ body {
 
 #detail-column:hover {
     color: var(--primary-text-color);
-}
-
-
-#footer {
-    grid-area: footer;
-    background-color: var(--secondary-background-color);
-    color: var(--secondary-text-color);
-    font-family: 'Roboto', sans-serif;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 4px;
-    padding-bottom: 4px;
 }
 
 ::-webkit-scrollbar {
