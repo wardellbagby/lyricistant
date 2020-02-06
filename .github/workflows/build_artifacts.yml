@@ -1,6 +1,6 @@
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -16,6 +16,8 @@ jobs:
         node-version: '>=12.10'
     - name: Install project dependencies.
       run: npm install
+    - name: Check for Lint issues
+      run: npm run lint
     - name: Build the project.  
       run: npm run build
     - name: Build artifacts for all supported OSes.

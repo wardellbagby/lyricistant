@@ -62,8 +62,11 @@
     "electron-builder": "^22.2.0",
     "electron-webpack": "^2.7.4",
     "electron-webpack-ts": "^3.2.0",
-    "tslint-microsoft-contrib": "^6.2.0",
     "monaco-editor-webpack-plugin": "^1.8.2",
+    "prettier": "1.19.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "tslint-plugin-prettier": "^2.1.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   },
