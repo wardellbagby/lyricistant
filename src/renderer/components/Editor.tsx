@@ -19,6 +19,7 @@ export interface WordAtPosition {
   word: string;
 }
 export interface EditorProps {
+  className?: string;
   fontSize: number;
   onWordSelected: (word: WordAtPosition) => void;
   textReplacements: Observable<TextReplacement>;
@@ -48,26 +49,38 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
   ]);
   useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
 
+  useEffect(handleSelectedWordChanges(editor, props.onWordSelected), [
+    editor,
+    props.onWordSelected
+  ]);
+  useEffect(handleTextReplacements(props.textReplacements, editor), [
+    editor,
+    props.textReplacements
+  ]);
+  useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
+
   return (
-    <MonacoEditor
-      language={LYRICISTANT_LANGUAGE}
-      editorDidMount={editorDidMount}
-      options={{
-        lineNumbers: (line: number): string =>
-          syllable(editor.getModel().getLineContent(line)).toString(),
-        fontSize: props.fontSize,
-        automaticLayout: true,
-        overviewRulerBorder: false,
-        occurrencesHighlight: false,
-        renderLineHighlight: 'none',
-        scrollBeyondLastLine: false,
-        quickSuggestions: false,
-        hideCursorInOverviewRuler: true,
-        minimap: {
-          enabled: false
-        }
-      }}
-    />
+    <div className={props.className}>
+      <MonacoEditor
+        language={LYRICISTANT_LANGUAGE}
+        editorDidMount={editorDidMount}
+        options={{
+          lineNumbers: (line: number): string =>
+            syllable(editor.getModel().getLineContent(line)).toString(),
+          fontSize: props.fontSize,
+          automaticLayout: true,
+          overviewRulerBorder: false,
+          occurrencesHighlight: false,
+          renderLineHighlight: 'none',
+          scrollBeyondLastLine: false,
+          quickSuggestions: false,
+          hideCursorInOverviewRuler: true,
+          minimap: {
+            enabled: false
+          }
+        }}
+      />
+    </div>
   );
 };
 

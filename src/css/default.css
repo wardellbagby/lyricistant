@@ -11,40 +11,50 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
+  font-size: 16px;
 }
 
 #app {
   display: grid;
-  grid-template-areas: 'editor details';
-  grid-template-rows: minmax(200px, 1fr) 28px;
-  grid-template-columns: minmax(200px, 1fr) minmax(20%, 150px);
+  grid-template-areas:
+    'editor details';
+  grid-template-rows: 1fr;
+  grid-template-columns: minmax(200px, 1fr) minmax(20%, auto);
   height: 100%;
   width: 100%;
+  overflow-y: overlay;
+  overflow-x: hidden;
 }
 
-#editor {
+.editor {
   grid-area: editor;
   font-family: 'Roboto Mono', monospace;
   margin: 0;
 }
 
-#detail-column {
+.detail-column {
   grid-area: details;
   background-color: var(--primary-background-color);
   color: var(--tertiary-text-color);
-  font-size: var(--details-text-size);
   overflow-y: overlay;
   overflow-x: hidden;
   width: 100%;
   transition: 0.2s;
 }
 
-#detail-column:hover {
+.detail-column:hover {
   color: var(--primary-text-color);
 }
 
-.toast {
-  background-color: var(--secondary-background-color) !important;
+.footer {
+  grid-area: footer;
+  background-color: var(--secondary-background-color);
+  color: var(--secondary-text-color);
+  font-family: 'Roboto', sans-serif;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 ::-webkit-scrollbar {
