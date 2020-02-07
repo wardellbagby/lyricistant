@@ -1,7 +1,17 @@
 import { IpcChannels } from 'common/ipc-channels';
 import {
-  app, BrowserWindow, dialog, ipcMain, IpcMainEvent, Menu, MenuItemConstructorOptions, MessageBoxReturnValue,
-  nativeTheme, OpenDialogReturnValue, SaveDialogReturnValue, systemPreferences
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  IpcMainEvent,
+  Menu,
+  MenuItemConstructorOptions,
+  MessageBoxReturnValue,
+  nativeTheme,
+  OpenDialogReturnValue,
+  SaveDialogReturnValue,
+  systemPreferences
 } from 'electron';
 import debug from 'electron-debug';
 import { readFile, readFileSync, writeFile } from 'fs';
@@ -9,7 +19,9 @@ import * as path from 'path';
 import { format as formatUrl } from 'url';
 
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
-const recentFilesFilePath: string = `${app.getPath('userData')}/recent_files.json`;
+const recentFilesFilePath: string = `${app.getPath(
+  'userData'
+)}/recent_files.json`;
 
 let mainWindow: BrowserWindow;
 let currentFilePath: string;
@@ -25,7 +37,7 @@ function createWindow(): void {
     height: 600,
     minWidth: 600,
     minHeight: 400,
-    backgroundColor: "#00000000",
+    backgroundColor: '#00000000',
     webPreferences: {
       nodeIntegration: true
     }
@@ -33,14 +45,18 @@ function createWindow(): void {
 
   if (isDevelopment) {
     // tslint:disable-next-line: no-floating-promises
-    mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    mainWindow.loadURL(
+      `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
+    );
   } else {
     // tslint:disable-next-line: no-floating-promises
-    mainWindow.loadURL(formatUrl({
-      pathname: path.join(__dirname, 'index.html'),
-      protocol: 'file',
-      slashes: true
-    }));
+    mainWindow.loadURL(
+      formatUrl({
+        pathname: path.join(__dirname, 'index.html'),
+        protocol: 'file',
+        slashes: true
+      })
+    );
   }
 
   mainWindow.on('closed', () => {
@@ -53,14 +69,19 @@ function createWindow(): void {
 }
 
 nativeTheme.on('updated', () => {
-  mainWindow.webContents.send(IpcChannels.THEME_CHANGED, nativeTheme.shouldUseDarkColors);
+  mainWindow.webContents.send(
+    IpcChannels.THEME_CHANGED,
+    nativeTheme.shouldUseDarkColors
+  );
   mainWindow.blur();
   mainWindow.focus();
 });
 
 app.on('ready', createWindow);
 
-app.on('window-all-closed', () => { app.quit(); });
+app.on('window-all-closed', () => {
+  app.quit();
+});
 
 app.on('activate', () => {
   if (mainWindow === null) {
@@ -69,23 +90,30 @@ app.on('activate', () => {
 });
 
 ipcMain.on(IpcChannels.READY_FOR_EVENTS, () => {
-  mainWindow.webContents.send(IpcChannels.THEME_CHANGED, nativeTheme.shouldUseDarkColors);
+  mainWindow.webContents.send(
+    IpcChannels.THEME_CHANGED,
+    nativeTheme.shouldUseDarkColors
+  );
   mainWindow.webContents.send(IpcChannels.NEW_FILE_CREATED);
 });
 
 ipcMain.on(IpcChannels.EDITOR_TEXT, (_: IpcMainEvent, text: string) => {
   writeFile(currentFilePath, text, (error: NodeJS.ErrnoException) => {
-    mainWindow.webContents.send(IpcChannels.FILE_SAVE_ENDED, error, currentFilePath);
+    mainWindow.webContents.send(
+      IpcChannels.FILE_SAVE_ENDED,
+      error,
+      currentFilePath
+    );
   });
 });
 
 ipcMain.on(IpcChannels.PROMPT_SAVE_FOR_NEW, () => {
-  dialog.showMessageBox(
-    mainWindow,
-    {
+  dialog
+    .showMessageBox(mainWindow, {
       type: 'question',
       title: 'Confirm Quit',
-      message: 'Your changes haven\'t been saved. Are you sure you want to create a new file?',
+      message:
+        "Your changes haven't been saved. Are you sure you want to create a new file?",
       buttons: ['Create New File', 'Cancel'],
       cancelId: 1
     })
@@ -95,17 +123,20 @@ ipcMain.on(IpcChannels.PROMPT_SAVE_FOR_NEW, () => {
       }
     })
     .catch(() => {
-      dialog.showErrorBox('Error', 'Error trying to show the confirm quit dialog for creating a new file.');
+      dialog.showErrorBox(
+        'Error',
+        'Error trying to show the confirm quit dialog for creating a new file.'
+      );
     });
 });
 
 ipcMain.on(IpcChannels.PROMPT_SAVE_FOR_QUIT, () => {
-  dialog.showMessageBox(
-    mainWindow,
-    {
+  dialog
+    .showMessageBox(mainWindow, {
       type: 'question',
       title: 'Confirm Quit',
-      message: 'Your changes haven\'t been saved. Are you sure you want to quit?',
+      message:
+        "Your changes haven't been saved. Are you sure you want to quit?",
       buttons: ['Quit', 'Cancel'],
       cancelId: 1
     })
@@ -115,7 +146,10 @@ ipcMain.on(IpcChannels.PROMPT_SAVE_FOR_QUIT, () => {
       }
     })
     .catch(() => {
-      dialog.showErrorBox('Error', 'Error trying to show the confirm quit dialog for quiting the app.');
+      dialog.showErrorBox(
+        'Error',
+        'Error trying to show the confirm quit dialog for quiting the app.'
+      );
     });
 });
 
@@ -130,75 +164,80 @@ ipcMain.on(IpcChannels.OKAY_FOR_QUIT, () => {
 
 // tslint:disable-next-line:max-func-body-length
 function setMenu(recentFiles?: string[]): void {
-  const menuTemplate: MenuItemConstructorOptions[] = [{
-    label: 'File',
-    submenu: [
-      {
-        label: 'New',
-        click: newMenuItemHandler,
-        accelerator: 'CmdOrCtrl+N'
-      },
-      { type: 'separator' },
-      {
-        label: 'Open...',
-        click: openMenuItemHandler,
-        accelerator: 'CmdOrCtrl+O'
-      },
-      {
-        label: 'Open Recent',
-        submenu: createRecentFilesSubmenu(recentFiles)
-      },
-      { type: 'separator' }, {
-        label: 'Save',
-        click: saveMenuItemHandler,
-        accelerator: 'CmdOrCtrl+S'
-      }, {
-        label: 'Save As...',
-        click: saveAsHandler,
-        accelerator: 'Shift+CmdOrCtrl+S'
-      }]
-  }, {
-    label: 'Edit',
-    submenu: [
-      {
-        label: 'Undo',
-        click: undoHandler,
-        accelerator: 'CmdOrCtrl+Z'
-      },
-      {
-        label: 'Redo',
-        click: redoHandler,
-        accelerator: 'Shift+CmdOrCtrl+Z'
-      },
-      { type: 'separator' },
-      { role: 'cut' },
-      { role: 'copy' },
-      { role: 'paste' },
-      { type: 'separator' },
-      {
-        label: 'Find',
-        accelerator: 'CmdOrCtrl+F',
-        click: (): void => {
-          mainWindow.webContents.send(IpcChannels.FIND);
+  const menuTemplate: MenuItemConstructorOptions[] = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'New',
+          click: newMenuItemHandler,
+          accelerator: 'CmdOrCtrl+N'
+        },
+        { type: 'separator' },
+        {
+          label: 'Open...',
+          click: openMenuItemHandler,
+          accelerator: 'CmdOrCtrl+O'
+        },
+        {
+          label: 'Open Recent',
+          submenu: createRecentFilesSubmenu(recentFiles)
+        },
+        { type: 'separator' },
+        {
+          label: 'Save',
+          click: saveMenuItemHandler,
+          accelerator: 'CmdOrCtrl+S'
+        },
+        {
+          label: 'Save As...',
+          click: saveAsHandler,
+          accelerator: 'Shift+CmdOrCtrl+S'
         }
-      },
-      {
-        label: 'Replace',
-        accelerator: 'CmdOrCtrl+R',
-        click: (): void => {
-          mainWindow.webContents.send(IpcChannels.REPLACE);
-        }
-      },
-      { type: 'separator' },
-      { role: 'delete' },
-      { role: 'selectAll' }
-    ]
-  }, {
-    role: 'window',
-    submenu: [
-      { role: 'minimize' }
-    ]
-  }];
+      ]
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          label: 'Undo',
+          click: undoHandler,
+          accelerator: 'CmdOrCtrl+Z'
+        },
+        {
+          label: 'Redo',
+          click: redoHandler,
+          accelerator: 'Shift+CmdOrCtrl+Z'
+        },
+        { type: 'separator' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+        { type: 'separator' },
+        {
+          label: 'Find',
+          accelerator: 'CmdOrCtrl+F',
+          click: (): void => {
+            mainWindow.webContents.send(IpcChannels.FIND);
+          }
+        },
+        {
+          label: 'Replace',
+          accelerator: 'CmdOrCtrl+R',
+          click: (): void => {
+            mainWindow.webContents.send(IpcChannels.REPLACE);
+          }
+        },
+        { type: 'separator' },
+        { role: 'delete' },
+        { role: 'selectAll' }
+      ]
+    },
+    {
+      role: 'window',
+      submenu: [{ role: 'minimize' }]
+    }
+  ];
   if (process.platform === 'darwin') {
     menuTemplate.unshift({
       label: app.name,
@@ -225,7 +264,8 @@ function setMenu(recentFiles?: string[]): void {
         label: 'Quit',
         click: quitHandler,
         accelerator: 'Alt+F4'
-      });
+      }
+    );
   }
 
   const mainMenu: Menu = Menu.buildFromTemplate(menuTemplate);
@@ -238,10 +278,8 @@ function newMenuItemHandler(): void {
 }
 
 function openMenuItemHandler(): void {
-  dialog.showOpenDialog(
-    mainWindow,
-    { properties: ['openFile'] }
-  )
+  dialog
+    .showOpenDialog(mainWindow, { properties: ['openFile'] })
     .then((value: OpenDialogReturnValue) => {
       if (value.filePaths) {
         const filePath: string = value.filePaths[0];
@@ -249,7 +287,10 @@ function openMenuItemHandler(): void {
       }
     })
     .catch(() => {
-      dialog.showErrorBox('Error', 'Error trying to show the open file dialog.');
+      dialog.showErrorBox(
+        'Error',
+        'Error trying to show the open file dialog.'
+      );
     });
 }
 
@@ -271,10 +312,10 @@ function saveMenuItemHandler(): void {
 }
 
 function saveAsHandler(): void {
-  dialog.showSaveDialog(
-    mainWindow,
-    { filters: [{ name: 'Text Files', extensions: ['txt'] }] }
-  )
+  dialog
+    .showSaveDialog(mainWindow, {
+      filters: [{ name: 'Text Files', extensions: ['txt'] }]
+    })
     .then((value: SaveDialogReturnValue) => {
       if (value.filePath) {
         currentFilePath = value.filePath;
@@ -299,15 +340,20 @@ function redoHandler(): void {
   mainWindow.webContents.send(IpcChannels.REDO);
 }
 
-function createRecentFilesSubmenu(loadedRecentFiles?: string[]): MenuItemConstructorOptions[] {
+function createRecentFilesSubmenu(
+  loadedRecentFiles?: string[]
+): MenuItemConstructorOptions[] {
   let validRecentFiles: string[];
   if (!loadedRecentFiles) {
     // flag is a+ even though we're only reading so that the file is created if it doesn't exist.
-    const recentFilesFileContents: string = readFileSync(recentFilesFilePath, { encoding: 'utf8', flag: 'a+' });
+    const recentFilesFileContents: string = readFileSync(recentFilesFilePath, {
+      encoding: 'utf8',
+      flag: 'a+'
+    });
     if (recentFilesFileContents.length === 0) {
       validRecentFiles = [];
     } else {
-      validRecentFiles = (JSON.parse(recentFilesFileContents) as string[]);
+      validRecentFiles = JSON.parse(recentFilesFileContents) as string[];
     }
   } else {
     validRecentFiles = loadedRecentFiles;
@@ -316,7 +362,9 @@ function createRecentFilesSubmenu(loadedRecentFiles?: string[]): MenuItemConstru
   return validRecentFiles.map((filePath: string) => {
     return {
       label: filePath,
-      click: (): void => { openFile(filePath); }
+      click: (): void => {
+        openFile(filePath);
+      }
     };
   });
 }
@@ -327,7 +375,7 @@ function addToRecentFiles(filePath: string): void {
     if (data.length === 0) {
       recentFiles = [];
     } else {
-      recentFiles = (JSON.parse(data) as string[]);
+      recentFiles = JSON.parse(data) as string[];
     }
 
     recentFiles.unshift(filePath);
@@ -341,12 +389,4 @@ function addToRecentFiles(filePath: string): void {
       setMenu(recentFiles);
     });
   });
-}
-
-function getWindowBackgroundColor(): string {
-  if (nativeTheme.shouldUseDarkColors) {
-    return '#141414';
-  } else {
-    return '#fafafa';
-  }
 }

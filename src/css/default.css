@@ -1,17 +1,16 @@
 @import 'colors.css';
 @import url('https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono&display=swap');
 
-
 html {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
 #app {
@@ -24,30 +23,30 @@ body {
 }
 
 #editor {
-    grid-area: editor;
-    font-family: 'Roboto Mono', monospace;
-    margin: 0;
+  grid-area: editor;
+  font-family: 'Roboto Mono', monospace;
+  margin: 0;
 }
 
 #detail-column {
-    grid-area: details;
-    background-color: var(--primary-background-color);
-    color: var(--tertiary-text-color);
-    font-size: var(--details-text-size);
-    overflow-y: overlay;
-    overflow-x: hidden;
-    width: 100%;
-    transition: .2s;
+  grid-area: details;
+  background-color: var(--primary-background-color);
+  color: var(--tertiary-text-color);
+  font-size: var(--details-text-size);
+  overflow-y: overlay;
+  overflow-x: hidden;
+  width: 100%;
+  transition: 0.2s;
 }
 
 #detail-column:hover {
-    color: var(--primary-text-color);
+  color: var(--primary-text-color);
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb-color);
+  background: var(--scrollbar-thumb-color);
 }

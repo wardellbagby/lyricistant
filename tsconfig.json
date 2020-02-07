@@ -1,23 +1,18 @@
 {
-    "compilerOptions": {
-        "target": "es2017",
-        "module": "esnext",
-        "moduleResolution": "node",
-        "noImplicitAny": true,
-        "sourceMap": true,
-        "allowJs": false,
-        "esModuleInterop": true,
-        "jsx": "react",
-        "downlevelIteration": true,
-        "lib": [
-            "esnext",
-            "dom"
-        ],
-        "baseUrl": "./",
-        "paths": {
-            "common/*": [
-                "src/common/*"
-            ]
-        }
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "allowJs": false,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "downlevelIteration": true,
+    "lib": ["esnext", "dom"],
+    "baseUrl": "./",
+    "paths": {
+      "common/*": ["src/common/*"]
     }
+  }
 }
