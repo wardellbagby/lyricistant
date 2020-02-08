@@ -14,12 +14,12 @@ body {
 }
 
 #app {
-    display: grid;
-    grid-template-areas: "editor details";
-    grid-template-rows: minmax(200px, 1fr) 28px;
-    grid-template-columns: minmax(200px, 1fr) minmax(20%, 150px);
-    height: 100%;
-    width: 100%;
+  display: grid;
+  grid-template-areas: 'editor details';
+  grid-template-rows: minmax(200px, 1fr) 28px;
+  grid-template-columns: minmax(200px, 1fr) minmax(20%, 150px);
+  height: 100%;
+  width: 100%;
 }
 
 #editor {
@@ -41,6 +41,10 @@ body {
 
 #detail-column:hover {
   color: var(--primary-text-color);
+}
+
+.toast {
+  background-color: var(--secondary-background-color) !important;
 }
 
 ::-webkit-scrollbar {

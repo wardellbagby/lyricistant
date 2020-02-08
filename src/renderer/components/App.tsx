@@ -9,7 +9,7 @@ import { Rhyme } from 'common/Rhyme';
 import { ipcRenderer } from 'electron';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Subject } from 'rxjs';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
@@ -72,7 +72,11 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
         <div id={'detail-column'}>
           <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
         </div>
-        <ToastContainer autoClose={3000} />
+        <ToastContainer
+          autoClose={3000}
+          toastClassName="toast"
+          position={toast.POSITION.BOTTOM_LEFT}
+        />
       </Fragment>
     </ThemeProvider>
   );
