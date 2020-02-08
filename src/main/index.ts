@@ -1,4 +1,5 @@
 import { IpcChannels } from 'common/ipc-channels';
+import { PreferencesData } from 'common/PreferencesData';
 import {
   app,
   BrowserWindow,
@@ -14,7 +15,14 @@ import {
   systemPreferences
 } from 'electron';
 import debug from 'electron-debug';
-import { readFile, readFileSync, writeFile } from 'fs';
+import {
+  accessSync,
+  constants,
+  existsSync,
+  readFile,
+  readFileSync,
+  writeFile
+} from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 
@@ -22,9 +30,13 @@ const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
 const recentFilesFilePath: string = `${app.getPath(
   'userData'
 )}/recent_files.json`;
+const preferencesFilePath: string = `${app.getPath(
+  'userData'
+)}/preferences.json`;
 
 let mainWindow: BrowserWindow;
 let currentFilePath: string;
+let currentPreferences: PreferencesData;
 
 if (module.hot) {
   debug();
@@ -71,6 +83,7 @@ function createWindow(): void {
 nativeTheme.on('updated', () => {
   mainWindow.webContents.send(
     IpcChannels.THEME_CHANGED,
+    currentPreferences?.textSize,
     nativeTheme.shouldUseDarkColors
   );
   mainWindow.blur();
@@ -91,7 +104,12 @@ app.on('activate', () => {
 
 ipcMain.on(IpcChannels.READY_FOR_EVENTS, () => {
   mainWindow.webContents.send(
+    IpcChannels.PREFERENCES_UPDATED,
+    loadPreferences()
+  );
+  mainWindow.webContents.send(
     IpcChannels.THEME_CHANGED,
+    currentPreferences.textSize,
     nativeTheme.shouldUseDarkColors
   );
   mainWindow.webContents.send(IpcChannels.NEW_FILE_CREATED);
@@ -162,6 +180,22 @@ ipcMain.on(IpcChannels.OKAY_FOR_QUIT, () => {
   app.quit();
 });
 
+ipcMain.on(IpcChannels.SAVE_PREFERENCES, (_: any, data: PreferencesData) => {
+  if (!data) {
+    mainWindow.webContents.send(IpcChannels.CLOSE_PREFERENCES);
+    return;
+  }
+
+  savePreferences(data);
+  mainWindow.webContents.send(IpcChannels.PREFERENCES_UPDATED, data);
+  mainWindow.webContents.send(
+    IpcChannels.THEME_CHANGED,
+    data.textSize,
+    nativeTheme.shouldUseDarkColors
+  );
+  mainWindow.webContents.send(IpcChannels.CLOSE_PREFERENCES);
+});
+
 // tslint:disable-next-line:max-func-body-length
 function setMenu(recentFiles?: string[]): void {
   const menuTemplate: MenuItemConstructorOptions[] = [
@@ -193,6 +227,45 @@ function setMenu(recentFiles?: string[]): void {
           label: 'Save As...',
           click: saveAsHandler,
           accelerator: 'Shift+CmdOrCtrl+S'
+        },
+        { type: 'separator' },
+        {
+          label: 'Preferences',
+          click: preferencesHandler
+        }
+      ]
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          label: 'Undo',
+          click: undoHandler,
+          accelerator: 'CmdOrCtrl+Z'
+        },
+        {
+          label: 'Redo',
+          click: redoHandler,
+          accelerator: 'Shift+CmdOrCtrl+Z'
+        },
+        { type: 'separator' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+        { type: 'separator' },
+        {
+          label: 'Find',
+          accelerator: 'CmdOrCtrl+F',
+          click: (): void => {
+            mainWindow.webContents.send(IpcChannels.FIND);
+          }
+        },
+        {
+          label: 'Replace',
+          accelerator: 'CmdOrCtrl+R',
+          click: (): void => {
+            mainWindow.webContents.send(IpcChannels.REPLACE);
+          }
         }
       ]
     },
@@ -244,6 +317,11 @@ function setMenu(recentFiles?: string[]): void {
       submenu: [
         { role: 'about' },
         { type: 'separator' },
+        {
+          label: 'Preferences',
+          click: preferencesHandler
+        },
+        { type: 'separator' },
         { role: 'services' },
         { type: 'separator' },
         { role: 'hide' },
@@ -257,6 +335,11 @@ function setMenu(recentFiles?: string[]): void {
         }
       ]
     });
+    const fileMenu = menuTemplate[1].submenu as MenuItemConstructorOptions[];
+    const prefIndex = fileMenu.findIndex(
+      (value) => value.click === preferencesHandler
+    );
+    fileMenu.splice(prefIndex, 1);
   } else {
     (menuTemplate[0].submenu as MenuItemConstructorOptions[]).push(
       { type: 'separator' },
@@ -340,6 +423,10 @@ function redoHandler(): void {
   mainWindow.webContents.send(IpcChannels.REDO);
 }
 
+function preferencesHandler(): void {
+  mainWindow.webContents.send(IpcChannels.OPEN_PREFERENCES);
+}
+
 function createRecentFilesSubmenu(
   loadedRecentFiles?: string[]
 ): MenuItemConstructorOptions[] {
@@ -389,4 +476,18 @@ function addToRecentFiles(filePath: string): void {
       setMenu(recentFiles);
     });
   });
+}
+
+function loadPreferences(): PreferencesData | undefined {
+  if (existsSync(preferencesFilePath)) {
+    currentPreferences = JSON.parse(readFileSync(preferencesFilePath, 'utf8'));
+  } else {
+    currentPreferences = { textSize: 14 };
+  }
+  return currentPreferences;
+}
+
+function savePreferences(data: PreferencesData) {
+  currentPreferences = data;
+  writeFile(preferencesFilePath, JSON.stringify(data), () => undefined);
 }

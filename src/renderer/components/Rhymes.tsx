@@ -1,8 +1,11 @@
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
+import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { Theme, useTheme } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import { fetchRhymes } from 'common/fetchRhymes';
 import { Rhyme } from 'common/Rhyme';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -14,6 +17,7 @@ import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { WordAtPosition } from './Editor';
 
 interface RhymesProp {
+  className?: string;
   onRhymeClicked: (rhyme: Rhyme, position: monaco.IRange) => void;
   queries: Observable<WordAtPosition>;
 }
@@ -34,40 +38,45 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
     const rhyme = rhymes[index];
 
     return (
-      <Fade in={true}>
-        <ListItem button style={style} color={'primary'} key={rhyme.word}>
-          <ListItemText
-            primary={rhyme.word}
-            onClick={() => {
-              setLoading(true);
-              props.onRhymeClicked(rhyme, queryData.range);
-            }}
-          />
-        </ListItem>
-      </Fade>
+      <ListItem button style={style} color={'primary'} key={rhyme.word}>
+        <ListItemText
+          primary={rhyme.word}
+          onClick={() => {
+            setLoading(true);
+            props.onRhymeClicked(rhyme, queryData.range);
+          }}
+        />
+      </ListItem>
     );
   }
 
   if (loading) {
     return (
-      <Box display="flex" width={'100%'} height={'100%'}>
+      <Box
+        className={props.className}
+        display="flex"
+        width={'100%'}
+        height={'100%'}
+      >
         <CircularProgress style={{ margin: 'auto' }} />
       </Box>
     );
   }
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <FixedSizeList
-          height={height}
-          itemCount={rhymes.length}
-          itemSize={72}
-          width={width}
-        >
-          {renderRhymeWithState}
-        </FixedSizeList>
-      )}
-    </AutoSizer>
+    <div className={props.className}>
+      <AutoSizer defaultHeight={100}>
+        {({ height, width }) => (
+          <FixedSizeList
+            height={height}
+            itemCount={rhymes.length}
+            itemSize={72}
+            width={width}
+          >
+            {renderRhymeWithState}
+          </FixedSizeList>
+        )}
+      </AutoSizer>
+    </div>
   );
 };
 

@@ -51,5 +51,9 @@ export enum IpcChannels {
   /** Main -> Renderer: Sent when the user invoked the "Undo" menu item. */
   UNDO = 'undo',
   /** Main -> Renderer: Sent when the user invoked the "Redo" menu item. */
-  REDO = 'redo'
+  REDO = 'redo',
+  OPEN_PREFERENCES = 'open-prefs',
+  SAVE_PREFERENCES = 'save-prefs',
+  CLOSE_PREFERENCES = 'close-prefs',
+  PREFERENCES_UPDATED = 'prefs-updated'
 }
