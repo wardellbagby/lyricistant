@@ -11,19 +11,18 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
-  font-size: 16px;
+  overflow: hidden;
 }
 
 #app {
   display: grid;
   grid-template-areas:
     'editor details';
-  grid-template-rows: 1fr;
+  grid-template-rows: 100%;
   grid-template-columns: minmax(200px, 1fr) minmax(20%, auto);
   height: 100%;
   width: 100%;
-  overflow-y: overlay;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .editor {
