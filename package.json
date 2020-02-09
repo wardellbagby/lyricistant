@@ -26,11 +26,12 @@
     "build": "electron-webpack",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
+    "lint-fix": "tslint -c tslint.json -p tsconfig.json --fix",
     "postinstall": "electron-builder install-app-deps",
     "start": "electron-webpack dev",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "dist-all": "electron-builder --win --mac --linux && node bin/remove_unneeded_artifacts.js"
+    "dist": "npm run build && electron-builder",
+    "dist-all": "npm run build && electron-builder --win --mac --linux && node bin/remove_unneeded_artifacts.js"
   },
   "build": {
     "appId": "com.wardellbagby.lyricistant",

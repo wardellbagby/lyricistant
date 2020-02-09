@@ -1,11 +1,7 @@
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Fade from '@material-ui/core/Fade';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Theme, useTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import { fetchRhymes } from 'common/fetchRhymes';
 import { Rhyme } from 'common/Rhyme';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -13,7 +9,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { Observable } from 'rxjs';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { WordAtPosition } from './Editor';
 
 interface RhymesProp {

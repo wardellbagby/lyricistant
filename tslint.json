@@ -5,12 +5,12 @@
   "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
   "extends": [
     "tslint:recommended",
-    "tslint-plugin-prettier",
-    "tslint-config-prettier"
+    "tslint-config-prettier",
+    "tslint-plugin-prettier"
   ],
   "rules": {
-    "prettier": true,
     "no-relative-imports": false,
+    "no-unused-variable": true,
     "no-submodule-imports": [
       true,
       "rxjs",
@@ -24,6 +24,7 @@
     "completed-docs": false,
     "strict-boolean-expressions": false,
     "object-literal-sort-keys": false,
-    "trailing-comma": false
+    "trailing-comma": false,
+    "prettier": true
   }
 }

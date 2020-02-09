@@ -11,18 +11,10 @@ import {
   MessageBoxReturnValue,
   nativeTheme,
   OpenDialogReturnValue,
-  SaveDialogReturnValue,
-  systemPreferences
+  SaveDialogReturnValue
 } from 'electron';
 import debug from 'electron-debug';
-import {
-  accessSync,
-  constants,
-  existsSync,
-  readFile,
-  readFileSync,
-  writeFile
-} from 'fs';
+import { existsSync, readFile, readFileSync, writeFile } from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 
@@ -482,7 +474,7 @@ function loadPreferences(): PreferencesData | undefined {
   if (existsSync(preferencesFilePath)) {
     currentPreferences = JSON.parse(readFileSync(preferencesFilePath, 'utf8'));
   } else {
-    currentPreferences = { textSize: 14 };
+    currentPreferences = { textSize: 16 };
   }
   return currentPreferences;
 }
