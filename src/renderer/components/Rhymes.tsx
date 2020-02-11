@@ -2,6 +2,7 @@ import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import { fetchRhymes } from 'common/fetchRhymes';
 import { Rhyme } from 'common/Rhyme';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -18,7 +19,14 @@ interface RhymesProp {
   queries: Observable<WordAtPosition>;
 }
 
+const useStyles = makeStyles((theme: Theme) => ({
+  rhyme: {
+    wordBreak: 'break-all'
+  }
+}));
+
 export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
+  const classes = useStyles(undefined);
   const [rhymes, setRhymes] = useState([] as Rhyme[]);
   const [queryData, setQueryData] = useState(null as WordAtPosition);
   const [loading, setLoading] = useState(false);
@@ -27,14 +35,18 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
     props.queries
   ]);
 
-  function renderRhymeWithState(
-    rowProps: ListChildComponentProps
-  ): React.ReactElement {
+  function renderRhyme(rowProps: ListChildComponentProps): React.ReactElement {
     const { index, style } = rowProps;
     const rhyme = rhymes[index];
 
     return (
-      <ListItem button style={style} color={'primary'} key={rhyme.word}>
+      <ListItem
+        button
+        className={classes.rhyme}
+        style={style}
+        color={'primary'}
+        key={rhyme.word}
+      >
         <ListItemText
           primary={rhyme.word}
           onClick={() => {
@@ -68,7 +80,7 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
             itemSize={72}
             width={width}
           >
-            {renderRhymeWithState}
+            {renderRhyme}
           </FixedSizeList>
         )}
       </AutoSizer>
