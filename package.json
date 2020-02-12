@@ -19,7 +19,9 @@
       "webpackConfig": "custom.webpack.additions.js"
     },
     "whiteListedModules": [
-      "react-monaco-editor"
+      "react-monaco-editor",
+      "react-virtuoso",
+      "@material-ui/core"
     ]
   },
   "scripts": {
@@ -84,8 +86,7 @@
     "react-dom": "^16.12.0",
     "react-monaco-editor": "^0.33.0",
     "react-toastify": "^5.5.0",
-    "react-virtualized-auto-sizer": "^1.0.2",
-    "react-window": "^1.8.5",
+    "react-virtuoso": "^0.13.1",
     "rxjs": "^6.5.3",
     "source-map-support": "^0.5.16",
     "syllable": "^4.0.0",
