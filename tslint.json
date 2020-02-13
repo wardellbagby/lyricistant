@@ -1,33 +1,30 @@
 {
-    "linterOptions": {
-        "exclude": [
-            "node_modules"
-        ]
-    },
-    "rulesDirectory": [
-        "node_modules/tslint-microsoft-contrib"
+  "linterOptions": {
+    "exclude": ["node_modules"]
+  },
+  "rulesDirectory": ["node_modules/tslint-microsoft-contrib"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-prettier",
+    "tslint-plugin-prettier"
+  ],
+  "rules": {
+    "no-relative-imports": false,
+    "no-unused-variable": true,
+    "no-submodule-imports": [
+      true,
+      "rxjs",
+      "monaco-editor",
+      "common",
+      "@material-ui",
+      "react-toastify"
     ],
-    "extends": [
-        "tslint:recommended",
-        "tslint-microsoft-contrib/recommended_ruleset",
-        "typestrict"
-    ],
-    "rules": {
-        "no-relative-imports": false,
-        "no-implicit-dependencies": [
-            true,
-            "dev"
-        ],
-        "no-submodule-imports": [
-            true,
-            "rxjs",
-            "brace"
-        ],
-        "no-import-side-effect": [
-            true,
-            "brace"
-        ],
-        "no-any": false,
-        "interface-name": false
-    }
+    "no-any": false,
+    "interface-name": false,
+    "completed-docs": false,
+    "strict-boolean-expressions": false,
+    "object-literal-sort-keys": false,
+    "trailing-comma": false,
+    "prettier": true
+  }
 }

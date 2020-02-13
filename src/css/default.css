@@ -1,82 +1,65 @@
+@import 'colors.css';
+@import url('https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono&display=swap');
+
 html {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
+  height: 100%;
+  width: 100%;
 }
 
 body {
-    background-color: #141414;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
-.container {
-    display: grid;
-    grid-template-areas:
-        "editor vdivider details"
-        "footer footer footer";
-    grid-template-rows: 1fr 28px;
-    grid-template-columns: 70% 4px 1fr;
-    /* grid-template: "editor vdivider details"100% / 70% 4px 1fr; */
-    height: 100%;
+#app {
+  display: grid;
+  grid-template-areas:
+    'editor details';
+  grid-template-rows: 100%;
+  grid-template-columns: minmax(200px, 1fr) minmax(25%, auto);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
-.vdivider {
-    grid-area: vdivider;
-    color: #F8F8F8;
-    border-left: 4px solid #232323;
+.editor {
+  grid-area: editor;
+  font-family: 'Roboto Mono', monospace;
+  margin: 0;
 }
 
-#editor {
-    grid-area: editor;
-    font-family: 'Roboto Mono', monospace;
-    margin: 0;
+.detail-column {
+  grid-area: details;
+  background-color: var(--primary-background-color);
+  color: var(--tertiary-text-color);
+  overflow-y: overlay;
+  overflow-x: hidden;
+  width: 100%;
+  transition: 0.2s;
 }
 
-#detail-column {
-    grid-area: details;
-    background-color: #141414;
-    color: #F8F8F8;
-    overflow-y: overlay;
+.detail-column:hover {
+  color: var(--primary-text-color);
 }
 
-#rhyme-table {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: -1;
-    overflow-y: overlay;
-    scrollbar-color: #F8F8F8 #141414;
+.footer {
+  grid-area: footer;
+  background-color: var(--secondary-background-color);
+  color: var(--secondary-text-color);
+  font-family: 'Roboto', sans-serif;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
-#footer {
-    grid-area: footer;
-    background-color: #232323;
-    color: #bdbdbd;
-    font-family: 'Roboto', sans-serif;
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+::-webkit-scrollbar {
+  width: 12px;
 }
 
-td {
-    width: 400%;
-    font-family: 'Roboto Mono', monospace;
-    padding: 16px;
-    text-align: left;
-    cursor: default;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-td:hover {
-    background-color: rgba(255, 255, 255, 0.25)
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
 }

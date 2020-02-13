@@ -1,23 +1,18 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "noImplicitAny": true,
-        "sourceMap": true,
-        "outDir": "out/js",
-        "baseUrl": "src/ts",
-        "allowJs": false,
-        "esModuleInterop": true,
-        "lib": [
-            "esnext",
-            "dom"
-        ],
-        "paths": {
-            "*": [
-                "node_modules/*"
-            ]
-        }
-    },
-    "include": [
-        "./src/ts/**/*"
-    ]
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "allowJs": false,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "downlevelIteration": true,
+    "lib": ["esnext", "dom"],
+    "baseUrl": "./",
+    "paths": {
+      "common/*": ["src/common/*"]
+    }
+  }
 }
