@@ -1,42 +1,33 @@
-# Rhymer
-![rhymer](rhymer.png)
+# Lyricistant
+![lyricistant](lyricistant.png)
 
-An Electron application to help you write lyrics.
+An assistant to the lyricist in you!
 
-## Help me write lyrics?
+## How do I use it?
 
-Yeah! Poetry, rap, 2019-post-modern-ska-but-with-more-flutes? Whatever you want to write, Rhymer helps!
+Lyricistant is a text application that lyricists can use to write their lyrics. It offers these features that lyricists will find helpful:
 
-### What does it do?
+- The syllable count for every written line.
+- An automatic rhyming dictionary that will show rhymes for selected words.
+- The ability to save and open lyrics.
+- Recently opened lyrics.
 
-Rhymer offers two main features:
+## How do I install it?
 
-1. Syllable count.
-2. Rhyming dictionary.
+You can find the latest releases for macOS, Windows, and Linux at the link below:
 
-Rhymer gives syllable counts on a per-line basis. Where most text editors would show the line number, Rhymer instead shows the syllable count for that line. Rhymer also provides an automatic rhyming dictionary; it will show you the rhymes for the word before the current cursor position or for the currently highlighted word. 
+[Releases](https://github.com/wardellbagby/lyricistant/releases)
 
-## Getting Started
+
+## Information for developers
+### Getting Started
 
 ```
-git checkout https://github.com/wardellbagby/rhymer.git
-cd rhymer
+git checkout https://github.com/wardellbagby/lyricistant.git
+cd lyricistant
 npm install
 npm start
 ```
-
-It's that easy!
-
-Lint can be run using:
-
-```
-npm run lint
-```
-
-## Installing
-Check the [releases page](https://github.com/wardellbagby/rhymer/releases) for releases.
-
-Note: Only the macOS version is officially supported and tested. Linux and Windows versions are available, but not currently officially supported.
 
 ## License
 
