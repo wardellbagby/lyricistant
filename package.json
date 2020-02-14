@@ -38,7 +38,7 @@
   },
   "build": {
     "appId": "com.wardellbagby.lyricistant",
-    "artifactName": "Lyricistant.${ext}",
+    "artifactName": "${name}-${version}-${os}_${arch}.${ext}",
     "directories": {
       "output": "dist"
     },
