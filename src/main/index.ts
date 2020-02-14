@@ -19,12 +19,8 @@ import * as path from 'path';
 import { format as formatUrl } from 'url';
 
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
-const recentFilesFilePath: string = `${app.getPath(
-  'userData'
-)}/recent_files.json`;
-const preferencesFilePath: string = `${app.getPath(
-  'userData'
-)}/preferences.json`;
+const recentFilesFilePath = `${app.getPath('userData')}/recent_files.json`;
+const preferencesFilePath = `${app.getPath('userData')}/preferences.json`;
 
 let mainWindow: BrowserWindow;
 let currentFilePath: string;
