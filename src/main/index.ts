@@ -352,7 +352,7 @@ function openMenuItemHandler(): void {
   dialog
     .showOpenDialog(mainWindow, { properties: ['openFile'] })
     .then((value: OpenDialogReturnValue) => {
-      if (value.filePaths) {
+      if (value.filePaths.length > 0) {
         const filePath: string = value.filePaths[0];
         openFile(filePath);
       }
