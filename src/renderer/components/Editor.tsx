@@ -1,6 +1,5 @@
-import { IpcChannels } from 'common/ipc-channels';
+import { browserIpc as ipcRenderer } from 'common/Ipc';
 import { LYRICISTANT_LANGUAGE } from 'common/monaco-helpers';
-import { ipcRenderer } from 'electron';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
@@ -194,31 +193,31 @@ function handleEditorEvents(
         toast.info(`${path} saved`);
       }
     };
-    ipcRenderer.on(IpcChannels.FILE_SAVE_ENDED, onFileSaveEnded);
+    ipcRenderer.on('file-save-ended', onFileSaveEnded);
 
     const onNewFileAttempt = () => {
       if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
-        ipcRenderer.send(IpcChannels.PROMPT_SAVE_FOR_NEW);
+        ipcRenderer.send('prompt-save-file-for-new');
       } else {
-        ipcRenderer.send(IpcChannels.OKAY_FOR_NEW_FILE);
+        ipcRenderer.send('okay-for-new-file');
       }
     };
-    ipcRenderer.on(IpcChannels.ATTEMPT_NEW_FILE, onNewFileAttempt);
+    ipcRenderer.on('new-file', onNewFileAttempt);
 
     const onQuitAttempt = () => {
       if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
-        ipcRenderer.send(IpcChannels.PROMPT_SAVE_FOR_QUIT);
+        ipcRenderer.send('prompt-save-file-for-quit');
       } else {
-        ipcRenderer.send(IpcChannels.OKAY_FOR_QUIT);
+        ipcRenderer.send('okay-for-quit');
       }
     };
-    ipcRenderer.on(IpcChannels.ATTEMPT_QUIT, onQuitAttempt);
+    ipcRenderer.on('attempt-quit', onQuitAttempt);
 
     const onNewFileCreated = () => {
       editor.getModel().setValue('');
       setVersion(editor.getModel().getAlternativeVersionId());
     };
-    ipcRenderer.on(IpcChannels.NEW_FILE_CREATED, onNewFileCreated);
+    ipcRenderer.on('new-file-created', onNewFileCreated);
 
     const onFileOpened = (
       _: any,
@@ -231,46 +230,37 @@ function handleEditorEvents(
         setVersion(editor.getModel().getAlternativeVersionId());
       }
     };
-    ipcRenderer.on(IpcChannels.FILE_OPENED, onFileOpened);
+    ipcRenderer.on('file-opened', onFileOpened);
 
     const onTextRequested = () => {
-      ipcRenderer.send(IpcChannels.EDITOR_TEXT, editor.getModel().getValue());
+      ipcRenderer.send('editor-text', editor.getModel().getValue());
     };
-    ipcRenderer.on(IpcChannels.REQUEST_EDITOR_TEXT, onTextRequested);
+    ipcRenderer.on('request-editor-text', onTextRequested);
 
     const onUndo = () => editor.trigger('', 'undo', '');
-    ipcRenderer.on(IpcChannels.UNDO, onUndo);
+    ipcRenderer.on('undo', onUndo);
 
     const onRedo = () => editor.trigger('', 'redo', '');
-    ipcRenderer.on(IpcChannels.REDO, onRedo);
+    ipcRenderer.on('redo', onRedo);
 
     const onFind = () => editor.trigger('', 'actions.findWithSelection', '');
-    ipcRenderer.on(IpcChannels.FIND, onFind);
+    ipcRenderer.on('find', onFind);
 
     const onReplace = () =>
       editor.trigger('', 'editor.action.startFindReplaceAction', '');
-    ipcRenderer.on(IpcChannels.REPLACE, onReplace);
+    ipcRenderer.on('replace', onReplace);
 
     return () => {
-      ipcRenderer.removeListener(IpcChannels.FILE_SAVE_ENDED, onFileSaveEnded);
-      ipcRenderer.removeListener(
-        IpcChannels.ATTEMPT_NEW_FILE,
-        onNewFileAttempt
-      );
-      ipcRenderer.removeListener(IpcChannels.ATTEMPT_QUIT, onQuitAttempt);
-      ipcRenderer.removeListener(
-        IpcChannels.NEW_FILE_CREATED,
-        onNewFileCreated
-      );
-      ipcRenderer.removeListener(IpcChannels.FILE_OPENED, onFileOpened);
-      ipcRenderer.removeListener(
-        IpcChannels.REQUEST_EDITOR_TEXT,
-        onTextRequested
-      );
-      ipcRenderer.removeListener(IpcChannels.UNDO, onUndo);
-      ipcRenderer.removeListener(IpcChannels.REDO, onRedo);
-      ipcRenderer.removeListener(IpcChannels.FIND, onFind);
-      ipcRenderer.removeListener(IpcChannels.REPLACE, onReplace);
+      ipcRenderer.removeListener('file-save-ended', onFileSaveEnded);
+      ipcRenderer.removeListener('new-file', onNewFileAttempt);
+      ipcRenderer.removeListener('attempt-quit', onQuitAttempt);
+      ipcRenderer.removeListener('new-file-created', onNewFileCreated);
+      ipcRenderer.removeListener('file-opened', onFileOpened);
+      ipcRenderer.removeListener('request-editor-text', onTextRequested);
+      ipcRenderer.removeListener('undo', onUndo);
+      ipcRenderer.removeListener('redo', onRedo);
+      ipcRenderer.removeListener('find', onFind);
+      ipcRenderer.removeListener('replace', onReplace);
     };
   };
 }

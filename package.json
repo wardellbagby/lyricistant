@@ -18,6 +18,9 @@
     "renderer": {
       "webpackConfig": "custom.webpack.additions.js"
     },
+    "main": {
+      "sourceDirectory": "src/electron"
+    },
     "whiteListedModules": [
       "react-monaco-editor",
       "react-virtuoso",

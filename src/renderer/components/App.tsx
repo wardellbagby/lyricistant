@@ -5,14 +5,13 @@ import {
   ThemeProvider
 } from '@material-ui/core/styles';
 import { getCssColor, getCssNumber } from 'common/css-helpers';
-import { IpcChannels } from 'common/ipc-channels';
+import { browserIpc as ipcRenderer } from 'common/Ipc';
 import {
   createLyricistantLanguage,
   createLyricistantTheme
 } from 'common/monaco-helpers';
 import { PreferencesData } from 'common/PreferencesData';
 import { Rhyme } from 'common/Rhyme';
-import { ipcRenderer } from 'electron';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
@@ -73,10 +72,9 @@ const onRhymeClicked: (rhyme: Rhyme, range: monaco.IRange) => void = (
 const onPreferencesSaved: (preferencesData: PreferencesData) => void = (
   preferencesData
 ) => {
-  ipcRenderer.send(IpcChannels.SAVE_PREFERENCES, preferencesData);
+  ipcRenderer.send('save-prefs', preferencesData);
 };
-const onPreferencesClosed: () => void = () =>
-  ipcRenderer.send(IpcChannels.SAVE_PREFERENCES);
+const onPreferencesClosed: () => void = () => ipcRenderer.send('save-prefs');
 
 export const App: FunctionComponent<AppProps> = (props: AppProps) => {
   const [screen, setScreen] = useState(Screen.EDITOR);
@@ -89,7 +87,7 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
   useEffect(handlePreferencesChanges(setPreferencesData), []);
   useEffect(handleFileChanges(), []);
   useEffect(handleScreenChanges(setScreen), []);
-  useEffect(() => ipcRenderer.send(IpcChannels.READY_FOR_EVENTS), []);
+  useEffect(() => ipcRenderer.send('ready-for-events'), []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -135,13 +133,10 @@ function handleThemeChanges(
       monaco.editor.setTheme(createLyricistantTheme(useDarkTheme));
       onShouldUpdateBackground(appTheme.palette.background.default);
     };
-    ipcRenderer.on(IpcChannels.THEME_CHANGED, darkModeChangedListener);
+    ipcRenderer.on('dark-mode-toggled', darkModeChangedListener);
 
     return function cleanup() {
-      ipcRenderer.removeListener(
-        IpcChannels.THEME_CHANGED,
-        darkModeChangedListener
-      );
+      ipcRenderer.removeListener('dark-mode-toggled', darkModeChangedListener);
     };
   };
 }
@@ -155,16 +150,16 @@ function handleFileChanges(): () => void {
         document.title = fileName;
       }
     };
-    ipcRenderer.on(IpcChannels.FILE_OPENED, onFileOpened);
+    ipcRenderer.on('file-opened', onFileOpened);
 
     const onNewFile = () => {
       document.title = 'Untitled';
     };
-    ipcRenderer.on(IpcChannels.NEW_FILE_CREATED, onNewFile);
+    ipcRenderer.on('new-file-created', onNewFile);
 
     return function cleanup() {
-      ipcRenderer.removeListener(IpcChannels.FILE_OPENED, onFileOpened);
-      ipcRenderer.removeListener(IpcChannels.NEW_FILE_CREATED, onNewFile);
+      ipcRenderer.removeListener('file-opened', onFileOpened);
+      ipcRenderer.removeListener('new-file-created', onNewFile);
     };
   };
 }
@@ -176,22 +171,16 @@ function handleScreenChanges(
     const openedPreferences = () => {
       setScreen(Screen.PREFERENCES);
     };
-    ipcRenderer.on(IpcChannels.OPEN_PREFERENCES, openedPreferences);
+    ipcRenderer.on('open-prefs', openedPreferences);
 
     const closedPreferences = () => {
       setScreen(Screen.EDITOR);
     };
-    ipcRenderer.on(IpcChannels.CLOSE_PREFERENCES, closedPreferences);
+    ipcRenderer.on('close-prefs', closedPreferences);
 
     return function cleanup() {
-      ipcRenderer.removeListener(
-        IpcChannels.OPEN_PREFERENCES,
-        openedPreferences
-      );
-      ipcRenderer.removeListener(
-        IpcChannels.CLOSE_PREFERENCES,
-        closedPreferences
-      );
+      ipcRenderer.removeListener('open-prefs', openedPreferences);
+      ipcRenderer.removeListener('close-prefs', closedPreferences);
     };
   };
 }
@@ -203,13 +192,10 @@ function handlePreferencesChanges(
     const updatedPreferences = (_: any, data: PreferencesData) => {
       setPreferences(data);
     };
-    ipcRenderer.on(IpcChannels.PREFERENCES_UPDATED, updatedPreferences);
+    ipcRenderer.on('prefs-updated', updatedPreferences);
 
     return function cleanup() {
-      ipcRenderer.removeListener(
-        IpcChannels.PREFERENCES_UPDATED,
-        updatedPreferences
-      );
+      ipcRenderer.removeListener('prefs-updated', updatedPreferences);
     };
   };
 }
