@@ -12,7 +12,8 @@
     "lib": ["esnext", "dom"],
     "baseUrl": "./",
     "paths": {
-      "common/*": ["src/common/*"]
+      "common/*": ["src/common/*"],
+      "Ipc": ["src/electron/Ipc.ts", "src/web/Ipc.ts"]
     }
   }
 }

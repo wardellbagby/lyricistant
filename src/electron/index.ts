@@ -15,7 +15,7 @@ import debug from 'electron-debug';
 import { existsSync, readFile, readFileSync, writeFile } from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
-import { ipcMain } from './IpcMain';
+import { ipcMain } from './Ipc';
 import { LyricistantWindow } from './LyricistantWindow';
 
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';

@@ -5,13 +5,13 @@ import {
   ThemeProvider
 } from '@material-ui/core/styles';
 import { getCssColor, getCssNumber } from 'common/css-helpers';
-import { browserIpc as ipcRenderer } from 'common/Ipc';
 import {
   createLyricistantLanguage,
   createLyricistantTheme
 } from 'common/monaco-helpers';
 import { PreferencesData } from 'common/PreferencesData';
 import { Rhyme } from 'common/Rhyme';
+import { ipcRenderer } from 'Ipc';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Subject } from 'rxjs';

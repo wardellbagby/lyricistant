@@ -16,7 +16,7 @@
   "homepage": "https://github.com/wardellbagby/rhymer",
   "electronWebpack": {
     "renderer": {
-      "webpackConfig": "custom.webpack.additions.js"
+      "webpackConfig": "electron.webpack.config.js"
     },
     "main": {
       "sourceDirectory": "src/electron"
@@ -29,11 +29,13 @@
   },
   "scripts": {
     "build": "electron-webpack",
+    "build-web": "webpack --config webpack.config.js --target='web'",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "lint-fix": "tslint -c tslint.json -p tsconfig.json --fix",
     "postinstall": "electron-builder install-app-deps",
     "start": "electron-webpack dev",
+    "start-web": "webpack-dev-server --open --target='web'",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist-all": "electron-builder --win --mac --linux",

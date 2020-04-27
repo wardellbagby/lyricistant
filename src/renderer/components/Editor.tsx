@@ -1,5 +1,5 @@
-import { browserIpc as ipcRenderer } from 'common/Ipc';
 import { LYRICISTANT_LANGUAGE } from 'common/monaco-helpers';
+import { ipcRenderer } from 'Ipc';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
