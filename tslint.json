@@ -25,6 +25,7 @@
     "strict-boolean-expressions": false,
     "object-literal-sort-keys": false,
     "trailing-comma": false,
-    "prettier": true
+    "prettier": true,
+    "max-classes-per-file": false
   }
 }

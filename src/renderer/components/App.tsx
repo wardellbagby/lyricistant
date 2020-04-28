@@ -11,7 +11,7 @@ import {
 } from 'common/monaco-helpers';
 import { PreferencesData } from 'common/PreferencesData';
 import { Rhyme } from 'common/Rhyme';
-import { ipcRenderer } from 'Ipc';
+import { platformDelegate } from 'Delegate';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
@@ -72,9 +72,10 @@ const onRhymeClicked: (rhyme: Rhyme, range: monaco.IRange) => void = (
 const onPreferencesSaved: (preferencesData: PreferencesData) => void = (
   preferencesData
 ) => {
-  ipcRenderer.send('save-prefs', preferencesData);
+  platformDelegate.send('save-prefs', preferencesData);
 };
-const onPreferencesClosed: () => void = () => ipcRenderer.send('save-prefs');
+const onPreferencesClosed: () => void = () =>
+  platformDelegate.send('save-prefs');
 
 export const App: FunctionComponent<AppProps> = (props: AppProps) => {
   const [screen, setScreen] = useState(Screen.EDITOR);
@@ -87,7 +88,7 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
   useEffect(handlePreferencesChanges(setPreferencesData), []);
   useEffect(handleFileChanges(), []);
   useEffect(handleScreenChanges(setScreen), []);
-  useEffect(() => ipcRenderer.send('ready-for-events'), []);
+  useEffect(() => platformDelegate.send('ready-for-events'), []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -118,7 +119,6 @@ function handleThemeChanges(
 ): () => void {
   return () => {
     const darkModeChangedListener = (
-      _: any,
       textSize: number,
       useDarkTheme: boolean
     ) => {
@@ -133,33 +133,36 @@ function handleThemeChanges(
       monaco.editor.setTheme(createLyricistantTheme(useDarkTheme));
       onShouldUpdateBackground(appTheme.palette.background.default);
     };
-    ipcRenderer.on('dark-mode-toggled', darkModeChangedListener);
+    platformDelegate.on('dark-mode-toggled', darkModeChangedListener);
 
     return function cleanup() {
-      ipcRenderer.removeListener('dark-mode-toggled', darkModeChangedListener);
+      platformDelegate.removeListener(
+        'dark-mode-toggled',
+        darkModeChangedListener
+      );
     };
   };
 }
 
 function handleFileChanges(): () => void {
   return () => {
-    const onFileOpened = (_: any, error: any, fileName: string) => {
+    const onFileOpened = (error: Error, fileName: string) => {
       if (error) {
         // todo show error message
       } else {
         document.title = fileName;
       }
     };
-    ipcRenderer.on('file-opened', onFileOpened);
+    platformDelegate.on('file-opened', onFileOpened);
 
     const onNewFile = () => {
       document.title = 'Untitled';
     };
-    ipcRenderer.on('new-file-created', onNewFile);
+    platformDelegate.on('new-file-created', onNewFile);
 
     return function cleanup() {
-      ipcRenderer.removeListener('file-opened', onFileOpened);
-      ipcRenderer.removeListener('new-file-created', onNewFile);
+      platformDelegate.removeListener('file-opened', onFileOpened);
+      platformDelegate.removeListener('new-file-created', onNewFile);
     };
   };
 }
@@ -171,16 +174,16 @@ function handleScreenChanges(
     const openedPreferences = () => {
       setScreen(Screen.PREFERENCES);
     };
-    ipcRenderer.on('open-prefs', openedPreferences);
+    platformDelegate.on('open-prefs', openedPreferences);
 
     const closedPreferences = () => {
       setScreen(Screen.EDITOR);
     };
-    ipcRenderer.on('close-prefs', closedPreferences);
+    platformDelegate.on('close-prefs', closedPreferences);
 
     return function cleanup() {
-      ipcRenderer.removeListener('open-prefs', openedPreferences);
-      ipcRenderer.removeListener('close-prefs', closedPreferences);
+      platformDelegate.removeListener('open-prefs', openedPreferences);
+      platformDelegate.removeListener('close-prefs', closedPreferences);
     };
   };
 }
@@ -189,13 +192,13 @@ function handlePreferencesChanges(
   setPreferences: (data: PreferencesData) => void
 ): () => void {
   return () => {
-    const updatedPreferences = (_: any, data: PreferencesData) => {
+    const updatedPreferences = (data: PreferencesData) => {
       setPreferences(data);
     };
-    ipcRenderer.on('prefs-updated', updatedPreferences);
+    platformDelegate.on('prefs-updated', updatedPreferences);
 
     return function cleanup() {
-      ipcRenderer.removeListener('prefs-updated', updatedPreferences);
+      platformDelegate.removeListener('prefs-updated', updatedPreferences);
     };
   };
 }

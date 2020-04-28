@@ -1,3 +1,4 @@
+import { RendererDelegate } from 'common/Delegate';
 import { PreferencesData } from 'common/PreferencesData';
 import {
   app,
@@ -15,14 +16,15 @@ import debug from 'electron-debug';
 import { existsSync, readFile, readFileSync, writeFile } from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
-import { ipcMain } from './Ipc';
-import { LyricistantWindow } from './LyricistantWindow';
+import { createRendererDelegate } from './Delegate';
 
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
 const recentFilesFilePath = `${app.getPath('userData')}/recent_files.json`;
 const preferencesFilePath = `${app.getPath('userData')}/preferences.json`;
 
-let mainWindow: LyricistantWindow;
+let mainWindow: BrowserWindow;
+let rendererDelegate: RendererDelegate;
+
 let currentFilePath: string;
 let currentPreferences: PreferencesData;
 
@@ -30,6 +32,18 @@ if (module.hot) {
   debug();
   module.hot.accept();
 }
+
+app.on('ready', createWindow);
+
+app.on('window-all-closed', () => {
+  app.quit();
+});
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -42,6 +56,8 @@ function createWindow(): void {
       nodeIntegration: true
     }
   });
+  rendererDelegate = createRendererDelegate(mainWindow);
+  registerListeners();
 
   if (isDevelopment) {
     // tslint:disable-next-line: no-floating-promises
@@ -68,114 +84,104 @@ function createWindow(): void {
   setMenu();
 }
 
-nativeTheme.on('updated', () => {
-  mainWindow.webContents.send(
-    'dark-mode-toggled',
-    currentPreferences?.textSize,
-    nativeTheme.shouldUseDarkColors
-  );
-  mainWindow.blur();
-  mainWindow.focus();
-});
-
-app.on('ready', createWindow);
-
-app.on('window-all-closed', () => {
-  app.quit();
-});
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
-
-ipcMain.on('ready-for-events', () => {
-  mainWindow.webContents.send('prefs-updated', loadPreferences());
-  mainWindow.webContents.send(
-    'dark-mode-toggled',
-    currentPreferences.textSize,
-    nativeTheme.shouldUseDarkColors
-  );
-  mainWindow.webContents.send('new-file-created');
-});
-
-ipcMain.on('editor-text', (_: IpcMainEvent, text: string) => {
-  writeFile(currentFilePath, text, (error: NodeJS.ErrnoException) => {
-    mainWindow.webContents.send('file-save-ended', error, currentFilePath);
+function registerListeners() {
+  nativeTheme.on('updated', () => {
+    rendererDelegate.send(
+      'dark-mode-toggled',
+      currentPreferences?.textSize,
+      nativeTheme.shouldUseDarkColors
+    );
+    mainWindow.blur();
+    mainWindow.focus();
   });
-});
 
-ipcMain.on('prompt-save-file-for-new', () => {
-  dialog
-    .showMessageBox(mainWindow, {
-      type: 'question',
-      title: 'Confirm Quit',
-      message:
-        "Your changes haven't been saved. Are you sure you want to create a new file?",
-      buttons: ['Create New File', 'Cancel'],
-      cancelId: 1
-    })
-    .then((value: MessageBoxReturnValue) => {
-      if (value.response === 0) {
-        mainWindow.webContents.send('new-file-created');
-      }
-    })
-    .catch(() => {
-      dialog.showErrorBox(
-        'Error',
-        'Error trying to show the confirm quit dialog for creating a new file.'
-      );
+  rendererDelegate.on('ready-for-events', () => {
+    rendererDelegate.send('prefs-updated', loadPreferences());
+    rendererDelegate.send(
+      'dark-mode-toggled',
+      currentPreferences.textSize,
+      nativeTheme.shouldUseDarkColors
+    );
+    rendererDelegate.send('new-file-created');
+  });
+
+  rendererDelegate.on('editor-text', (text: string) => {
+    writeFile(currentFilePath, text, (error: NodeJS.ErrnoException) => {
+      rendererDelegate.send('file-save-ended', error, currentFilePath);
     });
-});
+  });
 
-ipcMain.on('prompt-save-file-for-quit', () => {
-  dialog
-    .showMessageBox(mainWindow, {
-      type: 'question',
-      title: 'Confirm Quit',
-      message:
-        "Your changes haven't been saved. Are you sure you want to quit?",
-      buttons: ['Quit', 'Cancel'],
-      cancelId: 1
-    })
-    .then((value: MessageBoxReturnValue) => {
-      if (value.response === 0) {
-        app.quit();
-      }
-    })
-    .catch(() => {
-      dialog.showErrorBox(
-        'Error',
-        'Error trying to show the confirm quit dialog for quiting the app.'
-      );
-    });
-});
+  rendererDelegate.on('prompt-save-file-for-new', () => {
+    dialog
+      .showMessageBox(mainWindow, {
+        type: 'question',
+        title: 'Confirm Quit',
+        message:
+          "Your changes haven't been saved. Are you sure you want to create a new file?",
+        buttons: ['Create New File', 'Cancel'],
+        cancelId: 1
+      })
+      .then((value: MessageBoxReturnValue) => {
+        if (value.response === 0) {
+          rendererDelegate.send('new-file-created');
+        }
+      })
+      .catch(() => {
+        dialog.showErrorBox(
+          'Error',
+          'Error trying to show the confirm quit dialog for creating a new file.'
+        );
+      });
+  });
 
-ipcMain.on('okay-for-new-file', () => {
-  currentFilePath = undefined;
-  mainWindow.webContents.send('new-file-created');
-});
+  rendererDelegate.on('prompt-save-file-for-quit', () => {
+    dialog
+      .showMessageBox(mainWindow, {
+        type: 'question',
+        title: 'Confirm Quit',
+        message:
+          "Your changes haven't been saved. Are you sure you want to quit?",
+        buttons: ['Quit', 'Cancel'],
+        cancelId: 1
+      })
+      .then((value: MessageBoxReturnValue) => {
+        if (value.response === 0) {
+          app.quit();
+        }
+      })
+      .catch(() => {
+        dialog.showErrorBox(
+          'Error',
+          'Error trying to show the confirm quit dialog for quiting the app.'
+        );
+      });
+  });
 
-ipcMain.on('okay-for-quit', () => {
-  app.quit();
-});
+  rendererDelegate.on('okay-for-new-file', () => {
+    currentFilePath = undefined;
+    rendererDelegate.send('new-file-created');
+  });
 
-ipcMain.on('save-prefs', (_: any, data: PreferencesData) => {
-  if (!data) {
-    mainWindow.webContents.send('close-prefs');
-    return;
-  }
+  rendererDelegate.on('okay-for-quit', () => {
+    app.quit();
+  });
 
-  savePreferences(data);
-  mainWindow.webContents.send('prefs-updated', data);
-  mainWindow.webContents.send(
-    'dark-mode-toggled',
-    data.textSize,
-    nativeTheme.shouldUseDarkColors
-  );
-  mainWindow.webContents.send('close-prefs');
-});
+  rendererDelegate.on('save-prefs', (data: PreferencesData) => {
+    if (!data) {
+      rendererDelegate.send('close-prefs');
+      return;
+    }
+
+    savePreferences(data);
+    rendererDelegate.send('prefs-updated', data);
+    rendererDelegate.send(
+      'dark-mode-toggled',
+      data.textSize,
+      nativeTheme.shouldUseDarkColors
+    );
+    rendererDelegate.send('close-prefs');
+  });
+}
 
 // tslint:disable-next-line:max-func-body-length
 function setMenu(recentFiles?: string[]): void {
@@ -238,14 +244,14 @@ function setMenu(recentFiles?: string[]): void {
           label: 'Find',
           accelerator: 'CmdOrCtrl+F',
           click: (): void => {
-            mainWindow.webContents.send('find');
+            rendererDelegate.send('find');
           }
         },
         {
           label: 'Replace',
           accelerator: 'CmdOrCtrl+R',
           click: (): void => {
-            mainWindow.webContents.send('replace');
+            rendererDelegate.send('replace');
           }
         }
       ]
@@ -272,14 +278,14 @@ function setMenu(recentFiles?: string[]): void {
           label: 'Find',
           accelerator: 'CmdOrCtrl+F',
           click: (): void => {
-            mainWindow.webContents.send('find');
+            rendererDelegate.send('find');
           }
         },
         {
           label: 'Replace',
           accelerator: 'CmdOrCtrl+R',
           click: (): void => {
-            mainWindow.webContents.send('replace');
+            rendererDelegate.send('replace');
           }
         },
         { type: 'separator' },
@@ -338,7 +344,7 @@ function setMenu(recentFiles?: string[]): void {
 }
 
 function newMenuItemHandler(): void {
-  mainWindow.webContents.send('new-file');
+  rendererDelegate.send('new-file');
 }
 
 function openMenuItemHandler(): void {
@@ -361,7 +367,7 @@ function openMenuItemHandler(): void {
 function openFile(filePath: string): void {
   readFile(filePath, 'utf8', (error: Error, data: string) => {
     currentFilePath = filePath;
-    mainWindow.webContents.send('file-opened', error, filePath, data);
+    rendererDelegate.send('file-opened', error, filePath, data);
     addToRecentFiles(filePath);
   });
 }
@@ -370,8 +376,8 @@ function saveMenuItemHandler(): void {
   if (!currentFilePath) {
     saveAsHandler();
   } else {
-    mainWindow.webContents.send('file-save-started', currentFilePath);
-    mainWindow.webContents.send('request-editor-text');
+    rendererDelegate.send('file-save-started', currentFilePath);
+    rendererDelegate.send('request-editor-text');
   }
 }
 
@@ -383,7 +389,7 @@ function saveAsHandler(): void {
     .then((value: SaveDialogReturnValue) => {
       if (value.filePath) {
         currentFilePath = value.filePath;
-        mainWindow.webContents.send('request-editor-text');
+        rendererDelegate.send('request-editor-text');
         addToRecentFiles(value.filePath);
       }
     })
@@ -393,19 +399,19 @@ function saveAsHandler(): void {
 }
 
 function quitHandler(): void {
-  mainWindow.webContents.send('attempt-quit');
+  rendererDelegate.send('attempt-quit');
 }
 
 function undoHandler(): void {
-  mainWindow.webContents.send('undo');
+  rendererDelegate.send('undo');
 }
 
 function redoHandler(): void {
-  mainWindow.webContents.send('redo');
+  rendererDelegate.send('redo');
 }
 
 function preferencesHandler(): void {
-  mainWindow.webContents.send('open-prefs');
+  rendererDelegate.send('open-prefs');
 }
 
 function createRecentFilesSubmenu(

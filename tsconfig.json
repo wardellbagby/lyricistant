@@ -13,7 +13,7 @@
     "baseUrl": "./",
     "paths": {
       "common/*": ["src/common/*"],
-      "Ipc": ["src/electron/Ipc.ts", "src/web/Ipc.ts"]
+      "Delegate": ["src/electron/Delegate.ts", "src/web/Delegate.ts"]
     }
   }
 }

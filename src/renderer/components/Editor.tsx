@@ -1,5 +1,5 @@
 import { LYRICISTANT_LANGUAGE } from 'common/monaco-helpers';
-import { ipcRenderer } from 'Ipc';
+import { platformDelegate } from 'Delegate';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
@@ -184,7 +184,7 @@ function handleEditorEvents(
       return;
     }
 
-    const onFileSaveEnded = (event: any, error: any, path: string) => {
+    const onFileSaveEnded = (error: any, path: string) => {
       // Resets the undo stack.
       editor.getModel().setValue(editor.getModel().getValue());
       setVersion(editor.getModel().getAlternativeVersionId());
@@ -193,35 +193,34 @@ function handleEditorEvents(
         toast.info(`${path} saved`);
       }
     };
-    ipcRenderer.on('file-save-ended', onFileSaveEnded);
+    platformDelegate.on('file-save-ended', onFileSaveEnded);
 
     const onNewFileAttempt = () => {
       if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
-        ipcRenderer.send('prompt-save-file-for-new');
+        platformDelegate.send('prompt-save-file-for-new');
       } else {
-        ipcRenderer.send('okay-for-new-file');
+        platformDelegate.send('okay-for-new-file');
       }
     };
-    ipcRenderer.on('new-file', onNewFileAttempt);
+    platformDelegate.on('new-file', onNewFileAttempt);
 
     const onQuitAttempt = () => {
       if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
-        ipcRenderer.send('prompt-save-file-for-quit');
+        platformDelegate.send('prompt-save-file-for-quit');
       } else {
-        ipcRenderer.send('okay-for-quit');
+        platformDelegate.send('okay-for-quit');
       }
     };
-    ipcRenderer.on('attempt-quit', onQuitAttempt);
+    platformDelegate.on('attempt-quit', onQuitAttempt);
 
     const onNewFileCreated = () => {
       editor.getModel().setValue('');
       setVersion(editor.getModel().getAlternativeVersionId());
     };
-    ipcRenderer.on('new-file-created', onNewFileCreated);
+    platformDelegate.on('new-file-created', onNewFileCreated);
 
     const onFileOpened = (
-      _: any,
-      error: any,
+      error: Error,
       fileName: string,
       fileContents: string
     ) => {
@@ -230,37 +229,37 @@ function handleEditorEvents(
         setVersion(editor.getModel().getAlternativeVersionId());
       }
     };
-    ipcRenderer.on('file-opened', onFileOpened);
+    platformDelegate.on('file-opened', onFileOpened);
 
     const onTextRequested = () => {
-      ipcRenderer.send('editor-text', editor.getModel().getValue());
+      platformDelegate.send('editor-text', editor.getModel().getValue());
     };
-    ipcRenderer.on('request-editor-text', onTextRequested);
+    platformDelegate.on('request-editor-text', onTextRequested);
 
     const onUndo = () => editor.trigger('', 'undo', '');
-    ipcRenderer.on('undo', onUndo);
+    platformDelegate.on('undo', onUndo);
 
     const onRedo = () => editor.trigger('', 'redo', '');
-    ipcRenderer.on('redo', onRedo);
+    platformDelegate.on('redo', onRedo);
 
     const onFind = () => editor.trigger('', 'actions.findWithSelection', '');
-    ipcRenderer.on('find', onFind);
+    platformDelegate.on('find', onFind);
 
     const onReplace = () =>
       editor.trigger('', 'editor.action.startFindReplaceAction', '');
-    ipcRenderer.on('replace', onReplace);
+    platformDelegate.on('replace', onReplace);
 
     return () => {
-      ipcRenderer.removeListener('file-save-ended', onFileSaveEnded);
-      ipcRenderer.removeListener('new-file', onNewFileAttempt);
-      ipcRenderer.removeListener('attempt-quit', onQuitAttempt);
-      ipcRenderer.removeListener('new-file-created', onNewFileCreated);
-      ipcRenderer.removeListener('file-opened', onFileOpened);
-      ipcRenderer.removeListener('request-editor-text', onTextRequested);
-      ipcRenderer.removeListener('undo', onUndo);
-      ipcRenderer.removeListener('redo', onRedo);
-      ipcRenderer.removeListener('find', onFind);
-      ipcRenderer.removeListener('replace', onReplace);
+      platformDelegate.removeListener('file-save-ended', onFileSaveEnded);
+      platformDelegate.removeListener('new-file', onNewFileAttempt);
+      platformDelegate.removeListener('attempt-quit', onQuitAttempt);
+      platformDelegate.removeListener('new-file-created', onNewFileCreated);
+      platformDelegate.removeListener('file-opened', onFileOpened);
+      platformDelegate.removeListener('request-editor-text', onTextRequested);
+      platformDelegate.removeListener('undo', onUndo);
+      platformDelegate.removeListener('redo', onRedo);
+      platformDelegate.removeListener('find', onFind);
+      platformDelegate.removeListener('replace', onReplace);
     };
   };
 }

@@ -5,7 +5,7 @@ module.exports = {
   devtool: 'source-map',
   resolve: {
     alias: {
-      Ipc$: path.resolve(__dirname, 'src/electron/Ipc.ts')
+      Delegate$: path.resolve(__dirname, 'src/electron/Delegate.ts')
     }
   },
   module: {

@@ -7,7 +7,7 @@ module.exports = {
   entry: './src/renderer/index.tsx',
   resolve: {
     alias: {
-      Ipc$: path.resolve(__dirname, 'src/web/Ipc.ts'),
+      Delegate$: path.resolve(__dirname, 'src/web/Delegate.ts'),
       common: path.resolve(__dirname, 'src/common/'),
       './src': path.resolve(__dirname, 'src/')
     },
