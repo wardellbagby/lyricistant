@@ -24,6 +24,21 @@
             "timeout": 30000,
             "sourceMaps": true,
             "disableNetworkCache": true,
+        },
+        {
+            "name": "Web: Browser",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}",
+            "timeout": 30000,
+            "sourceMaps": true,
+            "breakOnLoad": true,
+            "sourceMapPathOverrides": {
+                "webpack:///./src/*": "${workspaceRoot}/src/*",
+                "webpack:///src/*": "${workspaceRoot}/src/*",
+                "webpack:///./node_modules/*": "${workspaceRoot}/node_modules/*"
+            }
         }
     ],
     "compounds": [

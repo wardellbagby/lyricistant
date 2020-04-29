@@ -5,6 +5,7 @@ const SharedWebpackConfig = require('./shared.webpack.config.js');
 module.exports = {
   target: 'web',
   entry: './src/renderer/index.tsx',
+  devtool: 'eval-source-map',
   resolve: {
     alias: {
       Delegate$: path.resolve(__dirname, 'src/web/Delegate.ts'),

@@ -1,89 +1,77 @@
 // tslint:disable: unified-signatures
-import { PlatformDelegate } from 'common/Delegate';
-import { PreferencesData } from 'common/PreferencesData';
+import { PlatformDelegate, RendererDelegate } from 'common/Delegate';
+import { onRendererStarted } from '.';
 
 class WebPlatformDelegate implements PlatformDelegate {
-  public on(
-    channel: 'dark-mode-toggled',
-    listener: (textSize: number, useDarkColors: boolean) => void
-  ): this;
-  public on(
-    channel: 'prefs-updated',
-    listener: (preferenceData: PreferencesData) => void
-  ): this;
-  public on(
-    channel: 'file-save-ended',
-    listener: (error: Error, currentFilePath: string) => void
-  ): this;
-  public on(channel: 'close-prefs', listener: () => void): this;
-  public on(channel: 'new-file-created', listener: () => void): this;
-  public on(channel: 'find', listener: () => void): this;
-  public on(channel: 'replace', listener: () => void): this;
-  public on(channel: 'new-file', listener: () => void): this;
-  public on(
-    channel: 'file-opened',
-    listener: (error: Error, filePath: string, data: string) => void
-  ): this;
-  public on(
-    channel: 'file-save-started',
-    listener: (filePath: string) => void
-  ): this;
-  public on(channel: 'request-editor-text', listener: () => void): this;
-  public on(channel: 'attempt-quit', listener: () => void): this;
-  public on(channel: 'undo', listener: () => void): this;
-  public on(channel: 'redo', listener: () => void): this;
-  public on(channel: 'open-prefs', listener: () => void): this;
+  public send(channel: string, ...args: any[]) {
+    rendererListeners
+      .getListeners(channel)
+      .forEach(async (listener) => listener(...args));
+  }
 
   public on(channel: string, listener: (...args: any[]) => void): this {
-    if (channel === 'dark-mode-toggled') {
-      listener(null, true);
-    }
+    platformListeners.addListener(channel, listener);
     return this;
   }
-  public send(channel: 'ready-for-events'): void;
-  public send(channel: 'editor-text', text: string): void;
-  public send(channel: 'prompt-save-file-for-new'): void;
-  public send(channel: 'prompt-save-file-for-quit'): void;
-  public send(channel: 'okay-for-new-file'): void;
-  public send(channel: 'okay-for-quit'): void;
-  public send(channel: 'save-prefs', data: PreferencesData): void;
-  public send(channel: any, ...args: any[]) {}
 
   public removeListener(
-    channel: 'dark-mode-toggled',
-    listener: (textSize: number, useDarkColors: boolean) => void
-  ): this;
-  public removeListener(
-    channel: 'file-opened',
-    listener: (error: Error, filePath: string, data: string) => void
-  ): this;
-  public removeListener(
-    channel: 'new-file-created',
-    listener: () => void
-  ): this;
-  public removeListener(channel: 'open-prefs', listener: () => void): this;
-  public removeListener(
-    channel: 'prefs-updated',
-    listener: (preferenceData: PreferencesData) => void
-  ): this;
-  public removeListener(channel: 'close-prefs', listener: () => void): this;
-  public removeListener(channel: 'new-file', listener: () => void): this;
-  public removeListener(
-    channel: 'file-save-ended',
-    listener: (error: Error, currentFilePath: string) => void
-  ): this;
-  public removeListener(channel: 'attempt-quit', listener: () => void): this;
-  public removeListener(
-    channel: 'request-editor-text',
-    listener: () => void
-  ): this;
-  public removeListener(channel: 'undo', listener: () => void): this;
-  public removeListener(channel: 'redo', listener: () => void): this;
-  public removeListener(channel: 'find', listener: () => void): this;
-  public removeListener(channel: 'replace', listener: () => void): this;
-  public removeListener(channel: any, listener: any): this {
+    channel: string,
+    listener: (...args: any[]) => void
+  ): this {
+    platformListeners.removeListener(channel, listener);
     return this;
   }
 }
 
+class WebRendererDelegate implements RendererDelegate {
+  public send(channel: string, ...args: any[]) {
+    platformListeners
+      .getListeners(channel)
+      .forEach(async (listener) => listener(...args));
+  }
+
+  public on(channel: string, listener: (...args: any[]) => void): this {
+    rendererListeners.addListener(channel, listener);
+    return this;
+  }
+}
+
+class ListenerManager {
+  private listeners: Map<string, Array<(...args: any[]) => void>> = new Map();
+
+  public addListener(
+    channel: string,
+    listener: (...args: any[]) => void
+  ): void {
+    const registeredListeners: Array<(
+      ...args: any[]
+    ) => void> = this.getListeners(channel);
+    registeredListeners.push(listener);
+
+    this.listeners.set(channel, registeredListeners);
+  }
+
+  public removeListener(
+    channel: string,
+    listener: (...args: any[]) => void
+  ): void {
+    const registeredListeners: Array<(
+      ...args: any[]
+    ) => void> = this.getListeners(channel);
+    registeredListeners.splice(registeredListeners.indexOf(listener));
+
+    this.listeners.set(channel, registeredListeners);
+  }
+
+  public getListeners(channel: string): Array<(...args: any[]) => void> {
+    return [...(this.listeners.get(channel) ?? [])];
+  }
+}
+
+const platformListeners: ListenerManager = new ListenerManager();
+const rendererListeners: ListenerManager = new ListenerManager();
+
 export const platformDelegate: PlatformDelegate = new WebPlatformDelegate();
+export const rendererDelegate: RendererDelegate = new WebRendererDelegate();
+
+onRendererStarted();
