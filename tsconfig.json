@@ -13,7 +13,7 @@
     "baseUrl": "./",
     "paths": {
       "common/*": ["src/common/*"],
-      "Delegate": ["src/electron/Delegate.ts", "src/web/Delegate.ts"]
+      "Delegates": ["src/electron/Delegates.ts", "src/web/Delegates.ts"]
     }
   }
 }

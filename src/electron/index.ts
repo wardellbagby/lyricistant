@@ -1,5 +1,5 @@
-import { RendererDelegate } from 'common/Delegate';
-import { PreferencesData } from 'common/PreferencesData';
+import { RendererDelegate } from 'common/Delegates';
+import { PreferencesData } from 'common/preferences/PreferencesData';
 import {
   app,
   BrowserWindow,
@@ -16,7 +16,7 @@ import debug from 'electron-debug';
 import { existsSync, readFile, readFileSync, writeFile } from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
-import { createRendererDelegate } from './Delegate';
+import { createRendererDelegate } from './Delegates';
 
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
 const recentFilesFilePath = `${app.getPath('userData')}/recent_files.json`;

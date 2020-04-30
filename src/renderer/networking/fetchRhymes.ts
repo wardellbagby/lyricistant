@@ -1,7 +1,7 @@
 import { words } from 'datamuse';
 import { from, Observable, of, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Rhyme } from './Rhyme';
+import { Rhyme } from '../models/rhyme';
 
 export function fetchRhymes(word: string): Observable<Rhyme[]> {
   if (word.length === 0) {

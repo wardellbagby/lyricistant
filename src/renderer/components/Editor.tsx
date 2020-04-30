@@ -1,5 +1,4 @@
-import { LYRICISTANT_LANGUAGE } from 'common/monaco-helpers';
-import { platformDelegate } from 'Delegate';
+import { platformDelegate } from 'Delegates';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
@@ -8,6 +7,7 @@ import { fromEventPattern, merge, Observable, Subject } from 'rxjs';
 import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
+import { LYRICISTANT_LANGUAGE } from '../util/monaco-helpers';
 
 export interface TextReplacement {
   word: string;

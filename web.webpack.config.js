@@ -8,7 +8,7 @@ module.exports = {
   devtool: 'eval-source-map',
   resolve: {
     alias: {
-      Delegate$: path.resolve(__dirname, 'src/web/Delegate.ts'),
+      Delegates$: path.resolve(__dirname, 'src/web/Delegates.ts'),
       common: path.resolve(__dirname, 'src/common/'),
       './src': path.resolve(__dirname, 'src/')
     },

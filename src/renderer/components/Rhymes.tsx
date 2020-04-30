@@ -5,13 +5,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { fetchRhymes } from 'common/fetchRhymes';
-import { Rhyme } from 'common/Rhyme';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { Rhyme } from '../models/rhyme';
+import { fetchRhymes } from '../networking/fetchRhymes';
 import { WordAtPosition } from './Editor';
 
 interface RhymesProp {

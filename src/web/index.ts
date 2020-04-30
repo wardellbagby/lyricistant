@@ -1,5 +1,5 @@
-import { PreferenceManager } from 'common/managers/PreferenceManager';
-import { rendererDelegate } from './Delegate';
+import { PreferenceManager } from 'common/preferences/PreferenceManager';
+import { rendererDelegate } from './Delegates';
 
 export const onRendererStarted = (): void => {
   new PreferenceManager(rendererDelegate).register();

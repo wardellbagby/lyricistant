@@ -4,17 +4,17 @@ import {
   Theme,
   ThemeProvider
 } from '@material-ui/core/styles';
-import { getCssColor, getCssNumber } from 'common/css-helpers';
-import {
-  createLyricistantLanguage,
-  createLyricistantTheme
-} from 'common/monaco-helpers';
-import { PreferencesData } from 'common/PreferencesData';
-import { Rhyme } from 'common/Rhyme';
-import { platformDelegate } from 'Delegate';
+import { PreferencesData } from 'common/preferences/PreferencesData';
+import { platformDelegate } from 'Delegates';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
+import { Rhyme } from '../models/rhyme';
+import { getCssColor, getCssNumber } from '../util/css-helpers';
+import {
+  createLyricistantLanguage,
+  createLyricistantTheme
+} from '../util/monaco-helpers';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
 import { Preferences } from './Preferences';
 import { Rhymes } from './Rhymes';

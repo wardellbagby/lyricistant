@@ -1,5 +1,5 @@
 // tslint:disable: unified-signatures
-import { PreferencesData } from './PreferencesData';
+import { PreferencesData } from './preferences/PreferencesData';
 
 export interface RendererDelegate {
   send(

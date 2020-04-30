@@ -1,5 +1,5 @@
-import { getCssColor } from 'common/css-helpers';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { getCssColor } from '../util/css-helpers';
 
 export const LYRICISTANT_LANGUAGE = 'lyricistant';
 

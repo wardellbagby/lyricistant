@@ -14,7 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { PreferencesData } from 'common/PreferencesData';
+import { PreferencesData } from 'common/preferences/PreferencesData';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 export interface PreferencesProps {

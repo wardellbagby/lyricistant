@@ -1,4 +1,4 @@
-import { PlatformDelegate, RendererDelegate } from 'common/Delegate';
+import { PlatformDelegate, RendererDelegate } from 'common/Delegates';
 import {
   BrowserWindow,
   IpcMain,

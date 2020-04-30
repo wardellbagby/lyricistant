@@ -1,4 +1,4 @@
-import { RendererDelegate } from 'common/Delegate';
+import { RendererDelegate } from 'common/Delegates';
 
 export abstract class Manager {
   protected rendererDelegate: RendererDelegate;
