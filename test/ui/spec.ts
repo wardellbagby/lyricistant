@@ -13,7 +13,7 @@ describe('Application launch', function() {
     app = new Application({
       path: path.join(
         __dirname,
-        '../../dist/mac/Lyricistant.app/Contents/MacOS/Lyricistant'
+        '../../dist/electron-app/mac/Lyricistant.app/Contents/MacOS/Lyricistant'
       )
     });
     return app.start().then(() => app.client.waitUntilWindowLoaded());

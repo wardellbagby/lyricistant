@@ -1,16 +1,20 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const SharedWebpackConfig = require('./shared.webpack.config.js');
+// const CompressionPlugin = require('compression-webpack-plugin');
+const SharedWebpackConfig = require('../shared.webpack.config.js');
 
 module.exports = {
   target: 'web',
   entry: './src/renderer/index.tsx',
   devtool: 'eval-source-map',
+  mode: 'development',
   resolve: {
     alias: {
-      Delegates$: path.resolve(__dirname, 'src/web/Delegates.ts'),
-      common: path.resolve(__dirname, 'src/common/'),
-      './src': path.resolve(__dirname, 'src/')
+      Delegates$: path.resolve(
+        SharedWebpackConfig.projectDir,
+        'src/web/Delegates.ts'
+      ),
+      common: path.resolve(SharedWebpackConfig.projectDir, 'src/common/')
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     modules: ['node_modules']
@@ -20,6 +24,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Untitled',
       templateContent: `
+      <meta charset="utf-8">
       <html>
         <body>
           <div id='app'></div>
@@ -31,9 +36,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        include: [path.resolve(__dirname, 'src/')],
-        exclude: [path.resolve(__dirname, 'src/electron')]
+        test: /\.tsx?$/,
+        include: [path.resolve(SharedWebpackConfig.projectDir, 'src/')],
+        exclude: [path.resolve(SharedWebpackConfig.projectDir, 'src/electron')]
       },
       { test: /\.tsx?$/, use: 'ts-loader' },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
@@ -41,10 +46,10 @@ module.exports = {
     ]
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../../dist/web'),
     filename: 'web.js'
   },
   devServer: {
-    contentBase: './dist'
+    contentBase: '../../dist/web'
   }
 };

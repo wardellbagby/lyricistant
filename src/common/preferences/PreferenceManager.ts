@@ -1,5 +1,4 @@
 import { Manager } from 'common/Manager';
-import { PreferencesData } from 'common/preferences/PreferencesData';
 
 export class PreferenceManager extends Manager {
   public register(): void {

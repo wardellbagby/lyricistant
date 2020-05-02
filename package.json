@@ -14,12 +14,14 @@
     "url": "git://https://github.com/wardellbagby/rhymer.git"
   },
   "homepage": "https://github.com/wardellbagby/rhymer",
+  "sideEffects": false,
   "electronWebpack": {
     "renderer": {
-      "webpackConfig": "electron.webpack.config.js"
+      "webpackConfig": "config/electron/renderer.webpack.config.js"
     },
     "main": {
-      "sourceDirectory": "src/electron"
+      "sourceDirectory": "src/electron",
+      "webpackConfig": "config/electron/main.webpack.config.js"
     },
     "whiteListedModules": [
       "react-monaco-editor",
@@ -29,13 +31,12 @@
   },
   "scripts": {
     "build": "electron-webpack",
-    "build-web": "webpack --config web.webpack.config.js --target='web'",
+    "build-web": "webpack --config config/web/prod.webpack.config.js",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "lint-fix": "tslint -c tslint.json -p tsconfig.json --fix",
-    "postinstall": "electron-builder install-app-deps",
     "start": "electron-webpack dev",
-    "start-web": "webpack-dev-server --open --config web.webpack.config.js --target='web'",
+    "start-web": "webpack-dev-server --open --config config/web/dev.webpack.config.js",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist-all": "electron-builder --win --mac --linux",
@@ -45,8 +46,16 @@
     "appId": "com.wardellbagby.lyricistant",
     "artifactName": "${name}-${version}-${os}_${arch}.${ext}",
     "directories": {
-      "output": "dist"
+      "output": "dist/electron-app"
     },
+    "files": [
+      {
+        "from": "dist/electron/main"
+      },
+      {
+        "from": "dist/electron/renderer"
+      }
+    ],
     "mac": {
       "category": "public.app-category.utilities",
       "target": "dmg"
@@ -72,6 +81,7 @@
     "@types/react-dom": "^16.9.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "compression-webpack-plugin": "^3.1.0",
     "electron": "^8.0.0",
     "electron-builder": "^22.2.0",
     "electron-webpack": "^2.8.2",
