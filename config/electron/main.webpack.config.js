@@ -3,12 +3,7 @@ const SharedWebpackConfig = require('../shared.webpack.config.js');
 module.exports = {
   devtool: 'source-map',
   resolve: {
-    alias: {
-      Delegates$: path.resolve(
-        SharedWebpackConfig.projectDir,
-        'src/electron/Delegates.ts'
-      )
-    }
+    alias: SharedWebpackConfig.aliases('electron')
   },
   module: {
     rules: [

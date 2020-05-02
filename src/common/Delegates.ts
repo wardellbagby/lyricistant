@@ -39,6 +39,26 @@ export interface RendererDelegate {
   on(channel: 'okay-for-new-file', listener: () => void): this;
   on(channel: 'okay-for-quit', listener: () => void): this;
   on(channel: 'save-prefs', listener: (data: PreferencesData) => void): this;
+
+  removeListener(channel: 'ready-for-events', listener: () => void): this;
+  removeListener(
+    channel: 'editor-text',
+    listener: (text: string) => void
+  ): this;
+  removeListener(
+    channel: 'prompt-save-file-for-new',
+    listener: () => void
+  ): this;
+  removeListener(
+    channel: 'prompt-save-file-for-quit',
+    listener: () => void
+  ): this;
+  removeListener(channel: 'okay-for-new-file', listener: () => void): this;
+  removeListener(channel: 'okay-for-quit', listener: () => void): this;
+  removeListener(
+    channel: 'save-prefs',
+    listener: (data: PreferencesData) => void
+  ): this;
 }
 
 export interface PlatformDelegate {

@@ -16,6 +16,7 @@
       "rxjs",
       "monaco-editor",
       "common",
+      "platform",
       "@material-ui",
       "react-toastify"
     ],

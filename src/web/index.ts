@@ -1,6 +1,8 @@
+import { Manager } from 'common/Manager';
 import { PreferenceManager } from 'common/preferences/PreferenceManager';
 import { rendererDelegate } from './Delegates';
 
+const managers: Manager[] = [new PreferenceManager(rendererDelegate)];
 export const onRendererStarted = (): void => {
-  new PreferenceManager(rendererDelegate).register();
+  managers.forEach((manager) => manager.register());
 };

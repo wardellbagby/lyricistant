@@ -34,6 +34,14 @@ class WebRendererDelegate implements RendererDelegate {
     rendererListeners.addListener(channel, listener);
     return this;
   }
+
+  public removeListener(
+    channel: string,
+    listener: (...args: any[]) => void
+  ): this {
+    rendererListeners.removeListener(channel, listener);
+    return this;
+  }
 }
 
 class ListenerManager {

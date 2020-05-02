@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const CompressionPlugin = require('compression-webpack-plugin');
 const SharedWebpackConfig = require('../shared.webpack.config.js');
 
 module.exports = {
@@ -9,13 +8,7 @@ module.exports = {
   devtool: 'eval-source-map',
   mode: 'development',
   resolve: {
-    alias: {
-      Delegates$: path.resolve(
-        SharedWebpackConfig.projectDir,
-        'src/web/Delegates.ts'
-      ),
-      common: path.resolve(SharedWebpackConfig.projectDir, 'src/common/')
-    },
+    alias: SharedWebpackConfig.aliases('web'),
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     modules: ['node_modules']
   },

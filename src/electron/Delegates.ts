@@ -34,6 +34,17 @@ class ElectronRendererDelegate implements RendererDelegate {
     this.ipcMain.on(channel, listenerWithEvent);
     return this;
   }
+
+  public removeListener(
+    channel: string,
+    listener: (...args: any[]) => void
+  ): this {
+    this.ipcMain.removeListener(
+      channel,
+      this.listeners.get(listener.toString())
+    );
+    return this;
+  }
 }
 
 class ElectronPlatformDelegate implements RendererDelegate {

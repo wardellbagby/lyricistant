@@ -1,5 +1,5 @@
 import { RendererDelegate } from 'common/Delegates';
-import { PreferencesData } from 'common/preferences/PreferencesData';
+import { PreferenceManager } from 'common/preferences/PreferenceManager';
 import {
   app,
   BrowserWindow,
@@ -7,25 +7,21 @@ import {
   Menu,
   MenuItemConstructorOptions,
   MessageBoxReturnValue,
-  nativeTheme,
   OpenDialogReturnValue,
   SaveDialogReturnValue
 } from 'electron';
 import debug from 'electron-debug';
-import { existsSync, readFile, readFileSync, writeFile } from 'fs';
+import { readFile, readFileSync, writeFile } from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 import { createRendererDelegate } from './Delegates';
 
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
 const recentFilesFilePath = `${app.getPath('userData')}/recent_files.json`;
-const preferencesFilePath = `${app.getPath('userData')}/preferences.json`;
 
 let mainWindow: BrowserWindow;
-let rendererDelegate: RendererDelegate;
 
 let currentFilePath: string;
-let currentPreferences: PreferencesData;
 
 if (module.hot) {
   debug();
@@ -55,8 +51,9 @@ function createWindow(): void {
       nodeIntegration: true
     }
   });
-  rendererDelegate = createRendererDelegate(mainWindow);
-  registerListeners();
+  const rendererDelegate = createRendererDelegate(mainWindow);
+  registerManagers(rendererDelegate);
+  registerListeners(rendererDelegate);
 
   if (isDevelopment) {
     // tslint:disable-next-line: no-floating-promises
@@ -83,24 +80,12 @@ function createWindow(): void {
   setMenu();
 }
 
-function registerListeners() {
-  nativeTheme.on('updated', () => {
-    rendererDelegate.send(
-      'dark-mode-toggled',
-      currentPreferences?.textSize,
-      nativeTheme.shouldUseDarkColors
-    );
-    mainWindow.blur();
-    mainWindow.focus();
-  });
+function registerManagers(rendererDelegate: RendererDelegate) {
+  new PreferenceManager(rendererDelegate).register();
+}
 
+function registerListeners(rendererDelegate: RendererDelegate) {
   rendererDelegate.on('ready-for-events', () => {
-    rendererDelegate.send('prefs-updated', loadPreferences());
-    rendererDelegate.send(
-      'dark-mode-toggled',
-      currentPreferences.textSize,
-      nativeTheme.shouldUseDarkColors
-    );
     rendererDelegate.send('new-file-created');
   });
 
@@ -163,22 +148,6 @@ function registerListeners() {
 
   rendererDelegate.on('okay-for-quit', () => {
     app.quit();
-  });
-
-  rendererDelegate.on('save-prefs', (data: PreferencesData) => {
-    if (!data) {
-      rendererDelegate.send('close-prefs');
-      return;
-    }
-
-    savePreferences(data);
-    rendererDelegate.send('prefs-updated', data);
-    rendererDelegate.send(
-      'dark-mode-toggled',
-      data.textSize,
-      nativeTheme.shouldUseDarkColors
-    );
-    rendererDelegate.send('close-prefs');
   });
 }
 
@@ -462,18 +431,4 @@ function addToRecentFiles(filePath: string): void {
       setMenu(recentFiles);
     });
   });
-}
-
-function loadPreferences(): PreferencesData | undefined {
-  if (existsSync(preferencesFilePath)) {
-    currentPreferences = JSON.parse(readFileSync(preferencesFilePath, 'utf8'));
-  } else {
-    currentPreferences = { textSize: 16 };
-  }
-  return currentPreferences;
-}
-
-function savePreferences(data: PreferencesData) {
-  currentPreferences = data;
-  writeFile(preferencesFilePath, JSON.stringify(data), () => undefined);
 }

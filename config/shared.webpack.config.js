@@ -8,4 +8,12 @@ const MonacoPlugin = new MonacoWebpackPlugin({
 
 const projectDir = path.resolve(__dirname, '../');
 
-module.exports = { MonacoPlugin, projectDir };
+const aliases = (platformName) => {
+  return {
+    common: path.resolve(projectDir, 'src/common/'),
+    Delegates$: path.resolve(projectDir, `src/${platformName}/Delegates.ts`),
+    platform: path.resolve(projectDir, `src/${platformName}/platform`)
+  };
+};
+
+module.exports = { MonacoPlugin, projectDir, aliases };
