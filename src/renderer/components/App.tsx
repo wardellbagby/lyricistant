@@ -1,4 +1,4 @@
-import { CssBaseline, Grid } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 import { Theme, ThemeProvider } from '@material-ui/core/styles';
 import { PreferencesData } from 'common/preferences/PreferencesData';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -13,7 +13,9 @@ import {
   createLyricistantTheme
 } from '../util/monaco-helpers';
 import { createTheme } from '../util/theme';
+import { AppLayout } from './AppLayout';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
+import { Menu } from './Menu';
 import { Preferences } from './Preferences';
 import { Rhymes } from './Rhymes';
 
@@ -65,18 +67,15 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
           onPreferencesSaved={onPreferencesSaved}
           onClosed={onPreferencesClosed}
         />
-        <Grid container>
-          <Grid item xs={9}>
-            <Editor
-              fontSize={theme.typography.fontSize}
-              onWordSelected={onWordSelected}
-              textReplacements={textReplacements}
-            />
-          </Grid>
-          <Grid item xs>
-            <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
-          </Grid>
-        </Grid>
+        <AppLayout>
+          <Menu />
+          <Editor
+            fontSize={theme.typography.fontSize}
+            onWordSelected={onWordSelected}
+            textReplacements={textReplacements}
+          />
+          <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
+        </AppLayout>
       </ThemeProvider>
     </CssBaseline>
   );

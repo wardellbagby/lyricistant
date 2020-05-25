@@ -4,6 +4,13 @@ import { App } from './components/App';
 
 const container: HTMLElement = document.getElementById('app');
 
+document.documentElement.style.height = '100%';
+document.documentElement.style.width = '100%';
+document.body.style.height = '100%';
+document.body.style.width = '100%';
+container.style.height = '100%';
+container.style.width = '100%';
+
 if (module.hot) {
   module.hot.accept();
 }
