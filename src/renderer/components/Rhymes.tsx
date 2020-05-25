@@ -15,14 +15,17 @@ import { fetchRhymes } from '../networking/fetchRhymes';
 import { WordAtPosition } from './Editor';
 
 interface RhymesProp {
-  className?: string;
   onRhymeClicked: (rhyme: Rhyme, position: monaco.IRange) => void;
   queries: Observable<WordAtPosition>;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  rhyme: {
-    wordBreak: 'break-all'
+  rhymeList: {
+    wordBreak: 'break-all',
+    color: theme.palette.text.disabled,
+    '&:hover': {
+      color: theme.palette.text.primary
+    }
   }
 }));
 
@@ -30,17 +33,17 @@ const ListContainer: React.FC<{
   listRef: (ref: HTMLElement | null) => void;
   style: CSSProperties;
 }> = ({ listRef, style, children }) => {
+  const classes = useStyles(undefined);
   return (
-    <List ref={listRef} style={style}>
+    <List ref={listRef} style={style} className={classes.rhymeList}>
       {children}
     </List>
   );
 };
 
 export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
-  const classes = useStyles(undefined);
-  const [rhymes, setRhymes] = useState([] as Rhyme[]);
-  const [queryData, setQueryData] = useState(null as WordAtPosition);
+  const [rhymes, setRhymes] = useState<Rhyme[]>([]);
+  const [queryData, setQueryData] = useState<WordAtPosition>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(handleQueries(props.queries, setRhymes, setQueryData, setLoading), [
@@ -49,12 +52,7 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
 
   if (loading) {
     return (
-      <Box
-        className={props.className}
-        display="flex"
-        width={'100%'}
-        height={'100%'}
-      >
+      <Box display="flex" width={'100%'} height={'100%'}>
         <CircularProgress style={{ margin: 'auto' }} />
       </Box>
     );
@@ -62,13 +60,12 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
   return (
     <Virtuoso
       ListContainer={ListContainer}
-      className={props.className}
       style={{ width: '100%', height: '100%' }}
       totalCount={rhymes.length}
       item={(index) => {
         const rhyme = rhymes[index];
 
-        return renderRhyme(rhyme, classes.rhyme, () => {
+        return renderRhyme(rhyme, () => {
           setLoading(true);
           props.onRhymeClicked(rhyme, queryData.range);
         });
@@ -77,14 +74,10 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
   );
 };
 
-function renderRhyme(
-  rhyme: Rhyme,
-  className: string,
-  onClick: () => void
-): React.ReactElement {
+function renderRhyme(rhyme: Rhyme, onClick: () => void): React.ReactElement {
   return (
-    <ListItem button className={className} color={'primary'} key={rhyme.word}>
-      <ListItemText primary={rhyme.word} onClick={onClick} />
+    <ListItem button key={rhyme.word}>
+      <ListItemText onClick={onClick} primary={rhyme.word} />
     </ListItem>
   );
 }

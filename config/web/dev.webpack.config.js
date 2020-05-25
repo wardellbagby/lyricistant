@@ -1,24 +1,24 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const SharedWebpackConfig = require('../shared.webpack.config.js');
+const { MonacoPlugin, aliases, projectDir } = require('../shared.js');
 
 module.exports = {
   target: 'web',
-  entry: './src/renderer/index.tsx',
+  entry: './src/web/index.ts',
   devtool: 'eval-source-map',
   mode: 'development',
   resolve: {
-    alias: SharedWebpackConfig.aliases('web'),
+    alias: aliases('web'),
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     modules: ['node_modules']
   },
   plugins: [
-    SharedWebpackConfig.MonacoPlugin,
+    MonacoPlugin,
     new HtmlWebpackPlugin({
       title: 'Untitled',
       templateContent: `
       <meta charset="utf-8">
-      <html>
+      <html lang="en">
         <body>
           <div id='app'></div>
         </body>
@@ -30,19 +30,22 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        include: [path.resolve(SharedWebpackConfig.projectDir, 'src/')],
-        exclude: [path.resolve(SharedWebpackConfig.projectDir, 'src/electron')]
+        include: [path.resolve(projectDir, 'src/')],
+        exclude: [path.resolve(projectDir, 'src/electron')],
+        use: 'ts-loader'
       },
-      { test: /\.tsx?$/, use: 'ts-loader' },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-      { test: /\.ttf$/, use: 'file-loader' }
+      {
+        test: /\.(woff|woff2|eot|ttf|svg)$/,
+        loader: 'file-loader'
+      }
     ]
   },
   output: {
-    path: path.resolve(__dirname, '../../dist/web'),
+    path: path.resolve(projectDir, 'dist/web'),
     filename: 'web.js'
   },
   devServer: {
-    contentBase: '../../dist/web'
+    contentBase: path.resolve(projectDir, 'dist/web')
   }
 };

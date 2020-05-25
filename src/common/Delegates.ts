@@ -1,6 +1,9 @@
 // tslint:disable: unified-signatures
 import { PreferencesData } from './preferences/PreferencesData';
 
+/**
+ * Used by the platform to communicate with the renderer.
+ */
 export interface RendererDelegate {
   send(
     channel: 'dark-mode-toggled',
@@ -61,6 +64,9 @@ export interface RendererDelegate {
   ): this;
 }
 
+/**
+ * Used by the renderer to communicate with the platform.
+ */
 export interface PlatformDelegate {
   on(
     channel: 'dark-mode-toggled',

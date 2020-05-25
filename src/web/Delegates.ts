@@ -1,12 +1,9 @@
 // tslint:disable: unified-signatures
 import { PlatformDelegate, RendererDelegate } from 'common/Delegates';
-import { onRendererStarted } from '.';
 
 class WebPlatformDelegate implements PlatformDelegate {
   public send(channel: string, ...args: any[]) {
-    rendererListeners
-      .getListeners(channel)
-      .forEach(async (listener) => listener(...args));
+    queue(rendererListeners.getListeners(channel), args);
   }
 
   public on(channel: string, listener: (...args: any[]) => void): this {
@@ -25,9 +22,7 @@ class WebPlatformDelegate implements PlatformDelegate {
 
 class WebRendererDelegate implements RendererDelegate {
   public send(channel: string, ...args: any[]) {
-    platformListeners
-      .getListeners(channel)
-      .forEach(async (listener) => listener(...args));
+    queue(platformListeners.getListeners(channel), args);
   }
 
   public on(channel: string, listener: (...args: any[]) => void): this {
@@ -51,9 +46,7 @@ class ListenerManager {
     channel: string,
     listener: (...args: any[]) => void
   ): void {
-    const registeredListeners: Array<(
-      ...args: any[]
-    ) => void> = this.getListeners(channel);
+    const registeredListeners = this.getListeners(channel);
     registeredListeners.push(listener);
 
     this.listeners.set(channel, registeredListeners);
@@ -63,9 +56,7 @@ class ListenerManager {
     channel: string,
     listener: (...args: any[]) => void
   ): void {
-    const registeredListeners: Array<(
-      ...args: any[]
-    ) => void> = this.getListeners(channel);
+    const registeredListeners = this.getListeners(channel);
     registeredListeners.splice(registeredListeners.indexOf(listener));
 
     this.listeners.set(channel, registeredListeners);
@@ -76,10 +67,15 @@ class ListenerManager {
   }
 }
 
+const queue = (functions: Array<(...args: any[]) => void>, args: any[]) => {
+  // Renderer code is very specialized for Electron, which will never
+  // immediately invoke a listener when its registered. We emulate that here
+  // by putting the listener invocation on the event loop via setTimeout.
+  functions.forEach((listener) => setTimeout(() => listener(...args)));
+};
+
 const platformListeners: ListenerManager = new ListenerManager();
 const rendererListeners: ListenerManager = new ListenerManager();
 
 export const platformDelegate: PlatformDelegate = new WebPlatformDelegate();
 export const rendererDelegate: RendererDelegate = new WebRendererDelegate();
-
-onRendererStarted();

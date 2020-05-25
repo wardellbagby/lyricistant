@@ -47,7 +47,7 @@ class ElectronRendererDelegate implements RendererDelegate {
   }
 }
 
-class ElectronPlatformDelegate implements RendererDelegate {
+class ElectronPlatformDelegate implements PlatformDelegate {
   private ipcRenderer: IpcRenderer;
 
   private listeners = new Map<

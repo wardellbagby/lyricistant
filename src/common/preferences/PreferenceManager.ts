@@ -16,6 +16,7 @@ export class PreferenceManager extends Manager {
       this.systemTheme = systemTheme;
     });
   }
+
   public unregister(): void {
     this.rendererDelegate.removeListener(
       'ready-for-events',
@@ -27,11 +28,7 @@ export class PreferenceManager extends Manager {
     const data = this.preferencesOrDefault();
 
     this.rendererDelegate.send('prefs-updated', data);
-    this.rendererDelegate.send(
-      'dark-mode-toggled',
-      data.textSize,
-      !data.theme || data.theme === Theme.Dark
-    );
+    this.sendThemeUpdate(data);
   };
 
   private onSavePrefs = (data: PreferencesData): void => {
@@ -42,11 +39,7 @@ export class PreferenceManager extends Manager {
 
     this.preferences.setPreferences(data);
     this.rendererDelegate.send('prefs-updated', data);
-    this.rendererDelegate.send(
-      'dark-mode-toggled',
-      data.textSize,
-      !data.theme || data.theme === Theme.Dark
-    );
+    this.sendThemeUpdate(data);
     this.rendererDelegate.send('close-prefs');
   };
 
@@ -63,6 +56,16 @@ export class PreferenceManager extends Manager {
           ? this.systemThemeToTheme(this.systemTheme)
           : preferencesData.theme
     };
+  };
+
+  private sendThemeUpdate = (data: PreferencesData): void => {
+    this.rendererDelegate.send(
+      'dark-mode-toggled',
+      data.textSize,
+      data.theme === undefined ||
+        data.theme === null ||
+        data.theme === Theme.Dark
+    );
   };
 
   private systemThemeToTheme = (systemTheme: SystemTheme): Theme => {

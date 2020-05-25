@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '../css/default.css';
 import { App } from './components/App';
 
 const container: HTMLElement = document.getElementById('app');

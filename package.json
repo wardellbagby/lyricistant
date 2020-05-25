@@ -26,7 +26,8 @@
     "whiteListedModules": [
       "react-monaco-editor",
       "react-virtuoso",
-      "@material-ui/core"
+      "@material-ui/core",
+      "typeface-roboto"
     ]
   },
   "scripts": {
@@ -73,11 +74,16 @@
   "engines": {
     "node": ">= 12.10"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-fix"
+    }
+  },
   "devDependencies": {
     "@types/chai": "^4.2.9",
     "@types/chai-as-promised": "^7.1.2",
     "@types/mocha": "^7.0.1",
-    "@types/react": "^16.9.17",
+    "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -87,6 +93,8 @@
     "electron-webpack": "^2.8.2",
     "electron-webpack-ts": "^3.2.0",
     "html-loader": "^1.1.0",
+    "html-webpack-plugin": "^4.3.0",
+    "husky": "^4.2.5",
     "mocha": "^7.1.2",
     "monaco-editor-webpack-plugin": "^1.8.2",
     "prettier": "1.19.1",
@@ -99,7 +107,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "@material-ui/core": "^4.8.3",
+    "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^4.0.0-alpha.39",
     "datamuse": "^1.0.5",
@@ -114,6 +122,7 @@
     "source-map-support": "^0.5.16",
     "syllable": "^4.0.0",
     "tslint": "^5.20.1",
+    "typeface-roboto": "0.0.75",
     "typescript": "^3.7.2"
   }
 }

@@ -23,7 +23,7 @@
             "webRoot": "${workspaceFolder}",
             "timeout": 30000,
             "sourceMaps": true,
-            "disableNetworkCache": true,
+            "disableNetworkCache": true
         },
         {
             "name": "Web: Browser",

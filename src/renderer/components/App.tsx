@@ -1,51 +1,23 @@
-import {
-  createMuiTheme,
-  responsiveFontSizes,
-  Theme,
-  ThemeProvider
-} from '@material-ui/core/styles';
+import { CssBaseline, Grid } from '@material-ui/core';
+import { Theme, ThemeProvider } from '@material-ui/core/styles';
 import { PreferencesData } from 'common/preferences/PreferencesData';
-import { platformDelegate } from 'Delegates';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { IRange } from 'monaco-editor/esm/vs/editor/editor.api';
+import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
+import 'typeface-roboto';
 import { Rhyme } from '../models/rhyme';
-import { getCssColor, getCssNumber } from '../util/css-helpers';
 import {
   createLyricistantLanguage,
   createLyricistantTheme
 } from '../util/monaco-helpers';
+import { createTheme } from '../util/theme';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
 import { Preferences } from './Preferences';
 import { Rhymes } from './Rhymes';
 
 createLyricistantLanguage();
-
-const createTheme = (textSize: number | null, useDarkTheme: boolean): Theme => {
-  return responsiveFontSizes(
-    createMuiTheme({
-      palette: {
-        type: useDarkTheme ? 'dark' : 'light',
-        action: {
-          hover: getCssColor('--primary-color'),
-          hoverOpacity: 0
-        },
-        primary: { main: getCssColor('--primary-color') },
-        background: {
-          default: getCssColor('--primary-background-color'),
-          paper: getCssColor('--secondary-background-color')
-        },
-        text: {
-          primary: getCssColor('--primary-text-color'),
-          secondary: getCssColor('--secondary-text-color')
-        }
-      },
-      typography: {
-        fontSize: textSize || getCssNumber('--details-text-size')
-      }
-    })
-  );
-};
 
 export interface AppProps {
   onShouldUpdateBackground: (newBackground: string) => void;
@@ -56,33 +28,27 @@ enum Screen {
   EDITOR
 }
 
+const defaultTheme = createTheme(null, true);
 const selectedWords: Subject<WordAtPosition> = new Subject();
 const textReplacements: Subject<TextReplacement> = new Subject();
 const onWordSelected: (word: WordAtPosition) => void = (word) => {
   selectedWords.next(word);
 };
 
-const onRhymeClicked: (rhyme: Rhyme, range: monaco.IRange) => void = (
-  rhyme,
-  range
-) => {
+const onRhymeClicked = (rhyme: Rhyme, range: IRange) =>
   textReplacements.next({ word: rhyme.word, range });
-};
 
-const onPreferencesSaved: (preferencesData: PreferencesData) => void = (
-  preferencesData
-) => {
+const onPreferencesSaved = (preferencesData: PreferencesData) =>
   platformDelegate.send('save-prefs', preferencesData);
-};
-const onPreferencesClosed: () => void = () =>
-  platformDelegate.send('save-prefs');
+
+const onPreferencesClosed = (): void => platformDelegate.send('save-prefs');
 
 export const App: FunctionComponent<AppProps> = (props: AppProps) => {
   const [screen, setScreen] = useState(Screen.EDITOR);
   const [preferencesData, setPreferencesData] = useState(
     null as PreferencesData
   );
-  const [theme, setTheme] = useState(createTheme(null, true));
+  const [theme, setTheme] = useState(defaultTheme);
 
   useEffect(handleThemeChanges(setTheme, props.onShouldUpdateBackground), []);
   useEffect(handlePreferencesChanges(setPreferencesData), []);
@@ -91,25 +57,28 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
   useEffect(() => platformDelegate.send('ready-for-events'), []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Preferences
-        show={screen === Screen.PREFERENCES}
-        data={preferencesData}
-        onPreferencesSaved={onPreferencesSaved}
-        onClosed={onPreferencesClosed}
-      />
-      <Editor
-        className={'editor'}
-        fontSize={theme.typography.fontSize}
-        onWordSelected={onWordSelected}
-        textReplacements={textReplacements}
-      />
-      <Rhymes
-        className={'detail-column'}
-        queries={selectedWords}
-        onRhymeClicked={onRhymeClicked}
-      />
-    </ThemeProvider>
+    <CssBaseline>
+      <ThemeProvider theme={theme}>
+        <Preferences
+          show={screen === Screen.PREFERENCES}
+          data={preferencesData}
+          onPreferencesSaved={onPreferencesSaved}
+          onClosed={onPreferencesClosed}
+        />
+        <Grid container>
+          <Grid item xs={9}>
+            <Editor
+              fontSize={theme.typography.fontSize}
+              onWordSelected={onWordSelected}
+              textReplacements={textReplacements}
+            />
+          </Grid>
+          <Grid item xs>
+            <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
+          </Grid>
+        </Grid>
+      </ThemeProvider>
+    </CssBaseline>
   );
 };
 
@@ -122,12 +91,6 @@ function handleThemeChanges(
       textSize: number,
       useDarkTheme: boolean
     ) => {
-      if (useDarkTheme) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-
       const appTheme = createTheme(textSize, useDarkTheme);
       setTheme(appTheme);
       monaco.editor.setTheme(createLyricistantTheme(useDarkTheme));

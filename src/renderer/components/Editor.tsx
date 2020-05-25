@@ -1,5 +1,6 @@
-import { platformDelegate } from 'Delegates';
+import { Box } from '@material-ui/core';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { toast } from 'react-toastify';
@@ -13,12 +14,13 @@ export interface TextReplacement {
   word: string;
   range: monaco.IRange;
 }
+
 export interface WordAtPosition {
   range: monaco.IRange;
   word: string;
 }
+
 export interface EditorProps {
-  className?: string;
   fontSize: number;
   onWordSelected: (word: WordAtPosition) => void;
   textReplacements: Observable<TextReplacement>;
@@ -59,7 +61,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
   useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
 
   return (
-    <div className={props.className}>
+    <Box height={'100vh'}>
       <MonacoEditor
         language={LYRICISTANT_LANGUAGE}
         editorDidMount={editorDidMount}
@@ -79,7 +81,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
           }
         }}
       />
-    </div>
+    </Box>
   );
 };
 

@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Web: Launch Dev Server" type="NodeJSConfigurationType" application-parameters="--config config/web/dev.webpack.config.js" path-to-js-file="node_modules/.bin/webpack-dev-server" working-dir="$PROJECT_DIR$/">
+    <method v="2" />
+  </configuration>
+</component>

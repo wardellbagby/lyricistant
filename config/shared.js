@@ -11,7 +11,7 @@ const projectDir = path.resolve(__dirname, '../');
 const aliases = (platformName) => {
   return {
     common: path.resolve(projectDir, 'src/common/'),
-    Delegates$: path.resolve(projectDir, `src/${platformName}/Delegates.ts`),
+    PlatformDelegate$: path.resolve(projectDir, `src/${platformName}/Delegates.ts`),
     platform: path.resolve(projectDir, `src/${platformName}/platform`)
   };
 };

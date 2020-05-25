@@ -20,11 +20,13 @@ const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
 const recentFilesFilePath = `${app.getPath('userData')}/recent_files.json`;
 
 let mainWindow: BrowserWindow;
-
+let rendererDelegate: RendererDelegate;
 let currentFilePath: string;
 
 if (module.hot) {
-  debug();
+  debug({
+    showDevTools: false
+  });
   module.hot.accept();
 }
 
@@ -51,9 +53,9 @@ function createWindow(): void {
       nodeIntegration: true
     }
   });
-  const rendererDelegate = createRendererDelegate(mainWindow);
-  registerManagers(rendererDelegate);
-  registerListeners(rendererDelegate);
+  rendererDelegate = createRendererDelegate(mainWindow);
+  registerManagers();
+  registerListeners();
 
   if (isDevelopment) {
     // tslint:disable-next-line: no-floating-promises
@@ -80,11 +82,11 @@ function createWindow(): void {
   setMenu();
 }
 
-function registerManagers(rendererDelegate: RendererDelegate) {
+function registerManagers() {
   new PreferenceManager(rendererDelegate).register();
 }
 
-function registerListeners(rendererDelegate: RendererDelegate) {
+function registerListeners() {
   rendererDelegate.on('ready-for-events', () => {
     rendererDelegate.send('new-file-created');
   });
