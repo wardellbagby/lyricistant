@@ -1,0 +1,26 @@
+name: Build and Deploy Web
+on:
+  push:
+    branches:
+      - wardell/lyricistant-on-the-web
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the current branch.
+        uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
+      - name: Setup Node.js - 12.x.x
+        uses: actions/setup-node@b6651e20e530d6e6b845a9828606779e89f5529c
+        with:
+          node-version: '>=12.10'
+      - name: Install project dependencies.
+        run: npm install
+      - name: Build Web.
+        run: npm run build-web
+      - name: Deploy Web
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.LYRICISTANT_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: dist/web
