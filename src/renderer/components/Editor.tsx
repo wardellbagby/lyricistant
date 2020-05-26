@@ -20,8 +20,10 @@ export interface WordAtPosition {
 }
 
 export interface EditorProps {
+  text: string;
   fontSize: number;
   onWordSelected: (word: WordAtPosition) => void;
+  onTextChanged: (text: string) => void;
   textReplacements: Observable<TextReplacement>;
 }
 
@@ -63,6 +65,8 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
     <MonacoEditor
       language={LYRICISTANT_LANGUAGE}
       editorDidMount={editorDidMount}
+      defaultValue={props.text}
+      onChange={props.onTextChanged}
       options={{
         lineNumbers: (line: number): string =>
           syllable(editor.getModel().getLineContent(line)).toString(),

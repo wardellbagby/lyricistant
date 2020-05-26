@@ -51,6 +51,7 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
     null as PreferencesData
   );
   const [theme, setTheme] = useState(defaultTheme);
+  const [editorText, setEditorText] = useState('');
 
   useEffect(handleThemeChanges(setTheme, props.onShouldUpdateBackground), []);
   useEffect(handlePreferencesChanges(setPreferencesData), []);
@@ -70,8 +71,10 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
         <AppLayout>
           <Menu />
           <Editor
+            text={editorText}
             fontSize={theme.typography.fontSize}
             onWordSelected={onWordSelected}
+            onTextChanged={setEditorText}
             textReplacements={textReplacements}
           />
           <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
