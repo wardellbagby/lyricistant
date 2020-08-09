@@ -4,7 +4,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -31,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const ListContainer: React.FC<{
   listRef: (ref: HTMLElement | null) => void;
-  style: CSSProperties;
+  style: React.CSSProperties;
 }> = ({ listRef, style, children }) => {
   const classes = useStyles(undefined);
   return (
