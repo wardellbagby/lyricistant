@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Electron" type="CompoundRunConfigurationType">
+    <toRun name="Electon: Launch" type="NodeJSConfigurationType" />
+    <toRun name="Electron: Renderer" type="ChromiumRemoteDebugType" />
+    <toRun name="Electron: Main" type="ChromiumRemoteDebugType" />
+    <method v="2" />
+  </configuration>
+</component>

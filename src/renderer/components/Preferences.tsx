@@ -5,16 +5,15 @@ import Dialog from '@material-ui/core/Dialog';
 import FormLabel from '@material-ui/core/FormLabel';
 import GridList from '@material-ui/core/GridList';
 import IconButton from '@material-ui/core/IconButton';
-import Slide from '@material-ui/core/Slide';
+import Slide, { SlideProps } from '@material-ui/core/Slide';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import { TransitionProps } from '@material-ui/core/transitions/transition';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { PreferencesData } from 'common/PreferencesData';
+import { PreferencesData } from 'common/preferences/PreferencesData';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 export interface PreferencesProps {
@@ -24,7 +23,7 @@ export interface PreferencesProps {
   onClosed: () => void;
 }
 
-const DialogTransition = React.forwardRef<unknown, TransitionProps>(
+const DialogTransition = React.forwardRef<unknown, SlideProps>(
   function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   }
@@ -69,7 +68,7 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
   };
 
   if (!props.show && !preferencesData) {
-    return <div></div>;
+    return <div />;
   }
 
   return (

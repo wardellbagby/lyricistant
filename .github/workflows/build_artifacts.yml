@@ -1,4 +1,4 @@
-name: CI
+name: Build All and Upload Artifacts
 
 on: [push, pull_request]
 
@@ -17,8 +17,10 @@ jobs:
         run: npm install
       - name: Check for Lint issues.
         run: npm run lint
-      - name: Build the project.
+      - name: Build the Electron project.
         run: npm run build
+      - name: Build the Web project.
+        run: npm run build-web
       - name: Build artifacts for all supported OSes.
         run: npm run dist-all
       - name: Run UI Tests against macOS app.
@@ -29,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5
         with:
           name: artifacts
-          path: dist/
+          path: dist/electron-app

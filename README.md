@@ -3,7 +3,7 @@
 
 An assistant to the lyricist in you!
 
-## How do I use it?
+## What is it?
 
 Lyricistant is a text application that lyricists can use to write their lyrics. It offers these features that lyricists will find helpful:
 
@@ -12,11 +12,13 @@ Lyricistant is a text application that lyricists can use to write their lyrics. 
 - The ability to save and open lyrics.
 - Recently opened lyrics.
 
-## How do I install it?
+## How do I use it?
 
 You can find the latest releases for macOS, Windows, and Linux at the link below:
 
 [Releases](https://github.com/wardellbagby/lyricistant/releases)
+
+A port of Lyricistant to the web is being worked on. This is still under active development, but can be found at https://wardellbagby.github.io/lyricistant/
 
 
 ## Information for developers

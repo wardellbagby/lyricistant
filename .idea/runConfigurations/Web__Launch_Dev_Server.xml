@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Web: Launch Dev Server" type="NodeJSConfigurationType" application-parameters="-r tsconfig-paths/register --config config/web/dev.webpack.config.ts" node-parameters="--inspect-brk=9229" path-to-js-file="node_modules/.bin/webpack-dev-server" working-dir="$PROJECT_DIR$/">
+    <method v="2" />
+  </configuration>
+</component>

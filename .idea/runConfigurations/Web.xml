@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Web" type="CompoundRunConfigurationType">
+    <toRun name="Web: Launch Chrome" type="JavascriptDebugType" />
+    <toRun name="Web: Launch Dev Server" type="NodeJSConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

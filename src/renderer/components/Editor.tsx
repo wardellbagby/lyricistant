@@ -1,7 +1,5 @@
-import { IpcChannels } from 'common/ipc-channels';
-import { LYRICISTANT_LANGUAGE } from 'common/monaco-helpers';
-import { ipcRenderer } from 'electron';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { toast } from 'react-toastify';
@@ -9,19 +7,23 @@ import { fromEventPattern, merge, Observable, Subject } from 'rxjs';
 import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
+import { LYRICISTANT_LANGUAGE } from '../util/monaco-helpers';
 
 export interface TextReplacement {
   word: string;
   range: monaco.IRange;
 }
+
 export interface WordAtPosition {
   range: monaco.IRange;
   word: string;
 }
+
 export interface EditorProps {
-  className?: string;
+  text: string;
   fontSize: number;
   onWordSelected: (word: WordAtPosition) => void;
+  onTextChanged: (text: string) => void;
   textReplacements: Observable<TextReplacement>;
 }
 
@@ -60,27 +62,27 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
   useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
 
   return (
-    <div className={props.className}>
-      <MonacoEditor
-        language={LYRICISTANT_LANGUAGE}
-        editorDidMount={editorDidMount}
-        options={{
-          lineNumbers: (line: number): string =>
-            syllable(editor.getModel().getLineContent(line)).toString(),
-          fontSize: props.fontSize,
-          automaticLayout: true,
-          overviewRulerBorder: false,
-          occurrencesHighlight: false,
-          renderLineHighlight: 'none',
-          scrollBeyondLastLine: false,
-          quickSuggestions: false,
-          hideCursorInOverviewRuler: true,
-          minimap: {
-            enabled: false
-          }
-        }}
-      />
-    </div>
+    <MonacoEditor
+      language={LYRICISTANT_LANGUAGE}
+      editorDidMount={editorDidMount}
+      defaultValue={props.text}
+      onChange={props.onTextChanged}
+      options={{
+        lineNumbers: (line: number): string =>
+          syllable(editor.getModel().getLineContent(line)).toString(),
+        fontSize: props.fontSize,
+        automaticLayout: true,
+        overviewRulerBorder: false,
+        occurrencesHighlight: false,
+        renderLineHighlight: 'none',
+        scrollBeyondLastLine: false,
+        quickSuggestions: false,
+        hideCursorInOverviewRuler: true,
+        minimap: {
+          enabled: false
+        }
+      }}
+    />
   );
 };
 
@@ -185,7 +187,7 @@ function handleEditorEvents(
       return;
     }
 
-    const onFileSaveEnded = (event: any, error: any, path: string) => {
+    const onFileSaveEnded = (error: any, path: string) => {
       // Resets the undo stack.
       editor.getModel().setValue(editor.getModel().getValue());
       setVersion(editor.getModel().getAlternativeVersionId());
@@ -194,35 +196,34 @@ function handleEditorEvents(
         toast.info(`${path} saved`);
       }
     };
-    ipcRenderer.on(IpcChannels.FILE_SAVE_ENDED, onFileSaveEnded);
+    platformDelegate.on('file-save-ended', onFileSaveEnded);
 
     const onNewFileAttempt = () => {
       if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
-        ipcRenderer.send(IpcChannels.PROMPT_SAVE_FOR_NEW);
+        platformDelegate.send('prompt-save-file-for-new');
       } else {
-        ipcRenderer.send(IpcChannels.OKAY_FOR_NEW_FILE);
+        platformDelegate.send('okay-for-new-file');
       }
     };
-    ipcRenderer.on(IpcChannels.ATTEMPT_NEW_FILE, onNewFileAttempt);
+    platformDelegate.on('new-file', onNewFileAttempt);
 
     const onQuitAttempt = () => {
       if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
-        ipcRenderer.send(IpcChannels.PROMPT_SAVE_FOR_QUIT);
+        platformDelegate.send('prompt-save-file-for-quit');
       } else {
-        ipcRenderer.send(IpcChannels.OKAY_FOR_QUIT);
+        platformDelegate.send('okay-for-quit');
       }
     };
-    ipcRenderer.on(IpcChannels.ATTEMPT_QUIT, onQuitAttempt);
+    platformDelegate.on('attempt-quit', onQuitAttempt);
 
     const onNewFileCreated = () => {
       editor.getModel().setValue('');
       setVersion(editor.getModel().getAlternativeVersionId());
     };
-    ipcRenderer.on(IpcChannels.NEW_FILE_CREATED, onNewFileCreated);
+    platformDelegate.on('new-file-created', onNewFileCreated);
 
     const onFileOpened = (
-      _: any,
-      error: any,
+      error: Error,
       fileName: string,
       fileContents: string
     ) => {
@@ -231,46 +232,37 @@ function handleEditorEvents(
         setVersion(editor.getModel().getAlternativeVersionId());
       }
     };
-    ipcRenderer.on(IpcChannels.FILE_OPENED, onFileOpened);
+    platformDelegate.on('file-opened', onFileOpened);
 
     const onTextRequested = () => {
-      ipcRenderer.send(IpcChannels.EDITOR_TEXT, editor.getModel().getValue());
+      platformDelegate.send('editor-text', editor.getModel().getValue());
     };
-    ipcRenderer.on(IpcChannels.REQUEST_EDITOR_TEXT, onTextRequested);
+    platformDelegate.on('request-editor-text', onTextRequested);
 
     const onUndo = () => editor.trigger('', 'undo', '');
-    ipcRenderer.on(IpcChannels.UNDO, onUndo);
+    platformDelegate.on('undo', onUndo);
 
     const onRedo = () => editor.trigger('', 'redo', '');
-    ipcRenderer.on(IpcChannels.REDO, onRedo);
+    platformDelegate.on('redo', onRedo);
 
     const onFind = () => editor.trigger('', 'actions.findWithSelection', '');
-    ipcRenderer.on(IpcChannels.FIND, onFind);
+    platformDelegate.on('find', onFind);
 
     const onReplace = () =>
       editor.trigger('', 'editor.action.startFindReplaceAction', '');
-    ipcRenderer.on(IpcChannels.REPLACE, onReplace);
+    platformDelegate.on('replace', onReplace);
 
     return () => {
-      ipcRenderer.removeListener(IpcChannels.FILE_SAVE_ENDED, onFileSaveEnded);
-      ipcRenderer.removeListener(
-        IpcChannels.ATTEMPT_NEW_FILE,
-        onNewFileAttempt
-      );
-      ipcRenderer.removeListener(IpcChannels.ATTEMPT_QUIT, onQuitAttempt);
-      ipcRenderer.removeListener(
-        IpcChannels.NEW_FILE_CREATED,
-        onNewFileCreated
-      );
-      ipcRenderer.removeListener(IpcChannels.FILE_OPENED, onFileOpened);
-      ipcRenderer.removeListener(
-        IpcChannels.REQUEST_EDITOR_TEXT,
-        onTextRequested
-      );
-      ipcRenderer.removeListener(IpcChannels.UNDO, onUndo);
-      ipcRenderer.removeListener(IpcChannels.REDO, onRedo);
-      ipcRenderer.removeListener(IpcChannels.FIND, onFind);
-      ipcRenderer.removeListener(IpcChannels.REPLACE, onReplace);
+      platformDelegate.removeListener('file-save-ended', onFileSaveEnded);
+      platformDelegate.removeListener('new-file', onNewFileAttempt);
+      platformDelegate.removeListener('attempt-quit', onQuitAttempt);
+      platformDelegate.removeListener('new-file-created', onNewFileCreated);
+      platformDelegate.removeListener('file-opened', onFileOpened);
+      platformDelegate.removeListener('request-editor-text', onTextRequested);
+      platformDelegate.removeListener('undo', onUndo);
+      platformDelegate.removeListener('redo', onRedo);
+      platformDelegate.removeListener('find', onFind);
+      platformDelegate.removeListener('replace', onReplace);
     };
   };
 }

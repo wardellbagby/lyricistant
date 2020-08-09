@@ -10,9 +10,12 @@
     "jsx": "react",
     "downlevelIteration": true,
     "lib": ["esnext", "dom"],
+    "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
-      "common/*": ["src/common/*"]
+      "common/*": ["src/common/*"],
+      "PlatformDelegate": ["src/electron/Delegates.ts", "src/web/Delegates.ts"],
+      "platform/*": ["src/electron/platform/*", "src/web/platform/*"]
     }
   }
 }

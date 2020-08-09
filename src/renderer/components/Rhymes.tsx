@@ -4,43 +4,45 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { fetchRhymes } from 'common/fetchRhymes';
-import { Rhyme } from 'common/Rhyme';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { Rhyme } from '../models/rhyme';
+import { fetchRhymes } from '../networking/fetchRhymes';
 import { WordAtPosition } from './Editor';
 
 interface RhymesProp {
-  className?: string;
   onRhymeClicked: (rhyme: Rhyme, position: monaco.IRange) => void;
   queries: Observable<WordAtPosition>;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  rhyme: {
-    wordBreak: 'break-all'
+  rhymeList: {
+    wordBreak: 'break-all',
+    color: theme.palette.text.disabled,
+    '&:hover': {
+      color: theme.palette.text.primary
+    }
   }
 }));
 
 const ListContainer: React.FC<{
   listRef: (ref: HTMLElement | null) => void;
-  style: CSSProperties;
+  style: React.CSSProperties;
 }> = ({ listRef, style, children }) => {
+  const classes = useStyles(undefined);
   return (
-    <List ref={listRef} style={style}>
+    <List ref={listRef} style={style} className={classes.rhymeList}>
       {children}
     </List>
   );
 };
 
 export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
-  const classes = useStyles(undefined);
-  const [rhymes, setRhymes] = useState([] as Rhyme[]);
-  const [queryData, setQueryData] = useState(null as WordAtPosition);
+  const [rhymes, setRhymes] = useState<Rhyme[]>([]);
+  const [queryData, setQueryData] = useState<WordAtPosition>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(handleQueries(props.queries, setRhymes, setQueryData, setLoading), [
@@ -49,12 +51,7 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
 
   if (loading) {
     return (
-      <Box
-        className={props.className}
-        display="flex"
-        width={'100%'}
-        height={'100%'}
-      >
+      <Box display="flex" width={'100%'} height={'100%'}>
         <CircularProgress style={{ margin: 'auto' }} />
       </Box>
     );
@@ -62,13 +59,12 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
   return (
     <Virtuoso
       ListContainer={ListContainer}
-      className={props.className}
       style={{ width: '100%', height: '100%' }}
       totalCount={rhymes.length}
       item={(index) => {
         const rhyme = rhymes[index];
 
-        return renderRhyme(rhyme, classes.rhyme, () => {
+        return renderRhyme(rhyme, () => {
           setLoading(true);
           props.onRhymeClicked(rhyme, queryData.range);
         });
@@ -77,14 +73,10 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
   );
 };
 
-function renderRhyme(
-  rhyme: Rhyme,
-  className: string,
-  onClick: () => void
-): React.ReactElement {
+function renderRhyme(rhyme: Rhyme, onClick: () => void): React.ReactElement {
   return (
-    <ListItem button className={className} color={'primary'} key={rhyme.word}>
-      <ListItemText primary={rhyme.word} onClick={onClick} />
+    <ListItem button key={rhyme.word}>
+      <ListItemText onClick={onClick} primary={rhyme.word} />
     </ListItem>
   );
 }

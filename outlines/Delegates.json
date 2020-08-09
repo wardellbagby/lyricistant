@@ -1,0 +1,56 @@
+{
+  "imports": {
+    "PreferencesData": "./preferences/PreferencesData"
+  },
+  "rendererChannels": [
+    {
+      "channel": "dark-mode-toggled",
+      "textSize": "number | null",
+      "useDarkColors": "boolean"
+    },
+    {
+      "channel": "prefs-updated",
+      "preferenceData": "PreferencesData"
+    },
+    { "channel": "new-file-created" },
+    {
+      "channel": "file-save-ended",
+      "error": "Error | null",
+      "currentFilePath": "string"
+    },
+    { "channel": "close-prefs" },
+    { "channel": "find" },
+    { "channel": "replace" },
+    { "channel": "new-file" },
+    {
+      "channel": "file-opened",
+      "error": "Error",
+      "filePath": "string",
+      "data": "string"
+    },
+    {
+      "channel": "file-save-started",
+      "filePath": "string"
+    },
+    { "channel": "request-editor-text" },
+    { "channel": "attempt-quit" },
+    { "channel": "undo" },
+    { "channel": "redo" },
+    { "channel": "open-prefs" }
+  ],
+  "platformChannels": [
+    { "channel": "ready-for-events" },
+    {
+      "channel": "editor-text",
+      "text": "string"
+    },
+    { "channel": "prompt-save-file-for-new" },
+    { "channel": "prompt-save-file-for-quit" },
+    { "channel": "okay-for-new-file" },
+    { "channel": "okay-for-quit" },
+    {
+      "channel": "save-prefs",
+      "data?": "PreferencesData"
+    }
+  ]
+}
