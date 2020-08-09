@@ -1,8 +1,8 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { MonacoPlugin, aliases, projectDir } = require('../shared.js');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { Configuration } from 'webpack';
+import { aliases, DelegatesPlugin, MonacoPlugin, resolve } from '../shared';
 
-module.exports = {
+const config: Configuration = {
   target: 'web',
   entry: './src/web/index.ts',
   devtool: 'eval-source-map',
@@ -13,6 +13,7 @@ module.exports = {
     modules: ['node_modules']
   },
   plugins: [
+    DelegatesPlugin,
     MonacoPlugin,
     new HtmlWebpackPlugin({
       title: 'Untitled',
@@ -30,8 +31,8 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        include: [path.resolve(projectDir, 'src/')],
-        exclude: [path.resolve(projectDir, 'src/electron')],
+        include: [resolve('src/')],
+        exclude: [resolve('src/electron')],
         use: 'ts-loader'
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
@@ -42,10 +43,12 @@ module.exports = {
     ]
   },
   output: {
-    path: path.resolve(projectDir, 'dist/web'),
+    path: resolve('dist/web'),
     filename: 'web.js'
   },
   devServer: {
-    contentBase: path.resolve(projectDir, 'dist/web')
+    contentBase: resolve('dist/web')
   }
 };
+
+export default config;

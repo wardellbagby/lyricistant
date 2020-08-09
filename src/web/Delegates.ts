@@ -1,4 +1,3 @@
-// tslint:disable: unified-signatures
 import { PlatformDelegate, RendererDelegate } from 'common/Delegates';
 
 class WebPlatformDelegate implements PlatformDelegate {

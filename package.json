@@ -17,11 +17,11 @@
   "sideEffects": false,
   "electronWebpack": {
     "renderer": {
-      "webpackConfig": "config/electron/renderer.webpack.config.js"
+      "webpackConfig": "config/electron/renderer.webpack.config.ts"
     },
     "main": {
       "sourceDirectory": "src/electron",
-      "webpackConfig": "config/electron/main.webpack.config.js"
+      "webpackConfig": "config/electron/main.webpack.config.ts"
     },
     "whiteListedModules": [
       "react-monaco-editor",
@@ -32,13 +32,13 @@
     ]
   },
   "scripts": {
-    "build": "electron-webpack",
-    "build-web": "webpack --config config/web/prod.webpack.config.js",
+    "build": "electron-webpack -r ts-node/register -r tsconfig-paths/register",
+    "build-web": "webpack -r tsconfig-paths/register --config config/web/prod.webpack.config.ts",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "lint-fix": "tslint -c tslint.json -p tsconfig.json --fix",
-    "start": "electron-webpack dev",
-    "start-web": "webpack-dev-server --open --config config/web/dev.webpack.config.js",
+    "start": "cross-env NODE_OPTIONS='-r ts-node/register -r tsconfig-paths/register' electron-webpack dev --progress",
+    "start-web": "webpack-dev-server -r tsconfig-paths/register --open --config config/web/dev.webpack.config.ts",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist-all": "electron-builder --win --mac --linux",
@@ -87,9 +87,12 @@
     "@types/prettier": "^2.0.1",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.4",
+    "@types/terser-webpack-plugin": "^3.0.0",
+    "@types/webpack-dev-server": "^3.11.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "compression-webpack-plugin": "^3.1.0",
+    "cross-env": "^7.0.2",
     "electron": "^8.0.0",
     "electron-builder": "^22.2.0",
     "electron-webpack": "^2.8.2",
