@@ -2,7 +2,7 @@ name: Build and Deploy Web
 on:
   push:
     branches:
-      - wardell/lyricistant-on-the-web
+      - main
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
