@@ -17,13 +17,6 @@ export class PreferenceManager extends Manager {
     });
   }
 
-  public unregister(): void {
-    this.rendererDelegate.removeListener(
-      'ready-for-events',
-      this.onRendererReady
-    );
-  }
-
   private onRendererReady = (): void => {
     const data = this.preferencesOrDefault();
 

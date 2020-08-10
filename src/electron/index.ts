@@ -1,5 +1,5 @@
 import { RendererDelegate } from 'common/Delegates';
-import { PreferenceManager } from 'common/preferences/PreferenceManager';
+import { registerCommonManagers } from 'common/Managers';
 import {
   app,
   BrowserWindow,
@@ -19,7 +19,7 @@ import { createRendererDelegate } from './Delegates';
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
 const recentFilesFilePath = `${app.getPath('userData')}/recent_files.json`;
 
-let mainWindow: BrowserWindow;
+export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
 let currentFilePath: string;
 
@@ -54,7 +54,7 @@ function createWindow(): void {
     }
   });
   rendererDelegate = createRendererDelegate(mainWindow);
-  registerManagers();
+  registerCommonManagers(rendererDelegate);
   registerListeners();
 
   if (isDevelopment) {
@@ -80,10 +80,6 @@ function createWindow(): void {
     mainWindow = undefined;
   });
   setMenu();
-}
-
-function registerManagers() {
-  new PreferenceManager(rendererDelegate).register();
 }
 
 function registerListeners() {

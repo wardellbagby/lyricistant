@@ -2,7 +2,7 @@ import { Box, ButtonBase, Grid, Paper, Theme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AddCircle, FolderOpen, Save } from '@material-ui/icons';
-import React, { FunctionComponent, PropsWithChildren } from 'react';
+import React, { FunctionComponent } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -18,11 +18,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const MenuIcon: FunctionComponent = ({ children }) => {
+const MenuIcon: FunctionComponent<{ onClick?: () => void }> = ({
+  onClick,
+  children
+}) => {
   const classes = useStyles();
 
   return (
-    <ButtonBase className={classes.root}>
+    <ButtonBase className={classes.root} onClick={onClick}>
       <Box display="flex" alignItems="center" justifyContent="center">
         {React.Children.map(children, (child: React.ReactElement) =>
           React.cloneElement(child, { className: classes.icon })
@@ -31,9 +34,20 @@ const MenuIcon: FunctionComponent = ({ children }) => {
     </ButtonBase>
   );
 };
-export const Menu: FunctionComponent<PropsWithChildren<{
+
+interface MenuProps {
   className?: string;
-}>> = ({ className }) => {
+  onNewClicked?: () => void;
+  onOpenClicked: () => void;
+  onSaveClicked: () => void;
+}
+
+export const Menu: FunctionComponent<MenuProps> = ({
+  onNewClicked,
+  onOpenClicked,
+  onSaveClicked,
+  className
+}) => {
   const theme = useTheme();
   const useHorizontal = useMediaQuery(theme.breakpoints.down('sm'));
   return (
@@ -43,13 +57,13 @@ export const Menu: FunctionComponent<PropsWithChildren<{
         alignItems={'center'}
         wrap={'wrap'}
       >
-        <MenuIcon>
+        <MenuIcon onClick={onNewClicked}>
           <AddCircle />
         </MenuIcon>
-        <MenuIcon>
+        <MenuIcon onClick={onOpenClicked}>
           <FolderOpen />
         </MenuIcon>
-        <MenuIcon>
+        <MenuIcon onClick={onSaveClicked}>
           <Save />
         </MenuIcon>
       </Grid>

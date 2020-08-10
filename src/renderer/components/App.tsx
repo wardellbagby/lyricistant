@@ -69,7 +69,14 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
           onClosed={onPreferencesClosed}
         />
         <AppLayout>
-          <Menu />
+          <Menu
+            onOpenClicked={() => {
+              platformDelegate.send('open-file');
+            }}
+            onSaveClicked={() => {
+              platformDelegate.send('save-file', editorText);
+            }}
+          />
           <Editor
             text={editorText}
             fontSize={theme.typography.fontSize}

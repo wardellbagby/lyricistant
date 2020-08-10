@@ -11,6 +11,4 @@ export abstract class Manager {
   }
 
   public abstract register(): void;
-
-  public abstract unregister(): void;
 }

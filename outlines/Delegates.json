@@ -51,6 +51,8 @@
     {
       "channel": "save-prefs",
       "data?": "PreferencesData"
-    }
+    },
+    { "channel": "open-file" },
+    { "channel": "save-file", "data": "string" }
   ]
 }

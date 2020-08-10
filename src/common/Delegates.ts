@@ -67,6 +67,12 @@ export interface RendererDelegate {
     channel: 'save-prefs',
     listener: (data?: PreferencesData) => void
   ): this;
+
+  on(channel: 'open-file', listener: () => void): this;
+  removeListener(channel: 'open-file', listener: () => void): this;
+
+  on(channel: 'save-file', listener: (data: string) => void): this;
+  removeListener(channel: 'save-file', listener: (data: string) => void): this;
 }
 /**
  * Used by the renderer to communicate with the platform.
@@ -79,6 +85,8 @@ export interface PlatformDelegate {
   send(channel: 'okay-for-new-file'): void;
   send(channel: 'okay-for-quit'): void;
   send(channel: 'save-prefs', data?: PreferencesData): void;
+  send(channel: 'open-file'): void;
+  send(channel: 'save-file', data: string): void;
 
   on(
     channel: 'dark-mode-toggled',
