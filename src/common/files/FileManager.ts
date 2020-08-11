@@ -1,9 +1,14 @@
 import { FileData } from 'common/files/Files';
 import { Manager } from 'common/Manager';
 import { Files } from 'platform/Files';
+import { RecentFiles } from 'platform/RecentFiles';
+
 export class FileManager extends Manager {
+  private readonly files: Files = new Files();
+  private readonly recentFiles = new RecentFiles();
+
   private currentFilePath: string | undefined = undefined;
-  private files: Files = new Files();
+  private newFileListener: (recentFiles: string[]) => void = undefined;
 
   public register(): void {
     this.rendererDelegate.on('ready-for-events', this.onRendererReady);
@@ -11,8 +16,15 @@ export class FileManager extends Manager {
     this.rendererDelegate.on('save-file', this.onSaveFile);
   }
 
+  public onNewFile(listener: (recentFiles: string[]) => void) {
+    this.newFileListener = listener;
+  }
+
   private onRendererReady = () => {
     this.rendererDelegate.send('new-file-created');
+    if (this.newFileListener) {
+      this.newFileListener(this.recentFiles.getRecentFiles());
+    }
   };
 
   private onOpenFile = async () => {
@@ -26,6 +38,10 @@ export class FileManager extends Manager {
           fileData.filePath,
           fileData.data
         );
+        this.recentFiles.addRecentFile(this.currentFilePath);
+        if (this.newFileListener) {
+          this.newFileListener(this.recentFiles.getRecentFiles());
+        }
       }
     } catch (e) {
       this.rendererDelegate.send('file-opened', e, undefined, undefined);

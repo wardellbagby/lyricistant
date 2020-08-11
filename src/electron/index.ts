@@ -1,23 +1,21 @@
 import { RendererDelegate } from 'common/Delegates';
-import { registerCommonManagers } from 'common/Managers';
+import { FileManager } from 'common/files/FileManager';
+import { getCommonManager, registerCommonManagers } from 'common/Managers';
 import {
   app,
   BrowserWindow,
   dialog,
   Menu,
   MenuItemConstructorOptions,
-  MessageBoxReturnValue,
-  OpenDialogReturnValue,
-  SaveDialogReturnValue
+  MessageBoxReturnValue
 } from 'electron';
 import debug from 'electron-debug';
-import { readFile, readFileSync, writeFile } from 'fs';
+import { writeFile } from 'fs';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 import { createRendererDelegate } from './Delegates';
 
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
-const recentFilesFilePath = `${app.getPath('userData')}/recent_files.json`;
 
 export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
@@ -146,6 +144,10 @@ function registerListeners() {
 
   rendererDelegate.on('okay-for-quit', () => {
     app.quit();
+  });
+
+  getCommonManager(FileManager).onNewFile((recentFiles) => {
+    setMenu(recentFiles);
   });
 }
 
@@ -314,54 +316,19 @@ function newMenuItemHandler(): void {
 }
 
 function openMenuItemHandler(): void {
-  dialog
-    .showOpenDialog(mainWindow, { properties: ['openFile'] })
-    .then((value: OpenDialogReturnValue) => {
-      if (value.filePaths.length > 0) {
-        const filePath: string = value.filePaths[0];
-        openFile(filePath);
-      }
-    })
-    .catch(() => {
-      dialog.showErrorBox(
-        'Error',
-        'Error trying to show the open file dialog.'
-      );
-    });
+  return;
 }
 
-function openFile(filePath: string): void {
-  readFile(filePath, 'utf8', (error: Error, data: string) => {
-    currentFilePath = filePath;
-    rendererDelegate.send('file-opened', error, filePath, data);
-    addToRecentFiles(filePath);
-  });
+function openFile(_: string): void {
+  return;
 }
 
 function saveMenuItemHandler(): void {
-  if (!currentFilePath) {
-    saveAsHandler();
-  } else {
-    rendererDelegate.send('file-save-started', currentFilePath);
-    rendererDelegate.send('request-editor-text');
-  }
+  return;
 }
 
 function saveAsHandler(): void {
-  dialog
-    .showSaveDialog(mainWindow, {
-      filters: [{ name: 'Text Files', extensions: ['txt'] }]
-    })
-    .then((value: SaveDialogReturnValue) => {
-      if (value.filePath) {
-        currentFilePath = value.filePath;
-        rendererDelegate.send('request-editor-text');
-        addToRecentFiles(value.filePath);
-      }
-    })
-    .catch(() => {
-      dialog.showErrorBox('Error', 'Error trying to show the save as dialog.');
-    });
+  return;
 }
 
 function quitHandler(): void {
@@ -381,52 +348,22 @@ function preferencesHandler(): void {
 }
 
 function createRecentFilesSubmenu(
-  loadedRecentFiles?: string[]
+  recentFiles?: string[]
 ): MenuItemConstructorOptions[] {
-  let validRecentFiles: string[];
-  if (!loadedRecentFiles) {
-    // flag is a+ even though we're only reading so that the file is created if it doesn't exist.
-    const recentFilesFileContents: string = readFileSync(recentFilesFilePath, {
-      encoding: 'utf8',
-      flag: 'a+'
-    });
-    if (recentFilesFileContents.length === 0) {
-      validRecentFiles = [];
-    } else {
-      validRecentFiles = JSON.parse(recentFilesFileContents) as string[];
-    }
-  } else {
-    validRecentFiles = loadedRecentFiles;
+  if (!recentFiles) {
+    return [
+      {
+        label: '<No recent files>',
+        enabled: false
+      }
+    ];
   }
-
-  return validRecentFiles.map((filePath: string) => {
+  return recentFiles.map((filePath: string) => {
     return {
       label: filePath,
       click: (): void => {
         openFile(filePath);
       }
     };
-  });
-}
-
-function addToRecentFiles(filePath: string): void {
-  readFile(recentFilesFilePath, 'utf8', (err: Error, data: string) => {
-    let recentFiles: string[];
-    if (data.length === 0) {
-      recentFiles = [];
-    } else {
-      recentFiles = JSON.parse(data) as string[];
-    }
-
-    recentFiles.unshift(filePath);
-    if (recentFiles.length > 10) {
-      recentFiles.pop();
-    }
-    // Want this to be unique, but need this to be a list 'cause can't stringify a Set.
-    recentFiles = [...new Set(recentFiles)];
-
-    writeFile(recentFilesFilePath, JSON.stringify(recentFiles), () => {
-      setMenu(recentFiles);
-    });
   });
 }
