@@ -6,6 +6,7 @@ import {
   IpcRenderer,
   ipcRenderer as electronRenderer
 } from 'electron';
+import { logger } from 'platform/Logger';
 
 class ElectronRendererDelegate implements RendererDelegate {
   private ipcMain: IpcMain;
@@ -21,10 +22,12 @@ class ElectronRendererDelegate implements RendererDelegate {
     this.window = window;
   }
   public send(channel: string, ...args: any[]): void {
+    logger.info('Sending data to renderer', channel, args);
     this.window.webContents.send(channel, ...args);
   }
 
   public on(channel: string, listener: (...args: any[]) => void): this {
+    logger.info('Registering renderer listener', channel);
     const listenerWithEvent = (_: GlobalEvent, ...args: any[]) => {
       listener(...args);
     };
@@ -39,6 +42,7 @@ class ElectronRendererDelegate implements RendererDelegate {
     channel: string,
     listener: (...args: any[]) => void
   ): this {
+    logger.info('Removing renderer listener', channel);
     this.ipcMain.removeListener(
       channel,
       this.listeners.get(listener.toString())
@@ -59,10 +63,12 @@ class ElectronPlatformDelegate implements PlatformDelegate {
     this.ipcRenderer = ipcRenderer;
   }
   public send(channel: string, ...args: any[]): void {
+    logger.info('Sending data to platform', channel, args);
     this.ipcRenderer.send(channel, ...args);
   }
 
   public on(channel: string, listener: (...args: any[]) => void): this {
+    logger.info('Registering platform listener', channel);
     const listenerWithEvent = (_: GlobalEvent, ...args: any[]) => {
       listener(...args);
     };
@@ -77,6 +83,7 @@ class ElectronPlatformDelegate implements PlatformDelegate {
     channel: string,
     listener: (...args: any[]) => void
   ): this {
+    logger.info('Removing platform listener', channel);
     this.ipcRenderer.removeListener(
       channel,
       this.listeners.get(listener.toString())

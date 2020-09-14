@@ -51,16 +51,6 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
   ]);
   useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
 
-  useEffect(handleSelectedWordChanges(editor, props.onWordSelected), [
-    editor,
-    props.onWordSelected
-  ]);
-  useEffect(handleTextReplacements(props.textReplacements, editor), [
-    editor,
-    props.textReplacements
-  ]);
-  useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
-
   return (
     <MonacoEditor
       language={LYRICISTANT_LANGUAGE}
@@ -205,7 +195,7 @@ function handleEditorEvents(
         platformDelegate.send('okay-for-new-file');
       }
     };
-    platformDelegate.on('new-file', onNewFileAttempt);
+    platformDelegate.on('is-okay-for-new-file', onNewFileAttempt);
 
     const onQuitAttempt = () => {
       if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
@@ -214,7 +204,7 @@ function handleEditorEvents(
         platformDelegate.send('okay-for-quit');
       }
     };
-    platformDelegate.on('attempt-quit', onQuitAttempt);
+    platformDelegate.on('is-okay-for-quit-file', onQuitAttempt);
 
     const onNewFileCreated = () => {
       editor.getModel().setValue('');
@@ -254,8 +244,8 @@ function handleEditorEvents(
 
     return () => {
       platformDelegate.removeListener('file-save-ended', onFileSaveEnded);
-      platformDelegate.removeListener('new-file', onNewFileAttempt);
-      platformDelegate.removeListener('attempt-quit', onQuitAttempt);
+      platformDelegate.removeListener('is-okay-for-new-file', onNewFileAttempt);
+      platformDelegate.removeListener('is-okay-for-quit-file', onQuitAttempt);
       platformDelegate.removeListener('new-file-created', onNewFileCreated);
       platformDelegate.removeListener('file-opened', onFileOpened);
       platformDelegate.removeListener('request-editor-text', onTextRequested);

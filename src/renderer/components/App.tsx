@@ -70,11 +70,14 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
         />
         <AppLayout>
           <Menu
+            onNewClicked={() => {
+              platformDelegate.send('new-file-attempt');
+            }}
             onOpenClicked={() => {
-              platformDelegate.send('open-file');
+              platformDelegate.send('open-file-attempt');
             }}
             onSaveClicked={() => {
-              platformDelegate.send('save-file', editorText);
+              platformDelegate.send('save-file-attempt', editorText);
             }}
           />
           <Editor

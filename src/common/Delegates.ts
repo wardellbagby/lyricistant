@@ -21,7 +21,7 @@ export interface RendererDelegate {
   send(channel: 'close-prefs'): void;
   send(channel: 'find'): void;
   send(channel: 'replace'): void;
-  send(channel: 'new-file'): void;
+  send(channel: 'is-okay-for-new-file'): void;
   send(
     channel: 'file-opened',
     error: Error,
@@ -30,7 +30,7 @@ export interface RendererDelegate {
   ): void;
   send(channel: 'file-save-started', filePath: string): void;
   send(channel: 'request-editor-text'): void;
-  send(channel: 'attempt-quit'): void;
+  send(channel: 'is-okay-for-quit-file'): void;
   send(channel: 'undo'): void;
   send(channel: 'redo'): void;
   send(channel: 'open-prefs'): void;
@@ -68,11 +68,17 @@ export interface RendererDelegate {
     listener: (data?: PreferencesData) => void
   ): this;
 
-  on(channel: 'open-file', listener: () => void): this;
-  removeListener(channel: 'open-file', listener: () => void): this;
+  on(channel: 'new-file-attempt', listener: () => void): this;
+  removeListener(channel: 'new-file-attempt', listener: () => void): this;
 
-  on(channel: 'save-file', listener: (data: string) => void): this;
-  removeListener(channel: 'save-file', listener: (data: string) => void): this;
+  on(channel: 'open-file-attempt', listener: () => void): this;
+  removeListener(channel: 'open-file-attempt', listener: () => void): this;
+
+  on(channel: 'save-file-attempt', listener: (data: string) => void): this;
+  removeListener(
+    channel: 'save-file-attempt',
+    listener: (data: string) => void
+  ): this;
 }
 /**
  * Used by the renderer to communicate with the platform.
@@ -85,8 +91,9 @@ export interface PlatformDelegate {
   send(channel: 'okay-for-new-file'): void;
   send(channel: 'okay-for-quit'): void;
   send(channel: 'save-prefs', data?: PreferencesData): void;
-  send(channel: 'open-file'): void;
-  send(channel: 'save-file', data: string): void;
+  send(channel: 'new-file-attempt'): void;
+  send(channel: 'open-file-attempt'): void;
+  send(channel: 'save-file-attempt', data: string): void;
 
   on(
     channel: 'dark-mode-toggled',
@@ -127,8 +134,8 @@ export interface PlatformDelegate {
   on(channel: 'replace', listener: () => void): this;
   removeListener(channel: 'replace', listener: () => void): this;
 
-  on(channel: 'new-file', listener: () => void): this;
-  removeListener(channel: 'new-file', listener: () => void): this;
+  on(channel: 'is-okay-for-new-file', listener: () => void): this;
+  removeListener(channel: 'is-okay-for-new-file', listener: () => void): this;
 
   on(
     channel: 'file-opened',
@@ -148,8 +155,8 @@ export interface PlatformDelegate {
   on(channel: 'request-editor-text', listener: () => void): this;
   removeListener(channel: 'request-editor-text', listener: () => void): this;
 
-  on(channel: 'attempt-quit', listener: () => void): this;
-  removeListener(channel: 'attempt-quit', listener: () => void): this;
+  on(channel: 'is-okay-for-quit-file', listener: () => void): this;
+  removeListener(channel: 'is-okay-for-quit-file', listener: () => void): this;
 
   on(channel: 'undo', listener: () => void): this;
   removeListener(channel: 'undo', listener: () => void): this;

@@ -1,8 +1,8 @@
 export class FileData {
-  public filePath: string;
+  public filePath?: string;
   public data: string;
 
-  constructor(fileName: string, data: string) {
+  constructor(fileName: string | undefined, data: string) {
     this.filePath = fileName;
     this.data = data;
   }

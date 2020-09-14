@@ -21,7 +21,7 @@
     { "channel": "close-prefs" },
     { "channel": "find" },
     { "channel": "replace" },
-    { "channel": "new-file" },
+    { "channel": "is-okay-for-new-file" },
     {
       "channel": "file-opened",
       "error": "Error",
@@ -33,7 +33,7 @@
       "filePath": "string"
     },
     { "channel": "request-editor-text" },
-    { "channel": "attempt-quit" },
+    { "channel": "is-okay-for-quit-file" },
     { "channel": "undo" },
     { "channel": "redo" },
     { "channel": "open-prefs" }
@@ -52,7 +52,8 @@
       "channel": "save-prefs",
       "data?": "PreferencesData"
     },
-    { "channel": "open-file" },
-    { "channel": "save-file", "data": "string" }
+    { "channel": "new-file-attempt" },
+    { "channel": "open-file-attempt" },
+    { "channel": "save-file-attempt", "data": "string" }
   ]
 }

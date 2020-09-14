@@ -1,17 +1,10 @@
 import { RendererDelegate } from 'common/Delegates';
 import { FileManager } from 'common/files/FileManager';
 import { getCommonManager, registerCommonManagers } from 'common/Managers';
-import {
-  app,
-  BrowserWindow,
-  dialog,
-  Menu,
-  MenuItemConstructorOptions,
-  MessageBoxReturnValue
-} from 'electron';
+import { app, BrowserWindow, Menu, MenuItemConstructorOptions } from 'electron';
 import debug from 'electron-debug';
-import { writeFile } from 'fs';
 import * as path from 'path';
+import { QuitManager } from 'platform/QuitManager';
 import { format as formatUrl } from 'url';
 import { createRendererDelegate } from './Delegates';
 
@@ -19,7 +12,7 @@ const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
 
 export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
-let currentFilePath: string;
+let quitManager: QuitManager;
 
 if (module.hot) {
   debug({
@@ -53,6 +46,8 @@ function createWindow(): void {
   });
   rendererDelegate = createRendererDelegate(mainWindow);
   registerCommonManagers(rendererDelegate);
+  quitManager = new QuitManager(rendererDelegate);
+  quitManager.register();
   registerListeners();
 
   if (isDevelopment) {
@@ -81,72 +76,7 @@ function createWindow(): void {
 }
 
 function registerListeners() {
-  rendererDelegate.on('ready-for-events', () => {
-    rendererDelegate.send('new-file-created');
-  });
-
-  rendererDelegate.on('editor-text', (text: string) => {
-    writeFile(currentFilePath, text, (error: NodeJS.ErrnoException) => {
-      rendererDelegate.send('file-save-ended', error, currentFilePath);
-    });
-  });
-
-  rendererDelegate.on('prompt-save-file-for-new', () => {
-    dialog
-      .showMessageBox(mainWindow, {
-        type: 'question',
-        title: 'Confirm Quit',
-        message:
-          "Your changes haven't been saved. Are you sure you want to create a new file?",
-        buttons: ['Create New File', 'Cancel'],
-        cancelId: 1
-      })
-      .then((value: MessageBoxReturnValue) => {
-        if (value.response === 0) {
-          rendererDelegate.send('new-file-created');
-        }
-      })
-      .catch(() => {
-        dialog.showErrorBox(
-          'Error',
-          'Error trying to show the confirm quit dialog for creating a new file.'
-        );
-      });
-  });
-
-  rendererDelegate.on('prompt-save-file-for-quit', () => {
-    dialog
-      .showMessageBox(mainWindow, {
-        type: 'question',
-        title: 'Confirm Quit',
-        message:
-          "Your changes haven't been saved. Are you sure you want to quit?",
-        buttons: ['Quit', 'Cancel'],
-        cancelId: 1
-      })
-      .then((value: MessageBoxReturnValue) => {
-        if (value.response === 0) {
-          app.quit();
-        }
-      })
-      .catch(() => {
-        dialog.showErrorBox(
-          'Error',
-          'Error trying to show the confirm quit dialog for quiting the app.'
-        );
-      });
-  });
-
-  rendererDelegate.on('okay-for-new-file', () => {
-    currentFilePath = undefined;
-    rendererDelegate.send('new-file-created');
-  });
-
-  rendererDelegate.on('okay-for-quit', () => {
-    app.quit();
-  });
-
-  getCommonManager(FileManager).onNewFile((recentFiles) => {
+  getCommonManager(FileManager).onNewFileOpened((recentFiles) => {
     setMenu(recentFiles);
   });
 }
@@ -165,7 +95,9 @@ function setMenu(recentFiles?: string[]): void {
         { type: 'separator' },
         {
           label: 'Open...',
-          click: openMenuItemHandler,
+          click: async () => {
+            await getCommonManager(FileManager).openFile();
+          },
           accelerator: 'CmdOrCtrl+O'
         },
         {
@@ -175,12 +107,16 @@ function setMenu(recentFiles?: string[]): void {
         { type: 'separator' },
         {
           label: 'Save',
-          click: saveMenuItemHandler,
+          click: () => {
+            getCommonManager(FileManager).saveFile(false);
+          },
           accelerator: 'CmdOrCtrl+S'
         },
         {
           label: 'Save As...',
-          click: saveAsHandler,
+          click: () => {
+            getCommonManager(FileManager).saveFile(true);
+          },
           accelerator: 'Shift+CmdOrCtrl+S'
         },
         { type: 'separator' },
@@ -311,28 +247,12 @@ function setMenu(recentFiles?: string[]): void {
   Menu.setApplicationMenu(mainMenu);
 }
 
-function newMenuItemHandler(): void {
-  rendererDelegate.send('new-file');
-}
-
-function openMenuItemHandler(): void {
-  return;
-}
-
-function openFile(_: string): void {
-  return;
-}
-
-function saveMenuItemHandler(): void {
-  return;
-}
-
-function saveAsHandler(): void {
-  return;
+async function newMenuItemHandler() {
+  await getCommonManager(FileManager).onNewFile();
 }
 
 function quitHandler(): void {
-  rendererDelegate.send('attempt-quit');
+  quitManager.attemptQuit();
 }
 
 function undoHandler(): void {
@@ -361,8 +281,8 @@ function createRecentFilesSubmenu(
   return recentFiles.map((filePath: string) => {
     return {
       label: filePath,
-      click: (): void => {
-        openFile(filePath);
+      click: async () => {
+        await getCommonManager(FileManager).openFile(filePath);
       }
     };
   });

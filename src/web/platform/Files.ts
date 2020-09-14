@@ -10,13 +10,15 @@ class WebFiles implements IFiles {
     }
   };
 
-  public saveFile = async (file: FileData) => {
+  public saveFile = async (file: FileData): Promise<undefined> => {
     await fileSave(new Blob([file.data]), {
       fileName: file.filePath,
       extensions: ['txt']
     });
+
+    return undefined;
   };
 }
 
-export type Files = WebFiles;
+export type Files = IFiles;
 export const Files = WebFiles;

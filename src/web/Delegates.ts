@@ -1,11 +1,14 @@
 import { PlatformDelegate, RendererDelegate } from 'common/Delegates';
+import { logger } from 'platform/Logger';
 
 class WebPlatformDelegate implements PlatformDelegate {
   public send(channel: string, ...args: any[]) {
+    logger.info('Sending data to renderer', { channel, args });
     queue(rendererListeners.getListeners(channel), args);
   }
 
   public on(channel: string, listener: (...args: any[]) => void): this {
+    logger.info('Registering renderer listener', { channel });
     platformListeners.addListener(channel, listener);
     return this;
   }
@@ -14,6 +17,7 @@ class WebPlatformDelegate implements PlatformDelegate {
     channel: string,
     listener: (...args: any[]) => void
   ): this {
+    logger.info('Removing renderer listener', { channel });
     platformListeners.removeListener(channel, listener);
     return this;
   }
@@ -21,10 +25,12 @@ class WebPlatformDelegate implements PlatformDelegate {
 
 class WebRendererDelegate implements RendererDelegate {
   public send(channel: string, ...args: any[]) {
+    logger.info('Sending data to platform', { channel, args });
     queue(platformListeners.getListeners(channel), args);
   }
 
   public on(channel: string, listener: (...args: any[]) => void): this {
+    logger.info('Registering platform listener', { channel });
     rendererListeners.addListener(channel, listener);
     return this;
   }
@@ -33,6 +39,7 @@ class WebRendererDelegate implements RendererDelegate {
     channel: string,
     listener: (...args: any[]) => void
   ): this {
+    logger.info('Removing platform listener', { channel });
     rendererListeners.removeListener(channel, listener);
     return this;
   }
