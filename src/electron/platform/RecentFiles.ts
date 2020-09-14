@@ -1,5 +1,6 @@
 import { RecentFiles as IRecentFiles } from 'common/files/RecentFiles';
 import { app } from 'electron';
+import { existsSync } from 'fs';
 import { readFileSync, writeFile } from 'original-fs';
 
 class ElectronRecentFiles implements IRecentFiles {
@@ -11,9 +12,13 @@ class ElectronRecentFiles implements IRecentFiles {
 
   public getRecentFiles = (): string[] => {
     if (!this.cachedRecentFiles) {
-      this.cachedRecentFiles = JSON.parse(
-        readFileSync(this.recentFilesFilePath, 'utf8')
-      );
+      if (existsSync(this.recentFilesFilePath)) {
+        this.cachedRecentFiles = JSON.parse(
+          readFileSync(this.recentFilesFilePath, 'utf8')
+        );
+      } else {
+        this.cachedRecentFiles = [];
+      }
     }
 
     return this.cachedRecentFiles;

@@ -53,6 +53,7 @@ export const Menu: FunctionComponent<MenuProps> = ({
   return (
     <Paper className={className}>
       <Grid
+        container
         direction={useHorizontal ? 'row' : 'column'}
         alignItems={'center'}
         wrap={'wrap'}

@@ -23,7 +23,7 @@ jobs:
         run: npm run build-web
       - name: Build artifacts for all supported OSes.
         run: npm run dist-all
-      - name: Run UI Tests against macOS app.
+      - name: Run UI Tests.
         run: npm run ui-test
       - name: Delete useless artifacts.
         run: node bin/remove_unneeded_artifacts.js
