@@ -8,6 +8,8 @@ document.documentElement.style.height = '100%';
 document.documentElement.style.width = '100%';
 document.body.style.height = '100%';
 document.body.style.width = '100%';
+// @ts-ignore
+document.body.style['overscroll-behavior'] = 'none';
 container.style.height = '100%';
 container.style.width = '100%';
 
