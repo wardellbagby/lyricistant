@@ -43,7 +43,8 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist-all": "electron-builder --win --mac --linux",
-    "ui-test": "ts-mocha -p tsconfig.json \"test/ui/**/*.ts\""
+    "ui-test": "ts-mocha -p config/tsconfig-for-webpack-config.json \"test/ui/**/*.ts\"",
+    "postinstall": "ts-node-script bin/fix-electron-webpack.ts"
   },
   "build": {
     "appId": "com.wardellbagby.lyricistant",
