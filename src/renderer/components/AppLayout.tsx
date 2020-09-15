@@ -41,6 +41,6 @@ const createGridTemplateColumns = (useSmallLayout: boolean) => {
   if (useSmallLayout) {
     return `100%`;
   } else {
-    return `56px minmax(200px, 1fr) minmax(25%, auto)`;
+    return `56px minmax(200px, 1fr) minmax(25%, 30%)`;
   }
 };

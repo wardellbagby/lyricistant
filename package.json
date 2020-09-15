@@ -129,7 +129,7 @@
     "react-dom": "^16.13.1",
     "react-monaco-editor": "^0.33.0",
     "react-toastify": "^5.5.0",
-    "react-virtuoso": "^0.13.5",
+    "react-virtuoso": "^0.20.0",
     "rxjs": "^6.6.2",
     "source-map-support": "^0.5.19",
     "syllable": "^4.1.0",

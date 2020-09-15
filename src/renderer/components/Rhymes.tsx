@@ -1,12 +1,10 @@
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { Rhyme } from '../models/rhyme';
@@ -28,22 +26,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const ListContainer: React.FC<{
-  listRef: (ref: HTMLElement | null) => void;
-  style: React.CSSProperties;
-}> = ({ listRef, style, children }) => {
-  const classes = useStyles(undefined);
-  return (
-    <List ref={listRef} style={style} className={classes.rhymeList}>
-      {children}
-    </List>
-  );
-};
-
 export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
   const [rhymes, setRhymes] = useState<Rhyme[]>([]);
   const [queryData, setQueryData] = useState<WordAtPosition>(null);
   const [loading, setLoading] = useState(false);
+  // This renders all the children; even the ones that won't be displayed. Don't want to do this.
+  const children = useMemo(() => {
+    return rhymes.map((rhyme) => {
+      return renderRhyme(rhyme, () => {
+        setLoading(true);
+        props.onRhymeClicked(rhyme, queryData.range);
+      });
+    });
+  }, [rhymes, props.onRhymeClicked]);
 
   useEffect(handleQueries(props.queries, setRhymes, setQueryData, setLoading), [
     props.queries
@@ -56,28 +51,28 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
       </Box>
     );
   }
-  return (
-    <Virtuoso
-      ListContainer={ListContainer}
-      style={{ width: '100%', height: '100%' }}
-      totalCount={rhymes.length}
-      item={(index) => {
-        const rhyme = rhymes[index];
 
-        return renderRhyme(rhyme, () => {
-          setLoading(true);
-          props.onRhymeClicked(rhyme, queryData.range);
-        });
-      }}
-    />
+  const classes = useStyles(undefined);
+  return (
+    <Box
+      className={classes.rhymeList}
+      display={'flex'}
+      width={'100%'}
+      height={'100%'}
+      flexWrap={'wrap'}
+    >
+      {children}
+    </Box>
   );
 };
 
 function renderRhyme(rhyme: Rhyme, onClick: () => void): React.ReactElement {
   return (
-    <ListItem button key={rhyme.word}>
-      <ListItemText onClick={onClick} primary={rhyme.word} />
-    </ListItem>
+    <Box flexShrink={'1'} key={rhyme.word}>
+      <ListItem button>
+        <ListItemText onClick={onClick} primary={rhyme.word} />
+      </ListItem>
+    </Box>
   );
 }
 
