@@ -24,11 +24,14 @@ A port of Lyricistant to the web is being worked on. This is still under active 
 ## Information for developers
 ### Getting Started
 
-```
+```bash
 git checkout https://github.com/wardellbagby/lyricistant.git
 cd lyricistant
 npm install
-npm start
+# Starts the Electron app.
+npm run start
+# Starts the Web app.
+npm run start-web
 ```
 
 ## License

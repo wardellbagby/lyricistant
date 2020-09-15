@@ -4,7 +4,7 @@ import devConfig from './dev.webpack.config';
 
 const config: Configuration = {
   ...devConfig,
-  devtool: 'source-map',
+  devtool: undefined,
   mode: 'production',
   optimization: {
     minimize: true,

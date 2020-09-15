@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import MonacoEditor from 'react-monaco-editor';
 import { toast } from 'react-toastify';
 import { fromEventPattern, merge, Observable, Subject } from 'rxjs';
@@ -50,6 +51,11 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
     props.textReplacements
   ]);
   useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
+  useBeforeUnload(() => {
+    if (version !== editor.getModel().getAlternativeVersionId()) {
+      return 'Are you sure you want to leave? Your changes haven\'t been saved.';
+    }
+  });
 
   return (
     <MonacoEditor

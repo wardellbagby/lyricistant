@@ -1,3 +1,4 @@
+import CompressionPlugin from 'compression-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Configuration } from 'webpack';
 import { aliases, DelegatesPlugin, MonacoPlugin, resolve } from '../shared';
@@ -25,7 +26,8 @@ const config: Configuration = {
         </body>
       </html>
       `
-    })
+    }),
+    new CompressionPlugin()
   ],
   module: {
     rules: [
