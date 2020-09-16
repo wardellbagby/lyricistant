@@ -1,9 +1,9 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import MonacoEditor from 'react-monaco-editor';
-import { toast } from 'react-toastify';
 import { fromEventPattern, merge, Observable, Subject } from 'rxjs';
 import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
@@ -178,6 +178,7 @@ function handleEditorEvents(
   lastKnownVersion: number,
   setVersion: (version: number) => void
 ): () => void {
+  const { enqueueSnackbar } = useSnackbar();
   return () => {
     if (!editor) {
       return;
@@ -189,7 +190,7 @@ function handleEditorEvents(
       setVersion(editor.getModel().getAlternativeVersionId());
 
       if (path) {
-        toast.info(`${path} saved`);
+        enqueueSnackbar(`${path} saved`, { variant: 'success' });
       }
     };
     platformDelegate.on('file-save-ended', onFileSaveEnded);

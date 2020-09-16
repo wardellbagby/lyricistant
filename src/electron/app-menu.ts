@@ -1,4 +1,5 @@
 import Platform = NodeJS.Platform;
+import Timeout = NodeJS.Timeout;
 import { MenuItemConstructorOptions } from 'electron';
 
 export interface MenuItemHandlers {
@@ -21,6 +22,12 @@ export const createAppMenu = (
   handlers: MenuItemHandlers,
   recentFiles?: string[]
 ): MenuItemConstructorOptions[] => {
+  Object.keys({ ...handlers })
+    .filter((name) => name.startsWith('on'))
+    .forEach((funcName) => {
+      // @ts-ignore
+      handlers[funcName] = debounce(handlers[funcName]);
+    });
   const isMac = platform === 'darwin';
   const menuTemplate: MenuItemConstructorOptions[] = [
     createFileMenu(handlers, !isMac, !isMac, recentFiles),
@@ -180,5 +187,14 @@ const createMacMenu = (
         accelerator: 'Cmd+Q'
       }
     ]
+  };
+};
+
+const debounce = (callback: (...args: any[]) => void) => {
+  let timeout: Timeout;
+  return (...args: any[]) => {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => callback.apply(context, args), 200);
   };
 };

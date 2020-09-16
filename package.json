@@ -29,7 +29,9 @@
       "@material-ui/core",
       "@material-ui/icons",
       "typeface-roboto",
-      "react-beforeunload"
+      "react-beforeunload",
+      "notistack",
+      "use-debounce"
     ]
   },
   "scripts": {
@@ -44,7 +46,7 @@
     "dist": "electron-builder",
     "dist-all": "electron-builder --win --mac --linux",
     "build-and-test": "npm run build && npm run build-web && electron-builder --mac && npm run test",
-    "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json \"test/electron/*.ts\"",
+    "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json",
     "postinstall": "ts-node-script bin/fix-electron-webpack.ts"
   },
   "build": {
@@ -138,15 +140,16 @@
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
     "monaco-editor": "^0.19.3",
+    "notistack": "^1.0.0",
     "react": "^16.13.1",
     "react-beforeunload": "^2.2.4",
     "react-dom": "^16.13.1",
     "react-monaco-editor": "^0.33.0",
-    "react-toastify": "^5.5.0",
     "react-virtuoso": "^0.13.5",
     "rxjs": "^6.6.2",
     "source-map-support": "^0.5.19",
     "syllable": "^4.1.0",
-    "typeface-roboto": "0.0.75"
+    "typeface-roboto": "0.0.75",
+    "use-debounce": "^4.0.0"
   }
 }

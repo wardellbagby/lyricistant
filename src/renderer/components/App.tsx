@@ -3,6 +3,7 @@ import { Theme, ThemeProvider } from '@material-ui/core/styles';
 import { PreferencesData } from 'common/preferences/PreferencesData';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { IRange } from 'monaco-editor/esm/vs/editor/editor.api';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
@@ -62,36 +63,44 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
   return (
     <CssBaseline>
       <ThemeProvider theme={theme}>
-        <Preferences
-          show={screen === Screen.PREFERENCES}
-          data={preferencesData}
-          onPreferencesSaved={onPreferencesSaved}
-          onClosed={onPreferencesClosed}
-        />
-        <AppLayout>
-          <Menu
-            onNewClicked={() => {
-              platformDelegate.send('new-file-attempt');
-            }}
-            onOpenClicked={() => {
-              platformDelegate.send('open-file-attempt');
-            }}
-            onSaveClicked={() => {
-              platformDelegate.send('save-file-attempt', editorText);
-            }}
-            onSettingsClicked={() => {
-              setScreen(Screen.PREFERENCES);
-            }}
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+        >
+          <Preferences
+            show={screen === Screen.PREFERENCES}
+            data={preferencesData}
+            onPreferencesSaved={onPreferencesSaved}
+            onClosed={onPreferencesClosed}
           />
-          <Editor
-            text={editorText}
-            fontSize={theme.typography.fontSize}
-            onWordSelected={onWordSelected}
-            onTextChanged={setEditorText}
-            textReplacements={textReplacements}
-          />
-          <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
-        </AppLayout>
+          <AppLayout>
+            <Menu
+              onNewClicked={() => {
+                platformDelegate.send('new-file-attempt');
+              }}
+              onOpenClicked={() => {
+                platformDelegate.send('open-file-attempt');
+              }}
+              onSaveClicked={() => {
+                platformDelegate.send('save-file-attempt', editorText);
+              }}
+              onSettingsClicked={() => {
+                setScreen(Screen.PREFERENCES);
+              }}
+            />
+            <Editor
+              text={editorText}
+              fontSize={theme.typography.fontSize}
+              onWordSelected={onWordSelected}
+              onTextChanged={setEditorText}
+              textReplacements={textReplacements}
+            />
+            <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
+          </AppLayout>
+        </SnackbarProvider>
       </ThemeProvider>
     </CssBaseline>
   );
@@ -123,10 +132,13 @@ function handleThemeChanges(
 }
 
 function handleFileChanges(): () => void {
+  const { enqueueSnackbar } = useSnackbar();
   return () => {
     const onFileOpened = (error: Error, fileName: string) => {
       if (error) {
-        // todo show error message
+        enqueueSnackbar("Couldn't open the selected file.", {
+          variant: 'error'
+        });
       } else {
         document.title = fileName;
       }

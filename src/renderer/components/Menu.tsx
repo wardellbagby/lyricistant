@@ -4,6 +4,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AddCircle, FolderOpen, Save, Settings } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { FunctionComponent } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
 const useIconStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -33,9 +34,10 @@ const MenuIcon: FunctionComponent<{ onClick?: () => void }> = ({
   children
 }) => {
   const classes = useIconStyles();
+  const [debouncedClick] = useDebouncedCallback(onClick, 200);
 
   return (
-    <ButtonBase className={classes.root} onClick={onClick}>
+    <ButtonBase className={classes.root} onClick={debouncedClick}>
       <Box display="flex" alignItems="center" justifyContent="center">
         {React.Children.map(children, (child: React.ReactElement) =>
           React.cloneElement(child, { className: classes.icon })
@@ -72,7 +74,6 @@ export const Menu: FunctionComponent<MenuProps> = ({
     >
       <Box
         display={'flex'}
-        flexWrap
         height={'100%'}
         width={'100%'}
         flexDirection={useHorizontal ? 'row' : 'column'}
