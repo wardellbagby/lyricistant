@@ -34,6 +34,19 @@ npm run start
 npm run start-web
 ```
 
+### Running Tests
+There are currently unit and UI tests in the project. You can run this by doing:
+
+```bash
+npm run build-and-test
+```
+
+This will build both web and the Electron Mac app, which is used for testing. If you've already done a build and don't want to rebuild, you can run:
+
+```bash
+npm run test
+```
+
 ## License
 
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE.md) file for details

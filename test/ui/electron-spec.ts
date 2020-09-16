@@ -4,7 +4,7 @@ import { Application, SpectronClient } from 'spectron';
 
 use(chaiAsPromised);
 
-describe('Application launch', function() {
+describe('Electron launch', function() {
   this.timeout(10000);
   let app: Application;
   let client: SpectronClient;

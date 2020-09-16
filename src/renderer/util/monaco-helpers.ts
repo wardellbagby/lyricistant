@@ -21,12 +21,12 @@ export function createLyricistantTheme(useDarkTheme: boolean): string {
     rules: [
       {
         token: '',
-        background: themePalette.primaryBackground,
+        background: themePalette.background,
         foreground: themePalette.primaryText
       }
     ],
     colors: {
-      'editor.background': themePalette.primaryBackground,
+      'editor.background': themePalette.background,
       'editor.foreground': themePalette.primaryText,
       'editorLineNumber.foreground': themePalette.secondaryText
     }

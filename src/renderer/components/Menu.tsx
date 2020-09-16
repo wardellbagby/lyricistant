@@ -1,10 +1,11 @@
-import { Box, ButtonBase, Grid, Paper, Theme } from '@material-ui/core';
+import { Box, ButtonBase, Paper, Theme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { AddCircle, FolderOpen, Save } from '@material-ui/icons';
+import { AddCircle, FolderOpen, Save, Settings } from '@material-ui/icons';
+import clsx from 'clsx';
 import React, { FunctionComponent } from 'react';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useIconStyles = makeStyles((theme: Theme) => ({
   root: {
     width: 56,
     height: 56,
@@ -15,6 +16,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   icon: {
     width: 24,
     height: 24
+  },
+  menu: {
+    backgroundColor: theme.palette.primary.main
+  }
+}));
+
+const useMenuStyles = makeStyles((theme: Theme) => ({
+  menu: {
+    backgroundColor: theme.palette.primary.main
   }
 }));
 
@@ -22,7 +32,7 @@ const MenuIcon: FunctionComponent<{ onClick?: () => void }> = ({
   onClick,
   children
 }) => {
-  const classes = useStyles();
+  const classes = useIconStyles();
 
   return (
     <ButtonBase className={classes.root} onClick={onClick}>
@@ -40,23 +50,32 @@ interface MenuProps {
   onNewClicked?: () => void;
   onOpenClicked: () => void;
   onSaveClicked: () => void;
+  onSettingsClicked: () => void;
 }
 
 export const Menu: FunctionComponent<MenuProps> = ({
   onNewClicked,
   onOpenClicked,
   onSaveClicked,
+  onSettingsClicked,
   className
 }) => {
   const theme = useTheme();
+  const classes = useMenuStyles();
   const useHorizontal = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <Paper className={className}>
-      <Grid
-        container
-        direction={useHorizontal ? 'row' : 'column'}
-        alignItems={'center'}
-        wrap={'wrap'}
+    <Paper
+      square
+      className={clsx(className, classes.menu)}
+      color={theme.palette.primary.main}
+    >
+      <Box
+        display={'flex'}
+        flexWrap
+        height={'100%'}
+        width={'100%'}
+        flexDirection={useHorizontal ? 'row' : 'column'}
       >
         <MenuIcon onClick={onNewClicked}>
           <AddCircle />
@@ -67,7 +86,11 @@ export const Menu: FunctionComponent<MenuProps> = ({
         <MenuIcon onClick={onSaveClicked}>
           <Save />
         </MenuIcon>
-      </Grid>
+        <Box flexGrow={'1'} />
+        <MenuIcon onClick={onSettingsClicked}>
+          <Settings />
+        </MenuIcon>
+      </Box>
     </Paper>
   );
 };

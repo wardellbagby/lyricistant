@@ -1,9 +1,13 @@
+import {
+  Box,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select
+} from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
 import Dialog from '@material-ui/core/Dialog';
-import FormLabel from '@material-ui/core/FormLabel';
-import GridList from '@material-ui/core/GridList';
 import IconButton from '@material-ui/core/IconButton';
 import Slide, { SlideProps } from '@material-ui/core/Slide';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -11,8 +15,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import {
   PreferencesData,
   Theme as LyricistantTheme
@@ -58,20 +60,24 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
     }
   }, [props.data]);
 
-  const onDetailsSizeChanged = (_: any, value: number | undefined) => {
-    if (value) {
+  const onDetailsSizeChanged = (
+    event: React.ChangeEvent<{ value: number }>
+  ) => {
+    if (event.target.value) {
       setPreferencesData({
         ...preferencesData,
-        textSize: value
+        textSize: event.target.value
       });
     }
   };
 
-  const onThemeChanged = (_: any, value: LyricistantTheme | undefined) => {
-    if (value !== undefined) {
+  const onThemeChanged = (
+    event: React.ChangeEvent<{ value: LyricistantTheme }>
+  ) => {
+    if (event.target.value !== undefined) {
       setPreferencesData({
         ...preferencesData,
-        theme: value
+        theme: event.target.value
       });
     }
   };
@@ -100,36 +106,44 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="md">
-        <Box py={2}>
-          <GridList cols={1} cellHeight="auto" spacing={8}>
-            <FormLabel>Text Size</FormLabel>
-            <ToggleButtonGroup
-              value={preferencesData.textSize}
-              onChange={onDetailsSizeChanged}
-              exclusive
-            >
-              <ToggleButton value={8}>Tiny</ToggleButton>
-              <ToggleButton value={12}>Small</ToggleButton>
-              <ToggleButton value={16}>Medium</ToggleButton>
-              <ToggleButton value={24}>Large</ToggleButton>
-              <ToggleButton value={28}>Huge</ToggleButton>
-            </ToggleButtonGroup>
-            <FormLabel>Theme</FormLabel>
-            <ToggleButtonGroup
-              value={preferencesData.theme}
-              onChange={onThemeChanged}
-              exclusive
-            >
-              <ToggleButton value={LyricistantTheme.Light}>Light</ToggleButton>
-              <ToggleButton value={LyricistantTheme.Dark}>Dark</ToggleButton>
-              <ToggleButton value={LyricistantTheme.System}>
-                Follow System Theme
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </GridList>
-        </Box>
-      </Container>
+      <Box p={'16px'}>
+        <Grid container spacing={3}>
+          <Grid item sm={12} md={6}>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel id="text-size-label">Text Size</InputLabel>
+              <Select
+                labelId="text-size-label"
+                value={preferencesData.textSize}
+                onChange={onDetailsSizeChanged}
+                label="Text Size"
+              >
+                <MenuItem value={8}>Tiny</MenuItem>
+                <MenuItem value={12}>Small</MenuItem>
+                <MenuItem value={16}>Default</MenuItem>
+                <MenuItem value={24}>Large</MenuItem>
+                <MenuItem value={28}>Huge</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item sm={12} md={6}>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel id="theme-label">Theme</InputLabel>
+              <Select
+                labelId="theme-label"
+                value={preferencesData.theme}
+                onChange={onThemeChanged}
+                label="Theme"
+              >
+                <MenuItem value={LyricistantTheme.Light}>Light</MenuItem>
+                <MenuItem value={LyricistantTheme.Dark}>Dark</MenuItem>
+                <MenuItem value={LyricistantTheme.System}>
+                  Follow System
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Box>
     </Dialog>
   );
 };

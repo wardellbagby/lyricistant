@@ -43,6 +43,7 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist-all": "electron-builder --win --mac --linux",
+    "build-and-test": "npm run build && npm run build-web && electron-builder --mac && npm run test",
     "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json \"test/**/*.ts\"",
     "postinstall": "ts-node-script bin/fix-electron-webpack.ts"
   },

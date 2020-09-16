@@ -79,6 +79,9 @@ export const App: FunctionComponent<AppProps> = (props: AppProps) => {
             onSaveClicked={() => {
               platformDelegate.send('save-file-attempt', editorText);
             }}
+            onSettingsClicked={() => {
+              setScreen(Screen.PREFERENCES);
+            }}
           />
           <Editor
             text={editorText}

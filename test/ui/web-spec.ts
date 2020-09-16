@@ -6,7 +6,7 @@ import { BrowserObject, remote } from 'webdriverio';
 
 use(chaiAsPromised);
 
-describe('Web launch', function() {
+describe('Webpage launch', function() {
   let client: BrowserObject;
 
   this.timeout(10000);
