@@ -2,6 +2,12 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "../",
+    "paths": {
+      "common/*": ["src/common/*"],
+      "PlatformDelegate": ["src/electron/Delegates.ts", "src/web/Delegates.ts"],
+      "platform/*": ["src/electron/platform/*", "src/web/platform/*"]
+    }
   }
 }

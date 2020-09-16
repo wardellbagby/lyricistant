@@ -13,7 +13,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { PreferencesData } from 'common/preferences/PreferencesData';
+import {
+  PreferencesData,
+  Theme as LyricistantTheme
+} from 'common/preferences/PreferencesData';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 export interface PreferencesProps {
@@ -55,14 +58,20 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
     }
   }, [props.data]);
 
-  const onDetailsSizeChanged = (
-    event: React.MouseEvent<HTMLElement>,
-    value: number | undefined
-  ) => {
+  const onDetailsSizeChanged = (_: any, value: number | undefined) => {
     if (value) {
       setPreferencesData({
         ...preferencesData,
         textSize: value
+      });
+    }
+  };
+
+  const onThemeChanged = (_: any, value: LyricistantTheme | undefined) => {
+    if (value !== undefined) {
+      setPreferencesData({
+        ...preferencesData,
+        theme: value
       });
     }
   };
@@ -105,6 +114,18 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
               <ToggleButton value={16}>Medium</ToggleButton>
               <ToggleButton value={24}>Large</ToggleButton>
               <ToggleButton value={28}>Huge</ToggleButton>
+            </ToggleButtonGroup>
+            <FormLabel>Theme</FormLabel>
+            <ToggleButtonGroup
+              value={preferencesData.theme}
+              onChange={onThemeChanged}
+              exclusive
+            >
+              <ToggleButton value={LyricistantTheme.Light}>Light</ToggleButton>
+              <ToggleButton value={LyricistantTheme.Dark}>Dark</ToggleButton>
+              <ToggleButton value={LyricistantTheme.System}>
+                Follow System Theme
+              </ToggleButton>
             </ToggleButtonGroup>
           </GridList>
         </Box>

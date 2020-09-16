@@ -2,7 +2,8 @@
   <configuration default="false" name="Electon: Launch" type="NodeJSConfigurationType" application-parameters="dev --remote-debugging-port=9223" node-parameters="--inspect=9229" path-to-js-file="node_modules/.bin/electron-webpack" working-dir="$PROJECT_DIR$">
     <envs>
       <env name="ELECTRON_ARGS" value="[&quot;--inspect=5858&quot;]" />
-      <env name="NODE_OPTIONS" value="-r ts-node/register -r tsconfig-paths/register" />
+      <env name="NODE_OPTIONS" value="-r ts-node/register" />
+      <env name="TS_NODE_PROJECT" value="config/tsconfig-for-webpack-config.json" />
     </envs>
     <method v="2" />
   </configuration>

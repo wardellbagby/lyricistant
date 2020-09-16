@@ -14,6 +14,7 @@ export class PreferenceManager extends Manager {
     this.rendererDelegate.on('save-prefs', this.onSavePrefs);
     this.systemThemeProvider.onChange((systemTheme: SystemTheme) => {
       this.systemTheme = systemTheme;
+      this.sendThemeUpdate(this.preferencesOrDefault());
     });
   }
 
@@ -37,29 +38,28 @@ export class PreferenceManager extends Manager {
   };
 
   private preferencesOrDefault = (): PreferencesData => {
-    const preferencesData: PreferencesData = this.preferences.getPreferences() ?? {
-      textSize: 16,
-      theme: Theme.System
-    };
-
-    return {
-      ...preferencesData,
-      theme:
-        !preferencesData.theme || preferencesData.theme === Theme.System
-          ? this.systemThemeToTheme(this.systemTheme)
-          : preferencesData.theme
-    };
+    return (
+      this.preferences.getPreferences() ?? {
+        textSize: 16,
+        theme: Theme.System
+      }
+    );
   };
 
   private sendThemeUpdate = (data: PreferencesData): void => {
+    const theme = this.normalizeTheme(data.theme);
     this.rendererDelegate.send(
       'dark-mode-toggled',
       data.textSize,
-      data.theme === undefined ||
-        data.theme === null ||
-        data.theme === Theme.Dark
+      theme === undefined || theme === null || theme === Theme.Dark
     );
   };
+
+  private normalizeTheme(theme: Theme): Theme {
+    return theme === Theme.System
+      ? this.systemThemeToTheme(this.systemTheme)
+      : theme;
+  }
 
   private systemThemeToTheme = (systemTheme: SystemTheme): Theme => {
     return systemTheme === SystemTheme.Dark ? Theme.Dark : Theme.Light;
