@@ -44,7 +44,7 @@
     "start-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack-dev-server --open --config config/web/dev.webpack.config.ts",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "dist-all": "electron-builder --win --mac --linux",
+    "dist-all": "electron-builder --win --mac --linux --x64 --ia32 --armv7l --arm64",
     "build-and-test": "npm run build && npm run build-web && electron-builder --mac && npm run test",
     "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json",
     "postinstall": "ts-node-script bin/fix-electron-webpack.ts"
