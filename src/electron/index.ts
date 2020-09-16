@@ -1,11 +1,13 @@
 import { RendererDelegate } from 'common/Delegates';
 import { FileManager } from 'common/files/FileManager';
 import { getCommonManager, registerCommonManagers } from 'common/Managers';
-import { app, BrowserWindow, Menu, MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import debug from 'electron-debug';
+import { platform } from 'os';
 import * as path from 'path';
 import { QuitManager } from 'platform/QuitManager';
 import { format as formatUrl } from 'url';
+import { createAppMenu } from './app-menu';
 import { createRendererDelegate } from './Delegates';
 
 const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
@@ -81,166 +83,37 @@ function registerListeners() {
   });
 }
 
-// tslint:disable-next-line:max-func-body-length
 function setMenu(recentFiles?: string[]): void {
-  const menuTemplate: MenuItemConstructorOptions[] = [
+  const menuTemplate = createAppMenu(
+    app.name,
+    platform(),
     {
-      label: 'File',
-      submenu: [
-        {
-          label: 'New',
-          click: newMenuItemHandler,
-          accelerator: 'CmdOrCtrl+N'
-        },
-        { type: 'separator' },
-        {
-          label: 'Open...',
-          click: async () => {
-            await getCommonManager(FileManager).openFile();
-          },
-          accelerator: 'CmdOrCtrl+O'
-        },
-        {
-          label: 'Open Recent',
-          submenu: createRecentFilesSubmenu(recentFiles)
-        },
-        { type: 'separator' },
-        {
-          label: 'Save',
-          click: () => {
-            getCommonManager(FileManager).saveFile(false);
-          },
-          accelerator: 'CmdOrCtrl+S'
-        },
-        {
-          label: 'Save As...',
-          click: () => {
-            getCommonManager(FileManager).saveFile(true);
-          },
-          accelerator: 'Shift+CmdOrCtrl+S'
-        },
-        { type: 'separator' },
-        {
-          label: 'Preferences',
-          click: preferencesHandler
-        }
-      ]
+      onFindClicked: (): void => {
+        rendererDelegate.send('find');
+      },
+      onNewClicked: newMenuItemHandler,
+      onOpenClicked: async () => {
+        await getCommonManager(FileManager).openFile();
+      },
+      onOpenRecentClicked: async (filePath) => {
+        await getCommonManager(FileManager).openFile(filePath);
+      },
+      onPreferencesClicked: preferencesHandler,
+      onQuitClicked: quitHandler,
+      onRedoClicked: redoHandler,
+      onReplaceClicked: (): void => {
+        rendererDelegate.send('replace');
+      },
+      onSaveAsClicked: () => {
+        getCommonManager(FileManager).saveFile(true);
+      },
+      onSaveClicked: () => {
+        getCommonManager(FileManager).saveFile(false);
+      },
+      onUndoClicked: undoHandler
     },
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Undo',
-          click: undoHandler,
-          accelerator: 'CmdOrCtrl+Z'
-        },
-        {
-          label: 'Redo',
-          click: redoHandler,
-          accelerator: 'Shift+CmdOrCtrl+Z'
-        },
-        { type: 'separator' },
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' },
-        { type: 'separator' },
-        {
-          label: 'Find',
-          accelerator: 'CmdOrCtrl+F',
-          click: (): void => {
-            rendererDelegate.send('find');
-          }
-        },
-        {
-          label: 'Replace',
-          accelerator: 'CmdOrCtrl+R',
-          click: (): void => {
-            rendererDelegate.send('replace');
-          }
-        }
-      ]
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Undo',
-          click: undoHandler,
-          accelerator: 'CmdOrCtrl+Z'
-        },
-        {
-          label: 'Redo',
-          click: redoHandler,
-          accelerator: 'Shift+CmdOrCtrl+Z'
-        },
-        { type: 'separator' },
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' },
-        { type: 'separator' },
-        {
-          label: 'Find',
-          accelerator: 'CmdOrCtrl+F',
-          click: (): void => {
-            rendererDelegate.send('find');
-          }
-        },
-        {
-          label: 'Replace',
-          accelerator: 'CmdOrCtrl+R',
-          click: (): void => {
-            rendererDelegate.send('replace');
-          }
-        },
-        { type: 'separator' },
-        { role: 'delete' },
-        { role: 'selectAll' }
-      ]
-    },
-    {
-      role: 'window',
-      submenu: [{ role: 'minimize' }]
-    }
-  ];
-  if (process.platform === 'darwin') {
-    menuTemplate.unshift({
-      label: app.name,
-      submenu: [
-        { role: 'about' },
-        { type: 'separator' },
-        {
-          label: 'Preferences',
-          click: preferencesHandler
-        },
-        { type: 'separator' },
-        { role: 'services' },
-        { type: 'separator' },
-        { role: 'hide' },
-        { role: 'hideOthers' },
-        { role: 'unhide' },
-        { type: 'separator' },
-        {
-          label: 'Quit',
-          click: quitHandler,
-          accelerator: 'Cmd+Q'
-        }
-      ]
-    });
-    const fileMenu = menuTemplate[1].submenu as MenuItemConstructorOptions[];
-    const prefIndex = fileMenu.findIndex(
-      (value) => value.click === preferencesHandler
-    );
-    fileMenu.splice(prefIndex, 1);
-  } else {
-    (menuTemplate[0].submenu as MenuItemConstructorOptions[]).push(
-      { type: 'separator' },
-      {
-        label: 'Quit',
-        click: quitHandler,
-        accelerator: 'Alt+F4'
-      }
-    );
-  }
+    recentFiles
+  );
 
   const mainMenu: Menu = Menu.buildFromTemplate(menuTemplate);
 
@@ -265,25 +138,4 @@ function redoHandler(): void {
 
 function preferencesHandler(): void {
   rendererDelegate.send('open-prefs');
-}
-
-function createRecentFilesSubmenu(
-  recentFiles?: string[]
-): MenuItemConstructorOptions[] {
-  if (!recentFiles) {
-    return [
-      {
-        label: '<No recent files>',
-        enabled: false
-      }
-    ];
-  }
-  return recentFiles.map((filePath: string) => {
-    return {
-      label: filePath,
-      click: async () => {
-        await getCommonManager(FileManager).openFile(filePath);
-      }
-    };
-  });
 }
