@@ -1,6 +1,7 @@
 {
   "imports": {
-    "PreferencesData": "./preferences/PreferencesData"
+    "PreferencesData": "./preferences/PreferencesData",
+    "UiConfig": "./ui/UiConfig"
   },
   "rendererChannels": [
     {
@@ -36,7 +37,11 @@
     { "channel": "is-okay-for-quit-file" },
     { "channel": "undo" },
     { "channel": "redo" },
-    { "channel": "open-prefs" }
+    { "channel": "open-prefs" },
+    {
+      "channel":  "ui-config",
+      "config":  "UiConfig"
+    }
   ],
   "platformChannels": [
     { "channel": "ready-for-events" },

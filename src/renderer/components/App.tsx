@@ -1,20 +1,16 @@
-import { CssBaseline } from '@material-ui/core';
-import { Theme, ThemeProvider } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import { PreferencesData } from 'common/preferences/PreferencesData';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { IRange } from 'monaco-editor/esm/vs/editor/editor.api';
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import 'typeface-roboto';
 import { Rhyme } from '../models/rhyme';
-import {
-  createLyricistantLanguage,
-  createLyricistantTheme
-} from '../util/monaco-helpers';
-import { createTheme } from '../util/theme';
+import { downloadApp } from '../util/download-app';
+import { createLyricistantLanguage } from '../util/monaco-helpers';
 import { AppLayout } from './AppLayout';
+import { ChooseDownloadDialog } from './ChooseDownload';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
 import { Menu } from './Menu';
 import { Preferences } from './Preferences';
@@ -22,16 +18,12 @@ import { Rhymes } from './Rhymes';
 
 createLyricistantLanguage();
 
-export interface AppProps {
-  onShouldUpdateBackground: (newBackground: string) => void;
-}
-
 enum Screen {
   PREFERENCES,
-  EDITOR
+  EDITOR,
+  DOWNLOAD
 }
 
-const defaultTheme = createTheme(null, true);
 const selectedWords: Subject<WordAtPosition> = new Subject();
 const textReplacements: Subject<TextReplacement> = new Subject();
 const onWordSelected: (word: WordAtPosition) => void = (word) => {
@@ -46,90 +38,63 @@ const onPreferencesSaved = (preferencesData: PreferencesData) =>
 
 const onPreferencesClosed = (): void => platformDelegate.send('save-prefs');
 
-export const App: FunctionComponent<AppProps> = (props: AppProps) => {
+export const App: FunctionComponent = () => {
   const [screen, setScreen] = useState(Screen.EDITOR);
   const [preferencesData, setPreferencesData] = useState(
     null as PreferencesData
   );
-  const [theme, setTheme] = useState(defaultTheme);
   const [editorText, setEditorText] = useState('');
+  const theme = useTheme();
 
-  useEffect(handleThemeChanges(setTheme, props.onShouldUpdateBackground), []);
   useEffect(handlePreferencesChanges(setPreferencesData), []);
   useEffect(handleFileChanges(), []);
   useEffect(handleScreenChanges(setScreen), []);
   useEffect(() => platformDelegate.send('ready-for-events'), []);
 
   return (
-    <CssBaseline>
-      <ThemeProvider theme={theme}>
-        <SnackbarProvider
-          maxSnack={3}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
+    <>
+      <ChooseDownloadDialog
+        show={screen === Screen.DOWNLOAD}
+        onClose={() => setScreen(Screen.EDITOR)}
+      />
+      <Preferences
+        show={screen === Screen.PREFERENCES}
+        data={preferencesData}
+        onPreferencesSaved={onPreferencesSaved}
+        onClosed={onPreferencesClosed}
+      />
+      <AppLayout>
+        <Menu
+          onNewClicked={() => {
+            platformDelegate.send('new-file-attempt');
           }}
-        >
-          <Preferences
-            show={screen === Screen.PREFERENCES}
-            data={preferencesData}
-            onPreferencesSaved={onPreferencesSaved}
-            onClosed={onPreferencesClosed}
-          />
-          <AppLayout>
-            <Menu
-              onNewClicked={() => {
-                platformDelegate.send('new-file-attempt');
-              }}
-              onOpenClicked={() => {
-                platformDelegate.send('open-file-attempt');
-              }}
-              onSaveClicked={() => {
-                platformDelegate.send('save-file-attempt', editorText);
-              }}
-              onSettingsClicked={() => {
-                setScreen(Screen.PREFERENCES);
-              }}
-            />
-            <Editor
-              text={editorText}
-              fontSize={theme.typography.fontSize}
-              onWordSelected={onWordSelected}
-              onTextChanged={setEditorText}
-              textReplacements={textReplacements}
-            />
-            <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
-          </AppLayout>
-        </SnackbarProvider>
-      </ThemeProvider>
-    </CssBaseline>
+          onOpenClicked={() => {
+            platformDelegate.send('open-file-attempt');
+          }}
+          onSaveClicked={() => {
+            platformDelegate.send('save-file-attempt', editorText);
+          }}
+          onSettingsClicked={() => {
+            setScreen(Screen.PREFERENCES);
+          }}
+          onDownloadClicked={() => {
+            if (!downloadApp()) {
+              setScreen(Screen.DOWNLOAD);
+            }
+          }}
+        />
+        <Editor
+          text={editorText}
+          fontSize={theme.typography.fontSize}
+          onWordSelected={onWordSelected}
+          onTextChanged={setEditorText}
+          textReplacements={textReplacements}
+        />
+        <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
+      </AppLayout>
+    </>
   );
 };
-
-function handleThemeChanges(
-  setTheme: (theme: Theme) => void,
-  onShouldUpdateBackground: (newBackground: string) => void
-): () => void {
-  return () => {
-    const darkModeChangedListener = (
-      textSize: number,
-      useDarkTheme: boolean
-    ) => {
-      const appTheme = createTheme(textSize, useDarkTheme);
-      setTheme(appTheme);
-      monaco.editor.setTheme(createLyricistantTheme(useDarkTheme));
-      onShouldUpdateBackground(appTheme.palette.background.default);
-    };
-    platformDelegate.on('dark-mode-toggled', darkModeChangedListener);
-
-    return function cleanup() {
-      platformDelegate.removeListener(
-        'dark-mode-toggled',
-        darkModeChangedListener
-      );
-    };
-  };
-}
 
 function handleFileChanges(): () => void {
   const { enqueueSnackbar } = useSnackbar();

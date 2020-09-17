@@ -1,6 +1,8 @@
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './components/App';
+import { Themed } from './components/Themed';
 
 const container: HTMLElement = document.getElementById('app');
 
@@ -18,10 +20,20 @@ if (module.hot) {
 }
 
 ReactDOM.render(
-  <App
-    onShouldUpdateBackground={(newBackground: string) => {
-      container.style.backgroundColor = newBackground;
+  <Themed
+    onBackgroundChanged={(background: string) => {
+      container.style.backgroundColor = background;
     }}
-  />,
+  >
+    <SnackbarProvider
+      maxSnack={3}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right'
+      }}
+    >
+      <App />
+    </SnackbarProvider>
+  </Themed>,
   container
 );

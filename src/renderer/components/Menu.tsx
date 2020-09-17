@@ -1,9 +1,17 @@
 import { Box, ButtonBase, Paper, Theme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { AddCircle, FolderOpen, Save, Settings } from '@material-ui/icons';
+import {
+  AddCircle,
+  FolderOpen,
+  GetApp,
+  Save,
+  Settings
+} from '@material-ui/icons';
 import clsx from 'clsx';
-import React, { FunctionComponent } from 'react';
+import { UiConfig } from 'common/ui/UiConfig';
+import { platformDelegate } from 'PlatformDelegate';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 const useIconStyles = makeStyles((theme: Theme) => ({
@@ -53,6 +61,7 @@ interface MenuProps {
   onOpenClicked: () => void;
   onSaveClicked: () => void;
   onSettingsClicked: () => void;
+  onDownloadClicked: () => void;
 }
 
 export const Menu: FunctionComponent<MenuProps> = ({
@@ -60,11 +69,25 @@ export const Menu: FunctionComponent<MenuProps> = ({
   onOpenClicked,
   onSaveClicked,
   onSettingsClicked,
+  onDownloadClicked,
   className
 }) => {
   const theme = useTheme();
   const classes = useMenuStyles();
   const useHorizontal = useMediaQuery(theme.breakpoints.down('sm'));
+  const [showDownload, setShowDownload] = useState(false);
+
+  useEffect(() => {
+    const onConfigChange = (config: UiConfig) => {
+      setShowDownload(config.showDownload);
+    };
+
+    platformDelegate.on('ui-config', onConfigChange);
+
+    return () => {
+      platformDelegate.removeListener('ui-config', onConfigChange);
+    };
+  }, []);
 
   return (
     <Paper
@@ -88,6 +111,11 @@ export const Menu: FunctionComponent<MenuProps> = ({
           <Save />
         </MenuIcon>
         <Box flexGrow={'1'} />
+        {showDownload && (
+          <MenuIcon onClick={onDownloadClicked}>
+            <GetApp />
+          </MenuIcon>
+        )}
         <MenuIcon onClick={onSettingsClicked}>
           <Settings />
         </MenuIcon>

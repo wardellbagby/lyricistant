@@ -81,6 +81,9 @@ function registerListeners() {
   getCommonManager(FileManager).onNewFileOpened((recentFiles) => {
     setMenu(recentFiles);
   });
+  rendererDelegate.on('ready-for-events', () => {
+    rendererDelegate.send('ui-config', { showDownload: false });
+  });
 }
 
 function setMenu(recentFiles?: string[]): void {

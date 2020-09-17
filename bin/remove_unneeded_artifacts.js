@@ -1,7 +1,7 @@
 const fs = require('fs');
-const packageInfo = require('../package.json');
+const packageInfo = require('../electron-builder.json');
 
-const distDirectory = packageInfo['build']['directories']['output'];
+const distDirectory = packageInfo['directories']['output'];
 
 const artifactFiles = fs.readdirSync(distDirectory, { withFileTypes: true });
 artifactFiles.forEach((file) => {

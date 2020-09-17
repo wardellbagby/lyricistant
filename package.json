@@ -43,39 +43,11 @@
     "start": "cross-env NODE_OPTIONS='-r ts-node/register ' TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" electron-webpack dev --progress",
     "start-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack-dev-server --open --config config/web/dev.webpack.config.ts",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "dist-all": "electron-builder --win --mac --linux --x64 --ia32 --armv7l --arm64",
+    "dist": "electron-builder --config electron-builder.json",
+    "dist-all": "electron-builder -mwl --config electron-builder.json",
     "build-and-test": "npm run build && npm run build-web && electron-builder --mac && npm run test",
     "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json",
     "postinstall": "ts-node-script bin/fix-electron-webpack.ts"
-  },
-  "build": {
-    "appId": "com.wardellbagby.lyricistant",
-    "artifactName": "${name}-${version}-${os}_${arch}.${ext}",
-    "directories": {
-      "output": "dist/electron-app"
-    },
-    "files": [
-      {
-        "from": "dist/electron/main"
-      },
-      {
-        "from": "dist/electron/renderer"
-      }
-    ],
-    "mac": {
-      "category": "public.app-category.utilities",
-      "target": "dmg"
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ]
-    },
-    "win": {
-      "target": "nsis"
-    }
   },
   "engines": {
     "node": ">= 12.10"
@@ -139,6 +111,7 @@
     "datamuse": "^1.0.5",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
+    "mdi-material-ui": "^6.18.0",
     "monaco-editor": "^0.19.3",
     "notistack": "^1.0.0",
     "react": "^16.13.1",

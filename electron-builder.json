@@ -1,0 +1,44 @@
+{
+  "appId": "com.wardellbagby.lyricistant",
+  "artifactName": "${name}-${os}_${arch}.${ext}",
+  "directories": {
+    "output": "dist/electron-app"
+  },
+  "files": [
+    {
+      "from": "dist/electron/main"
+    },
+    {
+      "from": "dist/electron/renderer"
+    }
+  ],
+  "mac": {
+    "category": "public.app-category.utilities",
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "linux": {
+    "target": [
+      {
+        "target": "AppImage",
+        "arch": ["x64", "ia32", "armv7l", "arm64"]
+      },
+      {
+        "target": "deb",
+        "arch": ["x64", "ia32", "armv7l", "arm64"]
+      }
+    ]
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64", "ia32"]
+      }
+    ]
+  }
+}
