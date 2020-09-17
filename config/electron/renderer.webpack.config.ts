@@ -1,5 +1,7 @@
 import { Configuration } from 'webpack';
+import merge from 'webpack-merge';
 import { aliases, DelegatesPlugin, MonacoPlugin, resolve } from '../shared';
+import { withProperMode } from './electron-shared';
 
 const config: Configuration = {
   devtool: 'source-map',
@@ -19,4 +21,6 @@ const config: Configuration = {
     path: resolve('dist/electron/renderer')
   }
 };
-module.exports = config;
+
+module.exports = (oldConfig: Configuration) =>
+  withProperMode(merge(oldConfig, config));

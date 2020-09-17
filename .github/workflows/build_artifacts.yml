@@ -17,14 +17,20 @@ jobs:
         run: npm install
       - name: Check for Lint issues.
         run: npm run lint
+      - name: Build the test Electron app.
+        run: |
+          npm run test-build
+          npm run test-dist
+      - name: Build the test Web app.
+        run: npm run test-build-web
+      - name: Run all tests
+        run: npm run test
       - name: Build the Electron project.
         run: npm run build
       - name: Build the Web project.
         run: npm run build-web
       - name: Build artifacts for all supported OSes.
         run: npm run dist-all
-      - name: Run all tests.
-        run: npm run test
       - name: Delete useless artifacts.
         run: node bin/remove_unneeded_artifacts.js
       - name: Upload artifacts.

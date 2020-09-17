@@ -1,5 +1,8 @@
+import { WebpackConfigurator } from 'electron-webpack';
 import { Configuration } from 'webpack';
+import merge from 'webpack-merge';
 import { aliases, DelegatesPlugin, resolve } from '../shared';
+import { withProperMode } from './electron-shared';
 
 const config: Configuration = {
   devtool: 'source-map',
@@ -20,4 +23,7 @@ const config: Configuration = {
   plugins: [DelegatesPlugin]
 };
 
-module.exports = config;
+module.exports = (
+  oldConfig: Configuration,
+  configurator: WebpackConfigurator
+) => withProperMode(merge(oldConfig, config), configurator);

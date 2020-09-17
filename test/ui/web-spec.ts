@@ -6,10 +6,8 @@ import { BrowserObject, remote } from 'webdriverio';
 
 use(chaiAsPromised);
 
-describe('Webpage launch', function() {
+describe('Webpage launch', () => {
   let client: BrowserObject;
-
-  this.timeout(10000);
 
   before(async () => {
     client = await remote({
@@ -36,11 +34,15 @@ describe('Webpage launch', function() {
     return expect(client.getTitle()).to.eventually.equal('Untitled');
   });
 
-  it('shows the basic components', () => {
-    return Promise.all([
-      expect(client.react$('Editor')).to.eventually.be.not.null,
-      expect(client.react$('Menu')).to.eventually.be.not.null,
-      expect(client.react$('Rhymes')).to.eventually.be.not.null
-    ]);
+  it('shows the basic components', async () => {
+    const components = [
+      await client.react$('Editor'),
+      await client.react$('Menu'),
+      await client.react$('Rhymes')
+    ];
+
+    for (const component of components) {
+      await expect(component.isDisplayedInViewport()).to.eventually.be.true;
+    }
   });
 });

@@ -10,17 +10,20 @@ import { format as formatUrl } from 'url';
 import { createAppMenu } from './app-menu';
 import { createRendererDelegate } from './Delegates';
 
-const isDevelopment: boolean = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
 let quitManager: QuitManager;
 
-if (module.hot) {
+if (isDevelopment) {
   debug({
+    isEnabled: true,
     showDevTools: false
   });
-  module.hot.accept();
+  if (module.hot) {
+    module.hot.accept();
+  }
 }
 
 app.on('ready', createWindow);
@@ -52,7 +55,7 @@ function createWindow(): void {
   quitManager.register();
   registerListeners();
 
-  if (isDevelopment) {
+  if (isDevelopment && process.env.ELECTRON_WEBPACK_WDS_PORT) {
     // tslint:disable-next-line: no-floating-promises
     mainWindow.loadURL(
       `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`

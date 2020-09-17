@@ -3,7 +3,7 @@ import { logger } from 'platform/Logger';
 
 class WebPlatformDelegate implements PlatformDelegate {
   public send(channel: string, ...args: any[]) {
-    logger.info('Sending data to renderer', { channel, args });
+    logger.info('Sending data to platform', { channel, args });
     queue(rendererListeners.getListeners(channel), args);
   }
 
@@ -25,7 +25,7 @@ class WebPlatformDelegate implements PlatformDelegate {
 
 class WebRendererDelegate implements RendererDelegate {
   public send(channel: string, ...args: any[]) {
-    logger.info('Sending data to platform', { channel, args });
+    logger.info('Sending data to renderer', { channel, args });
     queue(platformListeners.getListeners(channel), args);
   }
 
