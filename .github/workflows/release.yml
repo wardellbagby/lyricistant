@@ -1,10 +1,33 @@
-name: Continuous Deployment - Nightly
+name: Continuous Deployment - Tagged Release
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
 jobs:
+  assert-no-issues:
+    name: "Assert no issues"
+    runs-on: macos-latest
+    steps:
+      - name: Checkout the current branch.
+        uses: actions/checkout@v2
+      - name: Setup Node.js - 12.x.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '>=12.10'
+      - name: Install project dependencies.
+        run: npm ci
+      - name: Check for Lint issues.
+        run: npm run lint
+      - name: Build the test Electron app.
+        run: |
+          npm run test-build
+          npm run test-dist
+      - name: Build the test Web app.
+        run: npm run test-build-web
+      - name: Run all tests
+        run: npm run test
   deploy-web:
+    needs: assert-no-issues
     name: "Deploy Web"
     runs-on: ubuntu-latest
     steps:
@@ -22,10 +45,12 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.LYRICISTANT_TOKEN }}
+          external_repository: wardellbagby/lyricistant-website
           publish_branch: gh-pages
           publish_dir: dist/web
           force_orphan: true
   deploy-app:
+    needs: assert-no-issues
     name: "Deploy App"
     runs-on: macos-latest
     steps:
@@ -46,7 +71,5 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@v1.1.0"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Lyricistant - Nightly"
+          prerelease: false
           files: dist/electron-app/*.*
