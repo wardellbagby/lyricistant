@@ -49,6 +49,7 @@ jobs:
           publish_branch: gh-pages
           publish_dir: dist/web
           force_orphan: true
+          cname: lyricistant.app
   deploy-app:
     needs: assert-no-issues
     name: "Deploy App"

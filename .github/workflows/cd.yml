@@ -25,6 +25,7 @@ jobs:
           publish_branch: gh-pages
           publish_dir: dist/web
           force_orphan: true
+          cname: dev.lyricistant.app
   deploy-app:
     name: "Deploy App"
     runs-on: macos-latest
