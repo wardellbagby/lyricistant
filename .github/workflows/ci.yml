@@ -1,0 +1,32 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout the current branch.
+        uses: actions/checkout@v2
+      - name: Setup Node.js - 12.x.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '>=12.10'
+      - name: Install project dependencies.
+        run: npm ci
+      - name: Check for Lint issues.
+        run: npm run lint
+      - name: Build the test Electron app.
+        run: |
+          npm run test-build
+          npm run test-dist
+      - name: Build the test Web app.
+        run: npm run test-build-web
+      - name: Run all tests
+        run: npm run test

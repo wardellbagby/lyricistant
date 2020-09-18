@@ -1,0 +1,52 @@
+name: Continuous Deployment
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy-web:
+    name: "Deploy Web"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the current branch.
+        uses: actions/checkout@v2
+      - name: Setup Node.js - 12.x.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '>=12.10'
+      - name: Install project dependencies.
+        run: npm ci
+      - name: Build Web.
+        run: npm run build-web
+      - name: Deploy Web
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.LYRICISTANT_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: dist/web
+  deploy-app:
+    name: "Deploy App"
+    runs-on: macos-latest
+    steps:
+      - name: Checkout the current branch.
+        uses: actions/checkout@v2
+      - name: Setup Node.js - 12.x.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '>=12.10'
+      - name: Install project dependencies.
+        run: npm ci
+      - name: Build the Electron project.
+        run: npm run build
+      - name: Build artifacts for all supported OSes.
+        run: npm run dist-all
+      - name: Delete useless artifacts.
+        run: node bin/remove_unneeded_artifacts.js
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Lyricistant - Nightly"
+          files: dist/electron-app/*.*

@@ -35,17 +35,21 @@ npm run start-web
 ```
 
 ### Running Tests
-There are currently unit and UI tests in the project. You can run this by doing:
+There are currently unit and UI tests in the project.
+
+In order to run tests, you'll need to build the test versions of the platforms. You can do that via:
 
 ```bash
-npm run build-and-test
+npm run test-build && npm run test-dist # builds Electron test app.
+npm run test-build-web # builds Web test sources.
 ```
 
-This will build both web and the Electron Mac app, which is used for testing. If you've already done a build and don't want to rebuild, you can run:
+You can then run the tests via:
 
 ```bash
 npm run test
 ```
+
 
 ## License
 
