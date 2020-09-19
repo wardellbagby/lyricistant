@@ -75,14 +75,15 @@ export const Menu: FunctionComponent<MenuProps> = ({
   const theme = useTheme();
   const classes = useMenuStyles();
   const useHorizontal = useMediaQuery(theme.breakpoints.down('sm'));
-  const [showDownload, setShowDownload] = useState(false);
+  const [uiConfig, setUiConfig] = useState<UiConfig>(null);
 
   useEffect(() => {
     const onConfigChange = (config: UiConfig) => {
-      setShowDownload(config.showDownload);
+      setUiConfig(config);
     };
 
     platformDelegate.on('ui-config', onConfigChange);
+    platformDelegate.send('request-ui-config');
 
     return () => {
       platformDelegate.removeListener('ui-config', onConfigChange);
@@ -104,14 +105,16 @@ export const Menu: FunctionComponent<MenuProps> = ({
         <MenuIcon onClick={onNewClicked}>
           <AddCircle />
         </MenuIcon>
-        <MenuIcon onClick={onOpenClicked}>
-          <FolderOpen />
-        </MenuIcon>
+        {uiConfig?.showOpen && (
+          <MenuIcon onClick={onOpenClicked}>
+            <FolderOpen />
+          </MenuIcon>
+        )}
         <MenuIcon onClick={onSaveClicked}>
           <Save />
         </MenuIcon>
         <Box flexGrow={'1'} />
-        {showDownload && (
+        {uiConfig?.showDownload && (
           <MenuIcon onClick={onDownloadClicked}>
             <GetApp />
           </MenuIcon>

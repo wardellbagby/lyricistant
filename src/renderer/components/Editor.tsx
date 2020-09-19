@@ -64,8 +64,12 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
       defaultValue={props.text}
       onChange={props.onTextChanged}
       options={{
-        lineNumbers: (line: number): string =>
-          syllable(editor.getModel().getLineContent(line)).toString(),
+        lineNumbers: (line: number): string => {
+          if (!editor) {
+            return `${line}`;
+          }
+          return syllable(editor.getModel().getLineContent(line)).toString();
+        },
         fontSize: props.fontSize,
         automaticLayout: true,
         overviewRulerBorder: false,

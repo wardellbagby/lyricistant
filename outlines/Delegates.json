@@ -59,6 +59,7 @@
     },
     { "channel": "new-file-attempt" },
     { "channel": "open-file-attempt" },
-    { "channel": "save-file-attempt", "data": "string" }
+    { "channel": "save-file-attempt", "data": "string" },
+    { "channel": "request-ui-config" }
   ]
 }

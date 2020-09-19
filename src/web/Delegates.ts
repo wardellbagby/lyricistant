@@ -74,10 +74,20 @@ class ListenerManager {
 }
 
 const queue = (functions: Array<(...args: any[]) => void>, args: any[]) => {
+  args.forEach((arg) => {
+    if (isError(arg)) {
+      logger.error(arg.message, arg);
+    }
+  });
+
   // Renderer code is very specialized for Electron, which will never
   // immediately invoke a listener when its registered. We emulate that here
   // by putting the listener invocation on the event loop via setTimeout.
-  functions.forEach((listener) => setTimeout(() => listener(...args)));
+  functions.forEach((listener) => listener(...args));
+};
+
+const isError = (e: any) => {
+  return e instanceof Error;
 };
 
 const platformListeners: ListenerManager = new ListenerManager();

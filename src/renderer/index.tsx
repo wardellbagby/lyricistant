@@ -2,6 +2,7 @@ import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './components/App';
+import { PlatformEventsReadyHandler } from './components/PlatformEventsReadyHandler';
 import { Themed } from './components/Themed';
 
 const container: HTMLElement = document.getElementById('app');
@@ -20,20 +21,22 @@ if (module.hot) {
 }
 
 ReactDOM.render(
-  <Themed
-    onBackgroundChanged={(background: string) => {
-      container.style.backgroundColor = background;
-    }}
-  >
-    <SnackbarProvider
-      maxSnack={3}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right'
+  <PlatformEventsReadyHandler>
+    <Themed
+      onBackgroundChanged={(background: string) => {
+        container.style.backgroundColor = background;
       }}
     >
-      <App />
-    </SnackbarProvider>
-  </Themed>,
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+      >
+        <App />
+      </SnackbarProvider>
+    </Themed>
+  </PlatformEventsReadyHandler>,
   container
 );

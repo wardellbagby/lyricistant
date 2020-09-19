@@ -81,6 +81,9 @@ export interface RendererDelegate {
     channel: 'save-file-attempt',
     listener: (data: string) => void
   ): this;
+
+  on(channel: 'request-ui-config', listener: () => void): this;
+  removeListener(channel: 'request-ui-config', listener: () => void): this;
 }
 /**
  * Used by the renderer to communicate with the platform.
@@ -96,6 +99,7 @@ export interface PlatformDelegate {
   send(channel: 'new-file-attempt'): void;
   send(channel: 'open-file-attempt'): void;
   send(channel: 'save-file-attempt', data: string): void;
+  send(channel: 'request-ui-config'): void;
 
   on(
     channel: 'dark-mode-toggled',

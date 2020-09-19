@@ -21,8 +21,14 @@ class ElectronRendererDelegate implements RendererDelegate {
     this.ipcMain = ipcMain;
     this.window = window;
   }
+
   public send(channel: string, ...args: any[]): void {
     logger.info('Sending data to renderer', channel, args);
+    args.forEach((arg) => {
+      if (isError(arg)) {
+        logger.error(arg.message, arg);
+      }
+    });
     this.window.webContents.send(channel, ...args);
   }
 
@@ -62,8 +68,14 @@ class ElectronPlatformDelegate implements PlatformDelegate {
   constructor(ipcRenderer: IpcRenderer) {
     this.ipcRenderer = ipcRenderer;
   }
+
   public send(channel: string, ...args: any[]): void {
     logger.info('Sending data to platform', channel, args);
+    args.forEach((arg) => {
+      if (isError(arg)) {
+        logger.error(arg.message, arg);
+      }
+    });
     this.ipcRenderer.send(channel, ...args);
   }
 
@@ -91,6 +103,10 @@ class ElectronPlatformDelegate implements PlatformDelegate {
     return this;
   }
 }
+
+const isError = (e: any) => {
+  return e instanceof Error;
+};
 
 export const createRendererDelegate: (
   window: BrowserWindow

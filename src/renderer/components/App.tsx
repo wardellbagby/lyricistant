@@ -49,7 +49,6 @@ export const App: FunctionComponent = () => {
   useEffect(handlePreferencesChanges(setPreferencesData), []);
   useEffect(handleFileChanges(), []);
   useEffect(handleScreenChanges(setScreen), []);
-  useEffect(() => platformDelegate.send('ready-for-events'), []);
 
   return (
     <>
