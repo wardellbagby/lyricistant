@@ -1,7 +1,7 @@
 import { RendererDelegate } from 'common/Delegates';
 import { FileManager } from 'common/files/FileManager';
 import { getCommonManager, registerCommonManagers } from 'common/Managers';
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, dialog, Menu } from 'electron';
 import debug from 'electron-debug';
 import { autoUpdater } from 'electron-updater';
 import { platform } from 'os';
@@ -59,19 +59,19 @@ function createWindow(): void {
   setupUpdater();
 
   if (isDevelopment && process.env.ELECTRON_WEBPACK_WDS_PORT) {
-    // tslint:disable-next-line: no-floating-promises
-    mainWindow.loadURL(
-      `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
-    );
+    mainWindow
+      .loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
+      .catch(showLoadingError);
   } else {
-    // tslint:disable-next-line: no-floating-promises
-    mainWindow.loadURL(
-      formatUrl({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file',
-        slashes: true
-      })
-    );
+    mainWindow
+      .loadURL(
+        formatUrl({
+          pathname: path.join(__dirname, 'index.html'),
+          protocol: 'file',
+          slashes: true
+        })
+      )
+      .catch(showLoadingError);
   }
 
   mainWindow.on('closed', () => {
@@ -132,6 +132,15 @@ function setMenu(recentFiles?: string[]): void {
   const mainMenu: Menu = Menu.buildFromTemplate(menuTemplate);
 
   Menu.setApplicationMenu(mainMenu);
+}
+
+function showLoadingError() {
+  mainWindow.close();
+  dialog.showErrorBox(
+    'Error',
+    "Sorry, we couldn't load Lyricistant! Please contact the developers!"
+  );
+  app.quit();
 }
 
 async function newMenuItemHandler() {
