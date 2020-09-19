@@ -6,6 +6,7 @@ import debug from 'electron-debug';
 import { autoUpdater } from 'electron-updater';
 import { platform } from 'os';
 import * as path from 'path';
+import { logger } from 'platform/Logger';
 import { QuitManager } from 'platform/QuitManager';
 import { format as formatUrl } from 'url';
 import { createAppMenu } from './app-menu';
@@ -55,6 +56,7 @@ function createWindow(): void {
   quitManager = new QuitManager(rendererDelegate);
   quitManager.register();
   registerListeners();
+  setupUpdater();
 
   if (isDevelopment && process.env.ELECTRON_WEBPACK_WDS_PORT) {
     // tslint:disable-next-line: no-floating-promises
@@ -85,6 +87,12 @@ function registerListeners() {
   getCommonManager(FileManager).onNewFileOpened((recentFiles) => {
     setMenu(recentFiles);
   });
+}
+
+function setupUpdater() {
+  autoUpdater.logger = logger;
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
   // noinspection JSIgnoredPromiseFromCall
   autoUpdater.checkForUpdatesAndNotify();
 }
