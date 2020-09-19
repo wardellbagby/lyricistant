@@ -14,12 +14,7 @@
   ],
   "mac": {
     "category": "public.app-category.utilities",
-    "target": [
-      {
-        "target": "dmg",
-        "arch": ["x64"]
-      }
-    ]
+    "target": ["dmg", "zip"]
   },
   "linux": {
     "target": [

@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://https://github.com/wardellbagby/lyricistant.git"
+    "url": "git://github.com/wardellbagby/lyricistant.git"
   },
   "homepage": "https://github.com/wardellbagby/lyricistant",
   "sideEffects": false,
@@ -41,11 +41,11 @@
     "lint-fix": "tslint -c tslint.json -p tsconfig.json --fix",
     "start": "cross-env NODE_OPTIONS='-r ts-node/register ' TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" electron-webpack dev --progress",
     "start-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack-dev-server --open --config config/web/dev.webpack.config.ts",
-    "dist": "electron-builder --config electron-builder.json",
-    "dist-all": "electron-builder -mwl --config electron-builder.json",
+    "dist": "electron-builder --config electron-builder.json --publish never",
+    "dist-all": "electron-builder -mwl --config electron-builder.json --publish never",
     "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json",
     "test-build": "cross-env NODE_ENV='test' TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" electron-webpack -r ts-node/register --env.production=false",
-    "test-dist": "cross-env NODE_ENV='test' electron-builder --mac",
+    "test-dist": "cross-env NODE_ENV='test' electron-builder --mac --publish never",
     "test-build-web": "cross-env NODE_ENV='test' TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/web/dev.webpack.config.ts",
     "postinstall": "ts-node-script bin/fix-electron-webpack.ts"
   },
@@ -80,6 +80,7 @@
     "cross-env": "^7.0.2",
     "electron": "^9.2.0",
     "electron-builder": "^22.8.1",
+    "electron-updater": "^4.3.5",
     "electron-webpack": "^2.8.2",
     "electron-webpack-ts": "^3.2.0",
     "html-loader": "^1.1.0",

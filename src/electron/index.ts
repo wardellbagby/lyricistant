@@ -3,6 +3,7 @@ import { FileManager } from 'common/files/FileManager';
 import { getCommonManager, registerCommonManagers } from 'common/Managers';
 import { app, BrowserWindow, Menu } from 'electron';
 import debug from 'electron-debug';
+import { autoUpdater } from 'electron-updater';
 import { platform } from 'os';
 import * as path from 'path';
 import { QuitManager } from 'platform/QuitManager';
@@ -84,6 +85,8 @@ function registerListeners() {
   getCommonManager(FileManager).onNewFileOpened((recentFiles) => {
     setMenu(recentFiles);
   });
+  // noinspection JSIgnoredPromiseFromCall
+  autoUpdater.checkForUpdatesAndNotify();
 }
 
 function setMenu(recentFiles?: string[]): void {

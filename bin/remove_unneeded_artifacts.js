@@ -19,7 +19,9 @@ artifactFiles.forEach((file) => {
     !file.name.endsWith('AppImage') &&
     !file.name.endsWith('dmg') &&
     !file.name.endsWith('deb') &&
-    !file.name.endsWith('exe')
+    !file.name.endsWith('exe') &&
+    !file.name.endsWith('latest-mac.yml') &&
+    !file.name.endsWith('latest.yml')
   ) {
     const fileName = `${distDirectory}/${file.name}`;
     console.log(`Removing file ${fileName}...`);
