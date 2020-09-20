@@ -25,9 +25,9 @@ jobs:
         run: npm run lint
       - name: Build the test Electron app.
         run: |
-          npm run test-build
-          npm run test-dist
+          npm run build-test-app
+          npm run dist-test-app
       - name: Build the test Web app.
-        run: npm run test-build-web
+        run: npm run build-test-web
       - name: Run all tests
         run: npm run test

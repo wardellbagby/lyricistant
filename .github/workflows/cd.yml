@@ -39,9 +39,9 @@ jobs:
       - name: Install project dependencies.
         run: npm ci
       - name: Build the Electron project.
-        run: npm run build
-      - name: Build artifacts for all supported OSes.
-        run: npm run dist-all
+        run: npm run build-app
+      - name: Build apps for all supported OSes.
+        run: npm run dist-all-apps
       - name: Delete useless artifacts.
         run: node bin/remove_unneeded_artifacts.js
       - uses: "marvinpinto/action-automatic-releases@v1.1.0"

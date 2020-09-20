@@ -18,11 +18,12 @@ export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
 let quitManager: QuitManager;
 
+debug({
+  isEnabled: true,
+  showDevTools: false
+});
+
 if (isDevelopment) {
-  debug({
-    isEnabled: true,
-    showDevTools: false
-  });
   if (module.hot) {
     module.hot.accept();
   }
@@ -134,7 +135,12 @@ function setMenu(recentFiles?: string[]): void {
   Menu.setApplicationMenu(mainMenu);
 }
 
-function showLoadingError() {
+function showLoadingError(reason: any) {
+  logger.error(
+    'Error loading the webpage',
+    reason,
+    process.env.ELECTRON_WEBPACK_WDS_PORT
+  );
   mainWindow.close();
   dialog.showErrorBox(
     'Error',

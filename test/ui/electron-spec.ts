@@ -16,8 +16,9 @@ describe('Electron launch', () => {
     await app.start();
     await app.client.waitUntilWindowLoaded();
     client = app.client;
-    await app.client.waitUntil(async () => {
-      return await (await app.client.$('#app')).isDisplayed();
+    return client.waitUntil(async () => {
+      const elements = await client.$$('#app > *');
+      return elements.length > 0;
     });
   });
 
@@ -43,7 +44,7 @@ describe('Electron launch', () => {
     ];
 
     for (const component of components) {
-      await expect(component.isDisplayedInViewport()).to.eventually.be.true;
+      await expect(component.waitForDisplayed()).to.eventually.be.true;
     }
   });
 });

@@ -42,7 +42,7 @@ describe('Webpage launch', () => {
     ];
 
     for (const component of components) {
-      await expect(component.isDisplayedInViewport()).to.eventually.be.true;
+      await expect(component.waitForDisplayed()).to.eventually.be.true;
     }
   });
 });

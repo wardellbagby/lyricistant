@@ -39,21 +39,5 @@ export default class DelegatesWebpackPlugin implements webpack.Plugin {
         }
       }
     );
-
-    // compiler.hooks.emit.tap('DelegatesPlugin', (compilation) => {
-    //   const filePath = resolve('outlines/Delegates.json');
-    //   compilation.fileDependencies.add(filePath);
-    // });
-
-    // compiler.hooks.watchRun.tapPromise(
-    //   'DelegatesPlugin',
-    //   async (updatedCompiler) => {
-    //     logger.info('Generating a new Delegates.ts file.');
-    //     const generatedCode = await createDelegates();
-    //     const outputFile = path.resolve(resolve('src/common/Delegates.ts'));
-    //     fs.writeFileSync(outputFile, generatedCode);
-    //     logger.info('New Delegates file generated.');
-    //   }
-    // );
   }
 }

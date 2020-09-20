@@ -1,5 +1,4 @@
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import CompressionPlugin from 'compression-webpack-plugin';
 import { Configuration } from 'webpack';
 import {
   aliases,
@@ -7,15 +6,17 @@ import {
   HtmlPlugin,
   MonacoPlugin,
   resolve
-} from '../shared';
+} from '../../shared';
+
+export const devServerPort = 9080;
 
 const config: Configuration = {
-  target: 'web',
-  entry: './src/web/index.ts',
-  devtool: 'eval-source-map',
   mode: 'development',
+  target: 'electron-renderer',
+  entry: './src/renderer/index.tsx',
+  devtool: 'eval-source-map',
   resolve: {
-    alias: aliases('web'),
+    alias: aliases('electron'),
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     modules: ['node_modules']
   },
@@ -23,7 +24,6 @@ const config: Configuration = {
     DelegatesPlugin,
     MonacoPlugin,
     HtmlPlugin,
-    new CompressionPlugin(),
     new CleanWebpackPlugin({
       verbose: true
     })
@@ -33,7 +33,7 @@ const config: Configuration = {
       {
         test: /\.tsx?$/,
         include: [resolve('src/')],
-        exclude: [resolve('src/electron')],
+        exclude: [resolve('src/web')],
         use: 'ts-loader'
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
@@ -44,11 +44,14 @@ const config: Configuration = {
     ]
   },
   output: {
-    path: resolve('dist/web'),
-    filename: 'web.js'
+    path: resolve('dist/electron/renderer'),
+    filename: 'renderer.js'
   },
   devServer: {
-    contentBase: resolve('dist/web')
+    host: 'localhost',
+    port: devServerPort,
+    hot: true,
+    overlay: true
   }
 };
 
