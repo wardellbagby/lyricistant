@@ -1,6 +1,6 @@
 import { Manager } from 'common/Manager';
-import { app } from 'electron';
 import { Dialogs } from 'platform/Dialogs';
+import { mainWindow } from '../index';
 
 export class QuitManager extends Manager {
   private readonly dialogs = new Dialogs();
@@ -15,7 +15,7 @@ export class QuitManager extends Manager {
   }
 
   private onOkayForQuit = () => {
-    app.quit();
+    mainWindow.destroy();
   };
 
   private onPromptQuit = async () => {

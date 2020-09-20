@@ -21,7 +21,7 @@
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "lint-fix": "tslint -c tslint.json -p tsconfig.json --fix",
     "start-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack-dev-server --open --config config/web/dev.webpack.config.ts",
-    "start-app": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" concurrently \"webpack-dev-server --config config/electron/dev/renderer.webpack.config.ts\" \"webpack --watch --config config/electron-2/dev/main.webpack.config.ts\"",
+    "start-app": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" concurrently --names \"Renderer,Main\" \"webpack-dev-server --config config/electron/dev/renderer.webpack.config.ts\" \"webpack --watch --config config/electron/dev/main.webpack.config.ts\"",
     "dist-app": "electron-builder --config electron-builder.json --publish never",
     "dist-all-apps": "electron-builder -mwl --config electron-builder.json --publish never",
     "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json",
@@ -92,7 +92,8 @@
     "tslint-plugin-prettier": "^2.3.0",
     "typescript": "^3.9.7",
     "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",

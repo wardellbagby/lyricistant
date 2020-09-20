@@ -1,6 +1,6 @@
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { Configuration, DefinePlugin } from 'webpack';
-import ElectronRestartPlugin from '../../plugins/ElectronRestartPlugin';
+import { ElectronRestartPlugin } from '../../plugins/ElectronRestartPlugin';
 import { aliases, DelegatesPlugin, resolve } from '../../shared';
 import { devServerPort } from './renderer.webpack.config';
 
@@ -42,7 +42,7 @@ const config: Configuration = {
     new DefinePlugin({
       'process.env': { ELECTRON_WEBPACK_WDS_PORT: devServerPort }
     }),
-    new ElectronRestartPlugin(),
+    ElectronRestartPlugin,
     new CleanWebpackPlugin({
       verbose: true
     })

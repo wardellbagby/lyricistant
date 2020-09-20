@@ -2,25 +2,35 @@ import { ChildProcess, spawn } from 'child_process';
 import webpack from 'webpack';
 import { resolve } from '../shared';
 
-export default class ElectronRestartPlugin implements webpack.Plugin {
+class ElectronRestartPluginImpl implements webpack.Plugin {
   private electronProcess: ChildProcess = null;
 
   public apply(compiler: webpack.Compiler): void {
     const logger = compiler.getInfrastructureLogger('StartElectronPlugin');
 
-    compiler.hooks.afterEmit.tap('StartElectronPlugin', () => {
-      if (compiler.options.mode !== 'development') {
-        return;
+    if (compiler.options.mode !== 'development') {
+      return;
+    }
+
+    compiler.hooks.done.tap('StartElectronPlugin', () => {
+      if (this.electronProcess) {
+        logger.info(
+          `Stopping current Electron app. pid=${this.electronProcess.pid}`
+        );
+        if (!process.kill(-this.electronProcess.pid, 'SIGKILL')) {
+          logger.error(
+            `Couldn't kill Electron pid=${this.electronProcess.pid}`
+          );
+        }
       }
 
-      if (this.electronProcess) {
-        this.electronProcess.kill('SIGINT');
-      }
       this.electronProcess = spawn('electron', ['main/main.js'], {
         cwd: resolve('dist/electron/')
       });
 
-      logger.info('Starting Electron app...');
+      logger.info(`Started Electron app. pid=${this.electronProcess.pid}`);
     });
   }
 }
+
+export const ElectronRestartPlugin = new ElectronRestartPluginImpl();

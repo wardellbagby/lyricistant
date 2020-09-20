@@ -81,6 +81,10 @@ function createWindow(): void {
     // when you should delete the corresponding element.
     mainWindow = undefined;
   });
+  mainWindow.on('close', (event) => {
+    quitManager.attemptQuit();
+    event.preventDefault();
+  });
   setMenu();
 }
 
