@@ -1,4 +1,4 @@
-name: Continuous Deployment - Tagged Release
+name: Production Releases
 on:
   push:
     tags:
@@ -69,7 +69,8 @@ jobs:
         run: npm run dist-all-apps
       - name: Delete useless artifacts.
         run: node bin/remove_unneeded_artifacts.js
-      - uses: "marvinpinto/action-automatic-releases@v1.1.0"
+      - name: "Deploy App"
+        uses: "marvinpinto/action-automatic-releases@v1.1.0"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
