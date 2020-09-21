@@ -7,6 +7,7 @@
   "extraMetadata": {
     "main": "main.js"
   },
+  "afterSign": "bin/notarize-mac-app.js",
   "files": [
     "package.json",
     "!**/node_modules${/*}",
@@ -20,8 +21,14 @@
     "!*${/*}"
   ],
   "mac": {
+    "identity": null,
     "category": "public.app-category.utilities",
-    "target": ["dmg", "zip"]
+    "target": ["dmg", "zip"],
+    "hardenedRuntime": false,
+    "gatekeeperAssess": false,
+    "entitlements": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlements.mac.plist",
+    "darkModeSupport": true
   },
   "linux": {
     "target": [

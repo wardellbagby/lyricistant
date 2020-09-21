@@ -2,6 +2,7 @@ node_modules
 dist
 out
 .DS_STORE
+*.env
 
 .idea/**/workspace.xml
 .idea/**/tasks.xml
