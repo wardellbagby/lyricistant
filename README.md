@@ -29,7 +29,7 @@ git checkout https://github.com/wardellbagby/lyricistant.git
 cd lyricistant
 npm install
 # Starts the Electron app.
-npm run start
+npm run start-app
 # Starts the Web app.
 npm run start-web
 ```
@@ -40,8 +40,8 @@ There are currently unit and UI tests in the project.
 In order to run tests, you'll need to build the test versions of the platforms. You can do that via:
 
 ```bash
-npm run test-build && npm run test-dist # builds Electron test app.
-npm run test-build-web # builds Web test sources.
+npm run build-test-app && npm run dist-test-app # builds Electron test app.
+npm run build-test-web # builds Web test sources.
 ```
 
 You can then run the tests via:
