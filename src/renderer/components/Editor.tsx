@@ -1,22 +1,32 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { styled, Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import CodeMirror from 'codemirror';
+import 'codemirror/addon/dialog/dialog';
+import 'codemirror/addon/dialog/dialog.css';
+import 'codemirror/addon/search/jump-to-line';
+import 'codemirror/addon/search/search';
+import 'codemirror/addon/search/searchcursor';
+import 'codemirror/addon/selection/mark-selection';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/mode/javascript/javascript';
 import { useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
-import MonacoEditor from 'react-monaco-editor';
-import { fromEventPattern, merge, Observable, Subject } from 'rxjs';
-import { NodeEventHandler } from 'rxjs/internal/observable/fromEvent';
+import { Controlled as CodeMirrorEditor } from 'react-codemirror2';
+import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
-import { LYRICISTANT_LANGUAGE } from '../util/monaco-helpers';
+import 'typeface-roboto-mono';
+import { findWordAt, LYRICISTANT_LANGUAGE } from '../util/editor-helpers';
 
 export interface TextReplacement {
   word: string;
-  range: monaco.IRange;
+  range: CodeMirror.Range;
 }
 
 export interface WordAtPosition {
-  range: monaco.IRange;
+  range: CodeMirror.Range;
   word: string;
 }
 
@@ -30,18 +40,61 @@ export interface EditorProps {
 
 const cursorUpdateKicker: Subject<undefined> = new Subject();
 
-export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
-  const [editor, setEditor] = useState(
-    null as monaco.editor.IStandaloneCodeEditor
-  );
-  const [version, setVersion] = useState(0);
-  const editorDidMount = (
-    editorInstance: monaco.editor.IStandaloneCodeEditor
-  ): void => {
-    setEditor(editorInstance);
-    setVersion(editorInstance.getModel().getAlternativeVersionId());
-  };
+const EditorContainer = styled('div')({
+  height: '100%',
+  width: '100%'
+});
 
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    height: '100%',
+    width: '100%',
+    '& .CodeMirror': {
+      height: '100%',
+      background: theme.palette.background.default,
+      color: theme.palette.text.primary,
+      fontSize: theme.typography.fontSize,
+      fontFamily: "'Roboto Mono'"
+    },
+    '& .CodeMirror-dialog input': {
+      fontSize: theme.typography.fontSize,
+      fontFamily: "'Roboto Mono'"
+    },
+    '& .CodeMirror-linenumber': {
+      color: theme.palette.text.secondary
+    },
+    '& .CodeMirror-gutters': {
+      background: theme.palette.background.default,
+      'border-style': 'none',
+      width: '60px',
+      'text-align': 'center'
+    },
+    '& .CodeMirror-cursor': {
+      'border-left': `1px solid ${theme.palette.text.primary};`
+    },
+    '& .CodeMirror-guttermarker': {
+      color: theme.palette.background.default
+    },
+    '& .CodeMirror-selectedtext': {
+      background: theme.palette.primary.main,
+      color: theme.palette.getContrastText(theme.palette.primary.main)
+    }
+  }
+}));
+
+export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
+  const [editor, setEditor] = useState(null as CodeMirror.Editor);
+  const [version, setVersion] = useState(0);
+  const editorDidMount = (editorInstance: CodeMirror.Editor): void => {
+    setEditor(editorInstance);
+    // @ts-ignore
+    editorInstance.setOption('styleSelectedText', true);
+    // @ts-ignore
+    editorInstance.setOption('search', true);
+    setVersion(editorInstance.changeGeneration(true));
+    CodeMirror.registerHelper('wordChars', LYRICISTANT_LANGUAGE, /[a-zA-Z-']+/);
+  };
+  const classes = useStyles();
   useEffect(handleSelectedWordChanges(editor, props.onWordSelected), [
     editor,
     props.onWordSelected
@@ -52,98 +105,71 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
   ]);
   useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
   useBeforeUnload(() => {
-    if (version !== editor.getModel().getAlternativeVersionId()) {
+    if (editor.isClean(version)) {
       return 'Are you sure you want to leave? Your changes haven\'t been saved.';
     }
   });
 
   return (
-    <MonacoEditor
-      language={LYRICISTANT_LANGUAGE}
-      editorDidMount={editorDidMount}
-      defaultValue={props.text}
-      onChange={props.onTextChanged}
-      options={{
-        lineNumbers: (line: number): string => {
-          if (!editor) {
-            return `${line}`;
+    <EditorContainer>
+      <CodeMirrorEditor
+        className={classes.root}
+        value={props.text}
+        defineMode={{
+          name: LYRICISTANT_LANGUAGE,
+          fn: () => {
+            return {
+              name: LYRICISTANT_LANGUAGE,
+              token: (stream) => stream.next()
+            };
           }
-          return syllable(editor.getModel().getLineContent(line)).toString();
-        },
-        fontSize: props.fontSize,
-        automaticLayout: true,
-        overviewRulerBorder: false,
-        occurrencesHighlight: false,
-        renderLineHighlight: 'none',
-        scrollBeyondLastLine: false,
-        quickSuggestions: false,
-        hideCursorInOverviewRuler: true,
-        minimap: {
-          enabled: false
-        }
-      }}
-    />
+        }}
+        options={{
+          mode: LYRICISTANT_LANGUAGE,
+          lineNumbers: true,
+          lineNumberFormatter: (line: number): string => {
+            if (!editor) {
+              return `${line}`;
+            }
+            return syllable(editor.getLine(line - 1)).toString();
+          }
+        }}
+        editorDidMount={editorDidMount}
+        onBeforeChange={(editorInstance, _, value) => {
+          props.onTextChanged(value);
+        }}
+      />
+    </EditorContainer>
   );
 };
 
 function handleSelectedWordChanges(
-  editor: monaco.editor.IStandaloneCodeEditor,
+  editor: CodeMirror.Editor,
   onWordSelected: (word: WordAtPosition) => void
-): () => () => void {
+) {
   return () => {
     if (!editor) {
       return;
     }
+
     const cursorChanges: Observable<WordAtPosition> = merge(
-      fromEventPattern((handler: NodeEventHandler) =>
-        editor.onDidChangeCursorPosition(handler)
-      ),
+      fromEvent(editor, 'cursorActivity'),
       cursorUpdateKicker
     ).pipe(
-      map(
-        (): WordAtPosition => {
-          const cursorPosition: monaco.IPosition = editor.getPosition();
-          const wordAndColumns: monaco.editor.IWordAtPosition | null = editor
-            .getModel()
-            .getWordAtPosition(cursorPosition);
-
-          if (!wordAndColumns) {
-            return undefined;
-          }
-
-          return {
-            word: wordAndColumns.word,
-            range: new monaco.Range(
-              cursorPosition.lineNumber,
-              wordAndColumns.startColumn,
-              cursorPosition.lineNumber,
-              wordAndColumns.endColumn
-            )
-          };
-        }
-      ),
-      filter((value: WordAtPosition) => !!value)
-    );
-    const selectionChanges: Observable<WordAtPosition> = fromEventPattern(
-      (handler: NodeEventHandler) => editor.onDidChangeCursorSelection(handler)
-    ).pipe(
       map(() => {
-        const selectionRange: monaco.IRange = editor.getSelection();
+        const cursorPosition = editor.getCursor('from');
+        const foundWord = findWordAt(editor, cursorPosition);
 
-        return {
-          word: editor.getModel().getValueInRange(selectionRange),
-          range: selectionRange
-        };
+        if (!foundWord || foundWord.empty()) {
+          return undefined;
+        }
+
+        return foundWord;
       }),
-      filter((value: WordAtPosition) => {
-        return (
-          value.word.length > 1 &&
-          value.word.charAt(0).match(/\w/) !== undefined
-        );
-      })
+      filter((value) => !!value)
     );
 
-    const subscription = merge(selectionChanges, cursorChanges)
+    const subscription = cursorChanges
       .pipe(distinctUntilChanged())
       .subscribe(onWordSelected);
 
@@ -153,8 +179,8 @@ function handleSelectedWordChanges(
 
 function handleTextReplacements(
   textReplacements: Observable<TextReplacement>,
-  editor: monaco.editor.IStandaloneCodeEditor
-): () => void {
+  editor: CodeMirror.Editor
+) {
   return () => {
     if (!editor) {
       return;
@@ -163,12 +189,11 @@ function handleTextReplacements(
     const subscription = textReplacements.subscribe(
       (replacement: TextReplacement): void => {
         editor.focus();
-        const op: monaco.editor.IIdentifiedSingleEditOperation = {
-          range: convertToRange(replacement.range),
-          text: replacement.word,
-          forceMoveMarkers: true
-        };
-        editor.executeEdits('', [op]);
+        editor.replaceRange(
+          replacement.word,
+          replacement.range.from(),
+          replacement.range.to()
+        );
         cursorUpdateKicker.next(undefined);
       }
     );
@@ -178,10 +203,10 @@ function handleTextReplacements(
 }
 
 function handleEditorEvents(
-  editor: monaco.editor.IStandaloneCodeEditor,
+  editor: CodeMirror.Editor,
   lastKnownVersion: number,
   setVersion: (version: number) => void
-): () => void {
+) {
   const { enqueueSnackbar } = useSnackbar();
   return () => {
     if (!editor) {
@@ -190,8 +215,7 @@ function handleEditorEvents(
 
     const onFileSaveEnded = (error: any, path: string) => {
       // Resets the undo stack.
-      editor.getModel().setValue(editor.getModel().getValue());
-      setVersion(editor.getModel().getAlternativeVersionId());
+      setVersion(editor.changeGeneration(true));
 
       if (path) {
         enqueueSnackbar(`${path} saved`, { variant: 'success' });
@@ -200,26 +224,26 @@ function handleEditorEvents(
     platformDelegate.on('file-save-ended', onFileSaveEnded);
 
     const onNewFileAttempt = () => {
-      if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
-        platformDelegate.send('prompt-save-file-for-new');
-      } else {
+      if (editor.isClean(lastKnownVersion)) {
         platformDelegate.send('okay-for-new-file');
+      } else {
+        platformDelegate.send('prompt-save-file-for-new');
       }
     };
     platformDelegate.on('is-okay-for-new-file', onNewFileAttempt);
 
     const onQuitAttempt = () => {
-      if (lastKnownVersion !== editor.getModel().getAlternativeVersionId()) {
-        platformDelegate.send('prompt-save-file-for-quit');
-      } else {
+      if (editor.isClean(lastKnownVersion)) {
         platformDelegate.send('okay-for-quit');
+      } else {
+        platformDelegate.send('prompt-save-file-for-quit');
       }
     };
     platformDelegate.on('is-okay-for-quit-file', onQuitAttempt);
 
     const onNewFileCreated = () => {
-      editor.getModel().setValue('');
-      setVersion(editor.getModel().getAlternativeVersionId());
+      editor.setValue('');
+      setVersion(editor.changeGeneration(true));
     };
     platformDelegate.on('new-file-created', onNewFileCreated);
 
@@ -229,28 +253,27 @@ function handleEditorEvents(
       fileContents: string
     ) => {
       if (!error) {
-        editor.getModel().setValue(fileContents);
-        setVersion(editor.getModel().getAlternativeVersionId());
+        editor.setValue(fileContents);
+        setVersion(editor.changeGeneration(true));
       }
     };
     platformDelegate.on('file-opened', onFileOpened);
 
     const onTextRequested = () => {
-      platformDelegate.send('editor-text', editor.getModel().getValue());
+      platformDelegate.send('editor-text', editor.getValue());
     };
     platformDelegate.on('request-editor-text', onTextRequested);
 
-    const onUndo = () => editor.trigger('', 'undo', '');
+    const onUndo = () => editor.undo();
     platformDelegate.on('undo', onUndo);
 
-    const onRedo = () => editor.trigger('', 'redo', '');
+    const onRedo = () => editor.redo();
     platformDelegate.on('redo', onRedo);
 
-    const onFind = () => editor.trigger('', 'actions.findWithSelection', '');
+    const onFind = () => editor.execCommand('find');
     platformDelegate.on('find', onFind);
 
-    const onReplace = () =>
-      editor.trigger('', 'editor.action.startFindReplaceAction', '');
+    const onReplace = () => editor.execCommand('replace');
     platformDelegate.on('replace', onReplace);
 
     return () => {
@@ -266,13 +289,4 @@ function handleEditorEvents(
       platformDelegate.removeListener('replace', onReplace);
     };
   };
-}
-
-function convertToRange(range: monaco.IRange): monaco.Range {
-  return new monaco.Range(
-    range.startLineNumber,
-    range.startColumn,
-    range.endLineNumber,
-    range.endColumn
-  );
 }

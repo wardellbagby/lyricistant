@@ -14,7 +14,7 @@
     "no-submodule-imports": [
       true,
       "rxjs",
-      "monaco-editor",
+      "codemirror",
       "common",
       "platform",
       "@material-ui",

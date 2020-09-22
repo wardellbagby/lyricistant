@@ -1,13 +1,7 @@
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
 import { Configuration } from 'webpack';
-import {
-  aliases,
-  DelegatesPlugin,
-  HtmlPlugin,
-  MonacoPlugin,
-  resolve
-} from '../shared';
+import { aliases, DelegatesPlugin, HtmlPlugin, resolve } from '../shared';
 
 const config: Configuration = {
   target: 'web',
@@ -21,7 +15,6 @@ const config: Configuration = {
   },
   plugins: [
     DelegatesPlugin,
-    MonacoPlugin,
     HtmlPlugin,
     new CompressionPlugin(),
     new CleanWebpackPlugin({

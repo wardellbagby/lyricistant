@@ -24,9 +24,13 @@ class ElectronRestartPluginImpl implements webpack.Plugin {
         }
       }
 
-      this.electronProcess = spawn('electron', ['main/main.js'], {
-        cwd: resolve('dist/electron/')
-      });
+      this.electronProcess = spawn(
+        resolve('node_modules/.bin/electron'),
+        ['main/main.js', '--inspect=5858', '--remote-debugging-port=9223'],
+        {
+          cwd: resolve('dist/electron/')
+        }
+      );
 
       logger.info(`Started Electron app. pid=${this.electronProcess.pid}`);
     });

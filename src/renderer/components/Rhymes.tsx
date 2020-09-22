@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as CodeMirror from 'codemirror';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { Observable } from 'rxjs';
@@ -14,7 +14,7 @@ import { fetchRhymes } from '../networking/fetchRhymes';
 import { WordAtPosition } from './Editor';
 
 interface RhymesProp {
-  onRhymeClicked: (rhyme: Rhyme, position: monaco.IRange) => void;
+  onRhymeClicked: (rhyme: Rhyme, position: CodeMirror.Range) => void;
   queries: Observable<WordAtPosition>;
 }
 

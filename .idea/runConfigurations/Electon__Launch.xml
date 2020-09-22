@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Electon: Launch" type="NodeJSConfigurationType" application-parameters="-r tsconfig-paths/register --config config/electron-2/dev/webpack.config.ts" node-parameters="--inspect=9229" path-to-js-file="node_modules/.bin/webpack-dev-server" working-dir="$PROJECT_DIR$/">
-    <envs>
-      <env name="TS_NODE_PROJECT" value="config/tsconfig-for-webpack-config.json" />
-    </envs>
-    <method v="2" />
-  </configuration>
-</component>

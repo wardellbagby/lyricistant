@@ -1,12 +1,6 @@
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { Configuration } from 'webpack';
-import {
-  aliases,
-  DelegatesPlugin,
-  HtmlPlugin,
-  MonacoPlugin,
-  resolve
-} from '../../shared';
+import { aliases, DelegatesPlugin, HtmlPlugin, resolve } from '../../shared';
 
 export const devServerPort = 9080;
 
@@ -22,7 +16,6 @@ const config: Configuration = {
   },
   plugins: [
     DelegatesPlugin,
-    MonacoPlugin,
     HtmlPlugin,
     new CleanWebpackPlugin({
       verbose: true

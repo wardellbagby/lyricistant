@@ -1,6 +1,5 @@
 import { useTheme } from '@material-ui/core/styles';
 import { PreferencesData } from 'common/preferences/PreferencesData';
-import { IRange } from 'monaco-editor/esm/vs/editor/editor.api';
 import { useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
@@ -8,15 +7,12 @@ import { Subject } from 'rxjs';
 import 'typeface-roboto';
 import { Rhyme } from '../models/rhyme';
 import { downloadApp } from '../util/download-app';
-import { createLyricistantLanguage } from '../util/monaco-helpers';
 import { AppLayout } from './AppLayout';
 import { ChooseDownloadDialog } from './ChooseDownload';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
 import { Menu } from './Menu';
 import { Preferences } from './Preferences';
 import { Rhymes } from './Rhymes';
-
-createLyricistantLanguage();
 
 enum Screen {
   PREFERENCES,
@@ -30,7 +26,7 @@ const onWordSelected: (word: WordAtPosition) => void = (word) => {
   selectedWords.next(word);
 };
 
-const onRhymeClicked = (rhyme: Rhyme, range: IRange) =>
+const onRhymeClicked = (rhyme: Rhyme, range: any) =>
   textReplacements.next({ word: rhyme.word, range });
 
 const onPreferencesSaved = (preferencesData: PreferencesData) =>

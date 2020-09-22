@@ -18,12 +18,11 @@ export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
 let quitManager: QuitManager;
 
-debug({
-  isEnabled: true,
-  showDevTools: false
-});
-
 if (isDevelopment) {
+  debug({
+    isEnabled: true,
+    showDevTools: false
+  });
   if (module.hot) {
     module.hot.accept();
   }

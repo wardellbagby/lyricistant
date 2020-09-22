@@ -1,12 +1,6 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import path from 'path';
 import DelegatesWebpackPlugin from './plugins/DelegatesWebpackPlugin';
-
-export const MonacoPlugin = new MonacoWebpackPlugin({
-  features: ['clipboard', 'codeAction', 'coreCommands', 'find', 'suggest'],
-  languages: []
-});
 
 export const DelegatesPlugin = new DelegatesWebpackPlugin();
 
