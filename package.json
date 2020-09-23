@@ -28,7 +28,7 @@
     "dist-all-apps": "electron-builder -mwl --config electron-builder.json --publish never",
     "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json",
     "build-test-app": "cross-env NODE_ENV='test' TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/electron/test/webpack.config.ts",
-    "dist-test-app": "cross-env NODE_ENV='test' electron-builder --mac --publish never",
+    "dist-test-app": "cross-env NODE_ENV='test' electron-builder --mac --publish never -c.mac.identity=null",
     "build-test-web": "cross-env NODE_ENV='test' TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/web/test.webpack.config.ts"
   },
   "engines": {

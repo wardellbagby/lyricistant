@@ -21,10 +21,9 @@
     "!*${/*}"
   ],
   "mac": {
-    "identity": null,
     "category": "public.app-category.utilities",
     "target": ["dmg", "zip"],
-    "hardenedRuntime": false,
+    "hardenedRuntime": true,
     "gatekeeperAssess": false,
     "entitlements": "build/entitlements.mac.plist",
     "entitlementsInherit": "build/entitlements.mac.plist",

@@ -67,6 +67,11 @@ jobs:
         run: npm run build-app
       - name: Build artifacts for all supported OSes.
         run: npm run dist-all-apps
+        env:
+          CSC_LINK: ${{ secrets.MACOS_CERT }}
+          CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
       - name: Delete useless artifacts.
         run: node bin/remove_unneeded_artifacts.js
       - name: "Deploy App"
