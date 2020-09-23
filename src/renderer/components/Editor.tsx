@@ -127,6 +127,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
         options={{
           mode: LYRICISTANT_LANGUAGE,
           lineNumbers: true,
+          lineWrapping: true,
           lineNumberFormatter: (line: number): string => {
             if (!editor) {
               return `${line}`;

@@ -14,11 +14,8 @@ Lyricistant is a text application that lyricists can use to write their lyrics. 
 
 ## How do I use it?
 
-You can find the latest releases for macOS, Windows, and Linux at the link below:
-
-[Releases](https://github.com/wardellbagby/lyricistant/releases)
-
-A port of Lyricistant to the web is being worked on. This is still under active development, but can be found at https://wardellbagby.github.io/lyricistant/
+- [On the Web!](https://lyricistant.app)  
+- [On your computer!](https://github.com/wardellbagby/lyricistant/releases/latest)
 
 
 ## Information for developers
@@ -34,6 +31,13 @@ npm run start-app
 npm run start-web
 ```
 
+
+### Viewing the latest on `main`
+
+New commits to `main` are automatically deployed, both on the web and as native binaries.
+
+- [Web](https://dev.lyricistant.app)  
+- [Native binaries](https://github.com/wardellbagby/lyricistant/releases/tag/latest)
 ### Running Tests
 There are currently unit and UI tests in the project.
 
