@@ -3,10 +3,11 @@ import { PreferencesData } from 'common/preferences/PreferencesData';
 import { useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import 'typeface-roboto';
 import { Rhyme } from '../models/rhyme';
 import { downloadApp } from '../util/download-app';
+import { EmptyRange } from '../util/editor-helpers';
 import { AppLayout } from './AppLayout';
 import { ChooseDownloadDialog } from './ChooseDownload';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
@@ -20,7 +21,10 @@ enum Screen {
   DOWNLOAD
 }
 
-const selectedWords: Subject<WordAtPosition> = new Subject();
+const selectedWords: BehaviorSubject<WordAtPosition> = new BehaviorSubject({
+  range: EmptyRange,
+  word: ''
+});
 const textReplacements: Subject<TextReplacement> = new Subject();
 const onWordSelected: (word: WordAtPosition) => void = (word) => {
   selectedWords.next(word);

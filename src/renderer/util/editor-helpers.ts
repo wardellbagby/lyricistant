@@ -44,6 +44,8 @@ export const Range = (from: Position, to: Position): CMRange => {
   };
 };
 
+export const EmptyRange = Range({ ch: 0, line: 0 }, { ch: 0, line: 0 });
+
 export interface Range extends CMRange {
   new (value?: any): CMRange;
 }
