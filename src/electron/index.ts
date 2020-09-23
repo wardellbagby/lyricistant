@@ -42,8 +42,8 @@ app.on('activate', () => {
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 700,
     minWidth: 600,
     minHeight: 400,
     backgroundColor: '#00000000',

@@ -1,12 +1,10 @@
 import Box from '@material-ui/core/Box';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, styled, Theme } from '@material-ui/core/styles';
 import * as CodeMirror from 'codemirror';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+import { VirtuosoGrid } from 'react-virtuoso';
 import { Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { Rhyme } from '../models/rhyme';
@@ -19,53 +17,67 @@ interface RhymesProp {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  rhymeList: {
-    wordBreak: 'break-all',
+  rhyme: {
     color: theme.palette.text.disabled,
     '&:hover': {
       color: theme.palette.text.primary
+    },
+    'text-align': 'center',
+    [theme.breakpoints.up('md')]: {
+      height: '80px'
     }
   }
 }));
 
-const ListContainer: React.FC<{
-  listRef: (ref: HTMLElement | null) => void;
-  style: React.CSSProperties;
-}> = ({ listRef, style, children }) => {
-  const classes = useStyles(undefined);
-  return (
-    <List ref={listRef} style={style} className={classes.rhymeList}>
-      {children}
-    </List>
-  );
-};
+const ListContainer: React.ComponentType<{ className: string }> = styled('div')(
+  {
+    display: 'flex',
+    'flex-wrap': 'wrap'
+  }
+);
+
+const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
+  ({ theme }) => {
+    return {
+      display: 'flex',
+      flex: 'none',
+      'align-content': 'stretch',
+      [theme.breakpoints.up('xs')]: {
+        width: '50%'
+      },
+      [theme.breakpoints.up('md')]: {
+        width: '100%'
+      },
+      [theme.breakpoints.up('lg')]: {
+        width: '50%'
+      }
+    };
+  }
+);
 
 export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
   const [rhymes, setRhymes] = useState<Rhyme[]>([]);
   const [queryData, setQueryData] = useState<WordAtPosition>(null);
-  const [loading, setLoading] = useState(false);
+  const classes = useStyles();
 
-  useEffect(handleQueries(props.queries, setRhymes, setQueryData, setLoading), [
+  useEffect(handleQueries(props.queries, setRhymes, setQueryData), [
     props.queries
   ]);
 
-  if (loading) {
-    return (
-      <Box display="flex" width={'100%'} height={'100%'}>
-        <CircularProgress style={{ margin: 'auto' }} />
-      </Box>
-    );
+  if (rhymes.length === 0) {
+    return <div />;
   }
   return (
-    <Virtuoso
+    <VirtuosoGrid
       ListContainer={ListContainer}
+      ItemContainer={ItemContainer}
       style={{ width: '100%', height: '100%' }}
+      overscan={100}
       totalCount={rhymes.length}
       item={(index) => {
         const rhyme = rhymes[index];
 
-        return renderRhyme(rhyme, () => {
-          setLoading(true);
+        return renderRhyme(rhyme, classes.rhyme, () => {
           props.onRhymeClicked(rhyme, queryData.range);
         });
       }}
@@ -73,19 +85,28 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
   );
 };
 
-function renderRhyme(rhyme: Rhyme, onClick: () => void): React.ReactElement {
+function renderRhyme(
+  rhyme: Rhyme,
+  className: string,
+  onClick: () => void
+): React.ReactElement {
   return (
-    <ListItem button key={rhyme.word}>
-      <ListItemText onClick={onClick} primary={rhyme.word} />
-    </ListItem>
+    <Box flex={1} className={className}>
+      <ListItem button key={rhyme.word} style={{ height: '100%' }}>
+        <ListItemText
+          onClick={onClick}
+          primary={rhyme.word}
+          primaryTypographyProps={{ align: 'center' }}
+        />
+      </ListItem>
+    </Box>
   );
 }
 
 function handleQueries(
   queries: Observable<WordAtPosition>,
   setRhymes: (rhymes: Rhyme[]) => void,
-  setQueryData: (queryData: WordAtPosition) => void,
-  setLoading: (loading: boolean) => void
+  setQueryData: (queryData: WordAtPosition) => void
 ): () => () => void {
   return () => {
     const subscription = queries
@@ -110,7 +131,6 @@ function handleQueries(
       )
       .subscribe(
         (result: { queryData: WordAtPosition; rhymes: Rhyme[] }): void => {
-          setLoading(false);
           setRhymes(result.rhymes);
           setQueryData(result.queryData);
         }
