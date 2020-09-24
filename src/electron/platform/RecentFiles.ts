@@ -21,7 +21,7 @@ class ElectronRecentFiles implements IRecentFiles {
       }
     }
 
-    return this.cachedRecentFiles;
+    return [...this.cachedRecentFiles];
   };
   public addRecentFile = (filePath: string) => {
     const recentFiles = this.getRecentFiles();

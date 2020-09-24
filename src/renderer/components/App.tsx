@@ -98,25 +98,23 @@ export const App: FunctionComponent = () => {
 function handleFileChanges(): () => void {
   const { enqueueSnackbar } = useSnackbar();
   return () => {
-    const onFileOpened = (error: Error, fileName: string) => {
+    const onFileOpened = (error: Error, filename: string) => {
       if (error) {
-        enqueueSnackbar("Couldn't open the selected file.", {
+        enqueueSnackbar(`Couldn't open ${filename}`, {
           variant: 'error'
         });
-      } else {
-        document.title = fileName;
       }
     };
     platformDelegate.on('file-opened', onFileOpened);
 
-    const onNewFile = () => {
-      document.title = 'Untitled';
+    const onTitleChanged = (title: string) => {
+      document.title = title;
     };
-    platformDelegate.on('new-file-created', onNewFile);
+    platformDelegate.on('app-title-changed', onTitleChanged);
 
-    return function cleanup() {
+    return () => {
       platformDelegate.removeListener('file-opened', onFileOpened);
-      platformDelegate.removeListener('new-file-created', onNewFile);
+      platformDelegate.removeListener('app-title-changed', onTitleChanged);
     };
   };
 }

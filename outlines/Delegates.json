@@ -41,6 +41,10 @@
     {
       "channel":  "ui-config",
       "config":  "UiConfig"
+    },
+    {
+      "channel": "app-title-changed",
+      "title": "string"
     }
   ],
   "platformChannels": [

@@ -10,7 +10,9 @@ export class FileManager extends Manager {
   private readonly dialogs = new Dialogs();
 
   private currentFilePath: string | undefined = undefined;
-  private newFileListener: (recentFiles: string[]) => void = undefined;
+  private fileChangedListeners: Array<
+    (currentFilename: string | null, recentFiles: string[]) => void
+  > = [];
 
   public register(): void {
     this.rendererDelegate.on('ready-for-events', this.onRendererReady);
@@ -23,8 +25,10 @@ export class FileManager extends Manager {
     this.rendererDelegate.on('okay-for-new-file', this.onOkayForNewFile);
   }
 
-  public onNewFileOpened = (listener: (recentFiles: string[]) => void) => {
-    this.newFileListener = listener;
+  public addOnFileChangedListener = (
+    listener: (currentFilename: string | null, recentFiles: string[]) => void
+  ) => {
+    this.fileChangedListeners.push(listener);
   };
 
   public onNewFile = () => {
@@ -63,10 +67,7 @@ export class FileManager extends Manager {
   };
 
   private onRendererReady = () => {
-    this.rendererDelegate.send('new-file-created');
-    if (this.newFileListener) {
-      this.newFileListener(this.recentFiles.getRecentFiles());
-    }
+    this.onOkayForNewFile();
   };
 
   private onOpenFile = async () => {
@@ -81,9 +82,9 @@ export class FileManager extends Manager {
           fileData.data
         );
         this.recentFiles.addRecentFile(this.currentFilePath);
-        if (this.newFileListener) {
-          this.newFileListener(this.recentFiles.getRecentFiles());
-        }
+        this.fileChangedListeners.forEach((listener) =>
+          listener(fileData.filePath, this.recentFiles.getRecentFiles())
+        );
       }
     } catch (e) {
       this.rendererDelegate.send('file-opened', e, undefined, undefined);
@@ -106,6 +107,9 @@ export class FileManager extends Manager {
   private onOkayForNewFile = () => {
     this.currentFilePath = null;
     this.rendererDelegate.send('new-file-created');
+    this.fileChangedListeners.forEach((listener) =>
+      listener(null, this.recentFiles.getRecentFiles())
+    );
   };
 
   private onPromptSaveFile = async () => {

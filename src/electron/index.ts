@@ -88,7 +88,7 @@ function createWindow(): void {
 }
 
 function registerListeners() {
-  getCommonManager(FileManager).onNewFileOpened((recentFiles) => {
+  getCommonManager(FileManager).addOnFileChangedListener((_, recentFiles) => {
     setMenu(recentFiles);
   });
 }

@@ -36,6 +36,7 @@ export interface RendererDelegate {
   send(channel: 'redo'): void;
   send(channel: 'open-prefs'): void;
   send(channel: 'ui-config', config: UiConfig): void;
+  send(channel: 'app-title-changed', title: string): void;
 
   on(channel: 'ready-for-events', listener: () => void): this;
   removeListener(channel: 'ready-for-events', listener: () => void): this;
@@ -177,5 +178,11 @@ export interface PlatformDelegate {
   removeListener(
     channel: 'ui-config',
     listener: (config: UiConfig) => void
+  ): this;
+
+  on(channel: 'app-title-changed', listener: (title: string) => void): this;
+  removeListener(
+    channel: 'app-title-changed',
+    listener: (title: string) => void
   ): this;
 }
