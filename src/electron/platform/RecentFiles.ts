@@ -23,9 +23,9 @@ class ElectronRecentFiles implements IRecentFiles {
 
     return [...this.cachedRecentFiles];
   };
-  public addRecentFile = (filePath: string) => {
-    const recentFiles = this.getRecentFiles();
-    recentFiles.unshift(filePath);
+
+  public setRecentFiles = (recentFiles: string[]) => {
+    this.cachedRecentFiles = recentFiles;
     writeFile(
       this.recentFilesFilePath,
       JSON.stringify(recentFiles),

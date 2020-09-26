@@ -45,6 +45,11 @@ export class FileManager extends Manager {
         fileData.filePath,
         fileData.data
       );
+      this.addRecentFile(filePath);
+      const updatedRecentFiles = this.recentFiles.getRecentFiles();
+      this.fileChangedListeners.forEach((listener) =>
+        listener(fileData.filePath, updatedRecentFiles)
+      );
     } else {
       await this.onOpenFile();
     }
@@ -81,7 +86,7 @@ export class FileManager extends Manager {
           fileData.filePath,
           fileData.data
         );
-        this.recentFiles.addRecentFile(this.currentFilePath);
+        this.addRecentFile(this.currentFilePath);
         this.fileChangedListeners.forEach((listener) =>
           listener(fileData.filePath, this.recentFiles.getRecentFiles())
         );
@@ -120,5 +125,15 @@ export class FileManager extends Manager {
     if (result === 'yes') {
       this.onOkayForNewFile();
     }
+  };
+
+  private addRecentFile = (filePath: string) => {
+    let recentlyOpenedFiles = this.recentFiles.getRecentFiles();
+    recentlyOpenedFiles.unshift(filePath);
+    recentlyOpenedFiles = Array.from(new Set(recentlyOpenedFiles));
+    if (recentlyOpenedFiles.length > 10) {
+      recentlyOpenedFiles.pop();
+    }
+    this.recentFiles.setRecentFiles(recentlyOpenedFiles);
   };
 }

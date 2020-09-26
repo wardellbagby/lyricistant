@@ -54,6 +54,13 @@ You can then run the tests via:
 npm run test
 ```
 
+If you want to attach a debugger to the tests, you can run this:
+
+```bash
+npm run test -- --inspect-brk=5225
+```
+
+The test will then wait until you attach a NodeJS debugger on port `5225`.
 
 ## License
 
