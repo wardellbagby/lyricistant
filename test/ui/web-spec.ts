@@ -30,8 +30,10 @@ describe('Webpage launch', () => {
 
   after(() => client.deleteSession());
 
-  it('has a title of untitled', () => {
-    return expect(client.getTitle()).to.eventually.equal('Untitled');
+  it('has a title of Lyricistant - Untitled', () => {
+    return expect(client.getTitle()).to.eventually.equal(
+      'Lyricistant - Untitled'
+    );
   });
 
   it('shows the basic components', async () => {

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "es2015",
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "jsx": "react",
     "downlevelIteration": true,
-    "lib": ["esnext", "dom"],
+    "lib": ["dom"],
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {

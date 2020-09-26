@@ -38,12 +38,18 @@ export function fetchRhymes(word: string): Observable<Rhyme[]> {
         rhymes.map((rhyme: Rhyme) => new Rhyme(rhyme.word, rhyme.score + 1000))
       )
     ),
-    asyncRhymes(word, 'sounds-like')
+    from(asyncRhymes(word, 'sounds-like'))
   ).pipe(
     map((results: Rhyme[][]) =>
-      [...new Set(results.flat())].sort(
+      [...new Set(flatten(results))].sort(
         (left: Rhyme, right: Rhyme) => right.score - left.score
       )
     )
   );
 }
+
+const flatten: <T>(input: T[][]) => T[] = (array) => {
+  return array.reduce((prev, current) => {
+    return prev.concat(current);
+  });
+};
