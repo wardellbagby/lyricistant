@@ -8,8 +8,8 @@ const config: Configuration = {
   mode: 'production',
   optimization: {
     minimize: true,
-    minimizer: [new TerserPlugin()]
-  }
+    minimizer: [new TerserPlugin()],
+  },
 };
 
 export default config;

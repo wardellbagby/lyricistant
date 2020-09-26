@@ -6,7 +6,7 @@ import {
   FolderOpen,
   GetApp,
   Save,
-  Settings
+  Settings,
 } from '@material-ui/icons';
 import clsx from 'clsx';
 import { UiConfig } from 'common/ui/UiConfig';
@@ -20,26 +20,26 @@ const useIconStyles = makeStyles((theme: Theme) => ({
     height: 56,
     color: theme.palette.action.active,
     flexShrink: 0,
-    display: 'inline-flex'
+    display: 'inline-flex',
   },
   icon: {
     width: 24,
-    height: 24
+    height: 24,
   },
   menu: {
-    backgroundColor: theme.palette.primary.main
-  }
+    backgroundColor: theme.palette.primary.main,
+  },
 }));
 
 const useMenuStyles = makeStyles((theme: Theme) => ({
   menu: {
-    backgroundColor: theme.palette.primary.main
-  }
+    backgroundColor: theme.palette.primary.main,
+  },
 }));
 
 const MenuIcon: FunctionComponent<{ onClick?: () => void }> = ({
   onClick,
-  children
+  children,
 }) => {
   const classes = useIconStyles();
   const [debouncedClick] = useDebouncedCallback(onClick, 200);
@@ -70,7 +70,7 @@ export const Menu: FunctionComponent<MenuProps> = ({
   onSaveClicked,
   onSettingsClicked,
   onDownloadClicked,
-  className
+  className,
 }) => {
   const theme = useTheme();
   const classes = useMenuStyles();

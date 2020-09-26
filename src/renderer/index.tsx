@@ -31,7 +31,7 @@ ReactDOM.render(
         maxSnack={3}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
       >
         <App />

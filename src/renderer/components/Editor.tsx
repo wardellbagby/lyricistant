@@ -42,7 +42,7 @@ const cursorUpdateKicker: Subject<undefined> = new Subject();
 
 const EditorContainer = styled('div')({
   height: '100%',
-  width: '100%'
+  width: '100%',
 });
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -54,32 +54,32 @@ const useStyles = makeStyles((theme: Theme) => ({
       background: theme.palette.background.default,
       color: theme.palette.text.primary,
       fontSize: theme.typography.fontSize,
-      fontFamily: "'Roboto Mono'"
+      fontFamily: "'Roboto Mono'",
     },
     '& .CodeMirror-dialog input': {
       fontSize: theme.typography.fontSize,
-      fontFamily: "'Roboto Mono'"
+      fontFamily: "'Roboto Mono'",
     },
     '& .CodeMirror-linenumber': {
-      color: theme.palette.text.secondary
+      color: theme.palette.text.secondary,
     },
     '& .CodeMirror-gutters': {
       background: theme.palette.background.default,
       'border-style': 'none',
       width: '60px',
-      'text-align': 'center'
+      'text-align': 'center',
     },
     '& .CodeMirror-cursor': {
-      'border-left': `1px solid ${theme.palette.text.primary};`
+      'border-left': `1px solid ${theme.palette.text.primary};`,
     },
     '& .CodeMirror-guttermarker': {
-      color: theme.palette.background.default
+      color: theme.palette.background.default,
     },
     '& .CodeMirror-selectedtext': {
       background: theme.palette.primary.main,
-      color: theme.palette.getContrastText(theme.palette.primary.main)
-    }
-  }
+      color: theme.palette.getContrastText(theme.palette.primary.main),
+    },
+  },
 }));
 
 export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
@@ -97,16 +97,16 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
   const classes = useStyles();
   useEffect(handleSelectedWordChanges(editor, props.onWordSelected), [
     editor,
-    props.onWordSelected
+    props.onWordSelected,
   ]);
   useEffect(handleTextReplacements(props.textReplacements, editor), [
     editor,
-    props.textReplacements
+    props.textReplacements,
   ]);
   useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
   useBeforeUnload(() => {
     if (editor.isClean(version)) {
-      return 'Are you sure you want to leave? Your changes haven\'t been saved.';
+      return "Are you sure you want to leave? Your changes haven't been saved.";
     }
   });
 
@@ -120,9 +120,9 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
           fn: () => {
             return {
               name: LYRICISTANT_LANGUAGE,
-              token: (stream) => stream.next()
+              token: (stream) => stream.next(),
             };
-          }
+          },
         }}
         options={{
           mode: LYRICISTANT_LANGUAGE,
@@ -133,7 +133,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
               return `${line}`;
             }
             return syllable(editor.getLine(line - 1)).toString();
-          }
+          },
         }}
         editorDidMount={editorDidMount}
         onBeforeChange={(editorInstance, _, value) => {

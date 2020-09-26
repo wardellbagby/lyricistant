@@ -10,7 +10,7 @@ type ManagerConstructor<T extends Manager = Manager> = new (
 const commonManagers: ManagerConstructor[] = [
   FileManager,
   PreferenceManager,
-  UiConfigManager
+  UiConfigManager,
 ];
 
 const registeredManagers: Map<ManagerConstructor, Manager> = new Map();

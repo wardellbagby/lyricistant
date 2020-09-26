@@ -1,7 +1,7 @@
 export enum Theme {
   Light,
   Dark,
-  System
+  System,
 }
 export interface PreferencesData {
   textSize: number;

@@ -7,7 +7,7 @@ class ElectronDialogs implements IDialogs {
     const result = await dialog.showMessageBox(mainWindow, {
       type: 'warning',
       message,
-      buttons: ['Yes', 'No']
+      buttons: ['Yes', 'No'],
     });
 
     return result.response ? 'no' : 'yes';

@@ -21,7 +21,7 @@ let quitManager: QuitManager;
 if (isDevelopment) {
   debug({
     isEnabled: true,
-    showDevTools: false
+    showDevTools: false,
   });
   if (module.hot) {
     module.hot.accept();
@@ -48,8 +48,8 @@ function createWindow(): void {
     minHeight: 400,
     backgroundColor: '#00000000',
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
   rendererDelegate = createRendererDelegate(mainWindow);
   registerCommonManagers(rendererDelegate);
@@ -68,7 +68,7 @@ function createWindow(): void {
         formatUrl({
           pathname: path.join(__dirname, 'index.html'),
           protocol: 'file',
-          slashes: true
+          slashes: true,
         })
       )
       .catch(showLoadingError);
@@ -128,7 +128,7 @@ function setMenu(recentFiles?: string[]): void {
       onSaveClicked: () => {
         getCommonManager(FileManager).saveFile(false);
       },
-      onUndoClicked: undoHandler
+      onUndoClicked: undoHandler,
     },
     recentFiles
   );

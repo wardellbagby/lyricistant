@@ -7,15 +7,15 @@ import React, { useMemo } from 'react';
 import {
   latestReleaseUrl,
   Release,
-  supportedReleases
+  supportedReleases,
 } from '../util/download-app';
 
 const useStyles = (release: Release) =>
   makeStyles(() => ({
     root: {
       background: releaseColor(release),
-      color: releaseTextColor(release)
-    }
+      color: releaseTextColor(release),
+    },
   }))();
 
 const releaseColor = ({ platform }: Release) => {

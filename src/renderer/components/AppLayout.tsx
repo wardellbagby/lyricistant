@@ -5,8 +5,8 @@ import React, { FunctionComponent } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   divider: {
-    background: theme.palette.background.paper
-  }
+    background: theme.palette.background.paper,
+  },
 }));
 
 export const AppLayout: FunctionComponent = ({ children }) => {
@@ -21,7 +21,7 @@ export const AppLayout: FunctionComponent = ({ children }) => {
       <div />,
       ...childArray.slice(1, 2),
       <div className={classes.divider} />,
-      childArray[childArray.length - 1]
+      childArray[childArray.length - 1],
     ];
   } else {
     displayableChildren = children;

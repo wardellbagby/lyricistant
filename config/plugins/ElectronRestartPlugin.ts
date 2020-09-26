@@ -39,7 +39,7 @@ class ElectronRestartPluginImpl implements webpack.Plugin {
           ['main/main.js', '--inspect=5858', '--remote-debugging-port=9223'],
           {
             cwd: resolve('dist/electron/'),
-            detached: true
+            detached: true,
           }
         );
       } catch (e) {

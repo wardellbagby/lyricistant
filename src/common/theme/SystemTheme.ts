@@ -1,6 +1,6 @@
 export enum SystemTheme {
   Light,
-  Dark
+  Dark,
 }
 
 export interface SystemThemeProvider {

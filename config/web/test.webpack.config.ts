@@ -6,8 +6,8 @@ const config: Configuration = {
   devtool: 'eval-source-map',
   mode: 'production',
   optimization: {
-    minimize: false
-  }
+    minimize: false,
+  },
 };
 
 export default config;

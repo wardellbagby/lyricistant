@@ -14,5 +14,5 @@ export const logger: Logger = {
   },
   info(message: string, ...args: any[]): void {
     console.info(message, ...args);
-  }
+  },
 };

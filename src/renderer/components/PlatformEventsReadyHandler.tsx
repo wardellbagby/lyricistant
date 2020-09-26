@@ -10,7 +10,7 @@ import React, { PropsWithChildren, useEffect } from 'react';
  * platform listeners.
  */
 export const PlatformEventsReadyHandler = ({
-  children
+  children,
 }: PropsWithChildren<{}>) => {
   useEffect(() => {
     platformDelegate.send('ready-for-events');

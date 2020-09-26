@@ -41,7 +41,7 @@ export class PreferenceManager extends Manager {
     return (
       this.preferences.getPreferences() ?? {
         textSize: 16,
-        theme: Theme.System
+        theme: Theme.System,
       }
     );
   };

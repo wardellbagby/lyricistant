@@ -24,13 +24,13 @@ export const findWordAt = (editor: Editor, position: Position) => {
       { line: position.line, ch: start },
       {
         line: position.line,
-        ch: end
+        ch: end,
       }
     ),
     word: line.substring(start, end),
     empty() {
       return this.range.empty() || !this.word;
-    }
+    },
   };
 };
 
@@ -40,7 +40,7 @@ export const Range = (from: Position, to: Position): CMRange => {
     head: from,
     empty: () => to.line === from.line && to.ch === from.ch,
     from: () => from,
-    to: () => to
+    to: () => to,
   };
 };
 

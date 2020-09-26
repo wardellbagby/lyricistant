@@ -1,7 +1,7 @@
 import {
   createMuiTheme,
   responsiveFontSizes,
-  Theme
+  Theme,
 } from '@material-ui/core/styles';
 
 export const getThemePalette = (useDarkTheme: boolean) => {
@@ -19,23 +19,23 @@ export const createTheme = (
         type: useDarkTheme ? 'dark' : 'light',
         action: {
           hover: themePalette.primary,
-          hoverOpacity: 0
+          hoverOpacity: 0,
         },
         primary: { main: themePalette.primary },
         background: {
           default: themePalette.background,
-          paper: themePalette.surface
+          paper: themePalette.surface,
         },
         text: {
           primary: themePalette.primaryText,
-          secondary: themePalette.secondaryText
-        }
+          secondary: themePalette.secondaryText,
+        },
       },
       typography: textSize
         ? {
-            fontSize: textSize
+            fontSize: textSize,
           }
-        : undefined
+        : undefined,
     })
   );
 };
@@ -45,7 +45,7 @@ const lightThemePalette = {
   background: '#fafafa',
   surface: '#fafafa',
   primaryText: '#212121',
-  secondaryText: '#424242'
+  secondaryText: '#424242',
 };
 
 const darkThemePalette = {
@@ -53,5 +53,5 @@ const darkThemePalette = {
   background: '#141414',
   surface: '#232323',
   primaryText: '#f8f8f8',
-  secondaryText: '#bdbdbd'
+  secondaryText: '#bdbdbd',
 };

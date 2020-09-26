@@ -6,7 +6,7 @@ import { mainWindow } from '../index';
 class ElectronFiles implements IFiles {
   public openFile = async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
-      properties: ['openFile']
+      properties: ['openFile'],
     });
 
     if (result.filePaths.length > 0) {
@@ -20,7 +20,7 @@ class ElectronFiles implements IFiles {
       await fs.writeFile(file.filePath, file.data);
     } else {
       const result = await dialog.showSaveDialog(mainWindow, {
-        filters: [{ name: 'Text Files', extensions: ['txt'] }]
+        filters: [{ name: 'Text Files', extensions: ['txt'] }],
       });
 
       if (result.filePath) {

@@ -10,7 +10,7 @@ describe('Electron launch', () => {
 
   beforeEach(async () => {
     app = new Application({
-      path: 'dist/electron-app/mac/Lyricistant.app/Contents/MacOS/Lyricistant'
+      path: 'dist/electron-app/mac/Lyricistant.app/Contents/MacOS/Lyricistant',
     });
 
     await app.start();
@@ -40,7 +40,7 @@ describe('Electron launch', () => {
     const components = [
       await client.react$('Editor'),
       await client.react$('Menu'),
-      await client.react$('Rhymes')
+      await client.react$('Rhymes'),
     ];
 
     for (const component of components) {

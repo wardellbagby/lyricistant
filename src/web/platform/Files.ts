@@ -16,7 +16,7 @@ class WebFiles implements IFiles {
   public saveFile = async (file: FileData): Promise<undefined> => {
     await fileSave(new Blob([file.data]), {
       fileName: file.filePath,
-      extensions: ['txt']
+      extensions: ['txt'],
     });
 
     return undefined;

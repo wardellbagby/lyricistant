@@ -8,8 +8,8 @@ const asTestConfig = (config: Configuration): Configuration => {
     mode: 'production',
     optimization: {
       minimize: false,
-      concatenateModules: false
-    }
+      concatenateModules: false,
+    },
   };
 };
 export default configs.map((config) => asTestConfig(config));

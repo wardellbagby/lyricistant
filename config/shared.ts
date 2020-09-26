@@ -17,7 +17,7 @@ export const aliases = (platformName: string): { [key: string]: string } => {
       projectDir,
       `src/${platformName}/Delegates.ts`
     ),
-    platform: path.resolve(projectDir, `src/${platformName}/platform`)
+    platform: path.resolve(projectDir, `src/${platformName}/platform`),
   };
 };
 
@@ -32,5 +32,5 @@ export const HtmlPlugin = new HtmlWebpackPlugin({
         <div id='app'></div>
     </body>
 </html>
-      `
+      `,
 });

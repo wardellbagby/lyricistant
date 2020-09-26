@@ -9,8 +9,8 @@ const asProductionConfig = (config: Configuration): Configuration => {
     mode: 'production',
     optimization: {
       minimize: true,
-      minimizer: [new TerserPlugin()]
-    }
+      minimizer: [new TerserPlugin()],
+    },
   };
 };
 export default configs.map((config) => asProductionConfig(config));

@@ -34,8 +34,8 @@ export const createAppMenu = (
     createEditMenu(handlers),
     {
       role: 'window',
-      submenu: [{ role: 'minimize' }]
-    }
+      submenu: [{ role: 'minimize' }],
+    },
   ];
 
   if (isMac) {
@@ -56,8 +56,8 @@ const createFileMenu = (
         { type: 'separator' },
         {
           label: 'Preferences',
-          click: handlers.onPreferencesClicked
-        }
+          click: handlers.onPreferencesClicked,
+        },
       ]
     : [];
 
@@ -67,8 +67,8 @@ const createFileMenu = (
         {
           label: 'Quit',
           click: handlers.onQuitClicked,
-          accelerator: 'Alt+F4'
-        }
+          accelerator: 'Alt+F4',
+        },
       ]
     : [];
   return {
@@ -77,32 +77,32 @@ const createFileMenu = (
       {
         label: 'New',
         click: handlers.onNewClicked,
-        accelerator: 'CmdOrCtrl+N'
+        accelerator: 'CmdOrCtrl+N',
       },
       { type: 'separator' },
       {
         label: 'Open...',
         click: handlers.onOpenClicked,
-        accelerator: 'CmdOrCtrl+O'
+        accelerator: 'CmdOrCtrl+O',
       },
       {
         label: 'Open Recent',
-        submenu: createRecentFilesSubmenu(handlers, recentFiles)
+        submenu: createRecentFilesSubmenu(handlers, recentFiles),
       },
       { type: 'separator' },
       {
         label: 'Save',
         click: handlers.onSaveClicked,
-        accelerator: 'CmdOrCtrl+S'
+        accelerator: 'CmdOrCtrl+S',
       },
       {
         label: 'Save As...',
         click: handlers.onSaveAsClicked,
-        accelerator: 'Shift+CmdOrCtrl+S'
+        accelerator: 'Shift+CmdOrCtrl+S',
       },
       ...prefsSection,
-      ...quitSection
-    ]
+      ...quitSection,
+    ],
   };
 };
 
@@ -115,12 +115,12 @@ const createEditMenu = (
       {
         label: 'Undo',
         click: handlers.onUndoClicked,
-        accelerator: 'CmdOrCtrl+Z'
+        accelerator: 'CmdOrCtrl+Z',
       },
       {
         label: 'Redo',
         click: handlers.onRedoClicked,
-        accelerator: 'Shift+CmdOrCtrl+Z'
+        accelerator: 'Shift+CmdOrCtrl+Z',
       },
       { type: 'separator' },
       { role: 'cut' },
@@ -130,14 +130,14 @@ const createEditMenu = (
       {
         label: 'Find',
         accelerator: 'CmdOrCtrl+F',
-        click: handlers.onFindClicked
+        click: handlers.onFindClicked,
       },
       {
         label: 'Replace',
         accelerator: 'CmdOrCtrl+R',
-        click: handlers.onReplaceClicked
-      }
-    ]
+        click: handlers.onReplaceClicked,
+      },
+    ],
   };
 };
 
@@ -149,14 +149,14 @@ const createRecentFilesSubmenu = (
     return [
       {
         label: '<No recent files>',
-        enabled: false
-      }
+        enabled: false,
+      },
     ];
   }
   return recentFiles.map((filePath: string) => {
     return {
       label: filePath,
-      click: () => handlers.onOpenRecentClicked(filePath)
+      click: () => handlers.onOpenRecentClicked(filePath),
     };
   });
 };
@@ -172,7 +172,7 @@ const createMacMenu = (
       { type: 'separator' },
       {
         label: 'Preferences',
-        click: handlers.onPreferencesClicked
+        click: handlers.onPreferencesClicked,
       },
       { type: 'separator' },
       { role: 'services' },
@@ -184,9 +184,9 @@ const createMacMenu = (
       {
         label: 'Quit',
         click: handlers.onQuitClicked,
-        accelerator: 'Cmd+Q'
-      }
-    ]
+        accelerator: 'Cmd+Q',
+      },
+    ],
   };
 };
 

@@ -12,14 +12,14 @@ const config: Configuration = {
   resolve: {
     alias: aliases('electron'),
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    modules: ['node_modules']
+    modules: ['node_modules'],
   },
   plugins: [
     DelegatesPlugin,
     HtmlPlugin,
     new CleanWebpackPlugin({
-      verbose: true
-    })
+      verbose: true,
+    }),
   ],
   module: {
     rules: [
@@ -27,25 +27,25 @@ const config: Configuration = {
         test: /\.tsx?$/,
         include: [resolve('src/')],
         exclude: [resolve('src/web')],
-        use: 'ts-loader'
+        use: 'ts-loader',
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {
         test: /\.(woff|woff2|eot|ttf|svg)$/,
-        loader: 'file-loader'
-      }
-    ]
+        loader: 'file-loader',
+      },
+    ],
   },
   output: {
     path: resolve('dist/electron/renderer'),
-    filename: 'renderer.js'
+    filename: 'renderer.js',
   },
   devServer: {
     host: 'localhost',
     port: devServerPort,
     hot: true,
-    overlay: true
-  }
+    overlay: true,
+  },
 };
 
 export default config;

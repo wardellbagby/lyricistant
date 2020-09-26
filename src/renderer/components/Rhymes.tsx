@@ -20,19 +20,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   rhyme: {
     color: theme.palette.text.disabled,
     '&:hover': {
-      color: theme.palette.text.primary
+      color: theme.palette.text.primary,
     },
     'text-align': 'center',
     [theme.breakpoints.up('md')]: {
-      height: '80px'
-    }
-  }
+      height: '80px',
+    },
+  },
 }));
 
 const ListContainer: React.ComponentType<{ className: string }> = styled('div')(
   {
     display: 'flex',
-    'flex-wrap': 'wrap'
+    'flex-wrap': 'wrap',
   }
 );
 
@@ -43,14 +43,14 @@ const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
       flex: 'none',
       'align-content': 'stretch',
       [theme.breakpoints.up('xs')]: {
-        width: '50%'
+        width: '50%',
       },
       [theme.breakpoints.up('md')]: {
-        width: '100%'
+        width: '100%',
       },
       [theme.breakpoints.up('lg')]: {
-        width: '50%'
-      }
+        width: '50%',
+      },
     };
   }
 );
@@ -61,7 +61,7 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
   const classes = useStyles();
 
   useEffect(handleQueries(props.queries, setRhymes, setQueryData), [
-    props.queries
+    props.queries,
   ]);
 
   if (rhymes.length === 0) {
@@ -122,8 +122,8 @@ function handleQueries(
                     rhymes.filter(
                       (value, index, array) => array.indexOf(value) === index
                     )
-                  )
-                ]
+                  ),
+                ],
               };
             })
           )

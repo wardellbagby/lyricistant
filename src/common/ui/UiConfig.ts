@@ -1,6 +1,6 @@
 export enum TitleFormatType {
   NONE,
-  PREPEND_APP_NAME
+  PREPEND_APP_NAME,
 }
 
 export interface UiConfig {

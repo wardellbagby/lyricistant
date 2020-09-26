@@ -21,7 +21,7 @@ describe('Preference Manager', () => {
 
   beforeEach(() => {
     rendererDelegate = stubInterface();
-    rendererDelegate.on.callsFake(function(channel, listener) {
+    rendererDelegate.on.callsFake(function (channel, listener) {
       rendererListeners.set(channel, listener);
       return this;
     });
@@ -61,14 +61,14 @@ describe('Preference Manager', () => {
 
     expect(rendererDelegate.send).to.have.been.calledWith('prefs-updated', {
       textSize: 16,
-      theme: Theme.System
+      theme: Theme.System,
     });
   });
 
   it('sends real prefs that were loaded from the platform', () => {
     const prefs: PreferencesData = {
       textSize: 22,
-      theme: Theme.Dark
+      theme: Theme.Dark,
     };
     preferencesMockManager.mock('getPreferences', prefs);
 
@@ -85,7 +85,7 @@ describe('Preference Manager', () => {
   it('saves prefs to the platform', () => {
     const prefs: PreferencesData = {
       textSize: 22,
-      theme: Theme.Dark
+      theme: Theme.Dark,
     };
 
     manager.register();

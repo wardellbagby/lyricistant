@@ -13,38 +13,38 @@ export const supportedReleases: Release[] = [
   { platform: 'Mac', asset: 'lyricistant-mac.dmg' },
   {
     platform: 'Windows',
-    asset: 'lyricistant-win.exe'
+    asset: 'lyricistant-win.exe',
   },
   {
     platform: 'Ubuntu',
     asset: 'lyricistant-linux_i386.deb',
-    arch: 'i386'
+    arch: 'i386',
   },
   {
     platform: 'Ubuntu',
     asset: 'lyricistant-linux_armv7l.deb',
-    arch: 'armv7l'
+    arch: 'armv7l',
   },
   {
     platform: 'Ubuntu',
     asset: 'lyricistant-linux_arm64.deb',
-    arch: 'arm64'
+    arch: 'arm64',
   },
   {
     platform: 'Linux',
     asset: 'lyricistant-linux_i386.AppImage',
-    arch: 'i386'
+    arch: 'i386',
   },
   {
     platform: 'Linux',
     asset: 'lyricistant-linux_armv7l.AppImage',
-    arch: 'armv7l'
+    arch: 'armv7l',
   },
   {
     platform: 'Linux',
     asset: 'lyricistant-linux_arm64.AppImage',
-    arch: 'arm64'
-  }
+    arch: 'arm64',
+  },
 ];
 
 export const downloadApp = (): boolean => {

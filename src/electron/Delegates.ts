@@ -4,7 +4,7 @@ import {
   IpcMain,
   ipcMain as electronMain,
   IpcRenderer,
-  ipcRenderer as electronRenderer
+  ipcRenderer as electronRenderer,
 } from 'electron';
 import { logger } from 'platform/Logger';
 

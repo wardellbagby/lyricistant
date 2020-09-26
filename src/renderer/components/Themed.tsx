@@ -5,7 +5,7 @@ import React, {
   FunctionComponent,
   PropsWithChildren,
   useEffect,
-  useState
+  useState,
 } from 'react';
 import 'typeface-roboto';
 import { createTheme } from '../util/theme';

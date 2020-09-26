@@ -4,7 +4,7 @@ import {
   Grid,
   InputLabel,
   MenuItem,
-  Select
+  Select,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Dialog from '@material-ui/core/Dialog';
@@ -17,7 +17,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import {
   PreferencesData,
-  Theme as LyricistantTheme
+  Theme as LyricistantTheme,
 } from 'common/preferences/PreferencesData';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
@@ -37,14 +37,14 @@ const dialogStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       marginLeft: theme.spacing(2),
-      flex: 1
+      flex: 1,
     },
     dialog: {
-      background: theme.palette.primary.dark
+      background: theme.palette.primary.dark,
     },
     container: {
-      background: theme.palette.background.paper
-    }
+      background: theme.palette.background.paper,
+    },
   })
 );
 
@@ -66,7 +66,7 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
     if (event.target.value) {
       setPreferencesData({
         ...preferencesData,
-        textSize: event.target.value
+        textSize: event.target.value,
       });
     }
   };
@@ -77,7 +77,7 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
     if (event.target.value !== undefined) {
       setPreferencesData({
         ...preferencesData,
-        theme: event.target.value
+        theme: event.target.value,
       });
     }
   };

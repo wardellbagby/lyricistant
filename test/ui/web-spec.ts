@@ -13,8 +13,8 @@ describe('Webpage launch', () => {
     client = await remote({
       logLevel: 'warn',
       capabilities: {
-        browserName: 'chrome'
-      }
+        browserName: 'chrome',
+      },
     });
   });
 
@@ -38,7 +38,7 @@ describe('Webpage launch', () => {
     const components = [
       await client.react$('Editor'),
       await client.react$('Menu'),
-      await client.react$('Rhymes')
+      await client.react$('Rhymes'),
     ];
 
     for (const component of components) {

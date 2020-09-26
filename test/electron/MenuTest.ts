@@ -21,7 +21,7 @@ describe('Create Electron App Menu', () => {
     onReplaceClicked: () => undefined,
     onSaveAsClicked: () => undefined,
     onSaveClicked: () => undefined,
-    onUndoClicked: () => undefined
+    onUndoClicked: () => undefined,
   };
   let handlers: StubbedInstance<MenuItemHandlers>;
 
@@ -92,7 +92,7 @@ describe('Create Electron App Menu', () => {
       { label: 'MyApp' },
       { label: 'File' },
       { label: 'Edit' },
-      { role: 'window' }
+      { role: 'window' },
     ];
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
@@ -129,8 +129,8 @@ describe('Create Electron App Menu', () => {
     expect(recents.submenu).to.eql([
       {
         label: '<No recent files>',
-        enabled: false
-      }
+        enabled: false,
+      },
     ]);
   });
 

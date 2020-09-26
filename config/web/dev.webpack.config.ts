@@ -11,15 +11,15 @@ const config: Configuration = {
   resolve: {
     alias: aliases('web'),
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    modules: ['node_modules']
+    modules: ['node_modules'],
   },
   plugins: [
     DelegatesPlugin,
     HtmlPlugin,
     new CompressionPlugin(),
     new CleanWebpackPlugin({
-      verbose: true
-    })
+      verbose: true,
+    }),
   ],
   module: {
     rules: [
@@ -27,22 +27,22 @@ const config: Configuration = {
         test: /\.tsx?$/,
         include: [resolve('src/')],
         exclude: [resolve('src/electron')],
-        use: 'ts-loader'
+        use: 'ts-loader',
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {
         test: /\.(woff|woff2|eot|ttf|svg)$/,
-        loader: 'file-loader'
-      }
-    ]
+        loader: 'file-loader',
+      },
+    ],
   },
   output: {
     path: resolve('dist/web'),
-    filename: 'web.js'
+    filename: 'web.js',
   },
   devServer: {
-    contentBase: resolve('dist/web')
-  }
+    contentBase: resolve('dist/web'),
+  },
 };
 
 export default config;

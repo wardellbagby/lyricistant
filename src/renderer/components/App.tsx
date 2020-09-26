@@ -18,12 +18,12 @@ import { Rhymes } from './Rhymes';
 enum Screen {
   PREFERENCES,
   EDITOR,
-  DOWNLOAD
+  DOWNLOAD,
 }
 
 const selectedWords: BehaviorSubject<WordAtPosition> = new BehaviorSubject({
   range: EmptyRange,
-  word: ''
+  word: '',
 });
 const textReplacements: Subject<TextReplacement> = new Subject();
 const onWordSelected: (word: WordAtPosition) => void = (word) => {
@@ -101,7 +101,7 @@ function handleFileChanges(): () => void {
     const onFileOpened = (error: Error, filename: string) => {
       if (error) {
         enqueueSnackbar(`Couldn't open ${filename}`, {
-          variant: 'error'
+          variant: 'error',
         });
       }
     };

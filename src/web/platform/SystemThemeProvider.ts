@@ -1,6 +1,6 @@
 import {
   SystemTheme,
-  SystemThemeProvider as ISystemThemeProvider
+  SystemThemeProvider as ISystemThemeProvider,
 } from 'common/theme/SystemTheme';
 
 class WebSystemThemeProvider implements ISystemThemeProvider {
