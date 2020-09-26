@@ -6,7 +6,9 @@ import { mainWindow } from '../index';
 class ElectronFiles implements IFiles {
   public openFile = async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
+      title: 'Choose Lyrics',
       properties: ['openFile'],
+      filters: [{ extensions: ['.txt'], name: 'Lyrics' }],
     });
 
     if (result.filePaths.length > 0) {

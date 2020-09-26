@@ -4,7 +4,11 @@ import { logger } from 'platform/Logger';
 
 class WebFiles implements IFiles {
   public openFile = async () => {
-    const result = await fileOpen({ mimeTypes: ['txt/*'], multiple: false });
+    const result = await fileOpen({
+      mimeTypes: ['text/plain'],
+      extensions: ['.txt'],
+      multiple: false,
+    });
 
     if (result) {
       return new FileData(result.name, await readAsText(result));
