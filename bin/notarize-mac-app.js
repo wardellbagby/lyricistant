@@ -19,10 +19,22 @@ exports.default = async function notarizing(context) {
     return;
   }
 
-  return await notarize({
+  await notarize({
     appBundleId: appId,
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLE_ID,
     appleIdPassword: process.env.APPLE_ID_PASSWORD
   });
+
+  /*
+   * electron-builder doesn't let you explicitly define the platforms that it
+   * should sign for. However, it does honor the ordering that you define the
+   * platforms in. So, if we make sure we sign the macOS first, we can then
+   * explicitly delete the env variables that electron-builder wants to use to
+   * sign any later platforms that we DON'T want to be signed.
+   *
+   * Yes, this is jank. No, I don't like. Yeah, it'll probably break.
+   */
+  delete process.env['CSC_LINK'];
+  delete process.env['CSC_KEY_PASSWORD'];
 };
