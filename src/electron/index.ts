@@ -1,22 +1,24 @@
 import { RendererDelegate } from 'common/Delegates';
 import { FileManager } from 'common/files/FileManager';
-import { getCommonManager, registerCommonManagers } from 'common/Managers';
+import { Managers } from 'common/Managers';
+import { appComponent } from 'Components';
 import { app, BrowserWindow, dialog, Menu } from 'electron';
 import debug from 'electron-debug';
 import { autoUpdater } from 'electron-updater';
 import { platform } from 'os';
 import * as path from 'path';
-import { logger } from 'platform/Logger';
-import { QuitManager } from 'platform/QuitManager';
 import { format as formatUrl } from 'url';
 import { createAppMenu } from './app-menu';
+import { initializeComponent } from './AppComponent';
 import { createRendererDelegate } from './Delegates';
+import { QuitManager } from './platform/QuitManager';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+initializeComponent(appComponent);
 
 export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
-let quitManager: QuitManager;
+const logger = appComponent.get<Logger>();
 
 if (isDevelopment) {
   debug({
@@ -52,9 +54,7 @@ function createWindow(): void {
     },
   });
   rendererDelegate = createRendererDelegate(mainWindow);
-  registerCommonManagers(rendererDelegate);
-  quitManager = new QuitManager(rendererDelegate);
-  quitManager.register();
+  appComponent.get<Managers>().forEach((manager) => manager.register());
   registerListeners();
   setupUpdater();
 
@@ -81,14 +81,14 @@ function createWindow(): void {
     mainWindow = undefined;
   });
   mainWindow.on('close', (event) => {
-    quitManager.attemptQuit();
+    appComponent.get<QuitManager>().attemptQuit();
     event.preventDefault();
   });
   setMenu();
 }
 
 function registerListeners() {
-  getCommonManager(FileManager).addOnFileChangedListener((_, recentFiles) => {
+  appComponent.get<FileManager>().addOnFileChangedListener((_, recentFiles) => {
     setMenu(recentFiles);
   });
 }
@@ -111,10 +111,10 @@ function setMenu(recentFiles?: string[]): void {
       },
       onNewClicked: newMenuItemHandler,
       onOpenClicked: async () => {
-        await getCommonManager(FileManager).openFile();
+        await appComponent.get<FileManager>().openFile();
       },
       onOpenRecentClicked: async (filePath) => {
-        await getCommonManager(FileManager).openFile(filePath);
+        await appComponent.get<FileManager>().openFile(filePath);
       },
       onPreferencesClicked: preferencesHandler,
       onQuitClicked: quitHandler,
@@ -123,10 +123,10 @@ function setMenu(recentFiles?: string[]): void {
         rendererDelegate.send('replace');
       },
       onSaveAsClicked: () => {
-        getCommonManager(FileManager).saveFile(true);
+        appComponent.get<FileManager>().saveFile(true);
       },
       onSaveClicked: () => {
-        getCommonManager(FileManager).saveFile(false);
+        appComponent.get<FileManager>().saveFile(false);
       },
       onUndoClicked: undoHandler,
     },
@@ -153,11 +153,11 @@ function showLoadingError(reason: any) {
 }
 
 async function newMenuItemHandler() {
-  await getCommonManager(FileManager).onNewFile();
+  await appComponent.get<FileManager>().onNewFile();
 }
 
 function quitHandler(): void {
-  quitManager.attemptQuit();
+  appComponent.get<QuitManager>().attemptQuit();
 }
 
 function undoHandler(): void {

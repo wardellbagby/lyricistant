@@ -1,4 +1,6 @@
+import { di } from '@wessberg/di-compiler';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { Program } from 'typescript';
 import { Configuration, DefinePlugin } from 'webpack';
 import { ElectronRestartPlugin } from '../../plugins/ElectronRestartPlugin';
 import { aliases, DelegatesPlugin, resolve } from '../../shared';
@@ -20,7 +22,10 @@ const config: Configuration = {
         test: /\.tsx?$/,
         include: [resolve('src/')],
         exclude: [resolve('src/web')],
-        use: 'ts-loader',
+        loader: 'ts-loader',
+        options: {
+          getCustomTransformers: (program: Program) => di({ program }),
+        },
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {

@@ -1,4 +1,5 @@
 import {
+  TitleFormatter,
   TitleFormatType,
   UiConfigProvider as IUiConfigProvider,
 } from 'common/ui/UiConfig';
@@ -11,5 +12,5 @@ export const provideUiConfig: IUiConfigProvider = () => {
   };
 };
 
-export const formatTitle = (filename: string) =>
+export const formatTitle: TitleFormatter = (filename: string) =>
   `Lyricistant - ${filename ?? 'Untitled'}`;

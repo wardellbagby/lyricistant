@@ -1,7 +1,7 @@
 import { Preferences as IPreferences } from 'common/preferences/Preferences';
 import { PreferencesData } from 'common/preferences/PreferencesData';
 
-class WebPreferences implements IPreferences {
+export class WebPreferences implements IPreferences {
   private readonly prefsKey = 'lyricist_preferences';
   public setPreferences: (data: PreferencesData) => void = (data) =>
     localStorage.setItem(this.prefsKey, JSON.stringify(data));
@@ -14,6 +14,3 @@ class WebPreferences implements IPreferences {
     }
   };
 }
-
-export type Preferences = WebPreferences;
-export const Preferences = WebPreferences;

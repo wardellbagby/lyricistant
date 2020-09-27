@@ -1,13 +1,17 @@
+import { RendererDelegate } from 'common/Delegates';
 import { Manager } from 'common/Manager';
-import { SystemTheme } from 'common/theme/SystemTheme';
-import { Preferences } from 'platform/Preferences';
-import { SystemThemeProvider } from 'platform/SystemThemeProvider';
+import { Preferences } from 'common/preferences/Preferences';
+import { SystemTheme, SystemThemeProvider } from 'common/theme/SystemTheme';
 import { PreferencesData, Theme } from './PreferencesData';
 
-export class PreferenceManager extends Manager {
-  private readonly systemThemeProvider: SystemThemeProvider = new SystemThemeProvider();
-  private readonly preferences = new Preferences();
+export class PreferenceManager implements Manager {
   private systemTheme: SystemTheme;
+
+  constructor(
+    private rendererDelegate: RendererDelegate,
+    private systemThemeProvider: SystemThemeProvider,
+    private preferences: Preferences
+  ) {}
 
   public register(): void {
     this.rendererDelegate.on('ready-for-events', this.onRendererReady);

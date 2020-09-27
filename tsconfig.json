@@ -15,7 +15,7 @@
     "paths": {
       "common/*": ["src/common/*"],
       "PlatformDelegate": ["src/electron/Delegates.ts", "src/web/Delegates.ts"],
-      "platform/*": ["src/electron/platform/*", "src/web/platform/*"]
+      "Components": ["src/electron/Components.ts", "src/web/Components.ts"]
     }
   }
 }

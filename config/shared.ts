@@ -17,7 +17,7 @@ export const aliases = (platformName: string): { [key: string]: string } => {
       projectDir,
       `src/${platformName}/Delegates.ts`
     ),
-    platform: path.resolve(projectDir, `src/${platformName}/platform`),
+    Components$: path.resolve(projectDir, `src/${platformName}/Components.ts`),
   };
 };
 

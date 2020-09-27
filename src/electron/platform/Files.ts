@@ -3,7 +3,7 @@ import { dialog } from 'electron';
 import { promises as fs } from 'fs';
 import { mainWindow } from '../index';
 
-class ElectronFiles implements IFiles {
+export class ElectronFiles implements IFiles {
   public openFile = async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
       title: 'Choose Lyrics',
@@ -36,6 +36,3 @@ class ElectronFiles implements IFiles {
     return new FileData(filePath, await fs.readFile(filePath, 'utf8'));
   };
 }
-
-export type Files = ElectronFiles;
-export const Files = ElectronFiles;

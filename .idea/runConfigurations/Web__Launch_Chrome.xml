@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Web: Launch Chrome" type="JavascriptDebugType" uri="http://localhost:8080" useFirstLineBreakpoints="true">
+  <configuration default="false" name="Web: Launch Chrome" type="JavascriptDebugType" uri="http://localhost:8081" useFirstLineBreakpoints="true">
     <method v="2" />
   </configuration>
 </component>

@@ -3,7 +3,7 @@ import { PreferencesData } from 'common/preferences/PreferencesData';
 import { app } from 'electron';
 import { existsSync, readFileSync, writeFile } from 'fs';
 
-class ElectronPreferences implements IPreferences {
+export class ElectronPreferences implements IPreferences {
   private readonly preferencesFilePath = `${app.getPath(
     'userData'
   )}/preferences.json`;
@@ -24,6 +24,3 @@ class ElectronPreferences implements IPreferences {
     writeFile(this.preferencesFilePath, JSON.stringify(data), () => undefined);
   };
 }
-
-export type Preferences = ElectronPreferences;
-export const Preferences = ElectronPreferences;

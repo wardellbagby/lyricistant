@@ -1,7 +1,13 @@
-import { registerCommonManagers } from 'common/Managers';
-import { rendererDelegate } from './Delegates';
+import { Managers } from 'common/Managers';
+import { appComponent } from 'Components';
+import { initializeComponent } from './AppComponent';
 
-new Promise((resolve) => resolve(registerCommonManagers(rendererDelegate)))
+initializeComponent(appComponent);
+
+new Promise((resolve) => {
+  appComponent.get<Managers>().forEach((manager) => manager.register());
+  resolve();
+})
   .then(() => import('../renderer/index'))
   .catch((reason) => {
     throw Error(`Could not load the renderer page: ${reason}`);

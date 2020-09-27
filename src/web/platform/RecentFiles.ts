@@ -2,7 +2,7 @@ import { RecentFiles as IRecentFiles } from 'common/files/RecentFiles';
 
 const recentFilesKey = 'recent_files';
 
-class WebRecentFiles implements IRecentFiles {
+export class WebRecentFiles implements IRecentFiles {
   public getRecentFiles = (): string[] => {
     const recentFiles = localStorage.getItem(recentFilesKey);
     if (recentFiles) {
@@ -16,6 +16,3 @@ class WebRecentFiles implements IRecentFiles {
     localStorage.setItem(recentFilesKey, JSON.stringify(recentFiles));
   };
 }
-
-export type RecentFiles = WebRecentFiles;
-export const RecentFiles = WebRecentFiles;

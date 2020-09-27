@@ -3,7 +3,7 @@ import { app } from 'electron';
 import { existsSync } from 'fs';
 import { readFileSync, writeFile } from 'original-fs';
 
-class ElectronRecentFiles implements IRecentFiles {
+export class ElectronRecentFiles implements IRecentFiles {
   private readonly recentFilesFilePath = `${app.getPath(
     'userData'
   )}/recent_files.json`;
@@ -33,6 +33,3 @@ class ElectronRecentFiles implements IRecentFiles {
     );
   };
 }
-
-export type RecentFiles = ElectronRecentFiles;
-export const RecentFiles = ElectronRecentFiles;

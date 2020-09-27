@@ -1,9 +1,13 @@
+import { RendererDelegate } from 'common/Delegates';
+import { Dialogs } from 'common/dialogs/Dialogs';
 import { Manager } from 'common/Manager';
-import { Dialogs } from 'platform/Dialogs';
 import { mainWindow } from '../index';
 
-export class QuitManager extends Manager {
-  private readonly dialogs = new Dialogs();
+export class QuitManager implements Manager {
+  constructor(
+    private rendererDelegate: RendererDelegate,
+    private dialogs: Dialogs
+  ) {}
 
   public register(): void {
     this.rendererDelegate.on('okay-for-quit', this.onOkayForQuit);

@@ -6,9 +6,11 @@ import {
   IpcRenderer,
   ipcRenderer as electronRenderer,
 } from 'electron';
-import { logger } from 'platform/Logger';
+import { ElectronLogger } from './platform/Logger';
 
-class ElectronRendererDelegate implements RendererDelegate {
+const logger: Logger = new ElectronLogger();
+
+export class ElectronRendererDelegate implements RendererDelegate {
   private ipcMain: IpcMain;
   private window: BrowserWindow;
 

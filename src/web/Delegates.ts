@@ -1,5 +1,7 @@
 import { PlatformDelegate, RendererDelegate } from 'common/Delegates';
-import { logger } from 'platform/Logger';
+import { WebLogger } from './platform/Logger';
+
+const logger: Logger = new WebLogger();
 
 class WebPlatformDelegate implements PlatformDelegate {
   public send(channel: string, ...args: any[]) {
@@ -23,7 +25,7 @@ class WebPlatformDelegate implements PlatformDelegate {
   }
 }
 
-class WebRendererDelegate implements RendererDelegate {
+export class WebRendererDelegate implements RendererDelegate {
   public send(channel: string, ...args: any[]) {
     logger.info('Sending data to renderer', { channel, args });
     queue(platformListeners.getListeners(channel), args);

@@ -4,7 +4,7 @@ import {
 } from 'common/theme/SystemTheme';
 import { nativeTheme } from 'electron';
 
-class ElectronSystemThemeProvider implements ISystemThemeProvider {
+export class ElectronSystemThemeProvider implements ISystemThemeProvider {
   public onChange = (listener: (theme: SystemTheme) => void) => {
     listener(this.getSystemTheme());
 
@@ -16,6 +16,3 @@ class ElectronSystemThemeProvider implements ISystemThemeProvider {
   private getSystemTheme = (): SystemTheme =>
     nativeTheme.shouldUseDarkColors ? SystemTheme.Dark : SystemTheme.Light;
 }
-
-export type SystemThemeProvider = ElectronSystemThemeProvider;
-export const SystemThemeProvider = ElectronSystemThemeProvider;

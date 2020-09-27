@@ -1,18 +1,21 @@
-import { FileData } from 'common/files/Files';
+import { RendererDelegate } from 'common/Delegates';
+import { Dialogs } from 'common/dialogs/Dialogs';
+import { FileData, Files } from 'common/files/Files';
+import { RecentFiles } from 'common/files/RecentFiles';
 import { Manager } from 'common/Manager';
-import { Dialogs } from 'platform/Dialogs';
-import { Files } from 'platform/Files';
-import { RecentFiles } from 'platform/RecentFiles';
 
-export class FileManager extends Manager {
-  private readonly files: Files = new Files();
-  private readonly recentFiles = new RecentFiles();
-  private readonly dialogs = new Dialogs();
-
+export class FileManager implements Manager {
   private currentFilePath: string | undefined = undefined;
   private fileChangedListeners: Array<
     (currentFilename: string | null, recentFiles: string[]) => void
   > = [];
+
+  constructor(
+    private rendererDelegate: RendererDelegate,
+    private files: Files,
+    private recentFiles: RecentFiles,
+    private dialogs: Dialogs
+  ) {}
 
   public register(): void {
     this.rendererDelegate.on('ready-for-events', this.onRendererReady);

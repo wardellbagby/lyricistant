@@ -1,8 +1,9 @@
 import { fileOpen, fileSave } from 'browser-nativefs';
 import { FileData, Files as IFiles } from 'common/files/Files';
-import { logger } from 'platform/Logger';
 
-class WebFiles implements IFiles {
+export class WebFiles implements IFiles {
+  constructor(private logger: Logger) {}
+
   public openFile = async () => {
     const result = await fileOpen({
       mimeTypes: ['text/plain'],
@@ -13,7 +14,7 @@ class WebFiles implements IFiles {
     if (result) {
       return new FileData(result.name, await readAsText(result));
     } else {
-      logger.debug('File open cancelled.');
+      this.logger.debug('File open cancelled.');
     }
   };
 
@@ -38,6 +39,3 @@ const readAsText = async (blob: Blob): Promise<string> => {
     reader.readAsText(blob, 'utf-8');
   });
 };
-
-export type Files = IFiles;
-export const Files = WebFiles;

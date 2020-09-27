@@ -1,4 +1,4 @@
-import { logger } from 'platform/Logger';
+import { appComponent } from 'Components';
 
 export const latestReleaseUrl =
   'https://github.com/wardellbagby/lyricistant/releases/latest/download/';
@@ -61,9 +61,11 @@ export const downloadApp = (): boolean => {
       break;
     }
     default: {
-      logger.info(
-        `Couldn't automatically download for platform ${window.navigator.platform}`
-      );
+      appComponent
+        .get<Logger>()
+        .info(
+          `Couldn't automatically download for platform ${window.navigator.platform}`
+        );
       return false;
     }
   }

@@ -10,3 +10,4 @@ export interface UiConfig {
 }
 
 export type UiConfigProvider = () => UiConfig;
+export type TitleFormatter = (filename: string) => string;

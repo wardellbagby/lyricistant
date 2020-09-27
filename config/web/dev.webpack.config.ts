@@ -1,5 +1,8 @@
+import { di } from '@wessberg/di-compiler';
+import CircularDependencyPlugin from 'circular-dependency-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
+import { Program } from 'typescript';
 import { Configuration } from 'webpack';
 import { aliases, DelegatesPlugin, HtmlPlugin, resolve } from '../shared';
 
@@ -20,6 +23,11 @@ const config: Configuration = {
     new CleanWebpackPlugin({
       verbose: true,
     }),
+    new CircularDependencyPlugin({
+      allowAsyncCycles: true,
+      exclude: /node_modules/,
+      failOnError: true,
+    }),
   ],
   module: {
     rules: [
@@ -27,7 +35,10 @@ const config: Configuration = {
         test: /\.tsx?$/,
         include: [resolve('src/')],
         exclude: [resolve('src/electron')],
-        use: 'ts-loader',
+        loader: 'ts-loader',
+        options: {
+          getCustomTransformers: (program: Program) => di({ program }),
+        },
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {
@@ -42,6 +53,7 @@ const config: Configuration = {
   },
   devServer: {
     contentBase: resolve('dist/web'),
+    port: 8081,
   },
 };
 
