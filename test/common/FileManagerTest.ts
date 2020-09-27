@@ -2,10 +2,9 @@
 import { expect, use } from 'chai';
 import { RendererDelegate } from 'common/Delegates';
 import { Dialogs } from 'common/dialogs/Dialogs';
-import type { FileManager } from 'common/files/FileManager';
+import { FileManager } from 'common/files/FileManager';
 import { FileData, Files } from 'common/files/Files';
 import { RecentFiles } from 'common/files/RecentFiles';
-import proxyquire from 'proxyquire';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
 
@@ -37,27 +36,8 @@ describe('File Manager', () => {
       rendererListeners.set(channel, listener);
       return this;
     });
-    const ManagerConstructor = proxyquire
-      .noCallThru()
-      .load('common/files/FileManager', {
-        'platform/Files': {
-          Files: function () {
-            return files;
-          },
-        },
-        'platform/RecentFiles': {
-          RecentFiles: function () {
-            return recentFiles;
-          },
-        },
-        'platform/Dialogs': {
-          Dialogs: function () {
-            return dialogs;
-          },
-        },
-      }).FileManager;
 
-    manager = new ManagerConstructor(rendererDelegate);
+    manager = new FileManager(rendererDelegate, files, recentFiles, dialogs);
   });
 
   afterEach(() => {

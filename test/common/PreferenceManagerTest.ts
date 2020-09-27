@@ -1,12 +1,10 @@
 import { expect, use } from 'chai';
 import { RendererDelegate } from 'common/Delegates';
 import { PreferenceManager } from 'common/preferences/PreferenceManager';
+import { Preferences } from 'common/preferences/Preferences';
 import { PreferencesData, Theme } from 'common/preferences/PreferencesData';
-import { SystemTheme } from 'common/theme/SystemTheme';
-import * as PreferencesModule from 'platform/Preferences';
-import * as SystemThemeModule from 'platform/SystemThemeProvider';
+import { SystemTheme, SystemThemeProvider } from 'common/theme/SystemTheme';
 import sinonChai from 'sinon-chai';
-import { ImportMock, MockManager } from 'ts-mock-imports';
 import { StubbedInstance, stubInterface } from 'ts-sinon';
 
 use(sinonChai);
@@ -14,8 +12,9 @@ use(sinonChai);
 describe('Preference Manager', () => {
   let manager: PreferenceManager;
   let rendererDelegate: StubbedInstance<RendererDelegate>;
-  let preferencesMockManager: MockManager<PreferencesModule.Preferences>;
-  let systemThemeMockManager: MockManager<SystemThemeModule.SystemThemeProvider>;
+  let preferences: StubbedInstance<Preferences>;
+  let systemThemeProvider: StubbedInstance<SystemThemeProvider>;
+
   const rendererListeners: Map<string, (...args: any[]) => void> = new Map();
   let systemThemeChangeListener: (systemTheme: SystemTheme) => void;
 
@@ -25,22 +24,17 @@ describe('Preference Manager', () => {
       rendererListeners.set(channel, listener);
       return this;
     });
-
-    preferencesMockManager = ImportMock.mockClass(
-      PreferencesModule,
-      'Preferences'
-    );
-    preferencesMockManager.mock('getPreferences', undefined);
-    preferencesMockManager.mock('setPreferences', undefined);
-
-    systemThemeMockManager = ImportMock.mockClass(
-      SystemThemeModule,
-      'SystemThemeProvider'
-    );
-    systemThemeMockManager.set('onChange', (listener) => {
+    preferences = stubInterface<Preferences>();
+    systemThemeProvider = stubInterface<SystemThemeProvider>();
+    systemThemeProvider.onChange.callsFake((listener) => {
       systemThemeChangeListener = listener;
     });
-    manager = new PreferenceManager(rendererDelegate);
+
+    manager = new PreferenceManager(
+      rendererDelegate,
+      systemThemeProvider,
+      preferences
+    );
   });
 
   afterEach(() => {
@@ -70,7 +64,7 @@ describe('Preference Manager', () => {
       textSize: 22,
       theme: Theme.Dark,
     };
-    preferencesMockManager.mock('getPreferences', prefs);
+    preferences.getPreferences.returns(prefs);
 
     manager.register();
 
@@ -92,9 +86,7 @@ describe('Preference Manager', () => {
 
     rendererListeners.get('save-prefs')(prefs);
 
-    expect(
-      preferencesMockManager.getMockInstance().setPreferences
-    ).to.have.been.calledWith(prefs);
+    expect(preferences.setPreferences).to.have.been.calledWith(prefs);
     expect(rendererDelegate.send).to.have.been.calledWith(
       'prefs-updated',
       prefs
@@ -115,8 +107,7 @@ describe('Preference Manager', () => {
     rendererListeners.get('save-prefs')(prefs);
 
     // tslint:disable-next-line:no-unused-expression
-    expect(preferencesMockManager.getMockInstance().setPreferences).to.have.not
-      .been.called;
+    expect(preferences.setPreferences).to.have.not.been.called;
     expect(rendererDelegate.send).to.have.not.been.calledWith('prefs-updated');
     expect(rendererDelegate.send).to.have.not.been.calledWith(
       'dark-mode-toggled'
