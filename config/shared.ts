@@ -1,3 +1,5 @@
+import CircularDependencyPlugin from 'circular-dependency-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import DelegatesWebpackPlugin from './plugins/DelegatesWebpackPlugin';
@@ -23,14 +25,15 @@ export const aliases = (platformName: string): { [key: string]: string } => {
 
 export const HtmlPlugin = new HtmlWebpackPlugin({
   title: 'Untitled',
-  templateContent: `
-<meta name='viewport' 
-      content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' >
-<meta charset="utf-8">
-<html lang="en">
-    <body>
-        <div id='app'></div>
-    </body>
-</html>
-      `,
+  template: resolve('src/renderer/index.html'),
+});
+
+export const StaticAssetsPlugin = new CopyWebpackPlugin({
+  patterns: [{ from: 'src/renderer/static' }],
+});
+
+export const CircularDepsPlugin = new CircularDependencyPlugin({
+  allowAsyncCycles: true,
+  exclude: /node_modules/,
+  failOnError: true,
 });

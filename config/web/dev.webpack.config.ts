@@ -1,10 +1,16 @@
 import { di } from '@wessberg/di-compiler';
-import CircularDependencyPlugin from 'circular-dependency-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
 import { Program } from 'typescript';
 import { Configuration } from 'webpack';
-import { aliases, DelegatesPlugin, HtmlPlugin, resolve } from '../shared';
+import {
+  aliases,
+  CircularDepsPlugin,
+  DelegatesPlugin,
+  HtmlPlugin,
+  resolve,
+  StaticAssetsPlugin,
+} from '../shared';
 
 const config: Configuration = {
   target: 'web',
@@ -23,11 +29,8 @@ const config: Configuration = {
     new CleanWebpackPlugin({
       verbose: true,
     }),
-    new CircularDependencyPlugin({
-      allowAsyncCycles: true,
-      exclude: /node_modules/,
-      failOnError: true,
-    }),
+    CircularDepsPlugin,
+    StaticAssetsPlugin,
   ],
   module: {
     rules: [

@@ -1,6 +1,13 @@
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { Configuration } from 'webpack';
-import { aliases, DelegatesPlugin, HtmlPlugin, resolve } from '../../shared';
+import {
+  aliases,
+  CircularDepsPlugin,
+  DelegatesPlugin,
+  HtmlPlugin,
+  resolve,
+  StaticAssetsPlugin,
+} from '../../shared';
 
 export const devServerPort = 9080;
 
@@ -20,6 +27,8 @@ const config: Configuration = {
     new CleanWebpackPlugin({
       verbose: true,
     }),
+    CircularDepsPlugin,
+    StaticAssetsPlugin,
   ],
   module: {
     rules: [
