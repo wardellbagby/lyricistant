@@ -23,5 +23,18 @@
 <html lang="en">
 <body>
 <div id="app"></div>
+<script>
+  window.goatcounter = {
+    path: function(p) {
+      if (location.protocol === 'file:') {
+        return 'electron';
+      }
+      return location.host + p;
+    },
+    allow_local: true
+  };
+</script>
+<script data-goatcounter="https://lyricistant.goatcounter.com/count"
+        async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

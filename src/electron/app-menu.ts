@@ -134,7 +134,7 @@ const createEditMenu = (
       },
       {
         label: 'Replace',
-        accelerator: 'CmdOrCtrl+R',
+        accelerator: 'CmdOrCtrl+Shift+F',
         click: handlers.onReplaceClicked,
       },
     ],
