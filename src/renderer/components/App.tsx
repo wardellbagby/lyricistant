@@ -2,9 +2,10 @@ import { useTheme } from '@material-ui/core/styles';
 import { PreferencesData } from 'common/preferences/PreferencesData';
 import { useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { BehaviorSubject, Subject } from 'rxjs';
 import 'typeface-roboto';
+import { useChannel } from '../hooks/useChannel';
 import { Rhyme } from '../models/rhyme';
 import { downloadApp } from '../util/download-app';
 import { EmptyRange } from '../util/editor-helpers';
@@ -45,10 +46,19 @@ export const App: FunctionComponent = () => {
   );
   const [editorText, setEditorText] = useState('');
   const theme = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(handlePreferencesChanges(setPreferencesData), []);
-  useEffect(handleFileChanges(), []);
-  useEffect(handleScreenChanges(setScreen), []);
+  useChannel('prefs-updated', setPreferencesData);
+  useChannel('file-opened', (error, filename) => {
+    if (error) {
+      enqueueSnackbar(`Couldn't open ${filename ?? 'selected file.'}`, {
+        variant: 'error',
+      });
+    }
+  });
+  useChannel('app-title-changed', (title) => (document.title = title));
+  useChannel('open-prefs', () => setScreen(Screen.PREFERENCES));
+  useChannel('close-prefs', () => setScreen(Screen.EDITOR));
 
   return (
     <>
@@ -94,63 +104,3 @@ export const App: FunctionComponent = () => {
     </>
   );
 };
-
-function handleFileChanges(): () => void {
-  const { enqueueSnackbar } = useSnackbar();
-  return () => {
-    const onFileOpened = (error: Error, filename?: string) => {
-      if (error) {
-        enqueueSnackbar(`Couldn't open ${filename ?? 'selected file.'}`, {
-          variant: 'error',
-        });
-      }
-    };
-    platformDelegate.on('file-opened', onFileOpened);
-
-    const onTitleChanged = (title: string) => {
-      document.title = title;
-    };
-    platformDelegate.on('app-title-changed', onTitleChanged);
-
-    return () => {
-      platformDelegate.removeListener('file-opened', onFileOpened);
-      platformDelegate.removeListener('app-title-changed', onTitleChanged);
-    };
-  };
-}
-
-function handleScreenChanges(
-  setScreen: (newScreen: Screen) => void
-): () => void {
-  return () => {
-    const openedPreferences = () => {
-      setScreen(Screen.PREFERENCES);
-    };
-    platformDelegate.on('open-prefs', openedPreferences);
-
-    const closedPreferences = () => {
-      setScreen(Screen.EDITOR);
-    };
-    platformDelegate.on('close-prefs', closedPreferences);
-
-    return function cleanup() {
-      platformDelegate.removeListener('open-prefs', openedPreferences);
-      platformDelegate.removeListener('close-prefs', closedPreferences);
-    };
-  };
-}
-
-function handlePreferencesChanges(
-  setPreferences: (data: PreferencesData) => void
-): () => void {
-  return () => {
-    const updatedPreferences = (data: PreferencesData) => {
-      setPreferences(data);
-    };
-    platformDelegate.on('prefs-updated', updatedPreferences);
-
-    return function cleanup() {
-      platformDelegate.removeListener('prefs-updated', updatedPreferences);
-    };
-  };
-}

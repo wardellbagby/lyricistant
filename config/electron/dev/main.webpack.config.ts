@@ -3,7 +3,7 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { Program } from 'typescript';
 import { Configuration, DefinePlugin } from 'webpack';
 import { ElectronRestartPlugin } from '../../plugins/ElectronRestartPlugin';
-import { aliases, DelegatesPlugin, resolve } from '../../shared';
+import { aliases, resolve } from '../../shared';
 import { devServerPort } from './renderer.webpack.config';
 
 const config: Configuration = {
@@ -43,7 +43,6 @@ const config: Configuration = {
     __filename: false,
   },
   plugins: [
-    DelegatesPlugin,
     new DefinePlugin({
       'process.env': { ELECTRON_WEBPACK_WDS_PORT: devServerPort },
     }),

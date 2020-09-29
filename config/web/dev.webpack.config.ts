@@ -6,7 +6,6 @@ import { Configuration } from 'webpack';
 import {
   aliases,
   CircularDepsPlugin,
-  DelegatesPlugin,
   HtmlPlugin,
   resolve,
   StaticAssetsPlugin,
@@ -23,7 +22,6 @@ const config: Configuration = {
     modules: ['node_modules'],
   },
   plugins: [
-    DelegatesPlugin,
     HtmlPlugin,
     new CompressionPlugin(),
     new CleanWebpackPlugin({

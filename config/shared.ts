@@ -2,9 +2,6 @@ import CircularDependencyPlugin from 'circular-dependency-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
-import DelegatesWebpackPlugin from './plugins/DelegatesWebpackPlugin';
-
-export const DelegatesPlugin = new DelegatesWebpackPlugin();
 
 export const projectDir = path.resolve(__dirname, '../');
 
