@@ -4,7 +4,7 @@ import { UiConfig } from 'common/ui/UiConfig';
 /**
  * Information that the renderer wants to send to the platform.
  */
-export interface RendererToPlatformChannels {
+export interface RendererToPlatformListener {
   'ready-for-events': () => void;
   'editor-text': (text: string) => void;
   'prompt-save-file-for-new': () => void;
@@ -21,7 +21,7 @@ export interface RendererToPlatformChannels {
 /**
  * Information that the platform wants to send to the renderer.
  */
-export interface PlatformToRendererChannels {
+export interface PlatformToRendererListener {
   'dark-mode-toggled': (textSize: number | null, useDarkMode: boolean) => void;
   'prefs-updated': (preferenceData: PreferencesData) => void;
   'new-file-created': () => void;
@@ -41,39 +41,39 @@ export interface PlatformToRendererChannels {
   'app-title-changed': (title: string) => void;
 }
 
-export type RendererChannel = Extract<keyof PlatformToRendererChannels, string>;
-export type PlatformChannel = Extract<keyof RendererToPlatformChannels, string>;
+export type RendererChannel = Extract<keyof PlatformToRendererListener, string>;
+export type PlatformChannel = Extract<keyof RendererToPlatformListener, string>;
 
 export interface RendererDelegate {
   send<Channel extends RendererChannel>(
     channel: Channel,
-    ...args: Parameters<PlatformToRendererChannels[Channel]>
+    ...args: Parameters<PlatformToRendererListener[Channel]>
   ): void;
 
   on<Channel extends PlatformChannel>(
     channel: Channel,
-    listener: RendererToPlatformChannels[Channel]
+    listener: RendererToPlatformListener[Channel]
   ): this;
 
   removeListener<Channel extends PlatformChannel>(
     channel: Channel,
-    listener: RendererToPlatformChannels[Channel]
+    listener: RendererToPlatformListener[Channel]
   ): this;
 }
 
 export interface PlatformDelegate {
   send<Channel extends PlatformChannel>(
     channel: Channel,
-    ...args: Parameters<RendererToPlatformChannels[Channel]>
+    ...args: Parameters<RendererToPlatformListener[Channel]>
   ): void;
 
   on<Channel extends RendererChannel>(
     channel: Channel,
-    listener: PlatformToRendererChannels[Channel]
+    listener: PlatformToRendererListener[Channel]
   ): this;
 
   removeListener<Channel extends RendererChannel>(
     channel: Channel,
-    listener: PlatformToRendererChannels[Channel]
+    listener: PlatformToRendererListener[Channel]
   ): this;
 }

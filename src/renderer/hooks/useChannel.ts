@@ -1,4 +1,4 @@
-import { PlatformToRendererChannels, RendererChannel } from 'common/Delegates';
+import { PlatformToRendererListener, RendererChannel } from 'common/Delegates';
 import { platformDelegate } from 'PlatformDelegate';
 import { DependencyList, useEffect } from 'react';
 
@@ -16,7 +16,7 @@ import { DependencyList, useEffect } from 'react';
  */
 export const useChannel: <Channel extends RendererChannel>(
   channel: Channel,
-  listener: PlatformToRendererChannels[Channel],
+  listener: PlatformToRendererListener[Channel],
   deps?: DependencyList
 ) => void = (channel, listener, deps) => {
   useEffect(() => {
