@@ -98,9 +98,9 @@ export const App: FunctionComponent = () => {
 function handleFileChanges(): () => void {
   const { enqueueSnackbar } = useSnackbar();
   return () => {
-    const onFileOpened = (error: Error, filename: string) => {
+    const onFileOpened = (error: Error, filename?: string) => {
       if (error) {
-        enqueueSnackbar(`Couldn't open ${filename}`, {
+        enqueueSnackbar(`Couldn't open ${filename ?? 'selected file.'}`, {
           variant: 'error',
         });
       }

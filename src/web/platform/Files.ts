@@ -29,6 +29,9 @@ export class WebFiles implements IFiles {
 }
 
 const readAsText = async (blob: Blob): Promise<string> => {
+  if (blob.type !== 'text/plain') {
+    throw Error('Selected file is not a text file.');
+  }
   if (Blob.prototype.text) {
     return await blob.text();
   }

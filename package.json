@@ -113,6 +113,7 @@
     "codemirror": "^5.57.0",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
+    "istextorbinary": "^5.11.0",
     "mdi-material-ui": "^6.18.0",
     "notistack": "^1.0.0",
     "react": "^16.13.1",

@@ -100,14 +100,14 @@ export const ChooseDownloadDialog = (props: SimpleDialogProps) => {
         <Grid container spacing={2}>
           {[...releases.keys()].map((platform) => {
             return (
-              <>
+              <React.Fragment key={platform}>
                 <Grid item xs={12}>
                   <Typography variant={'subtitle1'}>{platform}</Typography>
                 </Grid>
                 <Grid container item xs={12} spacing={2}>
                   {releases.get(platform).map((release) => {
                     return (
-                      <Grid item sm={4} md={6}>
+                      <Grid key={release.asset} item sm={4} md={6}>
                         <DownloadButton
                           release={release}
                           onClick={() => {
@@ -120,7 +120,7 @@ export const ChooseDownloadDialog = (props: SimpleDialogProps) => {
                     );
                   })}
                 </Grid>
-              </>
+              </React.Fragment>
             );
           })}
         </Grid>

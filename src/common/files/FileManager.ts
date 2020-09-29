@@ -89,14 +89,15 @@ export class FileManager implements Manager {
           fileData.filePath,
           fileData.data
         );
-        this.addRecentFile(this.currentFilePath);
-        this.fileChangedListeners.forEach((listener) =>
-          listener(fileData.filePath, this.recentFiles.getRecentFiles())
-        );
       }
     } catch (e) {
       this.rendererDelegate.send('file-opened', e, undefined, undefined);
+      return;
     }
+    this.addRecentFile(this.currentFilePath);
+    this.fileChangedListeners.forEach((listener) =>
+      listener(this.currentFilePath, this.recentFiles.getRecentFiles())
+    );
   };
 
   private onSaveFile = async (text: string) => {

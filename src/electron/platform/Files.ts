@@ -1,6 +1,7 @@
 import { FileData, Files as IFiles } from 'common/files/Files';
 import { dialog } from 'electron';
 import { promises as fs } from 'fs';
+import { isText } from 'istextorbinary';
 import { mainWindow } from '../index';
 
 export class ElectronFiles implements IFiles {
@@ -8,7 +9,10 @@ export class ElectronFiles implements IFiles {
     const result = await dialog.showOpenDialog(mainWindow, {
       title: 'Choose Lyrics',
       properties: ['openFile'],
-      filters: [{ extensions: ['.txt'], name: 'Lyrics' }],
+      filters: [
+        { extensions: ['txt'], name: 'Lyrics' },
+        { extensions: ['*'], name: 'All Files' },
+      ],
     });
 
     if (result.filePaths.length > 0) {
@@ -33,6 +37,10 @@ export class ElectronFiles implements IFiles {
   };
 
   public readFile = async (filePath: string) => {
-    return new FileData(filePath, await fs.readFile(filePath, 'utf8'));
+    const data = await fs.readFile(filePath);
+    if (isText(filePath, data)) {
+      return new FileData(filePath, data.toString('utf8'));
+    }
+    throw Error(`Cannot open "${filePath}; not a text file."`);
   };
 }
