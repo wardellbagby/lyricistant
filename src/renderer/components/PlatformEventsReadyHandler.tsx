@@ -12,8 +12,6 @@ import React, { PropsWithChildren, useEffect } from 'react';
 export const PlatformEventsReadyHandler = ({
   children,
 }: PropsWithChildren<{}>) => {
-  useEffect(() => {
-    platformDelegate.send('ready-for-events');
-  }, []);
+  useEffect(() => platformDelegate.send('ready-for-events'), []);
   return <>{children}</>;
 };

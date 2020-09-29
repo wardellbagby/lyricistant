@@ -41,15 +41,15 @@ export const createTheme = (
 };
 
 const lightThemePalette = {
-  primary: '#e0e0e0',
+  primary: '#4db6ac',
   background: '#fafafa',
-  surface: '#fafafa',
+  surface: '#E0E0E0',
   primaryText: '#212121',
   secondaryText: '#424242',
 };
 
 const darkThemePalette = {
-  primary: '#343434',
+  primary: '#00796b',
   background: '#141414',
   surface: '#232323',
   primaryText: '#f8f8f8',

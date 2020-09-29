@@ -5,11 +5,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Slide,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
-import Slide, { SlideProps } from '@material-ui/core/Slide';
+import { SlideProps } from '@material-ui/core/Slide';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -38,12 +39,6 @@ const dialogStyles = makeStyles((theme: Theme) =>
     title: {
       marginLeft: theme.spacing(2),
       flex: 1,
-    },
-    dialog: {
-      background: theme.palette.primary.dark,
-    },
-    container: {
-      background: theme.palette.background.paper,
     },
   })
 );
@@ -87,12 +82,7 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
   }
 
   return (
-    <Dialog
-      fullScreen
-      open={props.show}
-      TransitionComponent={DialogTransition}
-      className={classes.dialog}
-    >
+    <Dialog fullScreen open={props.show} TransitionComponent={DialogTransition}>
       <AppBar color={'primary'} position="sticky">
         <Toolbar>
           <IconButton edge="start" onClick={props.onClosed}>
@@ -106,7 +96,7 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Box p={'16px'}>
+      <Box py={'32px'} px={'64px'}>
         <Grid container spacing={3}>
           <Grid item sm={12} md={6}>
             <FormControl variant="outlined" fullWidth>

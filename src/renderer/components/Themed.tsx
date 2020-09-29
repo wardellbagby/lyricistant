@@ -5,12 +5,10 @@ import 'typeface-roboto';
 import { useChannel } from '../hooks/useChannel';
 import { createTheme } from '../util/theme';
 
-const defaultTheme = createTheme(null, true);
-
 export const Themed: FunctionComponent<PropsWithChildren<{
   onBackgroundChanged: (background: string) => void;
 }>> = ({ onBackgroundChanged, children }) => {
-  const [theme, setTheme] = useState(defaultTheme);
+  const [theme, setTheme] = useState(createTheme(null, true));
 
   useChannel('dark-mode-toggled', (textSize, useDarkMode) => {
     const appTheme = createTheme(textSize, useDarkMode);

@@ -17,22 +17,27 @@ interface RhymesProp {
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  rhyme: {
+  rhymeList: {
     color: theme.palette.text.disabled,
     '&:hover': {
       color: theme.palette.text.primary,
     },
+  },
+  rhyme: {
     'text-align': 'center',
-    [theme.breakpoints.up('md')]: {
-      height: '80px',
+    '&:hover': {
+      background: theme.palette.background.paper,
     },
   },
 }));
 
 const ListContainer: React.ComponentType<{ className: string }> = styled('div')(
-  {
-    display: 'flex',
-    'flex-wrap': 'wrap',
+  ({ className }) => {
+    return {
+      className,
+      display: 'flex',
+      'flex-wrap': 'wrap',
+    };
   }
 );
 
@@ -47,6 +52,7 @@ const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
       },
       [theme.breakpoints.up('md')]: {
         width: '100%',
+        height: '80px',
       },
       [theme.breakpoints.up('lg')]: {
         width: '50%',
@@ -74,6 +80,7 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
       style={{ width: '100%', height: '100%' }}
       overscan={100}
       totalCount={rhymes.length}
+      listClassName={classes.rhymeList}
       item={(index) => {
         const rhyme = rhymes[index];
 
@@ -91,8 +98,13 @@ function renderRhyme(
   onClick: () => void
 ): React.ReactElement {
   return (
-    <Box flex={1} className={className}>
-      <ListItem button key={rhyme.word} style={{ height: '100%' }}>
+    <Box flex={1} width={'100%'} height={'100%'}>
+      <ListItem
+        className={className}
+        button
+        key={rhyme.word}
+        style={{ height: '100%' }}
+      >
         <ListItemText
           onClick={onClick}
           primary={rhyme.word}

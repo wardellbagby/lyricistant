@@ -1,3 +1,4 @@
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { Configuration } from 'webpack';
 import {
@@ -27,6 +28,7 @@ const config: Configuration = {
     }),
     CircularDepsPlugin,
     StaticAssetsPlugin,
+    new ReactRefreshWebpackPlugin(),
   ],
   module: {
     rules: [

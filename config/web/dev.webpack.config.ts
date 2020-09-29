@@ -1,3 +1,4 @@
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import { di } from '@wessberg/di-compiler';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
@@ -29,6 +30,7 @@ const config: Configuration = {
     }),
     CircularDepsPlugin,
     StaticAssetsPlugin,
+    new ReactRefreshWebpackPlugin(),
   ],
   module: {
     rules: [
@@ -55,6 +57,8 @@ const config: Configuration = {
   devServer: {
     contentBase: resolve('dist/web'),
     port: 8081,
+    hot: true,
+    overlay: true,
   },
 };
 

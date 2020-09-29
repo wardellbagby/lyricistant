@@ -26,14 +26,11 @@ const useIconStyles = makeStyles((theme: Theme) => ({
     width: 24,
     height: 24,
   },
-  menu: {
-    backgroundColor: theme.palette.primary.main,
-  },
 }));
 
 const useMenuStyles = makeStyles((theme: Theme) => ({
   menu: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.background.paper,
   },
 }));
 

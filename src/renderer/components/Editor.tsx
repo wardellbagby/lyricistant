@@ -76,8 +76,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       color: theme.palette.background.default,
     },
     '& .CodeMirror-selectedtext': {
-      background: theme.palette.primary.main,
       color: theme.palette.getContrastText(theme.palette.primary.main),
+    },
+    '& .CodeMirror-selected': {
+      'background-color': [[theme.palette.primary.main], '!important'],
     },
   },
 }));
