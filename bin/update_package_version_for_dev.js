@@ -7,7 +7,7 @@ const latestCommitHash = () => {
   return execSync('git rev-parse --short HEAD').toString().trim();
 };
 
-const newVersion = `${packageInfo.version}dev+${latestCommitHash()}`;
+const newVersion = `${packageInfo.version}-nightly+${latestCommitHash()}`;
 
 console.log(`Setting version to: ${newVersion}`);
 
