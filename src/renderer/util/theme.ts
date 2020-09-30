@@ -21,7 +21,9 @@ export const createTheme = (
           hover: themePalette.primary,
           hoverOpacity: 0,
         },
-        primary: { main: themePalette.primary },
+        primary: {
+          main: themePalette.primary,
+        },
         background: {
           default: themePalette.background,
           paper: themePalette.surface,
@@ -41,7 +43,7 @@ export const createTheme = (
 };
 
 const lightThemePalette = {
-  primary: '#4db6ac',
+  primary: '#00796b',
   background: '#fafafa',
   surface: '#E0E0E0',
   primaryText: '#212121',
@@ -49,7 +51,7 @@ const lightThemePalette = {
 };
 
 const darkThemePalette = {
-  primary: '#00796b',
+  primary: '#4db6ac',
   background: '#141414',
   surface: '#232323',
   primaryText: '#f8f8f8',

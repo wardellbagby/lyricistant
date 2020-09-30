@@ -42,6 +42,9 @@ const dialogStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
+    appBar: {
+      color: theme.palette.primary.contrastText,
+    },
   })
 );
 
@@ -82,16 +85,24 @@ export const Preferences = (props: PreferencesProps) => {
   }
 
   return (
-    <Dialog fullScreen open={props.show} TransitionComponent={DialogTransition}>
+    <Dialog
+      fullScreen
+      className={classes.appBar}
+      open={props.show}
+      TransitionComponent={DialogTransition}
+    >
       <AppBar color={'primary'} position="sticky">
         <Toolbar>
-          <IconButton edge="start" onClick={props.onClosed}>
+          <IconButton color={'inherit'} edge="start" onClick={props.onClosed}>
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Preferences
           </Typography>
-          <IconButton onClick={() => props.onPreferencesSaved(preferencesData)}>
+          <IconButton
+            color={'inherit'}
+            onClick={() => props.onPreferencesSaved(preferencesData)}
+          >
             <SaveIcon />
           </IconButton>
         </Toolbar>
@@ -106,7 +117,7 @@ export const Preferences = (props: PreferencesProps) => {
         width={'100%'}
       >
         <Grid container spacing={3}>
-          <Grid item sm={12} md={6}>
+          <Grid item xs={12} md={6}>
             <FormControl variant="outlined" fullWidth>
               <InputLabel id="text-size-label">Text Size</InputLabel>
               <Select
@@ -123,7 +134,7 @@ export const Preferences = (props: PreferencesProps) => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item sm={12} md={6}>
+          <Grid item xs={12} md={6}>
             <FormControl variant="outlined" fullWidth>
               <InputLabel id="theme-label">Theme</InputLabel>
               <Select
