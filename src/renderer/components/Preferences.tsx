@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   Grid,
   InputLabel,
@@ -14,19 +15,20 @@ import { SlideProps } from '@material-ui/core/Slide';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import { Info } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import {
   PreferencesData,
   Theme as LyricistantTheme,
 } from 'common/preferences/PreferencesData';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-
+import React, { useEffect, useState } from 'react';
 export interface PreferencesProps {
   show: boolean;
   data: PreferencesData;
   onPreferencesSaved: (data: PreferencesData) => void;
   onClosed: () => void;
+  onAboutClicked: () => void;
 }
 
 const DialogTransition = React.forwardRef<unknown, SlideProps>(
@@ -43,9 +45,7 @@ const dialogStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Preferences: FunctionComponent<PreferencesProps> = (
-  props: PreferencesProps
-) => {
+export const Preferences = (props: PreferencesProps) => {
   const classes = dialogStyles(undefined);
   const [preferencesData, setPreferencesData] = useState(props.data);
 
@@ -96,7 +96,15 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Box py={'32px'} px={'64px'}>
+      <Box
+        py={'32px'}
+        px={'64px'}
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'center'}
+        height={'100%'}
+        width={'100%'}
+      >
         <Grid container spacing={3}>
           <Grid item sm={12} md={6}>
             <FormControl variant="outlined" fullWidth>
@@ -133,6 +141,16 @@ export const Preferences: FunctionComponent<PreferencesProps> = (
             </FormControl>
           </Grid>
         </Grid>
+        <Box flexGrow={'1'} />
+        <Button
+          fullWidth={false}
+          variant={'text'}
+          startIcon={<Info />}
+          size={'large'}
+          onClick={props.onAboutClicked}
+        >
+          About Lyricistant
+        </Button>
       </Box>
     </Dialog>
   );

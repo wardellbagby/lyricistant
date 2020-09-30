@@ -9,8 +9,9 @@ import { useChannel } from '../hooks/useChannel';
 import { Rhyme } from '../models/rhyme';
 import { downloadApp } from '../util/download-app';
 import { EmptyRange } from '../util/editor-helpers';
+import { AboutDialog } from './AboutDialog';
 import { AppLayout } from './AppLayout';
-import { ChooseDownloadDialog } from './ChooseDownload';
+import { ChooseDownloadDialog } from './ChooseDownloadDialog';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
 import { Menu } from './Menu';
 import { Preferences } from './Preferences';
@@ -20,6 +21,7 @@ enum Screen {
   PREFERENCES,
   EDITOR,
   DOWNLOAD,
+  ABOUT,
 }
 
 const selectedWords: BehaviorSubject<WordAtPosition> = new BehaviorSubject({
@@ -59,6 +61,7 @@ export const App: FunctionComponent = () => {
   useChannel('app-title-changed', (title) => (document.title = title));
   useChannel('open-prefs', () => setScreen(Screen.PREFERENCES));
   useChannel('close-prefs', () => setScreen(Screen.EDITOR));
+  useChannel('open-about', () => setScreen(Screen.ABOUT));
 
   return (
     <>
@@ -71,6 +74,11 @@ export const App: FunctionComponent = () => {
         data={preferencesData}
         onPreferencesSaved={onPreferencesSaved}
         onClosed={onPreferencesClosed}
+        onAboutClicked={() => setScreen(Screen.ABOUT)}
+      />
+      <AboutDialog
+        show={screen === Screen.ABOUT}
+        onClose={() => setScreen(Screen.EDITOR)}
       />
       <AppLayout>
         <Menu

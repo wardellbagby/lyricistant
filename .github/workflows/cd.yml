@@ -23,6 +23,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '>=12.10'
+      - name: Set dev version
+        run: node bin/update_package_version_for_dev.js
       - name: Install project dependencies.
         run: npm ci
       - name: Build Web.
@@ -46,6 +48,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '>=12.10'
+      - name: Set dev version
+        run: node bin/update_package_version_for_dev.js
       - name: Install project dependencies.
         run: npm ci
       - name: Build the Electron project.

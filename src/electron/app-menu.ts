@@ -9,6 +9,7 @@ export interface MenuItemHandlers {
   onSaveClicked: () => void;
   onSaveAsClicked: () => void;
   onPreferencesClicked: () => void;
+  onAboutClicked: () => void;
   onUndoClicked: () => void;
   onRedoClicked: () => void;
   onFindClicked: () => void;
@@ -30,7 +31,7 @@ export const createAppMenu = (
     });
   const isMac = platform === 'darwin';
   const menuTemplate: MenuItemConstructorOptions[] = [
-    createFileMenu(handlers, !isMac, !isMac, recentFiles),
+    createFileMenu(handlers, !isMac, !isMac, !isMac, recentFiles),
     createEditMenu(handlers),
     {
       role: 'window',
@@ -49,6 +50,7 @@ const createFileMenu = (
   handlers: MenuItemHandlers,
   showPrefs: boolean,
   showQuit: boolean,
+  showAbout: boolean,
   recentFiles?: string[]
 ): MenuItemConstructorOptions => {
   const prefsSection: MenuItemConstructorOptions[] = showPrefs
@@ -57,6 +59,15 @@ const createFileMenu = (
         {
           label: 'Preferences',
           click: handlers.onPreferencesClicked,
+        },
+      ]
+    : [];
+
+  const aboutSection = showAbout
+    ? [
+        {
+          label: 'About Lyricistant',
+          click: handlers.onAboutClicked,
         },
       ]
     : [];
@@ -101,6 +112,7 @@ const createFileMenu = (
         accelerator: 'Shift+CmdOrCtrl+S',
       },
       ...prefsSection,
+      ...aboutSection,
       ...quitSection,
     ],
   };
@@ -168,7 +180,10 @@ const createMacMenu = (
   return {
     label: appName,
     submenu: [
-      { role: 'about' },
+      {
+        label: 'About Lyricistant',
+        click: handlers.onAboutClicked,
+      },
       { type: 'separator' },
       {
         label: 'Preferences',

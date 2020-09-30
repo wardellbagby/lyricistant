@@ -62,12 +62,12 @@ const DownloadButton = (props: { release: Release; onClick: () => void }) => {
   );
 };
 
-export interface SimpleDialogProps {
+export interface ChooseDownloadDialogProps {
   show: boolean;
   onClose: () => void;
 }
 
-export const ChooseDownloadDialog = (props: SimpleDialogProps) => {
+export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
   const { onClose, show } = props;
 
   const handleClose = () => {

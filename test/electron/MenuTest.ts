@@ -16,6 +16,7 @@ describe('Create Electron App Menu', () => {
     onOpenClicked: () => undefined,
     onOpenRecentClicked: () => undefined,
     onPreferencesClicked: () => undefined,
+    onAboutClicked: () => undefined,
     onQuitClicked: () => undefined,
     onRedoClicked: () => undefined,
     onReplaceClicked: () => undefined,
@@ -63,6 +64,22 @@ describe('Create Electron App Menu', () => {
     expect(actual[1].submenu).to.not.containSubset([{ label: 'Quit' }]);
   });
 
+  it("doesn't show about in File when on Mac", () => {
+    const actual = createAppMenu('MyApp', 'darwin', handlers);
+
+    expect(actual[1].submenu).to.not.containSubset([
+      { label: 'About Lyricistant' },
+    ]);
+  });
+
+  it('does show about in Mac menu when on Mac', () => {
+    const actual = createAppMenu('MyApp', 'darwin', handlers);
+
+    expect(actual[0].submenu).to.containSubset([
+      { label: 'About Lyricistant' },
+    ]);
+  });
+
   it('does show prefs in File when on Windows', () => {
     const actual = createAppMenu('MyApp', 'win32', handlers);
 
@@ -75,6 +92,14 @@ describe('Create Electron App Menu', () => {
     expect(actual[0].submenu).to.containSubset([{ label: 'Quit' }]);
   });
 
+  it('does show about in File when on Windows', () => {
+    const actual = createAppMenu('MyApp', 'win32', handlers);
+
+    expect(actual[0].submenu).to.containSubset([
+      { label: 'About Lyricistant' },
+    ]);
+  });
+
   it('does show prefs in File when on Linux', () => {
     const actual = createAppMenu('MyApp', 'linux', handlers);
 
@@ -85,6 +110,14 @@ describe('Create Electron App Menu', () => {
     const actual = createAppMenu('MyApp', 'linux', handlers);
 
     expect(actual[0].submenu).to.containSubset([{ label: 'Quit' }]);
+  });
+
+  it('does show about in File when on Windows', () => {
+    const actual = createAppMenu('MyApp', 'linux', handlers);
+
+    expect(actual[0].submenu).to.containSubset([
+      { label: 'About Lyricistant' },
+    ]);
   });
 
   it('includes all of the major sections on Mac', () => {

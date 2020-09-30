@@ -2,7 +2,7 @@ import { RendererDelegate } from 'common/Delegates';
 import { FileManager } from 'common/files/FileManager';
 import { Managers } from 'common/Managers';
 import { appComponent } from 'Components';
-import { app, BrowserWindow, dialog, Menu } from 'electron';
+import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
 import { autoUpdater } from 'electron-updater';
 import { platform } from 'os';
@@ -84,6 +84,16 @@ function createWindow(): void {
     appComponent.get<QuitManager>().attemptQuit();
     event.preventDefault();
   });
+  mainWindow.webContents.on('new-window', (event, urlString) => {
+    const url = new URL(urlString);
+    if (
+      url.host === 'github.com' &&
+      url.pathname.startsWith('/wardellbagby/lyricistant')
+    ) {
+      event.preventDefault();
+      shell.openExternal(urlString);
+    }
+  });
   setMenu();
 }
 
@@ -117,6 +127,7 @@ function setMenu(recentFiles?: string[]): void {
         await appComponent.get<FileManager>().openFile(filePath);
       },
       onPreferencesClicked: preferencesHandler,
+      onAboutClicked: () => rendererDelegate.send('open-about'),
       onQuitClicked: quitHandler,
       onRedoClicked: redoHandler,
       onReplaceClicked: (): void => {

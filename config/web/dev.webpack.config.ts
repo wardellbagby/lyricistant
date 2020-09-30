@@ -8,6 +8,7 @@ import {
   aliases,
   CircularDepsPlugin,
   HtmlPlugin,
+  RendererGlobalsPlugin,
   resolve,
   StaticAssetsPlugin,
 } from '../shared';
@@ -31,6 +32,7 @@ const config: Configuration = {
     CircularDepsPlugin,
     StaticAssetsPlugin,
     new ReactRefreshWebpackPlugin(),
+    RendererGlobalsPlugin,
   ],
   module: {
     rules: [
@@ -45,7 +47,7 @@ const config: Configuration = {
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {
-        test: /\.(woff|woff2|eot|ttf|svg)$/,
+        test: /\.(woff|woff2|eot|ttf|svg|png)$/,
         loader: 'file-loader',
       },
     ],

@@ -39,6 +39,7 @@ export interface PlatformToRendererListener {
   'open-prefs': () => void;
   'ui-config': (config: UiConfig) => void;
   'app-title-changed': (title: string) => void;
+  'open-about': () => void;
 }
 
 export type RendererChannel = Extract<keyof PlatformToRendererListener, string>;
