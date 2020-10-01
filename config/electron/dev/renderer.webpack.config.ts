@@ -1,5 +1,7 @@
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import { di } from '@wessberg/di-compiler';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { Program } from 'typescript';
 import { Configuration } from 'webpack';
 import {
   aliases,
@@ -38,7 +40,10 @@ const config: Configuration = {
         test: /\.tsx?$/,
         include: [resolve('src/')],
         exclude: [resolve('src/web')],
-        use: 'ts-loader',
+        loader: 'ts-loader',
+        options: {
+          getCustomTransformers: (program: Program) => di({ program }),
+        },
       },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {

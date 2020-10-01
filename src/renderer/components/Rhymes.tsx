@@ -6,7 +6,8 @@ import * as CodeMirror from 'codemirror';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { Observable } from 'rxjs';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { appComponent } from '../globals';
 import { Rhyme } from '../models/rhyme';
 import { fetchRhymes } from '../networking/fetchRhymes';
 import { WordAtPosition } from './Editor';
@@ -124,6 +125,11 @@ function handleQueries(
     const subscription = queries
       .pipe(
         debounceTime(400),
+        tap((query) =>
+          appComponent
+            .get<Logger>()
+            .debug(`Querying rhymes for word: ${query.word}`)
+        ),
         switchMap((data: WordAtPosition) =>
           fetchRhymes(data.word).pipe(
             map((rhymes: Rhyme[]) => {

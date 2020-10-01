@@ -1,7 +1,8 @@
 import { Box, Theme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
+import { appComponent } from '../globals';
 
 const useStyles = makeStyles((theme: Theme) => ({
   divider: {
@@ -26,6 +27,14 @@ export const AppLayout: FunctionComponent = ({ children }) => {
   } else {
     displayableChildren = children;
   }
+
+  useEffect(
+    () =>
+      appComponent
+        .get<Logger>()
+        .info(`Switching layout. isSmallLayout: ${useSmallLayout}`),
+    [useSmallLayout]
+  );
   return (
     <Box
       height={'100%'}

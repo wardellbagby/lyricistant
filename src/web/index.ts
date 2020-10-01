@@ -1,6 +1,6 @@
 import { Managers } from 'common/Managers';
-import { appComponent } from 'Components';
 import { initializeComponent } from './AppComponent';
+import { appComponent } from './Components';
 
 initializeComponent(appComponent);
 

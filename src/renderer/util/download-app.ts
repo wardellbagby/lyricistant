@@ -1,4 +1,4 @@
-import { appComponent } from 'Components';
+import { appComponent } from '../globals';
 
 export const latestReleaseUrl =
   'https://github.com/wardellbagby/lyricistant/releases/latest/download/';
@@ -51,11 +51,13 @@ export const downloadApp = (): boolean => {
   let url = latestReleaseUrl;
   switch (window.navigator.platform) {
     case 'MacIntel': {
+      appComponent.get<Logger>().info('Downloading app for Mac.');
       url += supportedReleases.find((release) => release.platform === 'Mac')
         .asset;
       break;
     }
     case 'Win32': {
+      appComponent.get<Logger>().info('Downloading app for Windows.');
       url += supportedReleases.find((release) => release.platform === 'Windows')
         .asset;
       break;

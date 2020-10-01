@@ -1,4 +1,6 @@
 import {
+  Box,
+  Button,
   DialogContent,
   Grid,
   Link,
@@ -11,8 +13,13 @@ import {
   withStyles,
 } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
-import React from 'react';
-import { APP_AUTHOR, APP_HOMEPAGE, APP_VERSION } from '../globals';
+import React, { useMemo } from 'react';
+import {
+  APP_AUTHOR,
+  APP_HOMEPAGE,
+  APP_VERSION,
+  appComponent,
+} from '../globals';
 import appIcon from '../images/app_icon.png';
 
 export interface AboutDialogProps {
@@ -38,6 +45,7 @@ const DividerlessTableCell = withStyles({
 
 export const AboutDialog = (props: AboutDialogProps) => {
   const { onClose, show } = props;
+  const logger = useMemo(() => appComponent.get<Logger>(), []);
 
   const handleClose = () => {
     onClose();
@@ -74,6 +82,15 @@ export const AboutDialog = (props: AboutDialogProps) => {
                 </TableBody>
               </Table>
             </TableContainer>
+          </Grid>
+          <Box height={'8px'} />
+          <Grid item xs={12}>
+            <Button
+              variant={'outlined'}
+              onClick={async () => await logger.save()}
+            >
+              Download Logs
+            </Button>
           </Grid>
         </Grid>
       </DialogContent>

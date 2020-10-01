@@ -1,7 +1,6 @@
 import { RendererDelegate } from 'common/Delegates';
 import { FileManager } from 'common/files/FileManager';
 import { Managers } from 'common/Managers';
-import { appComponent } from 'Components';
 import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
 import { autoUpdater } from 'electron-updater';
@@ -10,6 +9,7 @@ import * as path from 'path';
 import { format as formatUrl } from 'url';
 import { createAppMenu } from './app-menu';
 import { initializeComponent } from './AppComponent';
+import { appComponent } from './Components';
 import { createRendererDelegate } from './Delegates';
 import { QuitManager } from './platform/QuitManager';
 
@@ -43,6 +43,11 @@ app.on('activate', () => {
 });
 
 function createWindow(): void {
+  // @ts-ignore
+  global.appComponent = appComponent;
+  if (!appComponent.has<Logger>()) {
+    throw new Error('app component is empty');
+  }
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
@@ -51,6 +56,8 @@ function createWindow(): void {
     backgroundColor: '#00000000',
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
+      preload: path.resolve(__dirname, '../preload/preload.js'),
     },
   });
   rendererDelegate = createRendererDelegate(mainWindow);

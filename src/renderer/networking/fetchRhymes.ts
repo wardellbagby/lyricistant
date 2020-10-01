@@ -1,5 +1,6 @@
 import { from, Observable, of, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { appComponent } from '../globals';
 import { Rhyme } from '../models/rhyme';
 
 const url = 'https://lyricistant.wardellbagby.workers.dev';
@@ -18,6 +19,7 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
       param = 'sl';
       break;
   }
+  appComponent.get<Logger>().debug(`Fetching ${type} rhymes for word: ${word}`);
   const response = await fetch(`${url}/words?${param}=${word}`);
   return await response.json();
 };

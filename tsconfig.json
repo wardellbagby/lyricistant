@@ -14,8 +14,7 @@
     "baseUrl": "./",
     "paths": {
       "common/*": ["src/common/*"],
-      "PlatformDelegate": ["src/electron/Delegates.ts", "src/web/Delegates.ts"],
-      "Components": ["src/electron/Components.ts", "src/web/Components.ts"]
+      "PlatformDelegate": ["src/electron/Delegates.ts", "src/web/Delegates.ts"]
     }
   }
 }

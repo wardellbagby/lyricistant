@@ -2,9 +2,10 @@ import { useTheme } from '@material-ui/core/styles';
 import { PreferencesData } from 'common/preferences/PreferencesData';
 import { useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { BehaviorSubject, Subject } from 'rxjs';
 import 'typeface-roboto';
+import { appComponent } from '../globals';
 import { useChannel } from '../hooks/useChannel';
 import { Rhyme } from '../models/rhyme';
 import { downloadApp } from '../util/download-app';
@@ -50,6 +51,10 @@ export const App: FunctionComponent = () => {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
+  useEffect(
+    () => appComponent.get<Logger>().debug(`Displaying screen: ${screen}`),
+    [screen]
+  );
   useChannel('prefs-updated', setPreferencesData);
   useChannel('file-opened', (error, filename) => {
     if (error) {
