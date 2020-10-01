@@ -73,7 +73,7 @@ export const AboutDialog = (props: AboutDialogProps) => {
                 <TableBody>
                   {Object.entries(aboutInfo).map(([key, value]) => {
                     return (
-                      <TableRow>
+                      <TableRow key={key}>
                         <DividerlessTableCell>{key}</DividerlessTableCell>
                         <DividerlessTableCell>{value}</DividerlessTableCell>
                       </TableRow>

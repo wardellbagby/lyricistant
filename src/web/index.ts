@@ -3,6 +3,8 @@ import { initializeComponent } from './AppComponent';
 import { appComponent } from './Components';
 
 initializeComponent(appComponent);
+// @ts-ignore
+window.appComponent = appComponent;
 
 new Promise((resolve) => {
   appComponent.get<Managers>().forEach((manager) => manager.register());

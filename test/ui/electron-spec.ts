@@ -16,15 +16,16 @@ describe('Electron launch', () => {
     await app.start();
     await app.client.waitUntilWindowLoaded();
     client = app.client;
-    return client.waitUntil(async () => {
+    await client.waitUntil(async () => {
       const elements = await client.$$('#app > *');
       return elements.length > 0;
     });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     if (app && app.isRunning()) {
-      return app.stop();
+      await client.closeWindow();
+      app.mainProcess.exit(0);
     }
   });
 

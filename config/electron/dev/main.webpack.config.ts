@@ -52,14 +52,13 @@ export const preload: Configuration = {
   target: 'electron-preload',
   entry: './src/electron/preload.ts',
   resolve: {
-    alias: aliases('electron'),
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    extensions: ['.ts'],
     modules: ['node_modules'],
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         include: [resolve('src/')],
         exclude: [resolve('src/web')],
         loader: 'ts-loader',

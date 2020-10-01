@@ -14,6 +14,7 @@ import { createRendererDelegate } from './Delegates';
 import { QuitManager } from './platform/QuitManager';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const isUsingDevServer = isDevelopment && process.env.ELECTRON_WEBPACK_WDS_PORT;
 initializeComponent(appComponent);
 
 export let mainWindow: BrowserWindow;
@@ -57,7 +58,9 @@ function createWindow(): void {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      preload: path.resolve(__dirname, '../preload/preload.js'),
+      preload: isUsingDevServer
+        ? path.resolve(__dirname, '../preload/preload.js')
+        : path.resolve(__dirname, 'preload.js'),
     },
   });
   rendererDelegate = createRendererDelegate(mainWindow);
@@ -65,7 +68,7 @@ function createWindow(): void {
   registerListeners();
   setupUpdater();
 
-  if (isDevelopment && process.env.ELECTRON_WEBPACK_WDS_PORT) {
+  if (isUsingDevServer) {
     mainWindow
       .loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
       .catch(showLoadingError);
@@ -162,7 +165,7 @@ function showLoadingError(reason: any) {
     reason,
     process.env.ELECTRON_WEBPACK_WDS_PORT
   );
-  mainWindow.close();
+  mainWindow.destroy();
   dialog.showErrorBox(
     'Error',
     "Sorry, we couldn't load Lyricistant! Please contact the developers!"

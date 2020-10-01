@@ -16,6 +16,10 @@
       "filter": ["!*.map"]
     },
     {
+      "from": "dist/electron/preload",
+      "filter": ["!*.map"]
+    },
+    {
       "from": "dist/electron/renderer"
     },
     "!*${/*}"
