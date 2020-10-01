@@ -4,9 +4,12 @@ import { Manager } from 'common/Manager';
 import { mainWindow } from '../index';
 
 export class QuitManager implements Manager {
+  private forceQuitTimeout?: NodeJS.Timeout;
+
   constructor(
     private rendererDelegate: RendererDelegate,
-    private dialogs: Dialogs
+    private dialogs: Dialogs,
+    private logger: Logger
   ) {}
 
   public register(): void {
@@ -16,13 +19,21 @@ export class QuitManager implements Manager {
 
   public attemptQuit() {
     this.rendererDelegate.send('is-okay-for-quit-file');
+    this.forceQuitTimeout = setTimeout(() => {
+      this.logger.error(
+        'Force-closing app because renderer never responded and user attempted quit!'
+      );
+      mainWindow.destroy();
+    }, 2500);
   }
 
   private onOkayForQuit = () => {
+    clearTimeout(this.forceQuitTimeout);
     mainWindow.destroy();
   };
 
   private onPromptQuit = async () => {
+    clearTimeout(this.forceQuitTimeout);
     const result = await this.dialogs.showDialog(
       "Are you sure you want to quit? Your changes haven't been saved."
     );
