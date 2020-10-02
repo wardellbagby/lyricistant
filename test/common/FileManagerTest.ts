@@ -7,6 +7,7 @@ import { FileData, Files } from 'common/files/Files';
 import { RecentFiles } from 'common/files/RecentFiles';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
+import { RendererListeners } from './utils';
 
 use(sinonChai);
 
@@ -16,7 +17,7 @@ describe('File Manager', () => {
   let files: StubbedInstance<Files>;
   let recentFiles: StubbedInstance<RecentFiles>;
   let dialogs: StubbedInstance<Dialogs>;
-  const rendererListeners: Map<string, (...args: any[]) => void> = new Map();
+  const rendererListeners = new RendererListeners();
 
   beforeEach(() => {
     sinon.reset();
@@ -32,6 +33,7 @@ describe('File Manager', () => {
       showDialog: Promise.resolve('cancelled'),
     });
     rendererDelegate = stubInterface();
+    rendererDelegate.send.returns(undefined);
     rendererDelegate.on.callsFake(function (channel, listener) {
       rendererListeners.set(channel, listener);
       return this;
@@ -88,5 +90,184 @@ describe('File Manager', () => {
       '8',
       '9',
     ]);
+  });
+
+  it('asks the renderer if its okay for a new file when asked by platform', async () => {
+    manager.register();
+
+    manager.onNewFile();
+
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'is-okay-for-new-file'
+    );
+  });
+
+  it('asks the renderer if its okay for a new file when asked by renderer', async () => {
+    manager.register();
+
+    await rendererListeners.invoke('new-file-attempt');
+
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'is-okay-for-new-file'
+    );
+  });
+
+  it('shows a dialog when the renderer says new file is not okay', async () => {
+    manager.register();
+
+    await rendererListeners.invoke('prompt-save-file-for-new');
+
+    expect(dialogs.showDialog).to.have.been.called;
+  });
+
+  it('creates a new file when prompt dialog says yes was chosen', async () => {
+    dialogs.showDialog.returns(Promise.resolve('yes'));
+    manager.register();
+
+    await rendererListeners.invoke('prompt-save-file-for-new');
+
+    expect(dialogs.showDialog).to.have.been.called;
+    expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
+  });
+
+  it("does nothing when prompt dialog doesn't say yes was chosen", async () => {
+    dialogs.showDialog.returns(Promise.resolve('no'));
+    manager.register();
+
+    await rendererListeners.invoke('prompt-save-file-for-new');
+
+    expect(dialogs.showDialog).to.have.been.called;
+    expect(rendererDelegate.send).to.have.not.been.called;
+  });
+
+  it('creates a new file when the renderer says new file is okay', async () => {
+    manager.register();
+
+    await rendererListeners.invoke('okay-for-new-file');
+
+    expect(dialogs.showDialog).to.have.not.been.called;
+    expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
+  });
+
+  it('asks for renderer text when platform requests a file save', async () => {
+    manager.register();
+
+    manager.saveFile(false);
+
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'request-editor-text'
+    );
+  });
+
+  it('saves the file when the renderer returns the editor text', async () => {
+    manager.register();
+
+    manager.saveFile(false);
+
+    await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
+
+    expect(files.saveFile).to.have.been.calledWith(
+      new FileData(null, 'Reeboks on; just do it!')
+    );
+  });
+
+  it('saves as the file when the renderer returns the editor text', async () => {
+    manager.register();
+
+    manager.saveFile(true);
+
+    await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
+
+    expect(files.saveFile).to.have.been.calledWith(
+      new FileData(null, 'Reeboks on; just do it!')
+    );
+  });
+
+  it('saves a new file when the renderer says to save with no file loaded', async () => {
+    manager.register();
+
+    await rendererListeners.invoke(
+      'save-file-attempt',
+      'Blessings, blessings.'
+    );
+
+    expect(files.saveFile).to.have.been.calledWith(
+      new FileData(null, 'Blessings, blessings.')
+    );
+  });
+
+  it('saves the current file when the renderer says to save with a file loaded', async () => {
+    files.openFile.returns(
+      Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
+    );
+    manager.register();
+
+    await manager.openFile();
+    await rendererListeners.invoke(
+      'save-file-attempt',
+      'Blessings, blessings.'
+    );
+
+    expect(files.saveFile).to.have.been.calledWith(
+      new FileData('whitetuxedo.txt', 'Blessings, blessings.')
+    );
+  });
+
+  it('updates the renderer when a file is opened by the platform', async () => {
+    files.openFile.returns(
+      Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
+    );
+    const fileChangeListener: (
+      currentFile: string,
+      recents: string[]
+    ) => void = sinon.fake();
+    manager.addOnFileChangedListener(fileChangeListener);
+
+    manager.register();
+
+    await manager.openFile();
+
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'file-opened',
+      undefined,
+      'whitetuxedo.txt',
+      'This water'
+    );
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      'whitetuxedo.txt',
+      '1',
+      '2',
+      '3',
+    ]);
+    expect(fileChangeListener).to.have.been.called;
+  });
+
+  it('updates the renderer when a file is opened by the platform directly', async () => {
+    files.readFile.returns(
+      Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
+    );
+    const fileChangeListener: (
+      currentFile: string,
+      recents: string[]
+    ) => void = sinon.fake();
+    manager.addOnFileChangedListener(fileChangeListener);
+
+    manager.register();
+
+    await manager.openFile('whitetuxedo.txt');
+
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'file-opened',
+      undefined,
+      'whitetuxedo.txt',
+      'This water'
+    );
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      'whitetuxedo.txt',
+      '1',
+      '2',
+      '3',
+    ]);
+    expect(fileChangeListener).to.have.been.called;
   });
 });

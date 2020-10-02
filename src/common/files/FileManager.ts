@@ -5,7 +5,7 @@ import { RecentFiles } from 'common/files/RecentFiles';
 import { Manager } from 'common/Manager';
 
 export class FileManager implements Manager {
-  private currentFilePath: string | undefined = undefined;
+  private currentFilePath: string | null = null;
   private fileChangedListeners: Array<
     (currentFilename: string | null, recentFiles: string[]) => void
   > = [];
