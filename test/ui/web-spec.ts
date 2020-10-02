@@ -47,4 +47,12 @@ describe('Webpage launch', () => {
       await expect(component.waitForDisplayed()).to.eventually.be.true;
     }
   });
+
+  it('allows you to type in the editor', async () => {
+    await (await client.$('.CodeMirror-lines')).click();
+    const editorTextArea = await client.$('//textarea');
+    await client.elementSendKeys(editorTextArea.elementId, 'Hello World!');
+
+    expect(editorTextArea.getValue()).to.eventually.equal('Hello World!');
+  });
 });

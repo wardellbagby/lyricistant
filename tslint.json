@@ -27,6 +27,7 @@
     "object-literal-sort-keys": false,
     "trailing-comma": false,
     "prettier": true,
-    "max-classes-per-file": false
+    "max-classes-per-file": false,
+    "no-namespace": false
   }
 }
