@@ -6,6 +6,10 @@ const asTestConfig = (config: Configuration): Configuration => {
     ...config,
     devtool: 'source-map',
     mode: 'production',
+    entry:
+      config.target === 'electron-renderer'
+        ? (config.entry as string[])[0]
+        : config.entry,
     optimization: {
       minimize: false,
       concatenateModules: false,

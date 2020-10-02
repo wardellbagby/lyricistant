@@ -7,6 +7,10 @@ const asProductionConfig = (config: Configuration): Configuration => {
     ...config,
     devtool: undefined,
     mode: 'production',
+    entry:
+      config.target === 'electron-renderer'
+        ? [config.entry as string, './src/renderer/analytics/analytics.ts']
+        : config.entry,
     optimization: {
       minimize: true,
       minimizer: [new TerserPlugin()],

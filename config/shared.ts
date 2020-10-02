@@ -24,7 +24,8 @@ export const aliases = (platformName: string): { [key: string]: string } => {
 
 export const HtmlPlugin = new HtmlWebpackPlugin({
   title: 'Untitled',
-  template: resolve('src/renderer/index.html'),
+  template: resolve('src/renderer/index.ejs'),
+  inject: false,
 });
 
 export const StaticAssetsPlugin = new CopyWebpackPlugin({
