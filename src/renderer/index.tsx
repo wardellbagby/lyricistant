@@ -5,6 +5,18 @@ import { HashRouter } from 'react-router-dom';
 import { App } from './components/App';
 import { PlatformEventsReadyHandler } from './components/PlatformEventsReadyHandler';
 import { Themed } from './components/Themed';
+import { appComponent } from './globals';
+
+const logger = appComponent.get<Logger>();
+window.onerror = (message, url, line, col, error) => {
+  logger.error(
+    JSON.stringify(message) + '\n',
+    `Url: ${url}\n`,
+    `Line: ${line}\n`,
+    `Column: ${col}\n`,
+    error
+  );
+};
 
 const container: HTMLElement = document.getElementById('app');
 

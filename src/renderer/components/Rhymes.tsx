@@ -103,12 +103,12 @@ function renderRhyme(
       <ListItem
         className={className}
         button
-        key={rhyme.word}
+        key={rhyme.word ?? ''}
         style={{ height: '100%' }}
       >
         <ListItemText
           onClick={onClick}
-          primary={rhyme.word}
+          primary={rhyme.word ?? ''}
           primaryTypographyProps={{ align: 'center' }}
         />
       </ListItem>

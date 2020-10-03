@@ -19,9 +19,27 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
       param = 'sl';
       break;
   }
-  appComponent.get<Logger>().debug(`Fetching ${type} rhymes for word: ${word}`);
-  const response = await fetch(`${url}/words?${param}=${word}`);
-  return await response.json();
+
+  const logger = appComponent.get<Logger>();
+  logger.debug(`Fetching ${type} rhymes for word: ${word}`);
+  const response = await fetch(`${url}/words?${param}=${word}&max=25`);
+
+  if (response.ok && response.status < 400) {
+    const text = await response.text();
+    logger.debug(`Response for ${type} and ${word}`, text);
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      logger.error("Couldn't parse rhymes response to JSON!", word, text);
+      return [];
+    }
+  }
+  logger.error(
+    'Failed to fetch rhymes! Returning an empty list.',
+    word,
+    response
+  );
+  return [];
 };
 
 export function fetchRhymes(word: string): Observable<Rhyme[]> {
