@@ -1,6 +1,7 @@
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HashRouter } from 'react-router-dom';
 import { App } from './components/App';
 import { PlatformEventsReadyHandler } from './components/PlatformEventsReadyHandler';
 import { Themed } from './components/Themed';
@@ -34,7 +35,9 @@ ReactDOM.render(
           horizontal: 'right',
         }}
       >
-        <App />
+        <HashRouter hashType={'noslash'}>
+          <App />
+        </HashRouter>
       </SnackbarProvider>
     </Themed>
   </PlatformEventsReadyHandler>,

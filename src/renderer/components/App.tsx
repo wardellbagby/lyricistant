@@ -3,6 +3,7 @@ import { PreferencesData } from 'common/preferences/PreferencesData';
 import { useSnackbar } from 'notistack';
 import { platformDelegate } from 'PlatformDelegate';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { BehaviorSubject, Subject } from 'rxjs';
 import 'typeface-roboto';
 import { appComponent } from '../globals';
@@ -21,7 +22,6 @@ import { Rhymes } from './Rhymes';
 enum Screen {
   PREFERENCES,
   EDITOR,
-  DOWNLOAD,
   ABOUT,
 }
 
@@ -44,6 +44,7 @@ const onPreferencesClosed = (): void => platformDelegate.send('save-prefs');
 
 export const App: FunctionComponent = () => {
   const [screen, setScreen] = useState(Screen.EDITOR);
+  const history = useHistory();
   const [preferencesData, setPreferencesData] = useState(
     null as PreferencesData
   );
@@ -69,51 +70,51 @@ export const App: FunctionComponent = () => {
   useChannel('open-about', () => setScreen(Screen.ABOUT));
 
   return (
-    <>
-      <ChooseDownloadDialog
-        show={screen === Screen.DOWNLOAD}
-        onClose={() => setScreen(Screen.EDITOR)}
-      />
-      <Preferences
-        show={screen === Screen.PREFERENCES}
-        data={preferencesData}
-        onPreferencesSaved={onPreferencesSaved}
-        onClosed={onPreferencesClosed}
-        onAboutClicked={() => setScreen(Screen.ABOUT)}
-      />
-      <AboutDialog
-        show={screen === Screen.ABOUT}
-        onClose={() => setScreen(Screen.EDITOR)}
-      />
-      <AppLayout>
-        <Menu
-          onNewClicked={() => {
-            platformDelegate.send('new-file-attempt');
-          }}
-          onOpenClicked={() => {
-            platformDelegate.send('open-file-attempt');
-          }}
-          onSaveClicked={() => {
-            platformDelegate.send('save-file-attempt', editorText);
-          }}
-          onSettingsClicked={() => {
-            setScreen(Screen.PREFERENCES);
-          }}
-          onDownloadClicked={() => {
-            if (!downloadApp()) {
-              setScreen(Screen.DOWNLOAD);
-            }
-          }}
+    <Switch>
+      <Route path={'/download'}>
+        <ChooseDownloadDialog show={true} onClose={() => history.goBack()} />
+      </Route>
+      <Route path={'/'}>
+        <Preferences
+          show={screen === Screen.PREFERENCES}
+          data={preferencesData}
+          onPreferencesSaved={onPreferencesSaved}
+          onClosed={onPreferencesClosed}
+          onAboutClicked={() => setScreen(Screen.ABOUT)}
         />
-        <Editor
-          text={editorText}
-          fontSize={theme.typography.fontSize}
-          onWordSelected={onWordSelected}
-          onTextChanged={setEditorText}
-          textReplacements={textReplacements}
+        <AboutDialog
+          show={screen === Screen.ABOUT}
+          onClose={() => setScreen(Screen.EDITOR)}
         />
-        <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
-      </AppLayout>
-    </>
+        <AppLayout>
+          <Menu
+            onNewClicked={() => {
+              platformDelegate.send('new-file-attempt');
+            }}
+            onOpenClicked={() => {
+              platformDelegate.send('open-file-attempt');
+            }}
+            onSaveClicked={() => {
+              platformDelegate.send('save-file-attempt', editorText);
+            }}
+            onSettingsClicked={() => setScreen(Screen.PREFERENCES)}
+            onDownloadClicked={() => {
+              if (!downloadApp()) {
+                history.push('/download');
+              }
+            }}
+          />
+          <Editor
+            text={editorText}
+            fontSize={theme.typography.fontSize}
+            onWordSelected={onWordSelected}
+            onTextChanged={setEditorText}
+            textReplacements={textReplacements}
+          />
+          <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
+        </AppLayout>
+      </Route>
+      <Route render={() => <Redirect to="/" />} />
+    </Switch>
   );
 };

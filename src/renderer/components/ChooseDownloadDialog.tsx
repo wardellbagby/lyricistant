@@ -97,34 +97,42 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
       aria-labelledby="choose-download-dialog-title"
       open={show}
     >
-      <DialogTitle id="choose-download-dialog-title">
-        Download Lyricistant
-      </DialogTitle>
+      <DialogTitle id="choose-download-dialog-title">Download</DialogTitle>
       <Box paddingLeft={'16px'} paddingRight={'16px'} paddingBottom={'32px'}>
-        <Grid container spacing={2}>
+        <Grid container spacing={4} alignItems={'center'} justify={'center'}>
           {[...releases.keys()].map((platform) => {
             return (
-              <React.Fragment key={platform}>
+              <Grid
+                container
+                item
+                spacing={2}
+                alignItems={'center'}
+                justify={'center'}
+              >
                 <Grid item xs={12}>
-                  <Typography variant={'subtitle1'}>{platform}</Typography>
+                  <Typography align={'center'} variant={'h6'}>
+                    {platform}
+                  </Typography>
                 </Grid>
-                <Grid container item xs={12} spacing={2}>
-                  {releases.get(platform).map((release) => {
-                    return (
-                      <Grid key={release.asset} item sm={4} md={6}>
-                        <DownloadButton
-                          release={release}
-                          onClick={() => {
-                            handleReleaseClicked(
-                              latestReleaseUrl + release.asset
-                            );
-                          }}
-                        />
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </React.Fragment>
+                {releases.get(platform).map((release, index, archs) => {
+                  return (
+                    <Grid
+                      key={release.asset}
+                      item
+                      xs={archs.length === 1 ? 8 : 4}
+                    >
+                      <DownloadButton
+                        release={release}
+                        onClick={() => {
+                          handleReleaseClicked(
+                            latestReleaseUrl + release.asset
+                          );
+                        }}
+                      />
+                    </Grid>
+                  );
+                })}
+              </Grid>
             );
           })}
         </Grid>
