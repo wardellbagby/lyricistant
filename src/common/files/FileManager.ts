@@ -14,7 +14,8 @@ export class FileManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private files: Files,
     private recentFiles: RecentFiles,
-    private dialogs: Dialogs
+    private dialogs: Dialogs,
+    private logger: Logger
   ) {}
 
   public register(): void {
@@ -89,12 +90,12 @@ export class FileManager implements Manager {
           fileData.filePath,
           fileData.data
         );
+        this.addRecentFile(this.currentFilePath);
       }
     } catch (e) {
       this.rendererDelegate.send('file-opened', e, undefined, undefined);
       return;
     }
-    this.addRecentFile(this.currentFilePath);
     this.fileChangedListeners.forEach((listener) =>
       listener(this.currentFilePath, this.recentFiles.getRecentFiles())
     );
@@ -132,6 +133,7 @@ export class FileManager implements Manager {
   };
 
   private addRecentFile = (filePath: string) => {
+    this.logger.debug('Attempting to add recent file', filePath);
     let recentlyOpenedFiles = this.recentFiles.getRecentFiles();
     recentlyOpenedFiles.unshift(filePath);
     recentlyOpenedFiles = Array.from(new Set(recentlyOpenedFiles));

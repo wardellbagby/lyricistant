@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-expression only-arrow-functions object-literal-shorthand */
 import { expect, use } from 'chai';
 import { RendererDelegate } from 'common/Delegates';
 import { Dialogs } from 'common/dialogs/Dialogs';
@@ -39,7 +38,13 @@ describe('File Manager', () => {
       return this;
     });
 
-    manager = new FileManager(rendererDelegate, files, recentFiles, dialogs);
+    manager = new FileManager(
+      rendererDelegate,
+      files,
+      recentFiles,
+      dialogs,
+      stubInterface()
+    );
   });
 
   afterEach(() => {
@@ -90,6 +95,17 @@ describe('File Manager', () => {
       '8',
       '9',
     ]);
+  });
+
+  it("doesn't add to recent files when a file is not opened", async () => {
+    recentFiles.getRecentFiles.returns(['1', '2', '3', 'test']);
+    files.openFile.returns(undefined);
+
+    manager.register();
+
+    await manager.openFile();
+
+    expect(recentFiles.setRecentFiles).to.have.not.been.called;
   });
 
   it('asks the renderer if its okay for a new file when asked by platform', async () => {

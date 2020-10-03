@@ -106,7 +106,6 @@ describe('Preference Manager', () => {
 
     rendererListeners.get('save-prefs')(prefs);
 
-    // tslint:disable-next-line:no-unused-expression
     expect(preferences.setPreferences).to.have.not.been.called;
     expect(rendererDelegate.send).to.have.not.been.calledWith('prefs-updated');
     expect(rendererDelegate.send).to.have.not.been.calledWith(

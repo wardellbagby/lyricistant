@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-expression */
 import { expect, use } from 'chai';
 import chaiSubset from 'chai-subset';
 import { MenuItemConstructorOptions } from 'electron';
