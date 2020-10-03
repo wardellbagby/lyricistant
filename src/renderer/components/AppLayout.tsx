@@ -1,7 +1,7 @@
 import { Box, Theme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, ReactNode, useEffect } from 'react';
 import { appComponent } from '../globals';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -15,7 +15,7 @@ export const AppLayout: FunctionComponent = ({ children }) => {
   const classes = useStyles();
   const useSmallLayout = useMediaQuery(theme.breakpoints.down('sm'));
   const childArray = React.Children.toArray(children);
-  let displayableChildren;
+  let displayableChildren: ReactNode[];
   if (useSmallLayout) {
     displayableChildren = [
       childArray[0],
@@ -25,7 +25,7 @@ export const AppLayout: FunctionComponent = ({ children }) => {
       childArray[childArray.length - 1],
     ];
   } else {
-    displayableChildren = children;
+    displayableChildren = childArray;
   }
 
   useEffect(
@@ -46,7 +46,9 @@ export const AppLayout: FunctionComponent = ({ children }) => {
       gridTemplateRows={createGridTemplateRows(useSmallLayout)}
       gridTemplateColumns={createGridTemplateColumns(useSmallLayout)}
     >
-      {displayableChildren}
+      {displayableChildren.map((child, index) => (
+        <React.Fragment key={index}>{child}</React.Fragment>
+      ))}
     </Box>
   );
 };

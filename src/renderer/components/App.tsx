@@ -72,7 +72,16 @@ export const App: FunctionComponent = () => {
   return (
     <Switch>
       <Route path={'/download'}>
-        <ChooseDownloadDialog show={true} onClose={() => history.goBack()} />
+        <ChooseDownloadDialog
+          show={true}
+          onClose={() => {
+            if (history.length > 2) {
+              history.goBack();
+            } else {
+              history.replace('/');
+            }
+          }}
+        />
       </Route>
       <Route path={'/'}>
         <Preferences

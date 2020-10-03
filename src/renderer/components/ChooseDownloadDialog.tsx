@@ -97,7 +97,9 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
       aria-labelledby="choose-download-dialog-title"
       open={show}
     >
-      <DialogTitle id="choose-download-dialog-title">Download</DialogTitle>
+      <DialogTitle id="choose-download-dialog-title">
+        Download Lyricistant
+      </DialogTitle>
       <Box paddingLeft={'16px'} paddingRight={'16px'} paddingBottom={'32px'}>
         <Grid container spacing={4} alignItems={'center'} justify={'center'}>
           {[...releases.keys()].map((platform) => {
@@ -108,6 +110,7 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
                 spacing={2}
                 alignItems={'center'}
                 justify={'center'}
+                key={platform}
               >
                 <Grid item xs={12}>
                   <Typography align={'center'} variant={'h6'}>
