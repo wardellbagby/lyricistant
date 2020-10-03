@@ -54,8 +54,12 @@ jobs:
         run: npm ci
       - name: Build the Electron project.
         run: npm run build-app
-      - name: Build apps for all supported OSes.
-        run: npm run dist-all-apps
+      - name: Build artifacts for all supported OSes.
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 20
+          max_attempts: 3
+          command: npm run dist-all-apps
         env:
           CSC_LINK: ${{ secrets.MACOS_CERT }}
           CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
