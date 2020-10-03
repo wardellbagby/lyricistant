@@ -218,6 +218,7 @@ function handleEditorEvents(
 
     const onFileSaveEnded = (error: any, path: string) => {
       // Resets the undo stack.
+      editor.clearHistory();
       setVersion(editor.changeGeneration(true));
 
       if (path) {
@@ -246,6 +247,7 @@ function handleEditorEvents(
 
     const onNewFileCreated = () => {
       editor.setValue('');
+      editor.clearHistory();
       setVersion(editor.changeGeneration(true));
     };
     platformDelegate.on('new-file-created', onNewFileCreated);
@@ -257,6 +259,7 @@ function handleEditorEvents(
     ) => {
       if (!error) {
         editor.setValue(fileContents);
+        editor.clearHistory();
         setVersion(editor.changeGeneration(true));
       }
     };

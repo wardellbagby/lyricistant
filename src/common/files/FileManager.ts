@@ -112,6 +112,9 @@ export class FileManager implements Manager {
       this.rendererDelegate.send('file-opened', undefined, newFilePath, text);
     }
     this.rendererDelegate.send('file-save-ended', null, this.currentFilePath);
+    this.fileChangedListeners.forEach((listener) =>
+      listener(this.currentFilePath, this.recentFiles.getRecentFiles())
+    );
   };
 
   private onOkayForNewFile = () => {

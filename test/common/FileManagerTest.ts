@@ -176,6 +176,11 @@ describe('File Manager', () => {
   });
 
   it('saves the file when the renderer returns the editor text', async () => {
+    const fileChangeListener: (
+      currentFile: string,
+      recents: string[]
+    ) => void = sinon.fake();
+    manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
     manager.saveFile(false);
@@ -185,9 +190,15 @@ describe('File Manager', () => {
     expect(files.saveFile).to.have.been.calledWith(
       new FileData(null, 'Reeboks on; just do it!')
     );
+    expect(fileChangeListener).to.have.been.called;
   });
 
   it('saves as the file when the renderer returns the editor text', async () => {
+    const fileChangeListener: (
+      currentFile: string,
+      recents: string[]
+    ) => void = sinon.fake();
+    manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
     manager.saveFile(true);
@@ -197,9 +208,15 @@ describe('File Manager', () => {
     expect(files.saveFile).to.have.been.calledWith(
       new FileData(null, 'Reeboks on; just do it!')
     );
+    expect(fileChangeListener).to.have.been.called;
   });
 
   it('saves a new file when the renderer says to save with no file loaded', async () => {
+    const fileChangeListener: (
+      currentFile: string,
+      recents: string[]
+    ) => void = sinon.fake();
+    manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
     await rendererListeners.invoke(
@@ -210,9 +227,15 @@ describe('File Manager', () => {
     expect(files.saveFile).to.have.been.calledWith(
       new FileData(null, 'Blessings, blessings.')
     );
+    expect(fileChangeListener).to.have.been.called;
   });
 
   it('saves the current file when the renderer says to save with a file loaded', async () => {
+    const fileChangeListener: (
+      currentFile: string,
+      recents: string[]
+    ) => void = sinon.fake();
+    manager.addOnFileChangedListener(fileChangeListener);
     files.openFile.returns(
       Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
     );
@@ -227,6 +250,7 @@ describe('File Manager', () => {
     expect(files.saveFile).to.have.been.calledWith(
       new FileData('whitetuxedo.txt', 'Blessings, blessings.')
     );
+    expect(fileChangeListener).to.have.been.called;
   });
 
   it('updates the renderer when a file is opened by the platform', async () => {
