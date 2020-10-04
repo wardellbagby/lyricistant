@@ -16,19 +16,9 @@ export const supportedReleases: Release[] = [
     asset: 'lyricistant-win.exe',
   },
   {
-    platform: 'Ubuntu',
-    asset: 'lyricistant-linux_i386.deb',
-    arch: 'i386',
-  },
-  {
-    platform: 'Ubuntu',
-    asset: 'lyricistant-linux_armv7l.deb',
-    arch: 'armv7l',
-  },
-  {
-    platform: 'Ubuntu',
-    asset: 'lyricistant-linux_arm64.deb',
-    arch: 'arm64',
+    platform: 'Linux',
+    asset: 'lyricistant-linux_x86_64.AppImage',
+    arch: 'x64',
   },
   {
     platform: 'Linux',

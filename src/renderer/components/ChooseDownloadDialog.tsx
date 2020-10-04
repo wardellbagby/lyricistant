@@ -122,7 +122,7 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
                     <Grid
                       key={release.asset}
                       item
-                      xs={archs.length === 1 ? 8 : 4}
+                      xs={archs.length === 1 ? 8 : 6}
                     >
                       <DownloadButton
                         release={release}
