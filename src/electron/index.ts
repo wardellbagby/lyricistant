@@ -68,6 +68,14 @@ function createWindow(): void {
   registerListeners();
   setupUpdater();
 
+  logger.info('Platform information', {
+    appPlatform: 'Electron',
+    version: app.getVersion() ?? 'Error',
+    os: platform() ?? 'Error',
+    isDevelopment,
+    isUsingDevServer,
+  });
+
   if (isUsingDevServer) {
     mainWindow
       .loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
