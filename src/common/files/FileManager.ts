@@ -138,6 +138,8 @@ export class FileManager implements Manager {
 
     if (result === 'yes') {
       this.onOkayForNewFile();
+    } else {
+      this.logger.debug('User selected to not create a new file.');
     }
   };
 
@@ -148,6 +150,8 @@ export class FileManager implements Manager {
 
     if (result === 'yes') {
       await this.onOpenFile(file);
+    } else {
+      this.logger.debug('User selected to not open file', file.path);
     }
   };
 
