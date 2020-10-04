@@ -8,8 +8,14 @@ export class FileData {
   }
 }
 
+export interface DroppableFile {
+  path: string;
+  type: string;
+  data: ArrayBuffer;
+}
+
 export interface Files {
-  openFile: () => Promise<FileData | void>;
+  openFile: (file?: DroppableFile) => Promise<FileData | void>;
   saveFile: (file: FileData) => Promise<string | void>;
   readFile?: (filePath: string) => Promise<FileData>;
 }

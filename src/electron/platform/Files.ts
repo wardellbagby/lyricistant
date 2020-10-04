@@ -1,11 +1,19 @@
-import { FileData, Files as IFiles } from 'common/files/Files';
+import { DroppableFile, FileData, Files as IFiles } from 'common/files/Files';
 import { dialog } from 'electron';
 import { promises as fs } from 'fs';
 import { isText } from 'istextorbinary';
 import { mainWindow } from '../index';
 
 export class ElectronFiles implements IFiles {
-  public openFile = async () => {
+  public openFile = async (file?: DroppableFile) => {
+    if (file) {
+      const data = await Buffer.from(file.data);
+      if (isText(file.path, data)) {
+        return new FileData(file.path, data.toString('utf8'));
+      }
+      throw Error(`Cannot open "${file.path}; not a text file."`);
+    }
+
     const result = await dialog.showOpenDialog(mainWindow, {
       title: 'Choose Lyrics',
       properties: ['openFile'],

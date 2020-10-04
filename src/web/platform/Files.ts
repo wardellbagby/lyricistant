@@ -1,10 +1,16 @@
 import { fileOpen, fileSave } from 'browser-nativefs';
-import { FileData, Files as IFiles } from 'common/files/Files';
+import { DroppableFile, FileData, Files as IFiles } from 'common/files/Files';
 
 export class WebFiles implements IFiles {
   constructor(private logger: Logger) {}
 
-  public openFile = async () => {
+  public openFile = async (file?: DroppableFile) => {
+    if (file) {
+      if (file.type !== 'text/plain') {
+        throw Error('Selected file is not a text file.');
+      }
+      return new FileData(file.path, new TextDecoder().decode(file.data));
+    }
     const result = await fileOpen({
       mimeTypes: ['text/plain'],
       extensions: ['.txt'],

@@ -1,6 +1,6 @@
 import { RendererDelegate } from 'common/Delegates';
 import { Dialogs } from 'common/dialogs/Dialogs';
-import { FileData, Files } from 'common/files/Files';
+import { DroppableFile, FileData, Files } from 'common/files/Files';
 import { RecentFiles } from 'common/files/RecentFiles';
 import { Manager } from 'common/Manager';
 
@@ -25,6 +25,10 @@ export class FileManager implements Manager {
     this.rendererDelegate.on('save-file-attempt', this.onSaveFile);
 
     this.rendererDelegate.on('prompt-save-file-for-new', this.onPromptSaveFile);
+    this.rendererDelegate.on(
+      'prompt-save-file-for-open',
+      this.onPromptSaveFileForOpen
+    );
 
     this.rendererDelegate.on('okay-for-new-file', this.onOkayForNewFile);
   }
@@ -79,9 +83,9 @@ export class FileManager implements Manager {
     this.onOkayForNewFile();
   };
 
-  private onOpenFile = async () => {
+  private onOpenFile = async (file?: DroppableFile) => {
     try {
-      const fileData = await this.files.openFile();
+      const fileData = await this.files.openFile(file);
       if (fileData) {
         this.currentFilePath = fileData.filePath;
         this.rendererDelegate.send(
@@ -132,6 +136,16 @@ export class FileManager implements Manager {
 
     if (result === 'yes') {
       this.onOkayForNewFile();
+    }
+  };
+
+  private onPromptSaveFileForOpen = async (file: DroppableFile) => {
+    const result = await this.dialogs.showDialog(
+      "Your changes haven't been saved. Are you sure you want to open this file?"
+    );
+
+    if (result === 'yes') {
+      await this.onOpenFile(file);
     }
   };
 

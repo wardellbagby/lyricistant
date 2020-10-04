@@ -136,6 +136,18 @@ describe('File Manager', () => {
     expect(dialogs.showDialog).to.have.been.called;
   });
 
+  it('shows a dialog when the renderer says open file is not okay', async () => {
+    manager.register();
+
+    await rendererListeners.invoke('prompt-save-file-for-open', {
+      path: 'whitetuxedo.txt',
+      type: 'text/plain',
+      data: new TextEncoder().encode('This water'),
+    });
+
+    expect(dialogs.showDialog).to.have.been.called;
+  });
+
   it('creates a new file when prompt dialog says yes was chosen', async () => {
     dialogs.showDialog.returns(Promise.resolve('yes'));
     manager.register();
@@ -163,6 +175,36 @@ describe('File Manager', () => {
 
     expect(dialogs.showDialog).to.have.not.been.called;
     expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
+  });
+
+  it('opens the file when prompt dialog says yes was chosen', async () => {
+    dialogs.showDialog.returns(Promise.resolve('yes'));
+    files.openFile.callsFake((file) => {
+      return Promise.resolve(
+        new FileData(file.path, new TextDecoder().decode(file.data))
+      );
+    });
+    manager.register();
+
+    await rendererListeners.invoke('prompt-save-file-for-open', {
+      path: 'whitetuxedo.txt',
+      type: 'text/plain',
+      data: new TextEncoder().encode('This water'),
+    });
+
+    expect(dialogs.showDialog).to.have.been.called;
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'file-opened',
+      undefined,
+      'whitetuxedo.txt',
+      'This water'
+    );
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      'whitetuxedo.txt',
+      '1',
+      '2',
+      '3',
+    ]);
   });
 
   it('asks for renderer text when platform requests a file save', async () => {
@@ -295,6 +337,39 @@ describe('File Manager', () => {
     manager.register();
 
     await manager.openFile('whitetuxedo.txt');
+
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'file-opened',
+      undefined,
+      'whitetuxedo.txt',
+      'This water'
+    );
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      'whitetuxedo.txt',
+      '1',
+      '2',
+      '3',
+    ]);
+    expect(fileChangeListener).to.have.been.called;
+  });
+
+  it('updates the renderer when a file is opened by the renderer', async () => {
+    files.openFile.returns(
+      Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
+    );
+    const fileChangeListener: (
+      currentFile: string,
+      recents: string[]
+    ) => void = sinon.fake();
+    manager.addOnFileChangedListener(fileChangeListener);
+
+    manager.register();
+
+    await rendererListeners.invoke('open-file-attempt', {
+      path: 'whitetuxedo.txt',
+      type: 'text/plain',
+      data: new TextEncoder().encode('This water'),
+    });
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',

@@ -1,3 +1,4 @@
+import { DroppableFile } from 'common/files/Files';
 import { PreferencesData } from 'common/preferences/PreferencesData';
 import { UiConfig } from 'common/ui/UiConfig';
 
@@ -9,11 +10,12 @@ export interface RendererToPlatformListener {
   'editor-text': (text: string) => void;
   'prompt-save-file-for-new': () => void;
   'prompt-save-file-for-quit': () => void;
+  'prompt-save-file-for-open': (file: DroppableFile) => void;
   'okay-for-new-file': () => void;
   'okay-for-quit': () => void;
   'save-prefs': (data?: PreferencesData) => void;
   'new-file-attempt': () => void;
-  'open-file-attempt': () => void;
+  'open-file-attempt': (file?: DroppableFile) => void;
   'save-file-attempt': (data: string) => void;
   'request-ui-config': () => void;
 }

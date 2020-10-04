@@ -18,7 +18,10 @@ import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
 import 'typeface-roboto-mono';
+import { appComponent } from '../globals';
+import { useDocumentListener } from '../hooks/useEventListener';
 import { findWordAt, LYRICISTANT_LANGUAGE } from '../util/editor-helpers';
+import { toDroppableFile } from '../util/to-droppable-file';
 
 export interface TextReplacement {
   word: string;
@@ -97,6 +100,34 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
     CodeMirror.registerHelper('wordChars', LYRICISTANT_LANGUAGE, /[a-zA-Z-']+/);
   };
   const classes = useStyles();
+
+  useDocumentListener(
+    'drop',
+    async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (event.dataTransfer?.files?.length > 0) {
+        appComponent.get<Logger>().debug('Attempted to drop a file.');
+        const file = await toDroppableFile(event.dataTransfer.files.item(0));
+        if (!editor.isClean(version)) {
+          platformDelegate.send('prompt-save-file-for-open', file);
+          return;
+        }
+
+        platformDelegate.send('open-file-attempt', file);
+      }
+    },
+    [editor]
+  );
+  useDocumentListener(
+    'dragover',
+    (event) => {
+      event.preventDefault();
+      return true;
+    },
+    [editor]
+  );
   useEffect(handleSelectedWordChanges(editor, props.onWordSelected), [
     editor,
     props.onWordSelected,
@@ -136,6 +167,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
             }
             return syllable(editor.getLine(line - 1)).toString();
           },
+          dragDrop: false,
         }}
         editorDidMount={editorDidMount}
         onBeforeChange={(editorInstance, _, value) => {
