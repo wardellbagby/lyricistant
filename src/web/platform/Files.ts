@@ -24,13 +24,14 @@ export class WebFiles implements IFiles {
     }
   };
 
-  public saveFile = async (file: FileData): Promise<undefined> => {
-    await fileSave(new Blob([file.data]), {
-      fileName: file.filePath,
+  public saveFile = async (file: FileData): Promise<string> => {
+    const fileName = file.filePath ?? 'Lyrics.txt';
+    const fileHandle = await fileSave(new Blob([file.data]), {
+      fileName,
       extensions: ['txt'],
     });
 
-    return undefined;
+    return fileHandle?.name ?? fileName;
   };
 }
 

@@ -110,6 +110,8 @@ export class FileManager implements Manager {
   };
 
   private saveFileActual = async (text: string, filePath: string) => {
+    const fileData = new FileData(filePath, text);
+    this.logger.debug('Saving file with data', fileData);
     const newFilePath = await this.files.saveFile(new FileData(filePath, text));
     if (newFilePath) {
       this.currentFilePath = newFilePath;
