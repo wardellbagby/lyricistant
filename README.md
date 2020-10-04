@@ -12,12 +12,23 @@ An assistant to the lyricist in you!
 
 Lyricistant is a writing app geared toward helping you write lyrics, poetry, or anything else you desire!
 
-- Shows the amount of syllables in every line!
-- Automatically shows you rhymes as you types!
-- Easily save and re-open lyrics that you've created!
-- [Desktop Only] Tracks your recently opened lyrics for easy reference!
-- Light and dark theme compatible, and follows your system theme!
-- Can be used on Mac, Windows, Linux, and your Desktop browser! 
+Unlike other apps with a focus on rhyming, Lyricistant is first and foremost a writing app. It's made for you to use to 
+write your lyrics, while offering helpful features to keep you in the writing zone.
+
+Its features include:
+- Showing the amount of syllables per line.
+- Contextually displaying rhymes as you type or select words.
+- Easily saving and reopening lyrics that you've made.
+- Drag and Drop support for quickly reopening lyrics.
+- _[Desktop Only]_ Remembering your recently opened lyrics to help you continue where you left off.
+- Both a light and dark theme that it can automatically switch between.
+- Automatically updating.
+- Available on your favorite platforms!
+  - [Mac](https://lyricistant.app/#download)
+  - [Windows](https://lyricistant.app/#download)
+  - [Linux](https://lyricistant.app/#download)
+  - [And your computer browser!](https://lyricistant.app)
+  - _Android / iOS coming soon!_
 
 ## How can I use it?
 
