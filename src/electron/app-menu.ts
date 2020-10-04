@@ -63,10 +63,11 @@ const createFileMenu = (
       ]
     : [];
 
-  const aboutSection = showAbout
+  const aboutSection: MenuItemConstructorOptions[] = showAbout
     ? [
+        { type: 'separator' },
         {
-          label: 'About Lyricistant',
+          label: 'About Lyricistant...',
           click: handlers.onAboutClicked,
         },
       ]
@@ -181,7 +182,7 @@ const createMacMenu = (
     label: appName,
     submenu: [
       {
-        label: 'About Lyricistant',
+        label: 'About Lyricistant...',
         click: handlers.onAboutClicked,
       },
       { type: 'separator' },

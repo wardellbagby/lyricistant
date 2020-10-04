@@ -67,7 +67,7 @@ describe('Create Electron App Menu', () => {
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
     expect(actual[1].submenu).to.not.containSubset([
-      { label: 'About Lyricistant' },
+      { label: 'About Lyricistant...' },
     ]);
   });
 
@@ -75,7 +75,7 @@ describe('Create Electron App Menu', () => {
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
     expect(actual[0].submenu).to.containSubset([
-      { label: 'About Lyricistant' },
+      { label: 'About Lyricistant...' },
     ]);
   });
 
@@ -95,7 +95,7 @@ describe('Create Electron App Menu', () => {
     const actual = createAppMenu('MyApp', 'win32', handlers);
 
     expect(actual[0].submenu).to.containSubset([
-      { label: 'About Lyricistant' },
+      { label: 'About Lyricistant...' },
     ]);
   });
 
@@ -115,7 +115,7 @@ describe('Create Electron App Menu', () => {
     const actual = createAppMenu('MyApp', 'linux', handlers);
 
     expect(actual[0].submenu).to.containSubset([
-      { label: 'About Lyricistant' },
+      { label: 'About Lyricistant...' },
     ]);
   });
 
