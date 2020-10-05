@@ -138,7 +138,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
   ]);
   useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
   useBeforeUnload(() => {
-    if (editor.isClean(version)) {
+    if (!editor.isClean(version)) {
       return "Are you sure you want to leave? Your changes haven't been saved.";
     }
   });
