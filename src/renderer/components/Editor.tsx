@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/dialog/dialog.css';
+import 'codemirror/addon/display/placeholder';
 import 'codemirror/addon/search/jump-to-line';
 import 'codemirror/addon/search/search';
 import 'codemirror/addon/search/searchcursor';
@@ -84,6 +85,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .CodeMirror-selected': {
       'background-color': [[theme.palette.primary.main], '!important'],
     },
+    '& .CodeMirror-empty': {
+      color: theme.palette.action.disabled,
+    },
   },
 }));
 
@@ -97,6 +101,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
     // @ts-ignore
     editorInstance.setOption('search', true);
     setVersion(editorInstance.changeGeneration(true));
+    editorInstance.focus();
     CodeMirror.registerHelper('wordChars', LYRICISTANT_LANGUAGE, /[a-zA-Z-']+/);
   };
   const classes = useStyles();
@@ -159,6 +164,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
         }}
         options={{
           mode: LYRICISTANT_LANGUAGE,
+          placeholder: 'Type out some lyrics...',
           lineNumbers: true,
           lineWrapping: true,
           lineNumberFormatter: (line: number): string => {
