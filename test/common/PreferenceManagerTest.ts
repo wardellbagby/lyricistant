@@ -1,9 +1,15 @@
 import { expect, use } from 'chai';
-import { RendererDelegate } from 'common/Delegates';
-import { PreferenceManager } from 'common/preferences/PreferenceManager';
-import { Preferences } from 'common/preferences/Preferences';
-import { PreferencesData, Theme } from 'common/preferences/PreferencesData';
-import { SystemTheme, SystemThemeProvider } from 'common/theme/SystemTheme';
+import { RendererDelegate } from 'common/main/Delegates';
+import { PreferenceManager } from 'common/main/preferences/PreferenceManager';
+import { Preferences } from 'common/main/preferences/Preferences';
+import {
+  PreferencesData,
+  Theme,
+} from 'common/main/preferences/PreferencesData';
+import {
+  SystemTheme,
+  SystemThemeProvider,
+} from 'common/main/theme/SystemTheme';
 import sinonChai from 'sinon-chai';
 import { StubbedInstance, stubInterface } from 'ts-sinon';
 

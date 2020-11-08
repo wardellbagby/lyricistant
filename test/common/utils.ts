@@ -1,4 +1,7 @@
-import { PlatformChannel, RendererToPlatformListener } from 'common/Delegates';
+import {
+  PlatformChannel,
+  RendererToPlatformListener,
+} from 'common/main/Delegates';
 
 type Listener = (...args: any[]) => any;
 

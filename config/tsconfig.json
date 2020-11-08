@@ -1,17 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "es6",
-    "moduleResolution": "node",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "allowJs": false,
+    "module": "commonjs",
+    "target": "es5",
     "esModuleInterop": true,
-    "jsx": "react",
-    "downlevelIteration": true,
-    "lib": ["dom", "es2015"],
-    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
     "declaration": true,
+    "skipLibCheck": true,
     "rootDirs": [
       ".",
       "bazel-out/darwin-fastbuild/bin/path/to",
@@ -20,9 +15,6 @@
       "bazel-out/darwin-dbg/bin/path/to",
       "bazel-out/k8-dbg/bin/path/to",
       "bazel-out/x64_windows-dbg/bin/path/to"
-    ],
-    "paths": {
-      "@common/*": ["common/main/*"]
-    }
+    ]
   }
 }

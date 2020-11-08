@@ -1,6 +1,4 @@
-import { di } from '@wessberg/di-compiler';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import { Program } from 'typescript';
 import { Configuration } from 'webpack';
 import { ElectronDevServerPortPlugin } from '../../plugins/ElectronDevServerPortPlugin';
 import { ElectronRestartPlugin } from '../../plugins/ElectronRestartPlugin';
@@ -10,7 +8,7 @@ export const main: Configuration = {
   mode: 'development',
   devtool: 'source-map',
   target: 'electron-main',
-  entry: './src/electron/index.ts',
+  entry: './electron/main/index.js',
   resolve: {
     alias: aliases('electron'),
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
@@ -18,19 +16,19 @@ export const main: Configuration = {
   },
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        include: [resolve('src/')],
-        exclude: [resolve('src/web')],
-        loader: 'ts-loader',
-        options: {
-          getCustomTransformers: (program: Program) => di({ program }),
-        },
-      },
+      // {
+      //   test: /\.tsx?$/,
+      //   include: [resolve('src/')],
+      //   exclude: [resolve('src/web')],
+      //   loader: 'ts-loader',
+      //   options: {
+      //     getCustomTransformers: (program: Program) => di({ program }),
+      //   },
+      // },
     ],
   },
   output: {
-    path: resolve('dist/electron/main'),
+    path: resolve('dist/electron-app-sources/main'),
     filename: 'main.js',
   },
   node: {
@@ -50,26 +48,26 @@ export const preload: Configuration = {
   mode: 'development',
   devtool: 'source-map',
   target: 'electron-preload',
-  entry: './src/electron/preload.ts',
+  entry: './electron/main/preload.js',
   resolve: {
     extensions: ['.ts'],
     modules: ['node_modules'],
   },
   module: {
     rules: [
-      {
-        test: /\.ts$/,
-        include: [resolve('src/')],
-        exclude: [resolve('src/web')],
-        loader: 'ts-loader',
-        options: {
-          getCustomTransformers: (program: Program) => di({ program }),
-        },
-      },
+      // {
+      //   test: /\.ts$/,
+      //   include: [resolve('src/')],
+      //   exclude: [resolve('src/web')],
+      //   loader: 'ts-loader',
+      //   options: {
+      //     getCustomTransformers: (program: Program) => di({ program }),
+      //   },
+      // },
     ],
   },
   output: {
-    path: resolve('dist/electron/preload'),
+    path: resolve('dist/electron-app-sources/preload'),
     filename: 'preload.js',
   },
 };

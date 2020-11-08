@@ -1,0 +1,22 @@
+# Artifacts are typically placed in a directory called "dist"
+# Be aware that this setup will still create a bazel-out symlink in
+# your project directory, which you must exclude from version control and your
+# editor's search path.
+build --symlink_prefix=dist/
+
+
+# A more useful default output mode for bazel query, which
+# prints "ng_module rule //foo:bar" instead of just "//foo:bar".
+query --output=label_kind
+
+# By default, failing tests don't print any output, it's logged to a
+# file instead.
+test --test_output=errors
+
+# Make TypeScript compilation fast, by keeping a few
+# copies of the compiler running as daemons, and cache SourceFile
+# ASTs to reduce parse time.
+build --strategy=TypeScriptCompile=worker
+
+# Enable debugging tests with --config=debug
+test:debug --test_arg=--node_options=--inspect-brk --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results

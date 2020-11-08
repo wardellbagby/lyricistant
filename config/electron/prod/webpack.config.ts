@@ -9,7 +9,7 @@ const asProductionConfig = (config: Configuration): Configuration => {
     mode: 'production',
     entry:
       config.target === 'electron-renderer'
-        ? [config.entry as string, './src/renderer/analytics/analytics.ts']
+        ? [config.entry as string, './renderer/main/analytics/analytics.js']
         : config.entry,
     optimization: {
       minimize: true,

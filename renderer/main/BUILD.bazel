@@ -1,0 +1,51 @@
+package(default_visibility=["//visibility:public"])
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+exports_files(["webpack.config.js", "index.ejs"])
+
+filegroup(
+    name = "static_resources",
+    srcs = glob(["static/*.*"]),
+    visibility = ["//visibility:public"],
+)
+
+ts_project(
+    name = "main",
+    srcs = glob(["**/*.ts", "**/*.tsx"]),
+    visibility = ["//visibility:public"],
+    tsconfig = "//:tsconfig.json",
+    declaration = True,
+    source_map = True,
+    deps = ["//common/main",
+            "@npm//@types/node",
+            "@npm//@types/codemirror",
+            "@npm//@types/react-dom",
+            "@npm//@types/react-router-dom",
+            "@npm//@types/react-beforeunload",
+            "@npm//@types/webpack-env",
+            "@npm//@material-ui/core",
+            "@npm//@material-ui/icons",
+            "@npm//@material-ui/lab",
+            "@npm//@wessberg/di",
+            "@npm//browser-nativefs",
+            "@npm//codemirror",
+            "@npm//istextorbinary",
+            "@npm//luxon",
+            "@npm//mdi-material-ui",
+            "@npm//notistack",
+            "@npm//react",
+            "@npm//react-beforeunload",
+            "@npm//react-codemirror2",
+            "@npm//react-dom",
+            "@npm//react-router-dom",
+            "@npm//react-virtuoso",
+            "@npm//rxjs",
+            "@npm//source-map-support",
+            "@npm//sprintf-js",
+            "@npm//syllable",
+            "@npm//typeface-roboto",
+            "@npm//typeface-roboto-mono",
+            "@npm//clsx",
+            "@npm//use-debounce"
+            ],
+)

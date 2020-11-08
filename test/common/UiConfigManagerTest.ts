@@ -1,8 +1,8 @@
 import { expect, use } from 'chai';
-import { RendererDelegate } from 'common/Delegates';
-import { FileManager } from 'common/files/FileManager';
-import { TitleFormatter, UiConfigProvider } from 'common/ui/UiConfig';
-import { UiConfigManager } from 'common/ui/UiConfigManager';
+import { RendererDelegate } from 'common/main/Delegates';
+import { FileManager } from 'common/main/files/FileManager';
+import { TitleFormatter, UiConfigProvider } from 'common/main/ui/UiConfig';
+import { UiConfigManager } from 'common/main/ui/UiConfigManager';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { StubbedInstance, stubInterface } from 'ts-sinon';

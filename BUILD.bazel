@@ -1,0 +1,16 @@
+load("@npm//@bazel/typescript:index.bzl", "ts_config")
+
+exports_files(["tsconfig.json", "package.json", "config/tsconfig.json"] + glob(["config/**/*webpack.config.ts"]))
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//visibility:public"],
+)
+
+#ts_library(
+#    name = "package_info",
+#    srcs = ["bin/generate_package_info.ts"],
+#    visibility = ["//visibility:public"],
+#    declaration = True
+#)
