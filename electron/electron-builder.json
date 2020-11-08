@@ -2,25 +2,22 @@
   "appId": "com.wardellbagby.lyricistant",
   "artifactName": "${name}-${os}_${arch}.${ext}",
   "directories": {
-    "output": "dist/electron-app"
+    "output": "dist/bin/electron/dist",
+    "buildResources": "electron/distResources"
   },
   "extraMetadata": {
-    "main": "main.js"
+    "main": "main.bundled.js"
   },
-  "afterSign": "bin/notarize-mac-app.js",
+  "afterSign": "electron/notarize-mac-app.js",
   "files": [
     "package.json",
     "!**/node_modules${/*}",
     {
-      "from": "dist/electron/main",
-      "filter": ["!*.map"]
+      "from": "dist/bin/electron/main",
+      "filter": ["*.bundled.js"]
     },
     {
-      "from": "dist/electron/preload",
-      "filter": ["!*.map"]
-    },
-    {
-      "from": "dist/electron/renderer"
+      "from": "dist/bin/electron/bundled-renderer"
     },
     "!*${/*}"
   ],
@@ -29,8 +26,8 @@
     "target": ["dmg", "zip"],
     "hardenedRuntime": true,
     "gatekeeperAssess": false,
-    "entitlements": "build/entitlements.mac.plist",
-    "entitlementsInherit": "build/entitlements.mac.plist",
+    "entitlements": "electron/distResources/entitlements.mac.plist",
+    "entitlementsInherit": "electron/distResources/entitlements.mac.plist",
     "darkModeSupport": true
   },
   "linux": {

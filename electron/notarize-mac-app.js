@@ -1,8 +1,8 @@
 require('dotenv').config({
-  path: 'bin/notarize-mac-app.env'
+  path: 'bin/notarize-mac-app.env',
 });
 const { notarize } = require('electron-notarize');
-const { appId } = require('../electron-builder.json');
+const { appId } = require('./electron-builder.json');
 
 exports.default = async function notarizing(context) {
   const { electronPlatformName, appOutDir } = context;
@@ -23,7 +23,7 @@ exports.default = async function notarizing(context) {
     appBundleId: appId,
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLE_ID,
-    appleIdPassword: process.env.APPLE_ID_PASSWORD
+    appleIdPassword: process.env.APPLE_ID_PASSWORD,
   });
 
   /*

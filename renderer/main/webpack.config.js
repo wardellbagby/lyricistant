@@ -4,7 +4,6 @@ const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
-const path = require('path');
 
 module.exports = ({ htmlTemplate }) => {
   return {
@@ -13,9 +12,6 @@ module.exports = ({ htmlTemplate }) => {
         title: 'Untitled',
         template: htmlTemplate,
         inject: false,
-      }),
-      new CleanWebpackPlugin({
-        verbose: true,
       }),
       new CircularDependencyPlugin({
         allowAsyncCycles: true,
@@ -40,6 +36,9 @@ module.exports = ({ htmlTemplate }) => {
           loader: 'file-loader',
         },
       ],
+    },
+    output: {
+      filename: 'renderer.js',
     },
     devServer: {
       host: 'localhost',

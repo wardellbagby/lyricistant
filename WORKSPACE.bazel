@@ -10,13 +10,6 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.2/rules_nodejs-2.2.2.tar.gz"],
 )
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-git_repository(
-    name = "org_dropbox_rules_node",
-    remote = "https://github.com/dropbox/rules_node.git",
-    commit = "4c53c3ab5e7d4f75b50d6234567973c10ab3f7b8",
-)
-
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "yarn_install")
 yarn_install(
     name = "npm",
