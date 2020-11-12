@@ -1,5 +1,6 @@
 import { RendererDelegate } from '@common/Delegates';
 import { Dialogs } from '@common/dialogs/Dialogs';
+import { Logger } from '@common/Logger';
 import { Manager } from '@common/Manager';
 import { mainWindow } from '../index';
 

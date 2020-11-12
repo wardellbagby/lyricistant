@@ -1,7 +1,6 @@
-package(default_visibility=["//visibility:public"])
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin")
-load("@npm//webpack-cli:index.bzl", webpack = "webpack_cli")
+
+package(default_visibility = ["//visibility:private"])
 
 filegroup(
     name = "dist-resources",
@@ -9,110 +8,119 @@ filegroup(
 )
 
 npm_package_bin(
-    name = "dist",
+    name = "app",
     args = [
-        "--config", "$(execpath electron-builder.json)",
-        "--publish", "never",
-        "-c.mac.identity=null"
-        ],
+        "--config",
+        "$(execpath electron-builder.json)",
+        "--publish",
+        "never",
+        "-c.mac.identity=null",
+    ],
+    configuration_env_vars = ["PATH"],
     data = [
-        "@npm//electron-builder",
-        "@npm//electron",
+        ":bundled_main",
+        ":bundled_preload",
+        ":bundled_renderer",
+        ":dist-resources",
         ":electron-builder.json",
         ":notarize-mac-app.js",
-        ":dist-resources",
         "//:package.json",
-        "//electron/main:bundled_main",
-        "//electron/main:bundled_preload",
-        "//electron/main:bundled_renderer"
+        "@npm//electron",
+        "@npm//electron-builder",
+    ],
+    output_dir = True,
+    tags = [
+        "no-cache",
+        "no-sandbox",
     ],
     tool = "@npm//electron-builder/bin:electron-builder",
-    output_dir = True,
     visibility = ["//visibility:public"],
-    configuration_env_vars = ['PATH'],
-    tags = ["no-sandbox", "no-cache"]
+)
+
+npm_package_bin(
+    name = "bundled_main",
+    outs = ["main.js"],
+    args = [
+        "--entry",
+        "./$(GENDIR)/electron/main/index.js",
+        "--target",
+        "electron-main",
+        "--mode",
+        "production",
+        "--output",
+        "$@",
+        "--display-error-details",
+        "--config",
+        "$(execpath :webpack.config.js)",
+    ],
+    data = [
+        ":webpack.config.js",
+        "//electron/main",
+        "@npm//webpack",
+        "@npm//webpack-cli",
+    ],
+    tool = "@npm//webpack/bin:webpack",
 )
 
 npm_package_bin(
     name = "bundled_preload",
+    outs = ["preload.js"],
     args = [
-        "--entry", "./$(GENDIR)/electron/main/preload.js",
-        "--target", "electron-preload",
-        "--mode", "production",
-        "--output", "$@",
-        "--display-error-details"
-        ],
+        "--entry",
+        "./$(GENDIR)/electron/main/preload.js",
+        "--target",
+        "electron-preload",
+        "--mode",
+        "production",
+        "--output",
+        "$@",
+        "--display-error-details",
+        "--config",
+        "$(execpath :webpack.config.js)",
+    ],
     data = [
-        ":main",
+        ":webpack.config.js",
+        "//electron/main",
+        "@npm//webpack",
         "@npm//webpack-cli",
-        "@npm//webpack"
     ],
     tool = "@npm//webpack/bin:webpack",
-    outs = ['preload.bundled.js'],
-    visibility = ["//visibility:public"]
 )
 
 npm_package_bin(
     name = "bundled_renderer",
     args = [
-        "--entry", "./$(GENDIR)/renderer/main/index.js",
-        "--target", "electron-renderer",
-        "--config", "$(execpath //renderer/main:webpack.config.js)",
-        "--mode", "production",
-        "--output", "$@",
+        "--entry",
+        "./$(GENDIR)/renderer/main/index.js",
+        "--entry",
+        "./$(GENDIR)/renderer/main/analytics/index.js",
+        "--target",
+        "electron-renderer",
+        "--config",
+        "$(GENDIR)/renderer/main/webpack.config.js",
+        "--mode",
+        "production",
+        "--output-path",
+        "$(@D)",
         "--display-error-details",
-        "--env.projectDir=$(BINDIR)",
-        "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)"
-        ],
-    data = [
-        "//renderer/main:main",
-        "//renderer/main:webpack.config.js",
-        "//renderer/main:static_resources",
-        "//renderer/main:index.ejs",
-        "@npm//webpack-cli",
-        "@npm//webpack",
-        "@npm//@pmmmwh/react-refresh-webpack-plugin",
-        "@npm//clean-webpack-plugin",
-        "@npm//html-webpack-plugin",
-        "@npm//copy-webpack-plugin",
-        "@npm//circular-dependency-plugin",
-        "@npm//style-loader",
-        "@npm//css-loader",
-        "@npm//file-loader"
+        "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
     ],
+    data = [
+        "//renderer/main",
+        "//renderer/main:index.ejs",
+        "//renderer/main:static_resources",
+        "//renderer/main:webpack_config",
+        "@npm//@pmmmwh/react-refresh-webpack-plugin",
+        "@npm//circular-dependency-plugin",
+        "@npm//clean-webpack-plugin",
+        "@npm//copy-webpack-plugin",
+        "@npm//css-loader",
+        "@npm//file-loader",
+        "@npm//html-webpack-plugin",
+        "@npm//style-loader",
+        "@npm//webpack",
+        "@npm//webpack-cli",
+    ],
+    output_dir = True,
     tool = "@npm//webpack/bin:webpack",
-    outs = ['renderer.bundled.js'],
-    visibility = ["//visibility:public"]
 )
-
-#webpack_build(
-#    name = 'bundle',
-#    srcs = [
-##        ":main",
-##        "//renderer/main",
-##        "//renderer/main:static_resources",
-##        "//renderer/main:index.ejs",
-##        "//:config/tsconfig.json"
-#    ],
-#    outs = ['bundle.js'],
-#    config = '//:config/electron/prod/webpack.config.ts',
-#    deps = [
-##        '@npm//dbx-bazel-utils',
-#    ],
-#    env = {
-##        'TS_NODE_PROJECT': "$(execpath //:config/tsconfig.json)"
-#    },
-#    webpack_target = "@npm//webpack"
-#)
-
-
-
-#webpack(
-#    name = "bundle",
-##    outs = ["dist/electron-app-sources/"],
-#    args = [
-#        "--config",
-#        "config/electron/prod/webpack.config.ts",
-#    ],
-#    data = ["//:webpack_configs"],
-#)

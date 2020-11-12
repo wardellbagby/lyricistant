@@ -1,5 +1,6 @@
 import { RendererDelegate } from '../Delegates';
 import { Dialogs } from '../dialogs/Dialogs';
+import { Logger } from '../Logger';
 import { Manager } from '../Manager';
 import { DroppableFile, FileData, Files } from './Files';
 import { RecentFiles } from './RecentFiles';

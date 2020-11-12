@@ -1,3 +1,4 @@
+import { Logger } from '@common/Logger';
 import { from, Observable, of, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { appComponent } from '../globals';

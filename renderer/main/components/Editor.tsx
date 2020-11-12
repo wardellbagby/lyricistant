@@ -1,3 +1,4 @@
+import { Logger } from '@common/Logger';
 import { styled, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CodeMirror from 'codemirror';

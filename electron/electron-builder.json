@@ -2,22 +2,22 @@
   "appId": "com.wardellbagby.lyricistant",
   "artifactName": "${name}-${os}_${arch}.${ext}",
   "directories": {
-    "output": "dist/bin/electron/dist",
+    "output": "dist/bin/electron/app",
     "buildResources": "electron/distResources"
   },
   "extraMetadata": {
-    "main": "main.bundled.js"
+    "main": "main.js"
   },
   "afterSign": "electron/notarize-mac-app.js",
   "files": [
     "package.json",
     "!**/node_modules${/*}",
     {
-      "from": "dist/bin/electron/main",
-      "filter": ["*.bundled.js"]
+      "from": "dist/bin/electron/",
+      "filter": ["main.js", "preload.js"]
     },
     {
-      "from": "dist/bin/electron/bundled-renderer"
+      "from": "dist/bin/electron/bundled_renderer/"
     },
     "!*${/*}"
   ],

@@ -3,6 +3,7 @@ import type { Dialogs } from '@common/dialogs/Dialogs';
 import type { FileManager } from '@common/files/FileManager';
 import type { Files } from '@common/files/Files';
 import type { RecentFiles } from '@common/files/RecentFiles';
+import type { Logger } from '@common/Logger';
 import type { Managers } from '@common/Managers';
 import type { PreferenceManager } from '@common/preferences/PreferenceManager';
 import type { Preferences } from '@common/preferences/Preferences';

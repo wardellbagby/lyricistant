@@ -1,4 +1,5 @@
 import { PlatformDelegate, RendererDelegate } from '@common/Delegates';
+import { Logger } from '@common/Logger';
 import {
   BrowserWindow,
   IpcMain,

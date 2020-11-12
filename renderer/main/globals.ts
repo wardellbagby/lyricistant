@@ -1,12 +1,11 @@
-import { DIContainer } from '@wessberg/di';
 import { PlatformDelegate } from '@common/Delegates';
+import { DIContainer } from '@wessberg/di';
+import { Analytics } from './analytics/Analytics';
 
 const [APP_VERSION, APP_HOMEPAGE, APP_AUTHOR] = [
   process.env.APP_VERSION,
   process.env.APP_HOMEPAGE,
   process.env.APP_AUTHOR,
-  window.appComponent,
-  window.platformDelegate,
 ];
 
 declare global {

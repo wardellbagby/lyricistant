@@ -1,3 +1,4 @@
+import { UiConfig } from '@common/ui/UiConfig';
 import { Box, ButtonBase, Paper, Theme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -9,7 +10,6 @@ import {
   Settings,
 } from '@material-ui/icons';
 import clsx from 'clsx';
-import { UiConfig } from '@common/ui/UiConfig';
 import { platformDelegate } from '../globals';
 
 import React, { FunctionComponent, useEffect, useState } from 'react';

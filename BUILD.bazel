@@ -1,16 +1,31 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
 load("@npm//@bazel/typescript:index.bzl", "ts_config")
+load("@npm//ttypescript:index.bzl", "ttsc")
 
-exports_files(["tsconfig.json", "package.json", "config/tsconfig.json"] + glob(["config/**/*webpack.config.ts"]))
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "tsconfig.json",
+    "package.json",
+    "config/tsconfig.json",
+] + glob(["config/**/*webpack.config.ts"]))
+
+js_library(
+    name = "package_info",
+    package_name = "@lyricistant",
+    srcs = ["//:package.json"],
+    visibility = ["//visibility:public"],
+)
 
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",
-    visibility = ["//visibility:public"],
 )
 
-#ts_library(
-#    name = "package_info",
-#    srcs = ["bin/generate_package_info.ts"],
-#    visibility = ["//visibility:public"],
-#    declaration = True
-#)
+ttsc(
+    name = "tsc",
+    data = [
+        "//:di-ts-transformer.js",
+        "@npm//@wessberg/di-compiler",
+    ],
+)

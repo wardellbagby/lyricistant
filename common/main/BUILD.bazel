@@ -1,8 +1,19 @@
-package(default_visibility=["//visibility:public"])
-load("@npm//@bazel/typescript:index.bzl", "ts_library")
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
 
-ts_library(
+package(default_visibility = ["//visibility:public"])
+
+js_library(
     name = "main",
-    module_name = "@common",
-    srcs = glob(["**/*.ts"])
+    package_name = "@common",
+    deps = [":compile_ts"],
+)
+
+ts_project(
+    name = "compile_ts",
+    srcs = glob(["**/*.ts"]),
+    declaration = True,
+    source_map = True,
+    tsc = "//:tsc",
+    tsconfig = "//:tsconfig.json",
 )

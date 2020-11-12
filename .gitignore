@@ -25,7 +25,4 @@ out
 .idea/modules
 *.iml
 *.ipr
-bazel-bin/
-bazel-lyricistant/
-bazel-out/
-bazel-testlogs/
+/bazel-*

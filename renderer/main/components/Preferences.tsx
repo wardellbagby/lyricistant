@@ -1,4 +1,8 @@
 import {
+  PreferencesData,
+  Theme as LyricistantTheme,
+} from '@common/preferences/PreferencesData';
+import {
   Box,
   Button,
   FormControl,
@@ -18,10 +22,6 @@ import Typography from '@material-ui/core/Typography';
 import { Info } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
-import {
-  PreferencesData,
-  Theme as LyricistantTheme,
-} from '@common/preferences/PreferencesData';
 import React, { useEffect, useState } from 'react';
 
 export interface PreferencesProps {

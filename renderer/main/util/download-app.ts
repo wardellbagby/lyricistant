@@ -1,3 +1,4 @@
+import { Logger } from '@common/Logger';
 import { appComponent } from '../globals';
 
 export const latestReleaseUrl =

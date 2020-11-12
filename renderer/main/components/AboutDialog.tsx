@@ -1,3 +1,4 @@
+import { Logger } from '@common/Logger';
 import {
   Box,
   Button,
@@ -62,7 +63,7 @@ export const AboutDialog = (props: AboutDialogProps) => {
         >
           <Grid item xs={12}>
             <img
-              src={'static/app_icon.png'}
+              src={'app_icon.png'}
               height={'48px'}
               alt={'Lyricistant Icon'}
             />

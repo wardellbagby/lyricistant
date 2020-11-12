@@ -1,3 +1,4 @@
+import { Logger } from '@common/Logger';
 import { PreferencesData } from '@common/preferences/PreferencesData';
 import { useTheme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';

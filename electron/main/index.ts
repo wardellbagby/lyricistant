@@ -1,5 +1,6 @@
 import { RendererDelegate } from '@common/Delegates';
 import { FileManager } from '@common/files/FileManager';
+import { Logger } from '@common/Logger';
 import { Managers } from '@common/Managers';
 import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
@@ -26,9 +27,6 @@ if (isDevelopment) {
     isEnabled: true,
     showDevTools: false,
   });
-  if (module.hot) {
-    module.hot.accept();
-  }
 }
 
 app.on('ready', createWindow);

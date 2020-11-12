@@ -1,6 +1,7 @@
 import { remote } from 'electron';
+import { platformDelegate } from './Delegates';
 
 process.on('loaded', () => {
-  // @ts-ignore
-  global.appComponent = remote.getGlobal('appComponent');
+  window.appComponent = remote.getGlobal('appComponent');
+  window.platformDelegate = platformDelegate;
 });
