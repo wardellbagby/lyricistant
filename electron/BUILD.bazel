@@ -1,10 +1,25 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin")
+load("@npm//electron:index.bzl", "electron")
 
 package(default_visibility = ["//visibility:private"])
 
 filegroup(
     name = "dist-resources",
     srcs = glob(["distResources/**/*"]),
+)
+
+electron(
+    name = "start",
+    args = [
+        "./electron/main.js",
+    ],
+    data = [
+        ":bundled_main",
+        ":bundled_preload",
+        ":bundled_renderer",
+        ":dist-resources",
+        "//:package.json",
+    ],
 )
 
 npm_package_bin(
@@ -89,6 +104,29 @@ npm_package_bin(
 
 npm_package_bin(
     name = "bundled_renderer",
+    outs = [
+        "app_icon.png",
+        "favicon.png",
+        "index.html",
+        "renderer.js",
+        "roboto-latin-300.woff2",
+        "roboto-latin-300italic.woff2",
+        "roboto-latin-400.woff2",
+        "roboto-latin-400italic.woff2",
+        "roboto-latin-500.woff2",
+        "roboto-latin-500italic.woff2",
+        "roboto-latin-700.woff2",
+        "roboto-latin-700italic.woff2",
+        "roboto-mono-latin-300.woff2",
+        "roboto-mono-latin-300italic.woff2",
+        "roboto-mono-latin-400.woff2",
+        "roboto-mono-latin-400italic.woff2",
+        "roboto-mono-latin-500.woff2",
+        "roboto-mono-latin-500italic.woff2",
+        "roboto-mono-latin-700.woff2",
+        "roboto-mono-latin-700italic.woff2",
+        "social_banner.png",
+    ],
     args = [
         "--entry",
         "./$(GENDIR)/renderer/main/index.js",
@@ -121,6 +159,5 @@ npm_package_bin(
         "@npm//webpack",
         "@npm//webpack-cli",
     ],
-    output_dir = True,
     tool = "@npm//webpack/bin:webpack",
 )

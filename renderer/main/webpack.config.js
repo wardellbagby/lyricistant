@@ -33,7 +33,10 @@ module.exports = ({ htmlTemplate }) => {
         { test: /\.css$/, use: ['style-loader', 'css-loader'] },
         {
           test: /\.(woff|woff2|eot|ttf|svg|png)$/,
-          loader: 'file-loader'
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]'
+          },
         }
       ]
     },

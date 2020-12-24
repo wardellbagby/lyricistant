@@ -14,16 +14,23 @@
     "!**/node_modules${/*}",
     {
       "from": "dist/bin/electron/",
-      "filter": ["main.js", "preload.js"]
-    },
-    {
-      "from": "dist/bin/electron/bundled_renderer/"
+      "filter": [
+        "main.js",
+        "preload.js",
+        "renderer.js",
+        "*.woff2",
+        "*.png",
+        "index.html"
+      ]
     },
     "!*${/*}"
   ],
   "mac": {
     "category": "public.app-category.utilities",
-    "target": ["dmg", "zip"],
+    "target": [
+      "dmg",
+      "zip"
+    ],
     "hardenedRuntime": true,
     "gatekeeperAssess": false,
     "entitlements": "electron/distResources/entitlements.mac.plist",
@@ -34,7 +41,12 @@
     "target": [
       {
         "target": "AppImage",
-        "arch": ["x64", "ia32", "armv7l", "arm64"]
+        "arch": [
+          "x64",
+          "ia32",
+          "armv7l",
+          "arm64"
+        ]
       }
     ]
   },
@@ -42,7 +54,10 @@
     "target": [
       {
         "target": "nsis",
-        "arch": ["x64", "ia32"]
+        "arch": [
+          "x64",
+          "ia32"
+        ]
       }
     ]
   },
