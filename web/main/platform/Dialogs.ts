@@ -1,4 +1,4 @@
-import { Dialogs as IDialogs } from 'common/main/dialogs/Dialogs';
+import { Dialogs as IDialogs } from '@common/dialogs/Dialogs';
 
 export class WebDialogs implements IDialogs {
   public showDialog = async (message: string) => {

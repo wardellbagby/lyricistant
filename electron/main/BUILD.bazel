@@ -7,7 +7,6 @@ ts_project(
     srcs = glob(["**/*.ts"]),
     deps = [
         "//common/main",
-        "@npm//@material-ui/styles",
         "@npm//@types/adm-zip",
         "@npm//@wessberg/di",
         "@npm//adm-zip",

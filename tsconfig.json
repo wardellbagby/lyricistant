@@ -22,7 +22,8 @@
       "bazel-out/x64_windows-dbg/bin/"
     ],
     "paths": {
-      "@common/*": ["common/main/*"]
+      "@common/*": ["common/main/*"],
+      "@renderer/*": ["renderer/main/*"]
     },
     "plugins": [
       { "transform": "./di-ts-transformer.js" }

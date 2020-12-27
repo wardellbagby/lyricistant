@@ -1,10 +1,12 @@
-import { Managers } from 'common/main/Managers';
+import { Logger } from '@common/Logger';
+import { Managers } from '@common/Managers';
 import { initializeComponent } from './AppComponent';
 import { appComponent } from './Components';
+import { platformDelegate } from './Delegates';
 
 initializeComponent(appComponent);
-// @ts-ignore
 window.appComponent = appComponent;
+window.platformDelegate = platformDelegate;
 
 new Promise((resolve) => {
   appComponent.get<Managers>().forEach((manager) => manager.register());
@@ -13,12 +15,11 @@ new Promise((resolve) => {
   .then(async () => {
     appComponent.get<Logger>().info('Platform information', {
       appPlatform: 'Web',
-      version:
-        (await import('../renderer/main/globals')).APP_VERSION ?? 'Error',
+      version: (await import('@renderer/globals')).APP_VERSION ?? 'Error',
       userAgent: navigator.userAgent,
     });
   })
-  .then(() => import('../renderer/main'))
+  .then(() => import('@renderer/index'))
   .catch((reason) => {
     throw Error(`Could not load the renderer page: ${reason}`);
   });

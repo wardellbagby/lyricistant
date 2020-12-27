@@ -1,7 +1,7 @@
 import {
   TitleFormatter,
   UiConfigProvider as IUiConfigProvider,
-} from 'common/main/ui/UiConfig';
+} from '@common/ui/UiConfig';
 
 export const provideUiConfig: IUiConfigProvider = () => {
   return {

@@ -1,0 +1,19 @@
+load("//:tooling/ts_project.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = "main",
+    srcs = glob(["**/*.ts"]),
+    deps = [
+        "//common/main",
+        "//renderer/main",
+        "@npm//@types/luxon",
+        "@npm//@types/sprintf-js",
+        "@npm//@wessberg/di",
+        "@npm//browser-nativefs",
+        "@npm//luxon",
+        "@npm//rxjs",
+        "@npm//sprintf-js",
+    ],
+)

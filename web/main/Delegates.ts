@@ -1,4 +1,5 @@
-import { PlatformDelegate, RendererDelegate } from 'common/main/Delegates';
+import { PlatformDelegate, RendererDelegate } from '@common/Delegates';
+import { Logger } from '@common/Logger';
 import { WebLogger } from './platform/Logger';
 
 const logger: Logger = new WebLogger();

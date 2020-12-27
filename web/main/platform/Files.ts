@@ -1,9 +1,6 @@
+import { DroppableFile, FileData, Files as IFiles } from '@common/files/Files';
+import { Logger } from '@common/Logger';
 import { fileOpen, fileSave } from 'browser-nativefs';
-import {
-  DroppableFile,
-  FileData,
-  Files as IFiles,
-} from 'common/main/files/Files';
 
 export class WebFiles implements IFiles {
   constructor(private logger: Logger) {}

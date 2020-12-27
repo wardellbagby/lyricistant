@@ -1,5 +1,5 @@
-import { Preferences as IPreferences } from 'common/main/preferences/Preferences';
-import { PreferencesData } from 'common/main/preferences/PreferencesData';
+import { Preferences as IPreferences } from '@common/preferences/Preferences';
+import { PreferencesData } from '@common/preferences/PreferencesData';
 
 export class WebPreferences implements IPreferences {
   private readonly prefsKey = 'lyricist_preferences';

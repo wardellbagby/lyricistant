@@ -1,4 +1,4 @@
-import { RecentFiles as IRecentFiles } from 'common/main/files/RecentFiles';
+import { RecentFiles as IRecentFiles } from '@common/files/RecentFiles';
 
 const recentFilesKey = 'recent_files';
 
