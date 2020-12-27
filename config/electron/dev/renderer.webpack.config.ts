@@ -1,11 +1,8 @@
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { Configuration } from 'webpack';
 import {
   aliases,
   CircularDepsPlugin,
   HtmlPlugin,
-  RendererGlobalsPlugin,
   resolve,
   StaticAssetsPlugin,
 } from '../../shared';
@@ -22,27 +19,9 @@ const config: Configuration = {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     modules: ['node_modules'],
   },
-  plugins: [
-    HtmlPlugin,
-    new CleanWebpackPlugin({
-      verbose: true,
-    }),
-    CircularDepsPlugin,
-    StaticAssetsPlugin,
-    new ReactRefreshWebpackPlugin(),
-    RendererGlobalsPlugin,
-  ],
+  plugins: [HtmlPlugin, CircularDepsPlugin, StaticAssetsPlugin],
   module: {
     rules: [
-      // {
-      //   test: /\.tsx?$/,
-      //   include: [resolve('src/')],
-      //   exclude: [resolve('src/web')],
-      //   loader: 'ts-loader',
-      //   options: {
-      //     getCustomTransformers: (program: Program) => di({ program }),
-      //   },
-      // },
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {
         test: /\.(woff|woff2|eot|ttf|svg|png)$/,

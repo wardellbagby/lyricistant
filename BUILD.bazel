@@ -17,6 +17,13 @@ js_library(
     visibility = ["//visibility:public"],
 )
 
+config_setting(
+    name = "release_build",
+    define_values = {
+        "mode": "release",
+    },
+)
+
 ts_config(
     name = "tsconfig",
     src = "tsconfig.json",

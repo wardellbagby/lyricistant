@@ -1,5 +1,6 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin")
 load("@npm//electron:index.bzl", "electron")
+load("//:tooling/bundle_js.bzl", "bundle_js")
 
 package(default_visibility = ["//visibility:private"])
 
@@ -52,57 +53,35 @@ npm_package_bin(
     visibility = ["//visibility:public"],
 )
 
-npm_package_bin(
+bundle_js(
     name = "bundled_main",
     outs = ["main.js"],
-    args = [
-        "--entry",
-        "./$(GENDIR)/electron/main/index.js",
-        "--target",
-        "electron-main",
-        "--mode",
-        "production",
-        "--output",
-        "$@",
-        "--display-error-details",
-        "--config",
-        "$(execpath :webpack.config.js)",
-    ],
+    config = "$(execpath :webpack.config.js)",
     data = [
         ":webpack.config.js",
         "//electron/main",
         "@npm//webpack",
         "@npm//webpack-cli",
     ],
-    tool = "@npm//webpack/bin:webpack",
+    entries = ["./$(GENDIR)/electron/main/index.js"],
+    target = "electron-main",
 )
 
-npm_package_bin(
+bundle_js(
     name = "bundled_preload",
     outs = ["preload.js"],
-    args = [
-        "--entry",
-        "./$(GENDIR)/electron/main/preload.js",
-        "--target",
-        "electron-preload",
-        "--mode",
-        "production",
-        "--output",
-        "$@",
-        "--display-error-details",
-        "--config",
-        "$(execpath :webpack.config.js)",
-    ],
+    config = "$(execpath :webpack.config.js)",
     data = [
         ":webpack.config.js",
         "//electron/main",
         "@npm//webpack",
         "@npm//webpack-cli",
     ],
-    tool = "@npm//webpack/bin:webpack",
+    entries = ["./$(GENDIR)/electron/main/preload.js"],
+    target = "electron-preload",
 )
 
-npm_package_bin(
+bundle_js(
     name = "bundled_renderer",
     outs = [
         "app_icon.png",
@@ -127,30 +106,12 @@ npm_package_bin(
         "roboto-mono-latin-700italic.woff2",
         "social_banner.png",
     ],
-    args = [
-        "--entry",
-        "./$(GENDIR)/renderer/main/index.js",
-        "--entry",
-        "./$(GENDIR)/renderer/main/analytics/index.js",
-        "--target",
-        "electron-renderer",
-        "--config",
-        "$(GENDIR)/renderer/main/webpack.config.js",
-        "--mode",
-        "production",
-        "--output-path",
-        "$(@D)",
-        "--display-error-details",
-        "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
-    ],
+    config = "$(GENDIR)/renderer/main/webpack.config.js",
     data = [
         "//renderer/main",
         "//renderer/main:index.ejs",
         "//renderer/main:static_resources",
         "//renderer/main:webpack_config",
-        "@npm//@pmmmwh/react-refresh-webpack-plugin",
-        "@npm//circular-dependency-plugin",
-        "@npm//clean-webpack-plugin",
         "@npm//copy-webpack-plugin",
         "@npm//css-loader",
         "@npm//file-loader",
@@ -159,5 +120,12 @@ npm_package_bin(
         "@npm//webpack",
         "@npm//webpack-cli",
     ],
-    tool = "@npm//webpack/bin:webpack",
+    entries = [
+        "./$(GENDIR)/renderer/main/index.js",
+        "./$(GENDIR)/renderer/main/analytics/index.js",
+    ],
+    target = "electron-renderer",
+    webpack_args = [
+        "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
+    ],
 )

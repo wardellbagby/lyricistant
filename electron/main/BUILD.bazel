@@ -1,17 +1,12 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//:tooling/ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
 ts_project(
     name = "main",
     srcs = glob(["**/*.ts"]),
-    declaration = True,
-    source_map = True,
-    tsc = "//:tsc",
-    tsconfig = "//:tsconfig.json",
     deps = [
         "//common/main",
-        "//renderer/main",
         "@npm//@material-ui/styles",
         "@npm//@types/adm-zip",
         "@npm//@wessberg/di",

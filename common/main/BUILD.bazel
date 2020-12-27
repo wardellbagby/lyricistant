@@ -1,5 +1,5 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
-load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load("//:tooling/ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -12,8 +12,7 @@ js_library(
 ts_project(
     name = "compile_ts",
     srcs = glob(["**/*.ts"]),
-    declaration = True,
-    source_map = True,
-    tsc = "//:tsc",
-    tsconfig = "//:tsconfig.json",
+    deps = [
+        "@npm//@wessberg/di",
+    ],
 )

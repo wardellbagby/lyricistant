@@ -1,8 +1,6 @@
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const CircularDependencyPlugin = require('circular-dependency-plugin');
 const packageInfo = require('@lyricistant/package.json');
 
 module.exports = ({ htmlTemplate }) => {
@@ -13,15 +11,9 @@ module.exports = ({ htmlTemplate }) => {
         template: htmlTemplate,
         inject: false
       }),
-      new CircularDependencyPlugin({
-        allowAsyncCycles: true,
-        exclude: /node_modules/,
-        failOnError: true
-      }),
       new CopyWebpackPlugin({
         patterns: [{ from: 'renderer/main/static/' }]
       }),
-      new ReactRefreshWebpackPlugin(),
       new DefinePlugin({
         'process.env.APP_VERSION': JSON.stringify(packageInfo.version),
         'process.env.APP_HOMEPAGE': JSON.stringify(packageInfo.homepage),
