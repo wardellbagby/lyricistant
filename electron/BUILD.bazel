@@ -1,6 +1,7 @@
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "npm_package_bin")
 load("@npm//electron:index.bzl", "electron")
 load("//:tooling/bundle_js.bzl", "bundle_js")
+load("//:tooling/ts_project.bzl", "ts_script")
 
 package(default_visibility = ["//visibility:private"])
 
@@ -25,13 +26,30 @@ electron(
 
 npm_package_bin(
     name = "app",
+    outs = ["app/" + x for x in [
+        "latest.yml",
+        "latest-linux.yml",
+        "latest-linux-arm.yml",
+        "latest-linux-arm64.yml",
+        "latest-linux-ia32.yml",
+        "latest-mac.yml",
+        "lyricistant-linux_arm64.AppImage",
+        "lyricistant-linux_armv7l.AppImage",
+        "lyricistant-linux_i386.AppImage",
+        "lyricistant-linux_x86_64.AppImage",
+        "lyricistant-mac.dmg",
+        "lyricistant-mac.dmg.blockmap",
+        "lyricistant-mac.zip",
+        "lyricistant-win.exe",
+        "lyricistant-win.exe.blockmap",
+    ]],
     args = [
-        "--config",
-        "$(execpath electron-builder.json)",
-        "--publish",
-        "never",
-        "-c.mac.identity=null",
-    ],
+        "$(@D)/app",
+        "$(GENDIR)/electron",
+    ] + select({
+        "//:release_build": ["release"],
+        "//conditions:default": [],
+    }),
     configuration_env_vars = ["PATH"],
     data = [
         ":bundled_main",
@@ -43,14 +61,16 @@ npm_package_bin(
         "//:package.json",
         "@npm//electron",
         "@npm//electron-builder",
-    ],
-    output_dir = True,
+        "@npm//electron-notarize",
+        "@npm//dotenv",
+    ] + select({
+        "//:release_build": [":notarize-mac-app.env"],
+        "//conditions:default": [],
+    }),
     tags = [
-        "no-cache",
         "no-sandbox",
     ],
-    tool = "@npm//electron-builder/bin:electron-builder",
-    visibility = ["//visibility:public"],
+    tool = ":build_apps",
 )
 
 bundle_js(
@@ -127,5 +147,28 @@ bundle_js(
     target = "electron-renderer",
     webpack_args = [
         "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
+    ],
+)
+
+nodejs_binary(
+    name = "remove_unneeded_artifacts",
+    entry_point = "//electron:remove_unneeded_artifacts.js",
+)
+
+nodejs_binary(
+    name = "build_apps",
+    entry_point = ":compile_build_apps",
+)
+
+ts_script(
+    name = "compile_build_apps",
+    srcs = [":build_apps.ts"],
+    deps = [
+        "@npm//@types",
+        "@npm//@types/node",
+        "@npm//dotenv",
+        "@npm//electron",
+        "@npm//electron-builder",
+        "@npm//electron-notarize",
     ],
 )

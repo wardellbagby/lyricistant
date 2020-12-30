@@ -23,3 +23,4 @@ test:debug --test_arg=--node_options=--inspect-brk --test_output=streamed --test
 
 build --define=PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:
 build --experimental_allow_tags_propagation
+build --workspace_status_command=./tooling/workspace_status.sh

@@ -1,15 +1,16 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//:tooling/bundle_js.bzl", "bundle_js")
 
 package(default_visibility = ["//visibility:private"])
 
 nodejs_binary(
-    name = "app",
+    name = "start",
     args = [
         "$(BINDIR)/web/index.html",
     ],
     data = [
-        ":bundled_web",
+        ":bundle_web",
         ":open.js",
         "@npm//open",
     ],
@@ -17,8 +18,13 @@ nodejs_binary(
     visibility = ["//visibility:public"],
 )
 
+pkg_zip(
+    name = "app",
+    srcs = [":bundle_web"],
+)
+
 bundle_js(
-    name = "bundled_web",
+    name = "bundle_web",
     outs = [
         "0.renderer.js",
         "1.renderer.js",

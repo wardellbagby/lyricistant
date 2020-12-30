@@ -1,7 +1,7 @@
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const packageInfo = require('@lyricistant/package.json');
+const packageInfo = require('@lyricistant/package_info.json');
 
 module.exports = ({ htmlTemplate }) => {
   return {

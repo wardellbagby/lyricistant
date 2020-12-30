@@ -8,3 +8,10 @@ def ts_project(**kwargs):
         source_map = True,
         **kwargs
     )
+
+def ts_script(**kwargs):
+    _ts_project(
+        tsc = "//:tsc",
+        tsconfig = "//:script-tsconfig",
+        **kwargs
+    )
