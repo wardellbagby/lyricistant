@@ -18,21 +18,11 @@
     "node_modules/codemirror"
   ],
   "scripts": {
-    "build-app": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/electron/prod/webpack.config.ts",
-    "build-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/web/prod.webpack.config.ts",
-    "lint": "tslint -p tsconfig.json",
-    "lint-fix": "./bazelw clean && tslint -p tsconfig.json --fix && find . -type f \\( -name \"*.bzl\" -or -name WORKSPACE -or -name BUILD -or -name BUILD.bazel \\) ! -path \"*/node_modules/*\" | xargs buildifier -v --warnings=attr-cfg,attr-license,attr-non-empty,attr-output-default,attr-single-file,constant-glob,ctx-actions,ctx-args,depset-iteration,depset-union,dict-concatenation,duplicated-name,filetype,git-repository,http-archive,integer-division,load,load-on-top,native-build,native-package,out-of-order-load,output-group,package-name,package-on-top,positional-args,redefined-variable,repository-name,same-origin-load,string-iteration,unsorted-dict-items,unused-variable --lint=fix",
-    "start-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack-dev-server --open --config config/web/dev.webpack.config.ts",
-    "start-app": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" concurrently --names \"Renderer,Main\" \"webpack-dev-server --config config/electron/dev/renderer.webpack.config.ts\" \"webpack --watch --config config/electron/dev/main.webpack.config.ts\"",
-    "dist-app": "electron-builder --config electron-builder.json --publish never",
-    "dist-all-apps": "electron-builder -mwl --config electron-builder.json --publish never",
-    "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json",
-    "build-test-app": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/electron/test/webpack.config.ts",
-    "dist-test-app": "cross-env electron-builder --mac --publish never -c.mac.identity=null",
-    "build-test-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/web/test.webpack.config.ts"
+    "lint": "bazel clean && tslint -p tsconfig.json && buildifier --lint=warn $(find . -type f -iname \"*.b*z*l\" -not -path \"./node_modules/*\" -not -path \"bazel-*/*\")",
+    "lint-fix": "bazel clean && tslint -p tsconfig.json --fix && buildifier --lint=fix $(find . -iname \"*.b*z*l\" -not -path \"./node_modules/*\" -not -path \"bazel-*/*\")"
   },
   "engines": {
-    "node": ">= 12.10"
+    "node": ">= 14.15.3"
   },
   "husky": {
     "hooks": {

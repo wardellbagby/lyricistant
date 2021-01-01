@@ -1,3 +1,7 @@
+"""
+Contains rules for compiling Typescript code.
+"""
+
 load("@npm//@bazel/typescript:index.bzl", _ts_project = "ts_project")
 
 def ts_project(**kwargs):
