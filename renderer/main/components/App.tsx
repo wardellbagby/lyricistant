@@ -2,7 +2,7 @@ import { Logger } from '@common/Logger';
 import { PreferencesData } from '@common/preferences/PreferencesData';
 import { useTheme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { BehaviorSubject, Subject } from 'rxjs';
 import 'typeface-roboto';
@@ -42,7 +42,7 @@ const onPreferencesSaved = (preferencesData: PreferencesData) =>
 
 const onPreferencesClosed = (): void => platformDelegate.send('save-prefs');
 
-export const App: FunctionComponent = () => {
+export function App() {
   const [screen, setScreen] = useState(Screen.EDITOR);
   const history = useHistory();
   const [preferencesData, setPreferencesData] = useState(
@@ -117,4 +117,4 @@ export const App: FunctionComponent = () => {
       <Route render={() => <Redirect to="/" />} />
     </Switch>
   );
-};
+}

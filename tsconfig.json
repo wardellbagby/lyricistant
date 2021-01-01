@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "target": "es2015",
-    "module": "es6",
+    "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "sourceMap": true,
+    "inlineSourceMap": true,
     "allowJs": false,
     "esModuleInterop": true,
     "jsx": "react",
@@ -23,7 +23,8 @@
     ],
     "paths": {
       "@common/*": ["common/main/*"],
-      "@renderer/*": ["renderer/main/*"]
+      "@renderer/*": ["renderer/main/*"],
+      "@electron-app/*": ["electron/main/*"]
     },
     "plugins": [
       { "transform": "./di-ts-transformer.js" }

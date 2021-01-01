@@ -1,5 +1,6 @@
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import path from 'path';
 import { Application, SpectronClient } from 'spectron';
 
 use(chaiAsPromised);
@@ -10,7 +11,9 @@ describe('Electron launch', () => {
 
   beforeEach(async () => {
     app = new Application({
-      path: 'dist/electron-app/mac/Lyricistant.app/Contents/MacOS/Lyricistant',
+      path: require.resolve('electron/cli'),
+      args: ['main.js', '--no-sandbox'],
+      cwd: path.resolve('electron'),
     });
 
     await app.start();

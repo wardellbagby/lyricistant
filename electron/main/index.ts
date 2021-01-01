@@ -15,7 +15,6 @@ import { createRendererDelegate } from './Delegates';
 import { QuitManager } from './platform/QuitManager';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const isUsingDevServer = isDevelopment && process.env.ELECTRON_WEBPACK_WDS_PORT;
 initializeComponent(appComponent);
 
 export let mainWindow: BrowserWindow;
@@ -56,9 +55,7 @@ function createWindow(): void {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      preload: isUsingDevServer
-        ? path.resolve(__dirname, '../preload/preload.js')
-        : path.resolve(__dirname, 'preload.js'),
+      preload: path.resolve(__dirname, 'preload.js'),
     },
   });
   rendererDelegate = createRendererDelegate(mainWindow);
@@ -71,24 +68,17 @@ function createWindow(): void {
     version: app.getVersion() ?? 'Error',
     os: platform() ?? 'Error',
     isDevelopment,
-    isUsingDevServer,
   });
 
-  if (isUsingDevServer) {
-    mainWindow
-      .loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
-      .catch(showLoadingError);
-  } else {
-    mainWindow
-      .loadURL(
-        formatUrl({
-          pathname: path.join(__dirname, 'index.html'),
-          protocol: 'file',
-          slashes: true,
-        })
-      )
-      .catch(showLoadingError);
-  }
+  mainWindow
+    .loadURL(
+      formatUrl({
+        pathname: path.join(__dirname, 'index.html'),
+        protocol: 'file',
+        slashes: true,
+      })
+    )
+    .catch(showLoadingError);
 
   mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows

@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "sourceMap": false,
     "declaration": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
   "extends": "./tsconfig.json"
 }

@@ -1,9 +1,9 @@
+import { RendererDelegate } from '@common/Delegates';
+import { Dialogs } from '@common/dialogs/Dialogs';
+import { FileManager } from '@common/files/FileManager';
+import { FileData, Files } from '@common/files/Files';
+import { RecentFiles } from '@common/files/RecentFiles';
 import { expect, use } from 'chai';
-import { RendererDelegate } from 'common/main/Delegates';
-import { Dialogs } from 'common/main/dialogs/Dialogs';
-import { FileManager } from 'common/main/files/FileManager';
-import { FileData, Files } from 'common/main/files/Files';
-import { RecentFiles } from 'common/main/files/RecentFiles';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
 import { RendererListeners } from './utils';

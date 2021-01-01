@@ -1,9 +1,9 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "npm_package_bin")
 load("@npm//electron:index.bzl", "electron")
 load("//:tooling/bundle_js.bzl", "bundle_js")
-load("//:tooling/ts_project.bzl", "ts_script")
+load("//:tooling/ts_project.bzl", "ts_node_project")
 
-package(default_visibility = ["//visibility:private"])
+package(default_visibility = [":__subpackages__"])
 
 filegroup(
     name = "dist-resources",
@@ -56,7 +56,6 @@ npm_package_bin(
         ":bundled_preload",
         ":bundled_renderer",
         ":dist-resources",
-        ":electron-builder.json",
         ":notarize-mac-app.js",
         "//:package.json",
         "@npm//electron",
@@ -140,10 +139,7 @@ bundle_js(
         "@npm//webpack",
         "@npm//webpack-cli",
     ],
-    entries = [
-        "./$(GENDIR)/renderer/main/index.js",
-        "./$(GENDIR)/renderer/main/analytics/index.js",
-    ],
+    entries = ["./$(GENDIR)/renderer/main/index.js"],
     target = "electron-renderer",
     webpack_args = [
         "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
@@ -151,16 +147,11 @@ bundle_js(
 )
 
 nodejs_binary(
-    name = "remove_unneeded_artifacts",
-    entry_point = "//electron:remove_unneeded_artifacts.js",
-)
-
-nodejs_binary(
     name = "build_apps",
     entry_point = ":compile_build_apps",
 )
 
-ts_script(
+ts_node_project(
     name = "compile_build_apps",
     srcs = [":build_apps.ts"],
     deps = [

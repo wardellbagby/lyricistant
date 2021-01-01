@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, styled, Theme } from '@material-ui/core/styles';
 import * as CodeMirror from 'codemirror';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { Observable } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
@@ -63,7 +63,7 @@ const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
   }
 );
 
-export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
+export function Rhymes(props: RhymesProp) {
   const [rhymes, setRhymes] = useState<Rhyme[]>([]);
   const [queryData, setQueryData] = useState<WordAtPosition>(null);
   const classes = useStyles();
@@ -92,7 +92,7 @@ export const Rhymes: FunctionComponent<RhymesProp> = (props: RhymesProp) => {
       }}
     />
   );
-};
+}
 
 function renderRhyme(
   rhyme: Rhyme,

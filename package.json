@@ -36,7 +36,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint-fix && ts-node --project config/tsconfig.json bin/check_github_workflows.ts"
+      "pre-commit": "npm run lint-fix && ts-node --project script-tsconfig.json bin/check_github_workflows.ts"
     }
   },
   "devDependencies": {

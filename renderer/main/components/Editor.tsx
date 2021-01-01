@@ -14,7 +14,7 @@ import 'codemirror/mode/javascript/javascript';
 import { useSnackbar } from 'notistack';
 import { platformDelegate } from '../globals';
 
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { Controlled as CodeMirrorEditor } from 'react-codemirror2';
 import { fromEvent, merge, Observable, Subject } from 'rxjs';
@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
+export function Editor(props: EditorProps) {
   const [editor, setEditor] = useState(null as CodeMirror.Editor);
   const [version, setVersion] = useState(0);
   const editorDidMount = (editorInstance: CodeMirror.Editor): void => {
@@ -184,7 +184,7 @@ export const Editor: FunctionComponent<EditorProps> = (props: EditorProps) => {
       />
     </EditorContainer>
   );
-};
+}
 
 function handleSelectedWordChanges(
   editor: CodeMirror.Editor,

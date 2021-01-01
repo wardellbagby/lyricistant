@@ -1,9 +1,9 @@
+import { createAppMenu, MenuItemHandlers } from '@electron-app/app-menu';
 import { expect, use } from 'chai';
 import chaiSubset from 'chai-subset';
 import { MenuItemConstructorOptions } from 'electron';
 import sinonChai from 'sinon-chai';
 import { StubbedInstance, stubObject } from 'ts-sinon';
-import { createAppMenu, MenuItemHandlers } from '../../src/electron/app-menu';
 
 use(sinonChai);
 use(chaiSubset);

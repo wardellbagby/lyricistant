@@ -3,13 +3,15 @@ load("@npm//@bazel/typescript:index.bzl", _ts_project = "ts_project")
 def ts_project(**kwargs):
     _ts_project(
         tsc = "//:tsc",
-        tsconfig = "//:tsconfig.json",
+        tsconfig = select({
+            "//:test_build": "//:test-tsconfig",
+            "//conditions:default": "//:tsconfig.json",
+        }),
         declaration = True,
-        source_map = True,
         **kwargs
     )
 
-def ts_script(**kwargs):
+def ts_node_project(**kwargs):
     _ts_project(
         tsc = "//:tsc",
         tsconfig = "//:script-tsconfig",

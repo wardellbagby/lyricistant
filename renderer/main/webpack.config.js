@@ -28,18 +28,12 @@ module.exports = ({ htmlTemplate }) => {
           loader: 'file-loader',
           options: {
             name: '[name].[ext]'
-          },
+          }
         }
       ]
     },
     output: {
       filename: 'renderer.js'
     },
-    devServer: {
-      host: 'localhost',
-      port: 9080,
-      hot: true,
-      overlay: true
-    }
   };
 };

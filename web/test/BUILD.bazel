@@ -1,0 +1,34 @@
+load("@npm//mocha:index.bzl", "mocha_test")
+load("//:tooling/ts_project.bzl", "ts_node_project")
+
+ts_node_project(
+    name = "compile_ts",
+    srcs = glob(["**/*.ts"]),
+    deps = [
+        "//common/main",
+        "//testing/ui-utilities",
+        "//web/main",
+        "@npm//@types/chai-as-promised",
+        "@npm//@types/chai-subset",
+        "@npm//@types/mocha",
+        "@npm//chai",
+        "@npm//chai-subset",
+        "@npm//sinon-chai",
+        "@npm//ts-sinon",
+        "@npm//webdriverio",
+    ],
+)
+
+mocha_test(
+    name = "test",
+    args = [package_name() + "/**/*.spec.js"],
+    configuration_env_vars = ["PATH"],
+    data = [
+        ":compile_ts",
+        "//:.mocharc.json",
+        "//:package.json",
+        "//testing/ui-utilities",
+        "//web:bundle_web",
+        "@npm//chai-as-promised",
+    ],
+)

@@ -1,5 +1,4 @@
 {
-  "spec": "test/**/*.ts",
   "timeout": 60000,
   "exit": true
 }

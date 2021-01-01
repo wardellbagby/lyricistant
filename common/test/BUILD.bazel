@@ -1,0 +1,25 @@
+load("@npm//mocha:index.bzl", "mocha_test")
+load("//:tooling/ts_project.bzl", "ts_node_project")
+
+ts_node_project(
+    name = "compile_ts",
+    srcs = glob(["**/*.ts"]),
+    deps = [
+        "//common/main",
+        "@npm//@types/mocha",
+        "@npm//chai",
+        "@npm//sinon-chai",
+        "@npm//ts-sinon",
+    ],
+)
+
+mocha_test(
+    name = "test",
+    # if we were in a subdirectory we'd need
+    # package_name() + "/*.spec.js"
+    args = [package_name() + "/**/*.spec.js"],
+    data = [
+        ":compile_ts",
+        "//common/main",
+    ],
+)

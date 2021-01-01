@@ -11,15 +11,20 @@ describe('Webpage launch', () => {
 
   before(async () => {
     client = await remote({
-      logLevel: 'warn',
+      logLevel: 'debug',
       capabilities: {
         browserName: 'chrome',
+        'goog:chromeOptions': {
+          args: ['--no-sandbox'],
+        },
       },
     });
   });
 
-  beforeEach(() => {
-    client.url(pathToFileURL(path.resolve('dist/web/index.html')).toString());
+  beforeEach(async () => {
+    await client.url(
+      pathToFileURL(path.resolve('web', 'index.html')).toString()
+    );
     return client.waitUntil(async () => {
       const elements = await client.$$('#app > *');
       return elements.length > 0;

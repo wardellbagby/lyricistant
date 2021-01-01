@@ -20,6 +20,7 @@ build --strategy=TypeScriptCompile=worker
 
 # Enable debugging tests with --config=debug
 test:debug --test_arg=--node_options=--inspect-brk --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results
+test --define=mode=test
 
 build --define=PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:
 build --experimental_allow_tags_propagation

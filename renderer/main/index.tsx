@@ -3,6 +3,7 @@ import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
+import { setupAnalytics } from './analytics/setupAnalytics';
 import { App } from './components/App';
 import { PlatformEventsReadyHandler } from './components/PlatformEventsReadyHandler';
 import { Themed } from './components/Themed';
@@ -19,6 +20,7 @@ window.onerror = (message, url, line, col, error) => {
   );
 };
 
+setupAnalytics();
 const container: HTMLElement = document.getElementById('app');
 
 document.documentElement.style.height = '100%';

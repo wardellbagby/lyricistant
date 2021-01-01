@@ -62,14 +62,14 @@ interface MenuProps {
   onDownloadClicked: () => void;
 }
 
-export const Menu: FunctionComponent<MenuProps> = ({
+export function Menu({
   onNewClicked,
   onOpenClicked,
   onSaveClicked,
   onSettingsClicked,
   onDownloadClicked,
   className,
-}) => {
+}: MenuProps) {
   const theme = useTheme();
   const classes = useMenuStyles();
   const useHorizontal = useMediaQuery(theme.breakpoints.down('sm'));
@@ -123,4 +123,4 @@ export const Menu: FunctionComponent<MenuProps> = ({
       </Box>
     </Paper>
   );
-};
+}
