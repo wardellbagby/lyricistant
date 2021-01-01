@@ -69,7 +69,7 @@ config_setting(
 config_setting(
     name = "nightly_build",
     define_values = {
-        "nightly": "True",
+        "nightly": "1",
     },
 )
 

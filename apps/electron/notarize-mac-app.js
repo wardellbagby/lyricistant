@@ -1,6 +1,6 @@
 require('dotenv').config({
-  path: require('path').resolve('electron', 'notarize-mac-app.env'),
-  debug: true
+  path: require('path').resolve('apps', 'electron', 'notarize-mac-app.env'),
+  debug: true,
 });
 const { notarize } = require('electron-notarize');
 
@@ -23,7 +23,7 @@ exports.default = async function notarizing(context) {
     appBundleId: 'com.wardellbagby.lyricistant',
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLE_ID,
-    appleIdPassword: process.env.APPLE_ID_PASSWORD
+    appleIdPassword: process.env.APPLE_ID_PASSWORD,
   });
 
   /*

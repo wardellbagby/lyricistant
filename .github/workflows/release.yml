@@ -10,44 +10,40 @@ jobs:
     steps:
       - name: Checkout the current branch.
         uses: actions/checkout@v2
-      - name: Setup Node.js - 12.x.x
+      - name: Setup Node.js - 14.x.x
         uses: actions/setup-node@v1
         with:
-          node-version: '>=12.10'
-      - name: Install project dependencies.
-        run: npm ci
+          node-version: '>=14.15'
+      - name: Install Bazelisk
+        run: npm install -g @bazel/bazelisk@1.7.3
+      - name: Run all tests
+        run: bazel test --build_tests_only //...
       - name: Check for Lint issues.
         run: npm run lint
-      - name: Build the test Electron app.
-        run: |
-          npm run build-test-app
-          npm run dist-test-app
-      - name: Build the test Web app.
-        run: npm run build-test-web
-      - name: Run all tests
-        run: npm run test
   deploy-web:
-    needs: assert-no-issues
     name: "Deploy Web"
     runs-on: ubuntu-latest
+    needs: cancel-deploys
     steps:
       - name: Checkout the current branch.
         uses: actions/checkout@v2
-      - name: Setup Node.js - 12.x.x
+      - name: Setup Node.js - 14.x.x
         uses: actions/setup-node@v1
         with:
-          node-version: '>=12.10'
-      - name: Install project dependencies.
-        run: npm ci
+          node-version: '>=14.15'
+      - name: Install Bazelisk
+        run: npm install -g @bazel/bazelisk@1.7.3
       - name: Build Web.
-        run: npm run build-web
+        run: 'bazel build //apps/web:app --define=nightly=1 --define=mode=release'
+      - name: Unzip Web archive
+        run: 'unzip dist/bin/apps/web/app.zip -d /tmp/web'
       - name: Deploy Web
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.LYRICISTANT_TOKEN }}
           external_repository: wardellbagby/lyricistant-website
           publish_branch: gh-pages
-          publish_dir: dist/web
+          publish_dir: '/tmp/web'
           force_orphan: true
           cname: lyricistant.app
   deploy-app:
@@ -57,30 +53,24 @@ jobs:
     steps:
       - name: Checkout the current branch.
         uses: actions/checkout@v2
-      - name: Setup Node.js - 12.x.x
+      - name: Setup Node.js - 14.x.x
         uses: actions/setup-node@v1
         with:
-          node-version: '>=12.10'
-      - name: Install project dependencies.
-        run: npm ci
-      - name: Build the Electron project.
-        run: npm run build-app
+          node-version: '>=14.15'
+      - name: Install Bazelisk
+        run: npm install -g @bazel/bazelisk@1.7.3
       - name: Build artifacts for all supported OSes.
         uses: nick-invision/retry@v2
         with:
           timeout_minutes: 20
           max_attempts: 3
-          command: npm run dist-all-apps
-        env:
-          CSC_LINK: ${{ secrets.MACOS_CERT }}
-          CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-      - name: Delete useless artifacts.
-        run: node bin/remove_unneeded_artifacts.js
+          command: |
+            bazel build //apps/electron:app --define=mode=release \
+            --action_env=CSC_LINK=${{ secrets.MACOS_CERT }} --action_env=CSC_KEY_PASSWORD=${{ secrets.MACOS_CERT_PASSWORD }} \
+            --action_env=APPLE_ID=${{ secrets.APPLE_ID }} --action_env=APPLE_ID_PASSWORD=${{ secrets.APPLE_ID_PASSWORD }}'
       - name: "Deploy App"
         uses: "marvinpinto/action-automatic-releases@v1.1.0"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
-          files: dist/electron-app/*.*
+          files: dist/bin/apps/electron/app/*.*

@@ -50,7 +50,13 @@ npm_package_bin(
         "//:release_build": ["release"],
         "//conditions:default": [],
     }),
-    configuration_env_vars = ["PATH"],
+    configuration_env_vars = [
+        "PATH",
+        "CSC_LINK",
+        "CSC_LINK_PASSWORD",
+        "APPLE_ID",
+        "APPLE_ID_PASSWORD",
+    ],
     data = [
         ":bundled_main",
         ":bundled_preload",
@@ -63,7 +69,8 @@ npm_package_bin(
         "@npm//electron-notarize",
         "@npm//dotenv",
     ] + select({
-        "//:release_build": [":notarize-mac-app.env"],
+        # buildifier: disable=constant-glob
+        "//:release_build": glob(["notarize-mac-app.env"]),
         "//conditions:default": [],
     }),
     tags = [

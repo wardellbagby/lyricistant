@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: "Build and Check"
-    runs-on: macos-latest
+    runs-on: macos-latest # This could be ubuntu but there are WebDriver issues.
     steps:
       - name: Cancel in-progress builds
         uses: styfle/cancel-workflow-action@0.5.0
@@ -19,19 +19,13 @@ jobs:
           access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout the current branch.
         uses: actions/checkout@v2
-      - name: Setup Node.js - 12.x.x
+      - name: Setup Node.js - 14.x.x
         uses: actions/setup-node@v1
         with:
-          node-version: '>=12.10'
-      - name: Install project dependencies.
-        run: npm ci
+          node-version: '>=14.15'
+      - name: Install Bazelisk
+        run: npm install -g @bazel/bazelisk@1.7.3
+      - name: Run all tests
+        run: bazel test --build_tests_only //...
       - name: Check for Lint issues.
         run: npm run lint
-      - name: Build the test Electron app.
-        run: |
-          npm run build-test-app
-          npm run dist-test-app
-      - name: Build the test Web app.
-        run: npm run build-test-web
-      - name: Run all tests
-        run: npm run test
