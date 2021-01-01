@@ -7,14 +7,17 @@ const stableStatusFile = process.argv[3];
 const isNightly = process.argv[4] === 'nightly';
 
 const latestCommitHash = () => {
-  return readFileSync(stableStatusFile).toString()
+  return readFileSync(stableStatusFile)
+    .toString()
     .split('\n')
     .find((line) => line.startsWith('STABLE_GIT_COMMIT'))
     .split(' ')[1]
     .substr(0, 8);
 };
 
-const newVersion = isNightly ? packageInfo.version : `${packageInfo.version}-nightly+${latestCommitHash()}`;
+const newVersion = isNightly
+  ? `${packageInfo.version}-nightly+${latestCommitHash()}`
+  : packageInfo.version;
 
 console.log(`Setting version to: ${newVersion}`);
 
@@ -24,7 +27,7 @@ writeFileSync(
     {
       name: packageInfo.name,
       version: newVersion,
-      author: packageInfo.author
+      author: packageInfo.author,
     },
     null,
     2

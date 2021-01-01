@@ -17,7 +17,6 @@ ts_project(
         "@npm//@types/adm-zip",
         "@npm//@wessberg/di",
         "@npm//adm-zip",
-        "@npm//csstype",
         "@npm//electron",
         "@npm//electron-debug",
         "@npm//electron-log",
