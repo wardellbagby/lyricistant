@@ -7,7 +7,7 @@ package(default_visibility = ["//visibility:private"])
 nodejs_binary(
     name = "start",
     args = [
-        "$(BINDIR)/web/index.html",
+        "$(BINDIR)/apps/web/index.html",
     ],
     data = [
         ":bundle_web",
@@ -59,11 +59,11 @@ bundle_js(
     ],
     config = "$(GENDIR)/renderer/main/webpack.config.js",
     data = [
+        "//apps/web/main",
         "//renderer/main",
         "//renderer/main:index.ejs",
         "//renderer/main:static_resources",
         "//renderer/main:webpack_config",
-        "//web/main",
         "@npm//copy-webpack-plugin",
         "@npm//css-loader",
         "@npm//file-loader",
@@ -72,7 +72,7 @@ bundle_js(
         "@npm//webpack",
         "@npm//webpack-cli",
     ],
-    entries = ["./$(GENDIR)/web/main/index.js"],
+    entries = ["./$(GENDIR)/apps/web/main/index.js"],
     target = "web",
     visibility = [":__subpackages__"],
     webpack_args = [

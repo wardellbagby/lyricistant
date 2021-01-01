@@ -24,7 +24,7 @@
     "paths": {
       "@common/*": ["common/main/*"],
       "@renderer/*": ["renderer/main/*"],
-      "@electron-app/*": ["electron/main/*"]
+      "@electron-app/*": ["apps/electron/main/*"]
     },
     "plugins": [
       { "transform": "./di-ts-transformer.js" }

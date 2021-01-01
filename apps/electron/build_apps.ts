@@ -8,8 +8,9 @@ import fs from 'fs';
 import path from 'path';
 
 const appsOutputDir = process.argv[2];
-const sourcesDirectory = process.argv[3];
+const codeSourcesDirectory = process.argv[3];
 const shouldSignApps = process.argv[4] === 'release';
+const dependenciesDirectory = path.resolve('apps', 'electron');
 
 const wantedArtifacts = [
   /lyricistant-.+\.(AppImage|dmg|deb|exe|blockmap|zip)/,
@@ -24,17 +25,17 @@ electronBuild({
     artifactName: '${name}-${os}_${arch}.${ext}',
     directories: {
       output: appsOutputDir,
-      buildResources: 'electron/distResources',
+      buildResources: path.resolve(dependenciesDirectory, 'distResources'),
     },
     extraMetadata: {
       main: 'main.js',
     },
-    afterSign: 'electron/notarize-mac-app.js',
+    afterSign: path.resolve(dependenciesDirectory, 'notarize-mac-app.js'),
     files: [
       'package.json',
       '!**/node_modules${/*}',
       {
-        from: `${sourcesDirectory}`,
+        from: `${codeSourcesDirectory}`,
         filter: [
           'main.js',
           'preload.js',
@@ -51,8 +52,16 @@ electronBuild({
       target: ['dmg', 'zip'],
       hardenedRuntime: true,
       gatekeeperAssess: false,
-      entitlements: 'electron/distResources/entitlements.mac.plist',
-      entitlementsInherit: 'electron/distResources/entitlements.mac.plist',
+      entitlements: path.resolve(
+        dependenciesDirectory,
+        'distResources',
+        'entitlements.mac.plist'
+      ),
+      entitlementsInherit: path.resolve(
+        dependenciesDirectory,
+        'distResources',
+        'entitlements.mac.plist'
+      ),
       darkModeSupport: true,
       identity: shouldSignApps ? undefined : null,
     },

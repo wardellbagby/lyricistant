@@ -13,7 +13,7 @@ filegroup(
 electron(
     name = "start",
     args = [
-        "./electron/main.js",
+        "./apps/electron/main.js",
     ],
     data = [
         ":bundled_main",
@@ -45,7 +45,7 @@ npm_package_bin(
     ]],
     args = [
         "$(@D)/app",
-        "$(GENDIR)/electron",
+        "$(GENDIR)/apps/electron",
     ] + select({
         "//:release_build": ["release"],
         "//conditions:default": [],
@@ -78,11 +78,11 @@ bundle_js(
     config = "$(execpath :webpack.config.js)",
     data = [
         ":webpack.config.js",
-        "//electron/main",
+        "//apps/electron/main",
         "@npm//webpack",
         "@npm//webpack-cli",
     ],
-    entries = ["./$(GENDIR)/electron/main/index.js"],
+    entries = ["./$(GENDIR)/apps/electron/main/index.js"],
     target = "electron-main",
 )
 
@@ -92,11 +92,11 @@ bundle_js(
     config = "$(execpath :webpack.config.js)",
     data = [
         ":webpack.config.js",
-        "//electron/main",
+        "//apps/electron/main",
         "@npm//webpack",
         "@npm//webpack-cli",
     ],
-    entries = ["./$(GENDIR)/electron/main/preload.js"],
+    entries = ["./$(GENDIR)/apps/electron/main/preload.js"],
     target = "electron-preload",
 )
 

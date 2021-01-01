@@ -1,43 +1,44 @@
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import path from 'path';
-import { Application, SpectronClient } from 'spectron';
+import * as path from 'path';
+import { pathToFileURL } from 'url';
+import { BrowserObject, remote } from 'webdriverio';
 
 use(chaiAsPromised);
 
-describe('Electron launch', () => {
-  let app: Application;
-  let client: SpectronClient;
+describe('Webpage launch', () => {
+  let client: BrowserObject;
+
+  before(async () => {
+    client = await remote({
+      logLevel: 'debug',
+      capabilities: {
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+          args: ['--no-sandbox'],
+        },
+      },
+    });
+  });
 
   beforeEach(async () => {
-    app = new Application({
-      path: require.resolve('electron/cli'),
-      args: ['main.js', '--no-sandbox'],
-      cwd: path.resolve('electron'),
-    });
-
-    await app.start();
-    await app.client.waitUntilWindowLoaded();
-    client = app.client;
-    await client.waitUntil(async () => {
+    await client.url(
+      pathToFileURL(path.resolve('apps', 'web', 'index.html')).toString()
+    );
+    return client.waitUntil(async () => {
       const elements = await client.$$('#app > *');
       return elements.length > 0;
     });
   });
 
-  afterEach(async () => {
-    if (app && app.isRunning()) {
-      await client.closeWindow();
-      app.mainProcess.exit(0);
-    }
-  });
+  afterEach(() => client.closeWindow());
 
-  it('shows an initial window', () => {
-    return expect(client.getWindowCount()).to.eventually.equal(1);
-  });
+  after(() => client.deleteSession());
 
-  it('has a title of untitled', () => {
-    return expect(app.browserWindow.getTitle()).to.eventually.equal('Untitled');
+  it('has a title of Lyricistant - Untitled', () => {
+    return expect(client.getTitle()).to.eventually.equal(
+      'Lyricistant - Untitled'
+    );
   });
 
   it('shows the basic components', async () => {

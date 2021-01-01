@@ -5,9 +5,9 @@ ts_node_project(
     name = "compile_ts",
     srcs = glob(["**/*.ts"]),
     deps = [
+        "//apps/web/main",
         "//common/main",
         "//testing/ui-utilities",
-        "//web/main",
         "@npm//@types/chai-as-promised",
         "@npm//@types/chai-subset",
         "@npm//@types/mocha",
@@ -27,8 +27,8 @@ mocha_test(
         ":compile_ts",
         "//:.mocharc.json",
         "//:package.json",
+        "//apps/web:bundle_web",
         "//testing/ui-utilities",
-        "//web:bundle_web",
         "@npm//chai-as-promised",
     ],
 )
