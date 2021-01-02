@@ -1,0 +1,66 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
+load("//:tooling/ts_project.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["index.ejs"])
+
+filegroup(
+    name = "static_resources",
+    srcs = glob(["static/*.*"]),
+)
+
+js_library(
+    name = "webpack_config",
+    srcs = [
+        ":webpack.config.js",
+    ],
+    deps = ["//:package_info"],
+)
+
+js_library(
+    name = "main",
+    package_name = "@renderer",
+    deps = [":compile_ts"],
+)
+
+ts_project(
+    name = "compile_ts",
+    srcs = glob([
+        "**/*.ts",
+        "**/*.tsx",
+    ]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//common/main",
+        "@npm//@material-ui/core",
+        "@npm//@material-ui/icons",
+        "@npm//@material-ui/lab",
+        "@npm//@types/codemirror",
+        "@npm//@types/node",
+        "@npm//@types/react-beforeunload",
+        "@npm//@types/react-dom",
+        "@npm//@types/react-router-dom",
+        "@npm//@types/webpack-env",
+        "@npm//@wessberg/di",
+        "@npm//clsx",
+        "@npm//codemirror",
+        "@npm//istextorbinary",
+        "@npm//luxon",
+        "@npm//mdi-material-ui",
+        "@npm//notistack",
+        "@npm//react",
+        "@npm//react-beforeunload",
+        "@npm//react-codemirror2",
+        "@npm//react-dom",
+        "@npm//react-router-dom",
+        "@npm//react-virtuoso",
+        "@npm//rxjs",
+        "@npm//source-map-support",
+        "@npm//sprintf-js",
+        "@npm//syllable",
+        "@npm//typeface-roboto",
+        "@npm//typeface-roboto-mono",
+        "@npm//use-debounce",
+    ],
+)

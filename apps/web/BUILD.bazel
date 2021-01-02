@@ -1,0 +1,82 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("//:tooling/bundle_js.bzl", "bundle_js")
+
+package(default_visibility = ["//visibility:private"])
+
+nodejs_binary(
+    name = "start",
+    args = [
+        "$(BINDIR)/apps/web/index.html",
+    ],
+    data = [
+        ":bundle_web",
+        ":open.js",
+        "@npm//open",
+    ],
+    entry_point = ":open.js",
+    visibility = ["//visibility:public"],
+)
+
+pkg_zip(
+    name = "app",
+    srcs = [":bundle_web"],
+)
+
+bundle_js(
+    name = "bundle_web",
+    outs = [
+        "0.renderer.js",
+        "1.renderer.js",
+        "2.renderer.js",
+        "3.renderer.js",
+        "4.renderer.js",
+        "5.renderer.js",
+        "6.renderer.js",
+        "7.renderer.js",
+        "8.renderer.js",
+        "app_icon.png",
+        "favicon.png",
+        "index.html",
+        "renderer.js",
+        "roboto-latin-300.woff2",
+        "roboto-latin-300italic.woff2",
+        "roboto-latin-400.woff2",
+        "roboto-latin-400italic.woff2",
+        "roboto-latin-500.woff2",
+        "roboto-latin-500italic.woff2",
+        "roboto-latin-700.woff2",
+        "roboto-latin-700italic.woff2",
+        "roboto-mono-latin-300.woff2",
+        "roboto-mono-latin-300italic.woff2",
+        "roboto-mono-latin-400.woff2",
+        "roboto-mono-latin-400italic.woff2",
+        "roboto-mono-latin-500.woff2",
+        "roboto-mono-latin-500italic.woff2",
+        "roboto-mono-latin-700.woff2",
+        "roboto-mono-latin-700italic.woff2",
+        "social_banner.png",
+    ],
+    config = "$(GENDIR)/renderer/main/webpack.config.js",
+    data = [
+        "//apps/web/main",
+        "//renderer/main",
+        "//renderer/main:index.ejs",
+        "//renderer/main:static_resources",
+        "//renderer/main:webpack_config",
+        "@npm//copy-webpack-plugin",
+        "@npm//css-loader",
+        "@npm//file-loader",
+        "@npm//html-webpack-plugin",
+        "@npm//style-loader",
+        "@npm//webpack",
+        "@npm//webpack-cli",
+    ],
+    entries = ["./$(GENDIR)/apps/web/main/index.js"],
+    target = "web",
+    visibility = [":__subpackages__"],
+    webpack_args = [
+        "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
+        "--optimize-max-chunks 10",  # TODO Kind of silly to arbitrarily restrict chunk count for Bazel's sake...
+    ],
+)

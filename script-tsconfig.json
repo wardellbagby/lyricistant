@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "declaration": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "extends": "./tsconfig.json"
+}

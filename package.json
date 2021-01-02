@@ -18,28 +18,21 @@
     "node_modules/codemirror"
   ],
   "scripts": {
-    "build-app": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/electron/prod/webpack.config.ts",
-    "build-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/web/prod.webpack.config.ts",
-    "lint": "tslint -p tsconfig.json",
-    "lint-fix": "tslint -p tsconfig.json --fix",
-    "start-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack-dev-server --open --config config/web/dev.webpack.config.ts",
-    "start-app": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" concurrently --names \"Renderer,Main\" \"webpack-dev-server --config config/electron/dev/renderer.webpack.config.ts\" \"webpack --watch --config config/electron/dev/main.webpack.config.ts\"",
-    "dist-app": "electron-builder --config electron-builder.json --publish never",
-    "dist-all-apps": "electron-builder -mwl --config electron-builder.json --publish never",
-    "test": "ts-mocha -r tsconfig-paths/register -p config/tsconfig-for-webpack-config.json",
-    "build-test-app": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/electron/test/webpack.config.ts",
-    "dist-test-app": "cross-env electron-builder --mac --publish never -c.mac.identity=null",
-    "build-test-web": "cross-env TS_NODE_PROJECT=\"config/tsconfig-for-webpack-config.json\" webpack --config config/web/test.webpack.config.ts"
+    "lint": "bazel clean && tslint -p tsconfig.json && buildifier --lint=warn $(find . -type f -iname \"*.b*z*l\" -not -path \"./node_modules/*\" -not -path \"bazel-*/*\")",
+    "lint-fix": "bazel clean && tslint -p tsconfig.json --fix && buildifier --lint=fix $(find . -iname \"*.b*z*l\" -not -path \"./node_modules/*\" -not -path \"bazel-*/*\")"
   },
   "engines": {
-    "node": ">= 12.10"
+    "node": ">= 14.15.3"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint-fix && ts-node --project config/tsconfig-for-webpack-config.json bin/check_github_workflows.ts"
+      "pre-commit": "npm run lint-fix && ts-node --project script-tsconfig.json bin/check_github_workflows.ts"
     }
   },
   "devDependencies": {
+    "@bazel/buildifier": "^3.5.0",
+    "@bazel/ibazel": "^0.13.2",
+    "@bazel/typescript": "^3.0.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.2",
     "@types/bluebird": "^3.5.32",
     "@types/chai": "^4.2.12",
@@ -104,6 +97,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-microsoft-contrib": "^6.2.0",
     "tslint-plugin-prettier": "^2.3.0",
+    "ttypescript": "^1.5.12",
     "type-fest": "^0.16.0",
     "typescript": "^3.9.7",
     "webpack": "^4.44.2",
@@ -118,6 +112,7 @@
     "@wessberg/di": "^2.0.3",
     "adm-zip": "^0.4.16",
     "browser-nativefs": "^0.10.3",
+    "clsx": "^1.1.1",
     "codemirror": "^5.57.0",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
@@ -125,6 +120,7 @@
     "luxon": "^1.25.0",
     "mdi-material-ui": "^6.18.0",
     "notistack": "^1.0.0",
+    "open": "^7.3.0",
     "react": "^16.13.1",
     "react-beforeunload": "^2.2.4",
     "react-codemirror2": "^7.2.1",
@@ -137,6 +133,7 @@
     "syllable": "^4.1.0",
     "typeface-roboto": "0.0.75",
     "typeface-roboto-mono": "0.0.75",
-    "use-debounce": "^4.0.0"
+    "use-debounce": "^4.0.0",
+    "webdriverio": "^6.10.11"
   }
 }

@@ -25,3 +25,4 @@ out
 .idea/modules
 *.iml
 *.ipr
+/bazel-*

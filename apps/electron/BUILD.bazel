@@ -1,0 +1,172 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "npm_package_bin")
+load("@npm//electron:index.bzl", "electron")
+load("//:tooling/bundle_js.bzl", "bundle_js")
+load("//:tooling/ts_project.bzl", "ts_node_project")
+
+package(default_visibility = [":__subpackages__"])
+
+filegroup(
+    name = "dist-resources",
+    srcs = glob(["distResources/**/*"]),
+)
+
+electron(
+    name = "start",
+    args = [
+        "./apps/electron/main.js",
+    ],
+    data = [
+        ":bundled_main",
+        ":bundled_preload",
+        ":bundled_renderer",
+        ":dist-resources",
+        "//:package.json",
+    ],
+)
+
+npm_package_bin(
+    name = "app",
+    outs = ["app/" + x for x in [
+        "latest.yml",
+        "latest-linux.yml",
+        "latest-linux-arm.yml",
+        "latest-linux-arm64.yml",
+        "latest-linux-ia32.yml",
+        "latest-mac.yml",
+        "lyricistant-linux_arm64.AppImage",
+        "lyricistant-linux_armv7l.AppImage",
+        "lyricistant-linux_i386.AppImage",
+        "lyricistant-linux_x86_64.AppImage",
+        "lyricistant-mac.dmg",
+        "lyricistant-mac.dmg.blockmap",
+        "lyricistant-mac.zip",
+        "lyricistant-win.exe",
+        "lyricistant-win.exe.blockmap",
+    ]],
+    args = [
+        "$(@D)/app",
+        "$(GENDIR)/apps/electron",
+    ] + select({
+        "//:release_build": ["release"],
+        "//conditions:default": [],
+    }),
+    configuration_env_vars = [
+        "PATH",
+        "CSC_LINK",
+        "CSC_LINK_PASSWORD",
+        "APPLE_ID",
+        "APPLE_ID_PASSWORD",
+    ],
+    data = [
+        ":bundled_main",
+        ":bundled_preload",
+        ":bundled_renderer",
+        ":dist-resources",
+        ":notarize-mac-app.js",
+        "//:package.json",
+        "@npm//electron",
+        "@npm//electron-builder",
+        "@npm//electron-notarize",
+        "@npm//dotenv",
+    ] + select({
+        # buildifier: disable=constant-glob
+        "//:release_build": glob(["notarize-mac-app.env"]),
+        "//conditions:default": [],
+    }),
+    tags = [
+        "no-sandbox",
+    ],
+    tool = ":build_apps",
+)
+
+bundle_js(
+    name = "bundled_main",
+    outs = ["main.js"],
+    config = "$(execpath :webpack.config.js)",
+    data = [
+        ":webpack.config.js",
+        "//apps/electron/main",
+        "@npm//webpack",
+        "@npm//webpack-cli",
+    ],
+    entries = ["./$(GENDIR)/apps/electron/main/index.js"],
+    target = "electron-main",
+)
+
+bundle_js(
+    name = "bundled_preload",
+    outs = ["preload.js"],
+    config = "$(execpath :webpack.config.js)",
+    data = [
+        ":webpack.config.js",
+        "//apps/electron/main",
+        "@npm//webpack",
+        "@npm//webpack-cli",
+    ],
+    entries = ["./$(GENDIR)/apps/electron/main/preload.js"],
+    target = "electron-preload",
+)
+
+bundle_js(
+    name = "bundled_renderer",
+    outs = [
+        "app_icon.png",
+        "favicon.png",
+        "index.html",
+        "renderer.js",
+        "roboto-latin-300.woff2",
+        "roboto-latin-300italic.woff2",
+        "roboto-latin-400.woff2",
+        "roboto-latin-400italic.woff2",
+        "roboto-latin-500.woff2",
+        "roboto-latin-500italic.woff2",
+        "roboto-latin-700.woff2",
+        "roboto-latin-700italic.woff2",
+        "roboto-mono-latin-300.woff2",
+        "roboto-mono-latin-300italic.woff2",
+        "roboto-mono-latin-400.woff2",
+        "roboto-mono-latin-400italic.woff2",
+        "roboto-mono-latin-500.woff2",
+        "roboto-mono-latin-500italic.woff2",
+        "roboto-mono-latin-700.woff2",
+        "roboto-mono-latin-700italic.woff2",
+        "social_banner.png",
+    ],
+    config = "$(GENDIR)/renderer/main/webpack.config.js",
+    data = [
+        "//renderer/main",
+        "//renderer/main:index.ejs",
+        "//renderer/main:static_resources",
+        "//renderer/main:webpack_config",
+        "@npm//copy-webpack-plugin",
+        "@npm//css-loader",
+        "@npm//file-loader",
+        "@npm//html-webpack-plugin",
+        "@npm//style-loader",
+        "@npm//webpack",
+        "@npm//webpack-cli",
+    ],
+    entries = ["./$(GENDIR)/renderer/main/index.js"],
+    target = "electron-renderer",
+    webpack_args = [
+        "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
+    ],
+)
+
+nodejs_binary(
+    name = "build_apps",
+    entry_point = ":compile_build_apps",
+)
+
+ts_node_project(
+    name = "compile_build_apps",
+    srcs = [":build_apps.ts"],
+    deps = [
+        "@npm//@types",
+        "@npm//@types/node",
+        "@npm//dotenv",
+        "@npm//electron",
+        "@npm//electron-builder",
+        "@npm//electron-notarize",
+    ],
+)

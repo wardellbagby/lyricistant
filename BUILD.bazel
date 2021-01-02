@@ -1,0 +1,94 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library", "nodejs_binary", "npm_package_bin")
+load("@npm//@bazel/typescript:index.bzl", "ts_config")
+load("@npm//ttypescript:index.bzl", "ttsc")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "package.json",
+    "workspace_status.sh",
+    ".mocharc.json",
+] + glob([
+    "config/**/*webpack.config.ts",
+    "**/*tsconfig.json",
+]))
+
+js_library(
+    name = "package_info",
+    package_name = "@lyricistant",
+    srcs = [":package_info_file"],
+    visibility = ["//visibility:public"],
+)
+
+genrule(
+    name = "stable_status",
+    outs = ["stable-status.txt"],
+    cmd = "cp bazel-out/stable-status.txt $@",
+    output_to_bindir = True,
+    stamp = 1,
+)
+
+npm_package_bin(
+    name = "package_info_file",
+    outs = ["package_info.json"],
+    args = [
+        "$@",
+        "$(execpath //:stable_status)",
+    ] + select({
+        ":nightly_build": ["nightly"],
+        "//conditions:default": [],
+    }),
+    configuration_env_vars = ["PATH"],
+    data = [
+        "//:package.json",
+        "//:stable_status",
+    ],
+    link_workspace_root = True,
+    tool = "//:generate_package_info",
+)
+
+nodejs_binary(
+    name = "generate_package_info",
+    entry_point = "//:tooling/generate_package_info.js",
+)
+
+config_setting(
+    name = "release_build",
+    define_values = {
+        "mode": "release",
+    },
+)
+
+config_setting(
+    name = "test_build",
+    define_values = {
+        "mode": "test",
+    },
+)
+
+config_setting(
+    name = "nightly_build",
+    define_values = {
+        "nightly": "1",
+    },
+)
+
+ttsc(
+    name = "tsc",
+    data = [
+        "//:di-ts-transformer.js",
+        "@npm//@wessberg/di-compiler",
+    ],
+)
+
+ts_config(
+    name = "script-tsconfig",
+    src = "script-tsconfig.json",
+    deps = ["tsconfig.json"],
+)
+
+ts_config(
+    name = "test-tsconfig",
+    src = "test-tsconfig.json",
+    deps = ["tsconfig.json"],
+)

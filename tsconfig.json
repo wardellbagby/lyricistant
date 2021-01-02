@@ -4,17 +4,30 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "sourceMap": true,
+    "inlineSourceMap": true,
     "allowJs": false,
     "esModuleInterop": true,
     "jsx": "react",
     "downlevelIteration": true,
-    "lib": ["dom"],
-    "resolveJsonModule": true,
+    "lib": ["dom", "es2015"],
     "baseUrl": "./",
+    "declaration": true,
+    "rootDirs": [
+      ".",
+      "bazel-out/darwin-fastbuild/bin/",
+      "bazel-out/k8-fastbuild/bin/",
+      "bazel-out/x64_windows-fastbuild/bin/",
+      "bazel-out/darwin-dbg/bin/",
+      "bazel-out/k8-dbg/bin/",
+      "bazel-out/x64_windows-dbg/bin/"
+    ],
     "paths": {
-      "common/*": ["src/common/*"],
-      "PlatformDelegate": ["src/electron/Delegates.ts", "src/web/Delegates.ts"]
-    }
+      "@common/*": ["common/main/*"],
+      "@renderer/*": ["renderer/main/*"],
+      "@electron-app/*": ["apps/electron/main/*"]
+    },
+    "plugins": [
+      { "transform": "./di-ts-transformer.js" }
+    ]
   }
 }

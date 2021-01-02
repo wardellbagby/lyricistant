@@ -1,0 +1,18 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
+load("//:tooling/ts_project.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+js_library(
+    name = "main",
+    package_name = "@common",
+    deps = [":compile_ts"],
+)
+
+ts_project(
+    name = "compile_ts",
+    srcs = glob(["**/*.ts"]),
+    deps = [
+        "@npm//@wessberg/di",
+    ],
+)

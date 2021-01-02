@@ -1,0 +1,37 @@
+load("@npm//mocha:index.bzl", "mocha_test")
+load("//:tooling/ts_project.bzl", "ts_node_project")
+
+ts_node_project(
+    name = "compile_ts",
+    srcs = glob(["**/*.ts"]),
+    deps = [
+        "//apps/electron/main",
+        "//common/main",
+        "//testing/ui-utilities",
+        "@npm//@types/chai-as-promised",
+        "@npm//@types/chai-subset",
+        "@npm//@types/mocha",
+        "@npm//chai",
+        "@npm//chai-subset",
+        "@npm//electron",
+        "@npm//sinon-chai",
+        "@npm//spectron",
+        "@npm//ts-sinon",
+    ],
+)
+
+mocha_test(
+    name = "test",
+    args = [package_name() + "/**/*.spec.js"],
+    configuration_env_vars = ["PATH"],
+    data = [
+        ":compile_ts",
+        "//:.mocharc.json",
+        "//:package.json",
+        "//apps/electron:bundled_main",
+        "//apps/electron:bundled_preload",
+        "//apps/electron:bundled_renderer",
+        "//apps/electron:dist-resources",
+        "@npm//chai-as-promised",
+    ],
+)

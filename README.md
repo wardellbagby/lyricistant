@@ -48,14 +48,18 @@ Lyricistant!
 ## Information for developers
 ### Getting Started
 
+This project uses [Bazel](https://www.bazel.build/) to build. 
+
+The easiest way to use Bazel is via installing Bazelisk. [More information is available here.](https://docs.bazel.build/versions/master/install-bazelisk.html)
+
+How to check out and run the project:
 ```bash
 git checkout https://github.com/wardellbagby/lyricistant.git
 cd lyricistant
-npm install
 # Starts the Electron app.
-npm run start-app
+bazel run //apps/electron:start
 # Starts the Web app.
-npm run start-web
+bazel run //apps/web:start
 ```
 
 
@@ -68,26 +72,19 @@ New commits to `main` are automatically deployed, both on the web and as native 
 ### Running Tests
 There are currently unit and UI tests in the project.
 
-In order to run tests, you'll need to build the test versions of the platforms. You can do that via:
+You can run all tests via:
 
 ```bash
-npm run build-test-app && npm run dist-test-app # builds Electron test app.
-npm run build-test-web # builds Web test sources.
-```
-
-You can then run the tests via:
-
-```bash
-npm run test
+bazel test --build_tests_only //...
 ```
 
 If you want to attach a debugger to the tests, you can run this:
 
 ```bash
-npm run test -- --inspect-brk=5225 # The extra -- is not a typo!
+bazel test --build_tests_only --config=debug //...
 ```
 
-The test will then wait until you attach a NodeJS debugger on port `5225`.
+The test will then wait until you attach a NodeJS debugger on port `9229`.
 
 ## License
 
