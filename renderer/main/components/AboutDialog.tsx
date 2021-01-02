@@ -21,6 +21,7 @@ import {
   APP_VERSION,
   appComponent,
 } from '../globals';
+import appIcon from '../images/app_icon.png';
 
 export interface AboutDialogProps {
   show: boolean;
@@ -62,11 +63,7 @@ export const AboutDialog = (props: AboutDialogProps) => {
           alignItems="center"
         >
           <Grid item xs={12}>
-            <img
-              src={'app_icon.png'}
-              height={'48px'}
-              alt={'Lyricistant Icon'}
-            />
+            <img src={appIcon} height={'48px'} alt={'Lyricistant Icon'} />
           </Grid>
           <Grid item xs={12}>
             <Typography variant={'h6'}>Lyricistant</Typography>

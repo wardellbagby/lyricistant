@@ -26,6 +26,6 @@ jobs:
       - name: Install Bazelisk
         run: npm install -g @bazel/bazelisk@1.7.3
       - name: Run all tests
-        run: bazel test --build_tests_only //...
+        run: bazel test //...
       - name: Check for Lint issues.
         run: npm run lint

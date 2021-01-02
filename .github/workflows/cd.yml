@@ -58,9 +58,9 @@ jobs:
           command: |
             bazel build //apps/electron:app --define=nightly=1 --define=mode=release \
             --action_env=CSC_LINK=${{ secrets.MACOS_CERT }} --action_env=CSC_KEY_PASSWORD=${{ secrets.MACOS_CERT_PASSWORD }} \
-            --action_env=APPLE_ID=${{ secrets.APPLE_ID }} --action_env=APPLE_ID_PASSWORD=${{ secrets.APPLE_ID_PASSWORD }}'
+            --action_env=APPLE_ID=${{ secrets.APPLE_ID }} --action_env=APPLE_ID_PASSWORD=${{ secrets.APPLE_ID_PASSWORD }}
       - name: "Deploy App"
-        uses: "marvinpinto/action-automatic-releases@v1.1.0"
+        uses: "marvinpinto/action-automatic-releases@4e86dbc"
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: "latest"

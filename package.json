@@ -100,6 +100,7 @@
     "ttypescript": "^1.5.12",
     "type-fest": "^0.16.0",
     "typescript": "^3.9.7",
+    "url-loader": "^4.1.1",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"

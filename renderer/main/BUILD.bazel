@@ -7,7 +7,13 @@ exports_files(["index.ejs"])
 
 filegroup(
     name = "static_resources",
-    srcs = glob(["static/*.*"]),
+    srcs = glob(["static/*"]),
+)
+
+filegroup(
+    name = "images",
+    srcs = glob(["images/*"]),
+    visibility = ["//visibility:private"],
 )
 
 js_library(
@@ -21,6 +27,7 @@ js_library(
 js_library(
     name = "main",
     package_name = "@renderer",
+    srcs = [":images"],
     deps = [":compile_ts"],
 )
 
@@ -30,7 +37,7 @@ ts_project(
         "**/*.ts",
         "**/*.tsx",
     ]),
-    visibility = ["//visibility:public"],
+    visibility = ["//visibility:private"],
     deps = [
         "//common/main",
         "@npm//@material-ui/core",

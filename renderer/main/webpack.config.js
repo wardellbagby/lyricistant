@@ -12,7 +12,7 @@ module.exports = ({ htmlTemplate }) => {
         inject: false
       }),
       new CopyWebpackPlugin({
-        patterns: [{ from: 'renderer/main/static/' }]
+        patterns: [{ from: 'renderer/main/static/', noErrorOnMissing: true }],
       }),
       new DefinePlugin({
         'process.env.APP_VERSION': JSON.stringify(packageInfo.version),
@@ -25,10 +25,7 @@ module.exports = ({ htmlTemplate }) => {
         { test: /\.css$/, use: ['style-loader', 'css-loader'] },
         {
           test: /\.(woff|woff2|eot|ttf|svg|png)$/,
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]'
-          }
+          loader: 'url-loader'
         }
       ]
     },
