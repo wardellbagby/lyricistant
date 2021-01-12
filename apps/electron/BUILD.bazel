@@ -20,7 +20,6 @@ electron(
         ":bundled_preload",
         ":bundled_renderer",
         ":dist-resources",
-        "//:package.json",
     ],
 )
 
@@ -113,14 +112,13 @@ bundle_js(
         "index.html",
         "renderer.js",
     ],
-    config = "$(GENDIR)/renderer/main/webpack.config.js",
+    config = "$(execpath //renderer/main:webpack.config.js)",
     data = [
+        "//:package_info",
         "//renderer/main",
         "//renderer/main:index.ejs",
-        "//renderer/main:webpack_config",
-        "@npm//copy-webpack-plugin",
+        "//renderer/main:webpack.config.js",
         "@npm//css-loader",
-        "@npm//file-loader",
         "@npm//html-webpack-plugin",
         "@npm//style-loader",
         "@npm//url-loader",

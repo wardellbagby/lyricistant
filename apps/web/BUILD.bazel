@@ -4,14 +4,20 @@ load("//:tooling/bundle_js.bzl", "bundle_js")
 
 package(default_visibility = ["//visibility:private"])
 
+filegroup(
+    name = "static_resources",
+    srcs = glob(["staticResources/*"]),
+)
+
 nodejs_binary(
     name = "start",
     args = [
-        "$(BINDIR)/apps/web/index.html",
+        "$(execpath :index.html)",
     ],
     data = [
-        ":bundle_web",
+        ":index.html",
         ":open.js",
+        ":static_resources",
         "@npm//open",
     ],
     entry_point = ":open.js",
@@ -20,7 +26,10 @@ nodejs_binary(
 
 pkg_zip(
     name = "app",
-    srcs = [":bundle_web"],
+    srcs = [
+        ":bundle_web",
+        ":static_resources",
+    ],
 )
 
 bundle_js(
@@ -30,19 +39,16 @@ bundle_js(
         "1.renderer.js",
         "2.renderer.js",
         "3.renderer.js",
-        "favicon.png",
         "index.html",
         "renderer.js",
-        "social_banner.png",
     ],
-    config = "$(GENDIR)/renderer/main/webpack.config.js",
+    config = "$(execpath //renderer/main:webpack.config.js)",
     data = [
+        "//:package_info",
         "//apps/web/main",
         "//renderer/main",
         "//renderer/main:index.ejs",
-        "//renderer/main:static_resources",
-        "//renderer/main:webpack_config",
-        "@npm//copy-webpack-plugin",
+        "//renderer/main:webpack.config.js",
         "@npm//css-loader",
         "@npm//file-loader",
         "@npm//html-webpack-plugin",

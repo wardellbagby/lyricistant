@@ -1,6 +1,5 @@
 const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const packageInfo = require('@lyricistant/package_info.json');
 
 module.exports = ({ htmlTemplate }) => {
@@ -10,9 +9,6 @@ module.exports = ({ htmlTemplate }) => {
         title: 'Untitled',
         template: htmlTemplate,
         inject: false
-      }),
-      new CopyWebpackPlugin({
-        patterns: [{ from: 'renderer/main/static/', noErrorOnMissing: true }],
       }),
       new DefinePlugin({
         'process.env.APP_VERSION': JSON.stringify(packageInfo.version),

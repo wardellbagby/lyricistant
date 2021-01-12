@@ -5,11 +5,9 @@ load("@npm//ttypescript:index.bzl", "ttsc")
 package(default_visibility = ["//visibility:public"])
 
 exports_files([
-    "package.json",
     "workspace_status.sh",
     ".mocharc.json",
 ] + glob([
-    "config/**/*webpack.config.ts",
     "**/*tsconfig.json",
 ]))
 
@@ -43,7 +41,6 @@ npm_package_bin(
         "//:package.json",
         "//:stable_status",
     ],
-    link_workspace_root = True,
     tool = "//:generate_package_info",
 )
 

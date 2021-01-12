@@ -28,6 +28,7 @@ writeFileSync(
       name: packageInfo.name,
       version: newVersion,
       author: packageInfo.author,
+      homepage: packageInfo.homepage
     },
     null,
     2
