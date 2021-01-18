@@ -12,7 +12,7 @@ describe('Electron launch', () => {
   beforeEach(async () => {
     app = new Application({
       path: require.resolve('electron/cli'),
-      args: ['main.js', '--no-sandbox'],
+      args: ['main.js', '--no-sandbox', '--disable-gpu', '--enable-logging'],
       cwd: path.resolve('apps', 'electron'),
     });
 

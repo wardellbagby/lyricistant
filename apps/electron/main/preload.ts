@@ -1,7 +1,7 @@
-import { remote } from 'electron';
 import { platformDelegate } from './Delegates';
+import { rendererComponent } from './RendererComponent';
 
 process.on('loaded', () => {
-  window.appComponent = remote.getGlobal('appComponent');
+  window.appComponent = rendererComponent;
   window.platformDelegate = platformDelegate;
 });

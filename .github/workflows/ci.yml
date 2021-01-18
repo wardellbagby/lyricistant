@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - wardell/ubuntu-ci-test
   pull_request:
     branches:
       - main
@@ -11,7 +12,7 @@ on:
 jobs:
   build:
     name: "Build and Check"
-    runs-on: macos-latest # This could be ubuntu but there are WebDriver issues.
+    runs-on: ubuntu-20.04
     steps:
       - name: Cancel in-progress builds
         uses: styfle/cancel-workflow-action@0.5.0
@@ -23,9 +24,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '>=14.15'
+      - name: Setup virtual display
+        run: Xvfb :99 &
       - name: Install Bazelisk
         run: npm install -g @bazel/bazelisk@1.7.3
       - name: Run all tests
-        run: bazel test //...
+        run: bazel test --build_tests_only --keep_going //...
+        env:
+          DISPLAY: ':99'
       - name: Check for Lint issues.
         run: npm run lint

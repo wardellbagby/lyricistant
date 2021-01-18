@@ -1,3 +1,5 @@
-import { DIContainer } from '@wessberg/di';
+import { createComponent as createAppComponent } from './AppComponent';
+import { createComponent as createRendererComponent } from './RendererComponent';
 
-export const appComponent = new DIContainer();
+export const appComponent = createAppComponent();
+export const rendererComponent = createRendererComponent();

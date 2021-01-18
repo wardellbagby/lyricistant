@@ -9,13 +9,12 @@ import { platform } from 'os';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
 import { createAppMenu } from './app-menu';
-import { initializeComponent } from './AppComponent';
-import { appComponent } from './Components';
+import { appComponent } from './AppComponent';
 import { createRendererDelegate } from './Delegates';
 import { QuitManager } from './platform/QuitManager';
 
+const isUiTest = process.env.NODE_ENV === 'spectron-test';
 const isDevelopment = process.env.NODE_ENV !== 'production';
-initializeComponent(appComponent);
 
 export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
@@ -41,8 +40,6 @@ app.on('activate', () => {
 });
 
 function createWindow(): void {
-  // @ts-ignore
-  global.appComponent = appComponent;
   if (!appComponent.has<Logger>()) {
     throw new Error('app component is empty');
   }
@@ -53,8 +50,9 @@ function createWindow(): void {
     minHeight: 400,
     backgroundColor: '#00000000',
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: isUiTest,
       contextIsolation: false,
+      enableRemoteModule: isUiTest,
       preload: path.resolve(__dirname, 'preload.js'),
     },
   });

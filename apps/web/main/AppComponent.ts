@@ -23,7 +23,8 @@ import type { WebSystemThemeProvider } from './platform/SystemThemeProvider';
 import { WebTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
 
-export const initializeComponent = (component: DIContainer) => {
+export const createComponent = (): DIContainer => {
+  const component = new DIContainer();
   component.registerSingleton<RendererDelegate, WebRendererDelegate>();
 
   component.registerSingleton<Dialogs, WebDialogs>();
@@ -47,4 +48,5 @@ export const initializeComponent = (component: DIContainer) => {
     component.get<UiConfigManager>(),
     component.get<UnsavedDataManager>(),
   ]);
+  return component;
 };
