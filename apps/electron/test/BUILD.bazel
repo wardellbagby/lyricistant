@@ -23,7 +23,10 @@ ts_node_project(
 mocha_test(
     name = "test",
     args = [package_name() + "/**/*.spec.js"],
-    configuration_env_vars = ["PATH"],
+    configuration_env_vars = [
+        "PATH",
+        "DISPLAY",
+    ],
     data = [
         ":compile_ts",
         "//:.mocharc.json",

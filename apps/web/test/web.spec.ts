@@ -15,7 +15,12 @@ describe('Webpage launch', () => {
       capabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
-          args: ['--no-sandbox'],
+          args: [
+            '--no-sandbox',
+            '--disable-gpu',
+            '--enable-logging',
+            '--headless',
+          ],
         },
       },
     });

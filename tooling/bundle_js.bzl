@@ -20,6 +20,10 @@ def bundle_js(name, outs, entries, target, data, config = None, visibility = Non
     entry_args = [["--entry", x] for x in entries]
     config_args = [x for x in ["--config", config] for y in [config] if y != None]
     output_args = None
+    env_args = select({
+        "//:test_build": ["--define", 'process.env.NODE_ENV="spectron-test"'],
+        "//conditions:default": [],
+    })
     if len(outs) > 1:
         output_args = ["--output-path", "$(@D)"]
     else:
@@ -29,11 +33,13 @@ def bundle_js(name, outs, entries, target, data, config = None, visibility = Non
         target,
         "--config",
         config,
+        "--devtool",
+        "source-map",
         "--mode",
     ] + select({
         "//:release_build": ["production"],
         "//conditions:default": ["development"],
-    }) + [y for x in entry_args for y in x] + output_args + webpack_args + config_args
+    }) + [y for x in entry_args for y in x] + output_args + webpack_args + config_args + env_args
 
     npm_package_bin(
         name = name,

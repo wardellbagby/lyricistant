@@ -126,7 +126,7 @@ bundle_js(
         "@npm//webpack-cli",
     ],
     entries = ["./$(GENDIR)/renderer/main/index.js"],
-    target = "electron-renderer",
+    target = "web",
     webpack_args = [
         "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
     ],

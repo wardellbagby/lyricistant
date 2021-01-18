@@ -13,9 +13,8 @@ import type { SystemThemeProvider } from '@common/theme/SystemTheme';
 import type { TitleFormatter, UiConfigProvider } from '@common/ui/UiConfig';
 import type { UiConfigManager } from '@common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
-import { ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import { ElectronRendererDelegate } from './Delegates';
-import { mainWindow } from './index';
 import type { ElectronDialogs } from './platform/Dialogs';
 import type { ElectronFiles } from './platform/Files';
 import type { ElectronLogger } from './platform/Logger';
@@ -26,8 +25,10 @@ import type { ElectronSystemThemeProvider } from './platform/SystemThemeProvider
 import { ElectronTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
 
-export const initializeComponent = (component: DIContainer) => {
+const createComponent = (): DIContainer => {
+  const component = new DIContainer();
   component.registerTransient<RendererDelegate>(() => {
+    const mainWindow = BrowserWindow.getAllWindows()[0];
     if (!mainWindow) {
       throw Error(
         'Tried to initialize an ElectronRendererDelegate with no mainWindow!'
@@ -62,4 +63,6 @@ export const initializeComponent = (component: DIContainer) => {
     component.get<UiConfigManager>(),
     component.get<QuitManager>(),
   ]);
+  return component;
 };
+export const appComponent = createComponent();

@@ -2,22 +2,21 @@ directories:
   # Add the directories you want added as source here
   # By default, we've added your entire workspace ('.')
   .
-  -node_modules/
   -dist/
   -bazel-bin/
   -bazel-lyricistant/
   -bazel-out/
   -bazel-testlogs/
 
-derive_targets_from_directories: false
-targets:
-  //apps/electron:start
-  //apps/electron:app
-  //apps/web:start
-  //apps/web:app
-  //apps/electron/test:test
-  //apps/web/test:test
-  //common/test:test
+derive_targets_from_directories: true
+# targets:
+#   //apps/electron:start
+#   //apps/electron:app
+#   //apps/web:start
+#   //apps/web:app
+#   //apps/electron/test:test
+#   //apps/web/test:test
+#   //common/test:test
 
 additional_languages:
   javascript

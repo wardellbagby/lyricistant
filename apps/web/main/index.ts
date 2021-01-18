@@ -1,11 +1,9 @@
 import { Logger } from '@common/Logger';
 import { Managers } from '@common/Managers';
-import { initializeComponent } from './AppComponent';
-import { appComponent } from './Components';
+import { appComponent, rendererComponent } from './Components';
 import { platformDelegate } from './Delegates';
 
-initializeComponent(appComponent);
-window.appComponent = appComponent;
+window.appComponent = rendererComponent;
 window.platformDelegate = platformDelegate;
 
 new Promise((resolve) => {
