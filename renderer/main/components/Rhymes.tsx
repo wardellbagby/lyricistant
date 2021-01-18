@@ -5,6 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, styled, Theme } from '@material-ui/core/styles';
 import * as CodeMirror from 'codemirror';
 import React, { useEffect, useState } from 'react';
+import { useErrorHandler } from 'react-error-boundary';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { Observable } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
@@ -68,9 +69,11 @@ export function Rhymes(props: RhymesProp) {
   const [queryData, setQueryData] = useState<WordAtPosition>(null);
   const classes = useStyles();
 
-  useEffect(handleQueries(props.queries, setRhymes, setQueryData), [
-    props.queries,
-  ]);
+  const handleError = useErrorHandler();
+  useEffect(
+    handleQueries(props.queries, setRhymes, setQueryData, handleError),
+    [props.queries]
+  );
 
   if (rhymes.length === 0) {
     return <div />;
@@ -120,7 +123,8 @@ function renderRhyme(
 function handleQueries(
   queries: Observable<WordAtPosition>,
   setRhymes: (rhymes: Rhyme[]) => void,
-  setQueryData: (queryData: WordAtPosition) => void
+  setQueryData: (queryData: WordAtPosition) => void,
+  handleError: (error: Error) => void
 ): () => () => void {
   return () => {
     const subscription = queries
@@ -133,6 +137,9 @@ function handleQueries(
         ),
         switchMap((data: WordAtPosition) =>
           fetchRhymes(data.word).pipe(
+            map((rhymes: Rhyme[]) =>
+              rhymes.filter((rhyme) => rhyme && rhyme.word && rhyme.score)
+            ),
             map((rhymes: Rhyme[]) => {
               return {
                 queryData: data,
@@ -152,7 +159,8 @@ function handleQueries(
         (result: { queryData: WordAtPosition; rhymes: Rhyme[] }): void => {
           setRhymes(result.rhymes);
           setQueryData(result.queryData);
-        }
+        },
+        (error) => handleError(error)
       );
 
     return () => subscription.unsubscribe();

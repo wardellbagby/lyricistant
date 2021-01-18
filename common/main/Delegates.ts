@@ -32,7 +32,12 @@ export interface PlatformToRendererListener {
   find: () => void;
   replace: () => void;
   'is-okay-for-new-file': () => void;
-  'file-opened': (error: Error, filePath: string, data: string) => void;
+  'file-opened': (
+    error: Error,
+    filePath: string,
+    data: string,
+    clearHistory: boolean
+  ) => void;
   'file-save-started': (filePath: string) => void;
   'request-editor-text': () => void;
   'is-okay-for-quit-file': () => void;

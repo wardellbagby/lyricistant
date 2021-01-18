@@ -50,6 +50,7 @@ ts_project(
         "@npm//react-beforeunload",
         "@npm//react-codemirror2",
         "@npm//react-dom",
+        "@npm//react-error-boundary",
         "@npm//react-router-dom",
         "@npm//react-virtuoso",
         "@npm//rxjs",

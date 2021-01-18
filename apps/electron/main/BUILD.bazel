@@ -15,6 +15,7 @@ ts_project(
     deps = [
         "//common/main",
         "@npm//@types/adm-zip",
+        "@npm//@types/node",
         "@npm//@wessberg/di",
         "@npm//adm-zip",
         "@npm//electron",

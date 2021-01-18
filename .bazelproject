@@ -9,8 +9,15 @@ directories:
   -bazel-out/
   -bazel-testlogs/
 
-# Automatically includes all relevant targets under the 'directories' above
-derive_targets_from_directories: true
+derive_targets_from_directories: false
+targets:
+  //apps/electron:start
+  //apps/electron:app
+  //apps/web:start
+  //apps/web:app
+  //apps/electron/test:test
+  //apps/web/test:test
+  //common/test:test
 
 additional_languages:
   javascript

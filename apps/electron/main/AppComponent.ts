@@ -3,6 +3,8 @@ import type { Dialogs } from '@common/dialogs/Dialogs';
 import type { FileManager } from '@common/files/FileManager';
 import type { Files } from '@common/files/Files';
 import type { RecentFiles } from '@common/files/RecentFiles';
+import { TemporaryFiles } from '@common/files/TemporaryFiles';
+import { UnsavedDataManager } from '@common/files/UnsavedDataManager';
 import type { Logger } from '@common/Logger';
 import type { Managers } from '@common/Managers';
 import type { PreferenceManager } from '@common/preferences/PreferenceManager';
@@ -21,6 +23,7 @@ import type { ElectronPreferences } from './platform/Preferences';
 import type { QuitManager } from './platform/QuitManager';
 import type { ElectronRecentFiles } from './platform/RecentFiles';
 import type { ElectronSystemThemeProvider } from './platform/SystemThemeProvider';
+import { ElectronTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
 
 export const initializeComponent = (component: DIContainer) => {
@@ -42,16 +45,19 @@ export const initializeComponent = (component: DIContainer) => {
     SystemThemeProvider,
     ElectronSystemThemeProvider
   >();
+  component.registerSingleton<TemporaryFiles, ElectronTemporaryFiles>();
   component.registerSingleton<UiConfigProvider>(() => provideUiConfig);
   component.registerSingleton<TitleFormatter>(() => formatTitle);
 
   component.registerSingleton<FileManager>();
+  component.registerSingleton<UnsavedDataManager>();
   component.registerSingleton<PreferenceManager>();
   component.registerSingleton<UiConfigManager>();
   component.registerSingleton<QuitManager>();
 
   component.registerTransient<Managers>(() => [
     component.get<FileManager>(),
+    component.get<UnsavedDataManager>(),
     component.get<PreferenceManager>(),
     component.get<UiConfigManager>(),
     component.get<QuitManager>(),

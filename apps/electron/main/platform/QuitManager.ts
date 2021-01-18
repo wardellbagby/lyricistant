@@ -1,5 +1,6 @@
 import { RendererDelegate } from '@common/Delegates';
 import { Dialogs } from '@common/dialogs/Dialogs';
+import { TemporaryFiles } from '@common/files/TemporaryFiles';
 import { Logger } from '@common/Logger';
 import { Manager } from '@common/Manager';
 import { mainWindow } from '../index';
@@ -10,6 +11,7 @@ export class QuitManager implements Manager {
   constructor(
     private rendererDelegate: RendererDelegate,
     private dialogs: Dialogs,
+    private temporaryFiles: TemporaryFiles,
     private logger: Logger
   ) {}
 
@@ -30,6 +32,7 @@ export class QuitManager implements Manager {
 
   private onOkayForQuit = () => {
     clearTimeout(this.forceQuitTimeout);
+    this.temporaryFiles.delete();
     mainWindow.destroy();
   };
 

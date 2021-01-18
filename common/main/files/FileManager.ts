@@ -10,6 +10,7 @@ export class FileManager implements Manager {
   private fileChangedListeners: Array<
     (currentFilename: string | null, recentFiles: string[]) => void
   > = [];
+  private initialFileLoadedListener: () => void = undefined;
 
   constructor(
     private rendererDelegate: RendererDelegate,
@@ -40,6 +41,10 @@ export class FileManager implements Manager {
     this.fileChangedListeners.push(listener);
   };
 
+  public setInitialFileLoadedListener = (listener: () => void) => {
+    this.initialFileLoadedListener = listener;
+  };
+
   public onNewFile = () => {
     this.rendererDelegate.send('is-okay-for-new-file');
   };
@@ -52,7 +57,8 @@ export class FileManager implements Manager {
         'file-opened',
         undefined,
         fileData.filePath,
-        fileData.data
+        fileData.data,
+        true
       );
       this.addRecentFile(filePath);
       const updatedRecentFiles = this.recentFiles.getRecentFiles();
@@ -82,6 +88,7 @@ export class FileManager implements Manager {
 
   private onRendererReady = () => {
     this.onOkayForNewFile();
+    this.initialFileLoadedListener?.();
   };
 
   private onOpenFile = async (file?: DroppableFile) => {
@@ -93,12 +100,13 @@ export class FileManager implements Manager {
           'file-opened',
           undefined,
           fileData.filePath,
-          fileData.data
+          fileData.data,
+          true
         );
         this.addRecentFile(this.currentFilePath);
       }
     } catch (e) {
-      this.rendererDelegate.send('file-opened', e, undefined, undefined);
+      this.rendererDelegate.send('file-opened', e, undefined, undefined, true);
       return;
     }
     this.fileChangedListeners.forEach((listener) =>
@@ -116,7 +124,13 @@ export class FileManager implements Manager {
     const newFilePath = await this.files.saveFile(new FileData(filePath, text));
     if (newFilePath) {
       this.currentFilePath = newFilePath;
-      this.rendererDelegate.send('file-opened', undefined, newFilePath, text);
+      this.rendererDelegate.send(
+        'file-opened',
+        undefined,
+        newFilePath,
+        text,
+        true
+      );
     }
     this.rendererDelegate.send('file-save-ended', null, this.currentFilePath);
     this.fileChangedListeners.forEach((listener) =>

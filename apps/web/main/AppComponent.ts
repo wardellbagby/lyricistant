@@ -3,6 +3,8 @@ import type { Dialogs } from '@common/dialogs/Dialogs';
 import type { FileManager } from '@common/files/FileManager';
 import type { Files } from '@common/files/Files';
 import type { RecentFiles } from '@common/files/RecentFiles';
+import { TemporaryFiles } from '@common/files/TemporaryFiles';
+import { UnsavedDataManager } from '@common/files/UnsavedDataManager';
 import type { Logger } from '@common/Logger';
 import type { Managers } from '@common/Managers';
 import type { PreferenceManager } from '@common/preferences/PreferenceManager';
@@ -18,6 +20,7 @@ import type { WebLogger } from './platform/Logger';
 import type { WebPreferences } from './platform/Preferences';
 import type { WebRecentFiles } from './platform/RecentFiles';
 import type { WebSystemThemeProvider } from './platform/SystemThemeProvider';
+import { WebTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
 
 export const initializeComponent = (component: DIContainer) => {
@@ -29,16 +32,19 @@ export const initializeComponent = (component: DIContainer) => {
   component.registerSingleton<Preferences, WebPreferences>();
   component.registerSingleton<RecentFiles, WebRecentFiles>();
   component.registerSingleton<SystemThemeProvider, WebSystemThemeProvider>();
+  component.registerSingleton<TemporaryFiles, WebTemporaryFiles>();
   component.registerSingleton<UiConfigProvider>(() => provideUiConfig);
   component.registerSingleton<TitleFormatter>(() => formatTitle);
 
   component.registerSingleton<FileManager>();
   component.registerSingleton<PreferenceManager>();
   component.registerSingleton<UiConfigManager>();
+  component.registerSingleton<UnsavedDataManager>();
 
   component.registerSingleton<Managers>(() => [
     component.get<FileManager>(),
     component.get<PreferenceManager>(),
     component.get<UiConfigManager>(),
+    component.get<UnsavedDataManager>(),
   ]);
 };

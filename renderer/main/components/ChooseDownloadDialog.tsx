@@ -1,7 +1,12 @@
 import { Logger } from '@common/Logger';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  Grid,
+  Typography,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Apple, Linux, MicrosoftWindows, Ubuntu } from 'mdi-material-ui';
 import React, { useMemo } from 'react';

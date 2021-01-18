@@ -3,6 +3,7 @@ import { PreferencesData } from '@common/preferences/PreferencesData';
 import { useTheme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { BehaviorSubject, Subject } from 'rxjs';
 import 'typeface-roboto';
@@ -12,6 +13,7 @@ import { Rhyme } from '../models/rhyme';
 import { downloadApp } from '../util/download-app';
 import { EmptyRange } from '../util/editor-helpers';
 import { AboutDialog } from './AboutDialog';
+import { AppError } from './AppError';
 import { AppLayout } from './AppLayout';
 import { ChooseDownloadDialog } from './ChooseDownloadDialog';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
@@ -70,51 +72,49 @@ export function App() {
   useChannel('open-about', () => setScreen(Screen.ABOUT));
 
   return (
-    <Switch>
-      <Route path={'/download'}>
-        <ChooseDownloadDialog show={true} onClose={() => history.goBack()} />
-      </Route>
-      <Route path={'/'}>
-        <Preferences
-          show={screen === Screen.PREFERENCES}
-          data={preferencesData}
-          onPreferencesSaved={onPreferencesSaved}
-          onClosed={onPreferencesClosed}
-          onAboutClicked={() => setScreen(Screen.ABOUT)}
-        />
-        <AboutDialog
-          show={screen === Screen.ABOUT}
-          onClose={() => setScreen(Screen.EDITOR)}
-        />
-        <AppLayout>
-          <Menu
-            onNewClicked={() => {
-              platformDelegate.send('new-file-attempt');
-            }}
-            onOpenClicked={() => {
-              platformDelegate.send('open-file-attempt');
-            }}
-            onSaveClicked={() => {
-              platformDelegate.send('save-file-attempt', editorText);
-            }}
-            onSettingsClicked={() => setScreen(Screen.PREFERENCES)}
-            onDownloadClicked={() => {
-              if (!downloadApp()) {
-                history.push('/download');
+    <ErrorBoundary fallbackRender={() => <AppError editorText={editorText} />}>
+      <Switch>
+        <Route path={'/download'}>
+          <ChooseDownloadDialog show={true} onClose={() => history.goBack()} />
+        </Route>
+        <Route path={'/'}>
+          <Preferences
+            show={screen === Screen.PREFERENCES}
+            data={preferencesData}
+            onPreferencesSaved={onPreferencesSaved}
+            onClosed={onPreferencesClosed}
+            onAboutClicked={() => setScreen(Screen.ABOUT)}
+          />
+          <AboutDialog
+            show={screen === Screen.ABOUT}
+            onClose={() => setScreen(Screen.EDITOR)}
+          />
+          <AppLayout>
+            <Menu
+              onNewClicked={() => platformDelegate.send('new-file-attempt')}
+              onOpenClicked={() => platformDelegate.send('open-file-attempt')}
+              onSaveClicked={() =>
+                platformDelegate.send('save-file-attempt', editorText)
               }
-            }}
-          />
-          <Editor
-            text={editorText}
-            fontSize={theme.typography.fontSize}
-            onWordSelected={onWordSelected}
-            onTextChanged={setEditorText}
-            textReplacements={textReplacements}
-          />
-          <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
-        </AppLayout>
-      </Route>
-      <Route render={() => <Redirect to="/" />} />
-    </Switch>
+              onSettingsClicked={() => setScreen(Screen.PREFERENCES)}
+              onDownloadClicked={() => {
+                if (!downloadApp()) {
+                  history.push('/download');
+                }
+              }}
+            />
+            <Editor
+              text={editorText}
+              fontSize={theme.typography.fontSize}
+              onWordSelected={onWordSelected}
+              onTextChanged={setEditorText}
+              textReplacements={textReplacements}
+            />
+            <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
+          </AppLayout>
+        </Route>
+        <Route render={() => <Redirect to="/" />} />
+      </Switch>
+    </ErrorBoundary>
   );
 }

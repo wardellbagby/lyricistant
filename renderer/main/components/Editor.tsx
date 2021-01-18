@@ -295,12 +295,15 @@ function handleEditorEvents(
     const onFileOpened = (
       error: Error,
       fileName: string,
-      fileContents: string
+      fileContents: string,
+      clearHistory: boolean
     ) => {
       if (!error) {
         editor.setValue(fileContents);
-        editor.clearHistory();
-        setVersion(editor.changeGeneration(true));
+        if (clearHistory) {
+          editor.clearHistory();
+          setVersion(editor.changeGeneration(true));
+        }
       }
     };
     platformDelegate.on('file-opened', onFileOpened);

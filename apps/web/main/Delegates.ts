@@ -83,9 +83,6 @@ const queue = (functions: Array<(...args: any[]) => void>, args: any[]) => {
     }
   });
 
-  // Renderer code is very specialized for Electron, which will never
-  // immediately invoke a listener when its registered. We emulate that here
-  // by putting the listener invocation on the event loop via setTimeout.
   functions.forEach((listener) => listener(...args));
 };
 
