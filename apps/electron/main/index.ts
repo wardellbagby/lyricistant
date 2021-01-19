@@ -109,8 +109,8 @@ function registerListeners() {
 
 function setupUpdater() {
   autoUpdater.logger = logger;
-  autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = false;
   // noinspection JSIgnoredPromiseFromCall
   autoUpdater.checkForUpdatesAndNotify();
 }
