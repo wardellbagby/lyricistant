@@ -1,4 +1,3 @@
-import { Logger } from '@common/Logger';
 import { styled, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CodeMirror from 'codemirror';
@@ -12,7 +11,7 @@ import 'codemirror/addon/selection/mark-selection';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/javascript/javascript';
 import { useSnackbar } from 'notistack';
-import { platformDelegate } from '../globals';
+import { logger, platformDelegate } from '../globals';
 
 import React, { useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
@@ -21,7 +20,6 @@ import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
 import 'typeface-roboto-mono';
-import { appComponent } from '../globals';
 import { useDocumentListener } from '../hooks/useEventListener';
 import { findWordAt, LYRICISTANT_LANGUAGE } from '../util/editor-helpers';
 import { toDroppableFile } from '../util/to-droppable-file';
@@ -115,7 +113,7 @@ export function Editor(props: EditorProps) {
       event.stopPropagation();
 
       if (event.dataTransfer?.files?.length > 0) {
-        appComponent.get<Logger>().debug('Attempted to drop a file.');
+        logger.debug('Attempted to drop a file.');
         const file = await toDroppableFile(event.dataTransfer.files.item(0));
         if (!editor.isClean(version)) {
           platformDelegate.send('prompt-save-file-for-open', file);

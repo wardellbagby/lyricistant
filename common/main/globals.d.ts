@@ -1,10 +1,10 @@
-import type { DIContainer } from '@wessberg/di';
 import type { Analytics } from './analytics/Analytics';
 import type { PlatformDelegate } from './Delegates';
+import { Logger } from './Logger';
 
 declare global {
   interface Window {
-    appComponent: DIContainer;
+    logger: Omit<Logger, 'save'>;
     goatcounter?: Analytics;
     platformDelegate: PlatformDelegate;
   }

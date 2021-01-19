@@ -1,4 +1,3 @@
-import { Logger } from '@common/Logger';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -7,9 +6,8 @@ import { setupAnalytics } from './analytics/setupAnalytics';
 import { App } from './components/App';
 import { PlatformEventsReadyHandler } from './components/PlatformEventsReadyHandler';
 import { Themed } from './components/Themed';
-import { appComponent } from './globals';
+import { logger } from './globals';
 
-const logger = appComponent.get<Logger>();
 window.onerror = (message, url, line, col, error) => {
   logger.error(
     JSON.stringify(message) + '\n',

@@ -1,4 +1,3 @@
-import { Logger } from '@common/Logger';
 import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -9,7 +8,7 @@ import { useErrorHandler } from 'react-error-boundary';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { Observable } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
-import { appComponent } from '../globals';
+import { logger } from '../globals';
 import { Rhyme } from '../models/rhyme';
 import { fetchRhymes } from '../networking/fetchRhymes';
 import { WordAtPosition } from './Editor';
@@ -130,11 +129,7 @@ function handleQueries(
     const subscription = queries
       .pipe(
         debounceTime(400),
-        tap((query) =>
-          appComponent
-            .get<Logger>()
-            .debug(`Querying rhymes for word: ${query.word}`)
-        ),
+        tap((query) => logger.debug(`Querying rhymes for word: ${query.word}`)),
         switchMap((data: WordAtPosition) =>
           fetchRhymes(data.word).pipe(
             map((rhymes: Rhyme[]) =>

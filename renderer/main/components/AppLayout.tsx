@@ -1,9 +1,8 @@
-import { Logger } from '@common/Logger';
 import { Box, Theme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import React, { FunctionComponent, ReactNode, useEffect } from 'react';
-import { appComponent } from '../globals';
+import { logger } from '../globals';
 
 const useStyles = makeStyles((theme: Theme) => ({
   divider: {
@@ -30,10 +29,7 @@ export const AppLayout: FunctionComponent = ({ children }) => {
   }
 
   useEffect(
-    () =>
-      appComponent
-        .get<Logger>()
-        .info(`Switching layout. isSmallLayout: ${useSmallLayout}`),
+    () => logger.info(`Switching layout. isSmallLayout: ${useSmallLayout}`),
     [useSmallLayout]
   );
   return (

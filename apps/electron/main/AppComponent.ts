@@ -6,6 +6,7 @@ import type { RecentFiles } from '@common/files/RecentFiles';
 import { TemporaryFiles } from '@common/files/TemporaryFiles';
 import { UnsavedDataManager } from '@common/files/UnsavedDataManager';
 import type { Logger } from '@common/Logger';
+import { LogManager } from '@common/logging/LogManager';
 import type { Managers } from '@common/Managers';
 import type { PreferenceManager } from '@common/preferences/PreferenceManager';
 import type { Preferences } from '@common/preferences/Preferences';
@@ -55,6 +56,7 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<PreferenceManager>();
   component.registerSingleton<UiConfigManager>();
   component.registerSingleton<QuitManager>();
+  component.registerSingleton<LogManager>();
 
   component.registerTransient<Managers>(() => [
     component.get<FileManager>(),
@@ -62,6 +64,7 @@ const createComponent = (): DIContainer => {
     component.get<PreferenceManager>(),
     component.get<UiConfigManager>(),
     component.get<QuitManager>(),
+    component.get<LogManager>(),
   ]);
   return component;
 };

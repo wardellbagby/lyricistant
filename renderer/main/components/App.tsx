@@ -1,4 +1,3 @@
-import { Logger } from '@common/Logger';
 import { PreferencesData } from '@common/preferences/PreferencesData';
 import { useTheme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
@@ -7,7 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { BehaviorSubject, Subject } from 'rxjs';
 import 'typeface-roboto';
-import { appComponent, platformDelegate } from '../globals';
+import { logger, platformDelegate } from '../globals';
 import { useChannel } from '../hooks/useChannel';
 import { Rhyme } from '../models/rhyme';
 import { downloadApp } from '../util/download-app';
@@ -54,10 +53,7 @@ export function App() {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(
-    () => appComponent.get<Logger>().debug(`Displaying screen: ${screen}`),
-    [screen]
-  );
+  useEffect(() => logger.debug(`Displaying screen: ${screen}`), [screen]);
   useChannel('prefs-updated', setPreferencesData);
   useChannel('file-opened', (error, filename) => {
     if (error) {

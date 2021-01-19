@@ -18,6 +18,7 @@ export interface RendererToPlatformListener {
   'open-file-attempt': (file?: DroppableFile) => void;
   'save-file-attempt': (data: string) => void;
   'request-ui-config': () => void;
+  'save-logs': () => void;
 }
 
 /**

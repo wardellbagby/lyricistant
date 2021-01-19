@@ -1,7 +1,7 @@
+import log from 'electron-log';
 import { platformDelegate } from './Delegates';
-import { rendererComponent } from './RendererComponent';
 
 process.on('loaded', () => {
-  window.appComponent = rendererComponent;
+  window.logger = log.functions;
   window.platformDelegate = platformDelegate;
 });

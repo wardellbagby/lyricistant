@@ -39,7 +39,6 @@ ts_project(
         "@npm//@types/react-dom",
         "@npm//@types/react-router-dom",
         "@npm//@types/webpack-env",
-        "@npm//@wessberg/di",
         "@npm//clsx",
         "@npm//codemirror",
         "@npm//istextorbinary",

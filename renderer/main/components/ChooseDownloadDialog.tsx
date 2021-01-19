@@ -1,4 +1,3 @@
-import { Logger } from '@common/Logger';
 import {
   Box,
   Button,
@@ -10,7 +9,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { Apple, Linux, MicrosoftWindows, Ubuntu } from 'mdi-material-ui';
 import React, { useMemo } from 'react';
-import { appComponent } from '../globals';
+import { logger } from '../globals';
 import {
   latestReleaseUrl,
   Release,
@@ -82,9 +81,7 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
   };
 
   const handleReleaseClicked = (url: string) => {
-    appComponent
-      .get<Logger>()
-      .info(`App download link clicked. Chosen URL: ${url}`);
+    logger.info(`App download link clicked. Chosen URL: ${url}`);
     window.open(url, '_blank');
     onClose();
   };

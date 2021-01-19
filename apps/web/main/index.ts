@@ -1,9 +1,11 @@
 import { Logger } from '@common/Logger';
 import { Managers } from '@common/Managers';
-import { appComponent, rendererComponent } from './Components';
+import { appComponent } from './AppComponent';
 import { platformDelegate } from './Delegates';
 
-window.appComponent = rendererComponent;
+const logger = appComponent.get<Logger>();
+
+window.logger = logger;
 window.platformDelegate = platformDelegate;
 
 new Promise((resolve) => {
@@ -11,7 +13,7 @@ new Promise((resolve) => {
   resolve();
 })
   .then(async () => {
-    appComponent.get<Logger>().info('Platform information', {
+    logger.info('Platform information', {
       appPlatform: 'Web',
       version: (await import('@renderer/globals')).APP_VERSION ?? 'Error',
       userAgent: navigator.userAgent,

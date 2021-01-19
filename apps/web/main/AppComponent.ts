@@ -6,6 +6,7 @@ import type { RecentFiles } from '@common/files/RecentFiles';
 import { TemporaryFiles } from '@common/files/TemporaryFiles';
 import { UnsavedDataManager } from '@common/files/UnsavedDataManager';
 import type { Logger } from '@common/Logger';
+import { LogManager } from '@common/logging/LogManager';
 import type { Managers } from '@common/Managers';
 import type { PreferenceManager } from '@common/preferences/PreferenceManager';
 import type { Preferences } from '@common/preferences/Preferences';
@@ -23,7 +24,7 @@ import type { WebSystemThemeProvider } from './platform/SystemThemeProvider';
 import { WebTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
 
-export const createComponent = (): DIContainer => {
+const createComponent = (): DIContainer => {
   const component = new DIContainer();
   component.registerSingleton<RendererDelegate, WebRendererDelegate>();
 
@@ -41,12 +42,16 @@ export const createComponent = (): DIContainer => {
   component.registerSingleton<PreferenceManager>();
   component.registerSingleton<UiConfigManager>();
   component.registerSingleton<UnsavedDataManager>();
+  component.registerSingleton<LogManager>();
 
   component.registerSingleton<Managers>(() => [
     component.get<FileManager>(),
     component.get<PreferenceManager>(),
     component.get<UiConfigManager>(),
     component.get<UnsavedDataManager>(),
+    component.get<LogManager>(),
   ]);
   return component;
 };
+
+export const appComponent = createComponent();
