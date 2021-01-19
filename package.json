@@ -78,6 +78,7 @@
     "file-loader": "^6.1.0",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.3.0",
+    "http-server": "^0.12.3",
     "husky": "^4.2.5",
     "js-yaml": "^3.14.0",
     "mocha": "^7.2.0",

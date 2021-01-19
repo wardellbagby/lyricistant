@@ -1,6 +1,6 @@
-load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//:tooling/bundle_js.bzl", "bundle_js")
+load("@npm//http-server:index.bzl", "http_server")
 
 package(default_visibility = ["//visibility:private"])
 
@@ -9,19 +9,17 @@ filegroup(
     srcs = glob(["staticResources/*"]),
 )
 
-nodejs_binary(
+http_server(
     name = "start",
     args = [
-        "$(execpath :index.html)",
+        "apps/web",
+        "-c-1",
+        "-o",
     ],
     data = [
-        ":index.html",
-        ":open.js",
+        ":bundle_web",
         ":static_resources",
-        "@npm//open",
     ],
-    entry_point = ":open.js",
-    visibility = ["//visibility:public"],
 )
 
 pkg_zip(
