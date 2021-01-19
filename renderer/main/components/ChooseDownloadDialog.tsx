@@ -55,16 +55,18 @@ const DownloadButton = (props: { release: Release; onClick: () => void }) => {
   const classes = useStyles(release);
 
   return (
-    <Button
-      className={classes.root}
-      variant={'contained'}
-      fullWidth
-      startIcon={<ReleaseIcon release={release} />}
-      size={'large'}
-      onClick={onClick}
-    >
-      {release.arch ?? 'Download'}
-    </Button>
+    <Box padding={'8px'}>
+      <Button
+        className={classes.root}
+        variant={'contained'}
+        fullWidth
+        startIcon={<ReleaseIcon release={release} />}
+        size={'large'}
+        onClick={onClick}
+      >
+        {release.arch ?? 'Download'}
+      </Button>
+    </Box>
   );
 };
 
@@ -110,7 +112,6 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
               <Grid
                 container
                 item
-                spacing={2}
                 alignItems={'center'}
                 justify={'center'}
                 key={platform}
