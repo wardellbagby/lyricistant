@@ -34,7 +34,7 @@ jobs:
       - name: Install Bazelisk
         run: npm install -g @bazel/bazelisk@1.7.3
       - name: Build Web.
-        run: 'bazel build //apps/web:app --define=nightly=1 --define=mode=release'
+        run: 'bazel build //apps/web:app --define=mode=release'
       - name: Unzip Web archive
         run: 'unzip dist/bin/apps/web/app.zip -d /tmp/web'
       - name: Deploy Web
