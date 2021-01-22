@@ -1,6 +1,6 @@
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//:tooling/bundle_js.bzl", "bundle_js")
-load("@npm//http-server:index.bzl", "http_server")
+load("@npm//local-web-server:index.bzl", "ws")
 
 package(default_visibility = ["//visibility:private"])
 
@@ -9,12 +9,12 @@ filegroup(
     srcs = glob(["staticResources/*"]),
 )
 
-http_server(
+ws(
     name = "start",
     args = [
-        "apps/web",
-        "-c-1",
-        "-o",
+        "--directory",
+        "apps/web/",
+        "--open",
     ],
     data = [
         ":bundle_web",
