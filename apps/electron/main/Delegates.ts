@@ -20,7 +20,7 @@ export class ElectronRendererDelegate implements RendererDelegate {
     (event: GlobalEvent, ...args: any[]) => void
   >();
 
-  constructor(ipcMain: IpcMain, window: BrowserWindow) {
+  public constructor(ipcMain: IpcMain, window: BrowserWindow) {
     this.ipcMain = ipcMain;
     this.window = window;
   }
@@ -68,7 +68,7 @@ class ElectronPlatformDelegate implements PlatformDelegate {
     (event: GlobalEvent, ...args: any[]) => void
   >();
 
-  constructor(ipcRenderer: IpcRenderer) {
+  public constructor(ipcRenderer: IpcRenderer) {
     this.ipcRenderer = ipcRenderer;
   }
 
@@ -107,15 +107,11 @@ class ElectronPlatformDelegate implements PlatformDelegate {
   }
 }
 
-const isError = (e: any) => {
-  return e instanceof Error;
-};
+const isError = (e: any) => e instanceof Error;
 
 export const createRendererDelegate: (
   window: BrowserWindow
-) => RendererDelegate = (window) => {
-  return new ElectronRendererDelegate(electronMain, window);
-};
+) => RendererDelegate = (window) => new ElectronRendererDelegate(electronMain, window);
 export const platformDelegate: PlatformDelegate = new ElectronPlatformDelegate(
   electronRenderer
 );

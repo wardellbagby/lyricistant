@@ -1,4 +1,4 @@
-// tslint:disable:no-console
+/* eslint-disable no-console */
 import { Logger } from '@common/Logger';
 import { fileSave } from 'browser-nativefs';
 import { DateTime } from 'luxon';

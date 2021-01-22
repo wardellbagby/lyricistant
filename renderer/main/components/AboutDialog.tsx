@@ -70,14 +70,12 @@ export const AboutDialog = (props: AboutDialogProps) => {
             <TableContainer>
               <Table size={'small'}>
                 <TableBody>
-                  {Object.entries(aboutInfo).map(([key, value]) => {
-                    return (
+                  {Object.entries(aboutInfo).map(([key, value]) => (
                       <TableRow key={key}>
                         <DividerlessTableCell>{key}</DividerlessTableCell>
                         <DividerlessTableCell>{value}</DividerlessTableCell>
                       </TableRow>
-                    );
-                  })}
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>

@@ -4,7 +4,7 @@ import { Manager } from '../Manager';
 import { TitleFormatter, UiConfigProvider } from './UiConfig';
 
 export class UiConfigManager implements Manager {
-  constructor(
+  public constructor(
     private rendererDelegate: RendererDelegate,
     private provideUiConfig: UiConfigProvider,
     private formatTitle: TitleFormatter,

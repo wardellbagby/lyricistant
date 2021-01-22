@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { platformDelegate } from '../globals';
 
 /**
@@ -11,7 +11,9 @@ import { platformDelegate } from '../globals';
  */
 export const PlatformEventsReadyHandler = ({
   children,
-}: PropsWithChildren<{}>) => {
+}: {
+  children: ReactNode;
+}) => {
   useEffect(() => platformDelegate.send('ready-for-events'), []);
   return <>{children}</>;
 };

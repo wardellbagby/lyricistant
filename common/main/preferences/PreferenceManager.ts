@@ -7,7 +7,7 @@ import { PreferencesData, Theme } from './PreferencesData';
 export class PreferenceManager implements Manager {
   private systemTheme: SystemTheme;
 
-  constructor(
+  public constructor(
     private rendererDelegate: RendererDelegate,
     private systemThemeProvider: SystemThemeProvider,
     private preferences: Preferences
@@ -41,13 +41,11 @@ export class PreferenceManager implements Manager {
     this.rendererDelegate.send('close-prefs');
   };
 
-  private preferencesOrDefault = (): PreferencesData => {
-    return {
+  private preferencesOrDefault = (): PreferencesData => ({
       textSize: 16,
       theme: Theme.System,
       ...this.preferences.getPreferences(),
-    };
-  };
+    });
 
   private sendThemeUpdate = (data: PreferencesData): void => {
     const theme = this.normalizeTheme(data.theme);
@@ -64,7 +62,5 @@ export class PreferenceManager implements Manager {
       : theme;
   }
 
-  private systemThemeToTheme = (systemTheme: SystemTheme): Theme => {
-    return systemTheme === SystemTheme.Dark ? Theme.Dark : Theme.Light;
-  };
+  private systemThemeToTheme = (systemTheme: SystemTheme): Theme => systemTheme === SystemTheme.Dark ? Theme.Dark : Theme.Light;
 }

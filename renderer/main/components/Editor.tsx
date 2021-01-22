@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { styled, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CodeMirror from 'codemirror';
@@ -11,7 +12,6 @@ import 'codemirror/addon/selection/mark-selection';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/javascript/javascript';
 import { useSnackbar } from 'notistack';
-import { logger, platformDelegate } from '../globals';
 
 import React, { useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
@@ -19,6 +19,7 @@ import { Controlled as CodeMirrorEditor } from 'react-codemirror2';
 import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
+import { logger, platformDelegate } from '../globals';
 import 'typeface-roboto-mono';
 import { useDocumentListener } from '../hooks/useEventListener';
 import { findWordAt, LYRICISTANT_LANGUAGE } from '../util/editor-helpers';
@@ -155,12 +156,10 @@ export function Editor(props: EditorProps) {
         value={props.text}
         defineMode={{
           name: LYRICISTANT_LANGUAGE,
-          fn: () => {
-            return {
+          fn: () => ({
               name: LYRICISTANT_LANGUAGE,
               token: (stream) => stream.next(),
-            };
-          },
+            }),
         }}
         options={{
           mode: LYRICISTANT_LANGUAGE,

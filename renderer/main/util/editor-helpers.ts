@@ -34,15 +34,13 @@ export const findWordAt = (editor: Editor, position: Position) => {
   };
 };
 
-export const Range = (from: Position, to: Position): CMRange => {
-  return {
+export const Range = (from: Position, to: Position): CMRange => ({
     anchor: to,
     head: from,
     empty: () => to.line === from.line && to.ch === from.ch,
     from: () => from,
     to: () => to,
-  };
-};
+  });
 
 export const EmptyRange = Range({ ch: 0, line: 0 }, { ch: 0, line: 0 });
 

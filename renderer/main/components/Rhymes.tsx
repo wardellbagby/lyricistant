@@ -34,18 +34,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const ListContainer: React.ComponentType<{ className: string }> = styled('div')(
-  ({ className }) => {
-    return {
+  ({ className }) => ({
       className,
       display: 'flex',
       'flex-wrap': 'wrap',
-    };
-  }
+    })
 );
 
 const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
-  ({ theme }) => {
-    return {
+  ({ theme }) => ({
       display: 'flex',
       flex: 'none',
       'align-content': 'stretch',
@@ -59,8 +56,7 @@ const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
       [theme.breakpoints.up('lg')]: {
         width: '50%',
       },
-    };
-  }
+    })
 );
 
 export function Rhymes(props: RhymesProp) {
@@ -135,8 +131,7 @@ function handleQueries(
             map((rhymes: Rhyme[]) =>
               rhymes.filter((rhyme) => rhyme && rhyme.word && rhyme.score)
             ),
-            map((rhymes: Rhyme[]) => {
-              return {
+            map((rhymes: Rhyme[]) => ({
                 queryData: data,
                 rhymes: [
                   ...new Set(
@@ -145,8 +140,7 @@ function handleQueries(
                     )
                   ),
                 ],
-              };
-            })
+              }))
           )
         )
       )

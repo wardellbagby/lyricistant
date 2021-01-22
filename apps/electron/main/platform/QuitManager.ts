@@ -1,3 +1,4 @@
+import { setTimeout } from 'timers';
 import { RendererDelegate } from '@common/Delegates';
 import { Dialogs } from '@common/dialogs/Dialogs';
 import { TemporaryFiles } from '@common/files/TemporaryFiles';
@@ -8,7 +9,7 @@ import { mainWindow } from '../index';
 export class QuitManager implements Manager {
   private forceQuitTimeout?: NodeJS.Timeout;
 
-  constructor(
+  public constructor(
     private rendererDelegate: RendererDelegate,
     private dialogs: Dialogs,
     private temporaryFiles: TemporaryFiles,

@@ -1,7 +1,7 @@
+import { existsSync, readFileSync, writeFile } from 'fs';
 import { Preferences as IPreferences } from '@common/preferences/Preferences';
 import { PreferencesData } from '@common/preferences/PreferencesData';
 import { app } from 'electron';
-import { existsSync, readFileSync, writeFile } from 'fs';
 
 export class ElectronPreferences implements IPreferences {
   private readonly preferencesFilePath = `${app.getPath(

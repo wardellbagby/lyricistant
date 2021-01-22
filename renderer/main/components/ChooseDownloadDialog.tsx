@@ -88,13 +88,11 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
     onClose();
   };
 
-  const releases = useMemo(() => {
-    return supportedReleases.reduce((map, release) => {
+  const releases = useMemo(() => supportedReleases.reduce((map, release) => {
       const list = map.get(release.platform) ?? [];
       map.set(release.platform, [...list, release]);
       return map;
-    }, new Map<string, Release[]>());
-  }, []);
+    }, new Map<string, Release[]>()), []);
 
   return (
     <Dialog
@@ -107,8 +105,7 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
       </DialogTitle>
       <Box paddingLeft={'16px'} paddingRight={'16px'} paddingBottom={'32px'}>
         <Grid container spacing={4} alignItems={'center'} justify={'center'}>
-          {[...releases.keys()].map((platform) => {
-            return (
+          {[...releases.keys()].map((platform) => (
               <Grid
                 container
                 item
@@ -121,8 +118,7 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
                     {platform}
                   </Typography>
                 </Grid>
-                {releases.get(platform).map((release, index, archs) => {
-                  return (
+                {releases.get(platform).map((release, index, archs) => (
                     <Grid
                       key={release.asset}
                       item
@@ -137,11 +133,9 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
                         }}
                       />
                     </Grid>
-                  );
-                })}
+                  ))}
               </Grid>
-            );
-          })}
+            ))}
         </Grid>
       </Box>
       <Button

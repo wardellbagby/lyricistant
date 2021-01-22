@@ -6,7 +6,7 @@ import { FileManager } from './FileManager';
 import { TemporaryFiles } from './TemporaryFiles';
 
 export class UnsavedDataManager implements Manager {
-  constructor(
+  public constructor(
     private rendererDelegate: RendererDelegate,
     private fileManager: FileManager,
     private temporaryFiles: TemporaryFiles,

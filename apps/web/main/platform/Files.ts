@@ -3,7 +3,7 @@ import { Logger } from '@common/Logger';
 import { fileOpen, fileSave } from 'browser-nativefs';
 
 export class WebFiles implements IFiles {
-  constructor(private logger: Logger) {}
+  public constructor(private logger: Logger) {}
 
   public openFile = async (file?: DroppableFile) => {
     if (file) {

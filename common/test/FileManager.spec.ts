@@ -179,11 +179,9 @@ describe('File Manager', () => {
 
   it('opens the file when prompt dialog says yes was chosen', async () => {
     dialogs.showDialog.returns(Promise.resolve('yes'));
-    files.openFile.callsFake((file) => {
-      return Promise.resolve(
+    files.openFile.callsFake((file) => Promise.resolve(
         new FileData(file.path, new TextDecoder().decode(file.data))
-      );
-    });
+      ));
     manager.register();
 
     await rendererListeners.invoke('prompt-save-file-for-open', {

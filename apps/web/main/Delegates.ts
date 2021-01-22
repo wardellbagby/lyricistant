@@ -76,7 +76,7 @@ class ListenerManager {
   }
 }
 
-const queue = (functions: Array<(...args: any[]) => void>, args: any[]) => {
+const queue = (functions: Array<(..._: any[]) => void>, args: any[]) => {
   args.forEach((arg) => {
     if (isError(arg)) {
       logger.error(arg.message, arg);
@@ -86,9 +86,7 @@ const queue = (functions: Array<(...args: any[]) => void>, args: any[]) => {
   functions.forEach((listener) => listener(...args));
 };
 
-const isError = (e: any) => {
-  return e instanceof Error;
-};
+const isError = (e: any) => e instanceof Error;
 
 const platformListeners: ListenerManager = new ListenerManager();
 const rendererListeners: ListenerManager = new ListenerManager();

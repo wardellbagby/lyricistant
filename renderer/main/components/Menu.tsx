@@ -10,10 +10,10 @@ import {
   Settings,
 } from '@material-ui/icons';
 import clsx from 'clsx';
-import { platformDelegate } from '../globals';
 
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import { platformDelegate } from '../globals';
 
 const useIconStyles = makeStyles((theme: Theme) => ({
   root: {

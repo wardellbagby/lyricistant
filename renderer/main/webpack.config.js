@@ -2,8 +2,7 @@ const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const packageInfo = require('@lyricistant/package_info.json');
 
-module.exports = ({ htmlTemplate }) => {
-  return {
+module.exports = ({ htmlTemplate }) => ({
     plugins: [
       new HtmlWebpackPlugin({
         title: 'Untitled',
@@ -28,5 +27,4 @@ module.exports = ({ htmlTemplate }) => {
     output: {
       filename: 'renderer.js'
     },
-  };
-};
+  });

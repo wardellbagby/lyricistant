@@ -12,7 +12,7 @@ export class FileManager implements Manager {
   > = [];
   private initialFileLoadedListener: () => void = undefined;
 
-  constructor(
+  public constructor(
     private rendererDelegate: RendererDelegate,
     private files: Files,
     private recentFiles: RecentFiles,

@@ -41,7 +41,7 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
   return [];
 };
 
-export function fetchRhymes(word: string): Observable<Rhyme[]> {
+export const fetchRhymes = (word: string): Observable<Rhyme[]> => {
   if (word.length === 0) {
     return of();
   }
@@ -65,10 +65,6 @@ export function fetchRhymes(word: string): Observable<Rhyme[]> {
       )
     )
   );
-}
-
-const flatten: <T>(input: T[][]) => T[] = (array) => {
-  return array.reduce((prev, current) => {
-    return prev.concat(current);
-  });
 };
+
+const flatten: <T>(input: T[][]) => T[] = (array) => array.reduce((prev, current) => prev.concat(current));

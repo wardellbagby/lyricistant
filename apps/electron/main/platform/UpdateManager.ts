@@ -13,7 +13,7 @@ export class UpdateManager implements Manager {
 
   private updateInfo: UpdateInfo;
 
-  constructor(
+  public constructor(
     private logger: Logger,
     private rendererDelegate: RendererDelegate,
     private store: AppStore

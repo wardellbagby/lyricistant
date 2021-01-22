@@ -4,7 +4,7 @@ interface AppStoreSchema {
   ignoredVersions: string[];
 }
 export class AppStore extends Store<AppStoreSchema> {
-  constructor() {
+  public constructor() {
     super({});
   }
 }

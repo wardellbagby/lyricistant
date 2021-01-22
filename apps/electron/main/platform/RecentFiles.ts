@@ -1,6 +1,6 @@
+import { existsSync } from 'fs';
 import { RecentFiles as IRecentFiles } from '@common/files/RecentFiles';
 import { app } from 'electron';
-import { existsSync } from 'fs';
 import { readFileSync, writeFile } from 'original-fs';
 
 export class ElectronRecentFiles implements IRecentFiles {

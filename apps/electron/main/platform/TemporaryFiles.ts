@@ -1,8 +1,8 @@
+import { existsSync, promises as fs } from 'fs';
+import path from 'path';
 import { TemporaryFiles } from '@common/files/TemporaryFiles';
 import { Logger } from '@common/Logger';
 import { app } from 'electron';
-import { existsSync, promises as fs } from 'fs';
-import path from 'path';
 
 export class ElectronTemporaryFiles implements TemporaryFiles {
   private temporaryFile = path.resolve(app.getPath('temp'), 'temp_lyrics.txt');
@@ -18,9 +18,7 @@ export class ElectronTemporaryFiles implements TemporaryFiles {
       )
     );
   };
-  public get = async () => {
-    return fs.readFile(this.temporaryFile, { encoding: 'utf8' });
-  };
+  public get = async () => fs.readFile(this.temporaryFile, { encoding: 'utf8' });
 
   public exists = () => existsSync(this.temporaryFile);
   public delete = () => {

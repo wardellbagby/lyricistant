@@ -3,7 +3,7 @@ import { Logger } from '../Logger';
 import { Manager } from '../Manager';
 
 export class LogManager implements Manager {
-  constructor(
+  public constructor(
     private rendererDelegate: RendererDelegate,
     private logger: Logger
   ) {}

@@ -1,6 +1,6 @@
+import { promises as fs } from 'fs';
 import { DroppableFile, FileData, Files as IFiles } from '@common/files/Files';
 import { dialog } from 'electron';
-import { promises as fs } from 'fs';
 import { isText } from 'istextorbinary';
 import { mainWindow } from '../index';
 

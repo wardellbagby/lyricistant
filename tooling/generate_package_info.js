@@ -1,19 +1,17 @@
 const { writeFileSync, readFileSync } = require('fs');
-const packageInfo = require('../package.json');
 const path = require('path');
+const packageInfo = require('../package.json');
 
 const outputFile = process.argv[2];
 const stableStatusFile = process.argv[3];
 const isNightly = process.argv[4] === 'nightly';
 
-const latestCommitHash = () => {
-  return readFileSync(stableStatusFile)
+const latestCommitHash = () => readFileSync(stableStatusFile)
     .toString()
     .split('\n')
     .find((line) => line.startsWith('STABLE_GIT_COMMIT'))
     .split(' ')[1]
     .substr(0, 8);
-};
 
 const newVersion = isNightly
   ? `${packageInfo.version}-nightly+${latestCommitHash()}`

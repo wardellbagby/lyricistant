@@ -1,7 +1,7 @@
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import * as path from 'path';
 import { pathToFileURL } from 'url';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { BrowserObject, remote } from 'webdriverio';
 
 use(chaiAsPromised);
@@ -40,11 +40,9 @@ describe('Webpage launch', () => {
 
   after(() => client.deleteSession());
 
-  it('has a title of Lyricistant - Untitled', () => {
-    return expect(client.getTitle()).to.eventually.equal(
+  it('has a title of Lyricistant - Untitled', () => expect(client.getTitle()).to.eventually.equal(
       'Lyricistant - Untitled'
-    );
-  });
+    ));
 
   it('shows the basic components', async () => {
     const components = [

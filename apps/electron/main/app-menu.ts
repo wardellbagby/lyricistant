@@ -1,6 +1,7 @@
+import { setTimeout } from 'timers';
+import { MenuItemConstructorOptions } from 'electron';
 import Platform = NodeJS.Platform;
 import Timeout = NodeJS.Timeout;
-import { MenuItemConstructorOptions } from 'electron';
 
 export interface MenuItemHandlers {
   onNewClicked: () => void;
@@ -23,10 +24,9 @@ export const createAppMenu = (
   handlers: MenuItemHandlers,
   recentFiles?: string[]
 ): MenuItemConstructorOptions[] => {
-  Object.keys({ ...handlers })
+  (Object.keys({ ...handlers }) as Array<keyof MenuItemHandlers>)
     .filter((name) => name.startsWith('on'))
     .forEach((funcName) => {
-      // @ts-ignore
       handlers[funcName] = debounce(handlers[funcName]);
     });
   const isMac = platform === 'darwin';
@@ -121,38 +121,36 @@ const createFileMenu = (
 
 const createEditMenu = (
   handlers: MenuItemHandlers
-): MenuItemConstructorOptions => {
-  return {
-    label: 'Edit',
-    submenu: [
-      {
-        label: 'Undo',
-        click: handlers.onUndoClicked,
-        accelerator: 'CmdOrCtrl+Z',
-      },
-      {
-        label: 'Redo',
-        click: handlers.onRedoClicked,
-        accelerator: 'Shift+CmdOrCtrl+Z',
-      },
-      { type: 'separator' },
-      { role: 'cut' },
-      { role: 'copy' },
-      { role: 'paste' },
-      { type: 'separator' },
-      {
-        label: 'Find',
-        accelerator: 'CmdOrCtrl+F',
-        click: handlers.onFindClicked,
-      },
-      {
-        label: 'Replace',
-        accelerator: 'CmdOrCtrl+Shift+F',
-        click: handlers.onReplaceClicked,
-      },
-    ],
-  };
-};
+): MenuItemConstructorOptions => ({
+  label: 'Edit',
+  submenu: [
+    {
+      label: 'Undo',
+      click: handlers.onUndoClicked,
+      accelerator: 'CmdOrCtrl+Z',
+    },
+    {
+      label: 'Redo',
+      click: handlers.onRedoClicked,
+      accelerator: 'Shift+CmdOrCtrl+Z',
+    },
+    { type: 'separator' },
+    { role: 'cut' },
+    { role: 'copy' },
+    { role: 'paste' },
+    { type: 'separator' },
+    {
+      label: 'Find',
+      accelerator: 'CmdOrCtrl+F',
+      click: handlers.onFindClicked,
+    },
+    {
+      label: 'Replace',
+      accelerator: 'CmdOrCtrl+Shift+F',
+      click: handlers.onReplaceClicked,
+    },
+  ],
+});
 
 const createRecentFilesSubmenu = (
   handlers: MenuItemHandlers,
@@ -166,51 +164,46 @@ const createRecentFilesSubmenu = (
       },
     ];
   }
-  return recentFiles.map((filePath: string) => {
-    return {
-      label: filePath,
-      click: () => handlers.onOpenRecentClicked(filePath),
-    };
-  });
+  return recentFiles.map((filePath: string) => ({
+    label: filePath,
+    click: () => handlers.onOpenRecentClicked(filePath),
+  }));
 };
 
 const createMacMenu = (
   appName: string,
   handlers: MenuItemHandlers
-): MenuItemConstructorOptions => {
-  return {
-    label: appName,
-    submenu: [
-      {
-        label: 'About Lyricistant...',
-        click: handlers.onAboutClicked,
-      },
-      { type: 'separator' },
-      {
-        label: 'Preferences',
-        click: handlers.onPreferencesClicked,
-      },
-      { type: 'separator' },
-      { role: 'services' },
-      { type: 'separator' },
-      { role: 'hide' },
-      { role: 'hideOthers' },
-      { role: 'unhide' },
-      { type: 'separator' },
-      {
-        label: 'Quit',
-        click: handlers.onQuitClicked,
-        accelerator: 'Cmd+Q',
-      },
-    ],
-  };
-};
+): MenuItemConstructorOptions => ({
+  label: appName,
+  submenu: [
+    {
+      label: 'About Lyricistant...',
+      click: handlers.onAboutClicked,
+    },
+    { type: 'separator' },
+    {
+      label: 'Preferences',
+      click: handlers.onPreferencesClicked,
+    },
+    { type: 'separator' },
+    { role: 'services' },
+    { type: 'separator' },
+    { role: 'hide' },
+    { role: 'hideOthers' },
+    { role: 'unhide' },
+    { type: 'separator' },
+    {
+      label: 'Quit',
+      click: handlers.onQuitClicked,
+      accelerator: 'Cmd+Q',
+    },
+  ],
+});
 
 const debounce = (callback: (...args: any[]) => void) => {
   let timeout: Timeout;
   return (...args: any[]) => {
-    const context = this;
     clearTimeout(timeout);
-    timeout = setTimeout(() => callback.apply(context, args), 200);
+    timeout = setTimeout(() => callback.apply(this, args), 200);
   };
 };

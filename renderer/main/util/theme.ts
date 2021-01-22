@@ -4,9 +4,7 @@ import {
   Theme,
 } from '@material-ui/core/styles';
 
-export const getThemePalette = (useDarkTheme: boolean) => {
-  return useDarkTheme ? darkThemePalette : lightThemePalette;
-};
+export const getThemePalette = (useDarkTheme: boolean) => useDarkTheme ? darkThemePalette : lightThemePalette;
 export const createTheme = (
   textSize: number | null,
   useDarkTheme: boolean

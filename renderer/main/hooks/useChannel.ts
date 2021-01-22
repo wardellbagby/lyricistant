@@ -1,7 +1,7 @@
 import { PlatformToRendererListener, RendererChannel } from '@common/Delegates';
+import { DependencyList, useEffect } from 'react';
 import { platformDelegate } from '../globals';
 
-import { DependencyList, useEffect } from 'react';
 
 /**
  * Register the provided listener on the given platform channel. The listener

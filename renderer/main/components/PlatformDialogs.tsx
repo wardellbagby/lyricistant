@@ -46,13 +46,11 @@ export function PlatformDialog() {
 
       {dialogData.buttons && (
         <DialogActions>
-          {dialogData.buttons.map((label) => {
-            return (
+          {dialogData.buttons.map((label) => (
               <Button onClick={() => onButtonClick(label)} color="primary">
                 {label}
               </Button>
-            );
-          })}
+            ))}
         </DialogActions>
       )}
     </Dialog>
@@ -61,8 +59,7 @@ export function PlatformDialog() {
 
 const LinearProgressWithLabel = (
   props: LinearProgressProps & { value: number }
-) => {
-  return (
+) => (
     <Box
       display="flex"
       alignItems="center"
@@ -81,4 +78,3 @@ const LinearProgressWithLabel = (
       </Box>
     </Box>
   );
-};

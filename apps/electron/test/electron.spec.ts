@@ -1,6 +1,6 @@
+import path from 'path';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import path from 'path';
 import { Application, SpectronClient } from 'spectron';
 
 use(chaiAsPromised);
@@ -32,13 +32,9 @@ describe('Electron launch', () => {
     }
   });
 
-  it('shows an initial window', () => {
-    return expect(client.getWindowCount()).to.eventually.equal(1);
-  });
+  it('shows an initial window', () => expect(client.getWindowCount()).to.eventually.equal(1));
 
-  it('has a title of untitled', () => {
-    return expect(app.browserWindow.getTitle()).to.eventually.equal('Untitled');
-  });
+  it('has a title of untitled', () => expect(app.browserWindow.getTitle()).to.eventually.equal('Untitled'));
 
   it('shows the basic components', async () => {
     const components = [

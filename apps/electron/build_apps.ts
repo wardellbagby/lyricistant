@@ -1,11 +1,11 @@
-/* tslint:disable:no-console */
+/* eslint-disable no-console */
+import fs from 'fs';
+import path from 'path';
 import {
   build as electronBuild,
   createTargets,
   Platform,
 } from 'electron-builder';
-import fs from 'fs';
-import path from 'path';
 
 const appsOutputDir = process.argv[2];
 const codeSourcesDirectory = process.argv[3];

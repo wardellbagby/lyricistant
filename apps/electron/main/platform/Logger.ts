@@ -1,8 +1,8 @@
+import { parse } from 'path';
 import { Logger } from '@common/Logger';
 import AdmZip from 'adm-zip';
 import { BrowserWindow, dialog } from 'electron';
 import log from 'electron-log';
-import { parse } from 'path';
 
 export class ElectronLogger implements Logger {
   public debug(message: string, ...args: any[]): void {
@@ -44,8 +44,7 @@ export class ElectronLogger implements Logger {
   }
 }
 
-const writeZip = async (zip: AdmZip, targetFileName: string) => {
-  return new Promise((resolve, reject) => {
+const writeZip = async (zip: AdmZip, targetFileName: string) => new Promise((resolve, reject) => {
     zip.writeZip(targetFileName, (error) => {
       if (error) {
         reject(error);
@@ -54,4 +53,3 @@ const writeZip = async (zip: AdmZip, targetFileName: string) => {
       }
     });
   });
-};
