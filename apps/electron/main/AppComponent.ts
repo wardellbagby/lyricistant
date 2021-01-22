@@ -15,6 +15,7 @@ import type { TitleFormatter, UiConfigProvider } from '@common/ui/UiConfig';
 import type { UiConfigManager } from '@common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
 import { BrowserWindow, ipcMain } from 'electron';
+import { AppStore } from './AppStore';
 import { ElectronRendererDelegate } from './Delegates';
 import type { ElectronDialogs } from './platform/Dialogs';
 import type { ElectronFiles } from './platform/Files';
@@ -25,6 +26,7 @@ import type { ElectronRecentFiles } from './platform/RecentFiles';
 import type { ElectronSystemThemeProvider } from './platform/SystemThemeProvider';
 import { ElectronTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
+import { UpdateManager } from './platform/UpdateManager';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();
@@ -38,6 +40,7 @@ const createComponent = (): DIContainer => {
     return new ElectronRendererDelegate(ipcMain, mainWindow);
   });
 
+  component.registerSingleton<AppStore>();
   component.registerSingleton<Dialogs, ElectronDialogs>();
   component.registerSingleton<Files, ElectronFiles>();
   component.registerSingleton<Logger, ElectronLogger>();
@@ -57,6 +60,7 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<UiConfigManager>();
   component.registerSingleton<QuitManager>();
   component.registerSingleton<LogManager>();
+  component.registerSingleton<UpdateManager>();
 
   component.registerTransient<Managers>(() => [
     component.get<FileManager>(),
@@ -65,6 +69,7 @@ const createComponent = (): DIContainer => {
     component.get<UiConfigManager>(),
     component.get<QuitManager>(),
     component.get<LogManager>(),
+    component.get<UpdateManager>(),
   ]);
   return component;
 };

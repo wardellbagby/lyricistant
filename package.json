@@ -26,7 +26,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint-fix && ts-node --project script-tsconfig.json bin/check_github_workflows.ts"
+      "pre-push": "npm run lint && ts-node --project script-tsconfig.json bin/check_github_workflows.ts"
     }
   },
   "devDependencies": {
@@ -119,6 +119,7 @@
     "codemirror": "^5.57.0",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.3.1",
+    "electron-store": "^6.0.1",
     "istextorbinary": "^5.11.0",
     "luxon": "^1.25.0",
     "mdi-material-ui": "^6.18.0",

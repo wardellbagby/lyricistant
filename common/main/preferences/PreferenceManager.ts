@@ -42,12 +42,11 @@ export class PreferenceManager implements Manager {
   };
 
   private preferencesOrDefault = (): PreferencesData => {
-    return (
-      this.preferences.getPreferences() ?? {
-        textSize: 16,
-        theme: Theme.System,
-      }
-    );
+    return {
+      textSize: 16,
+      theme: Theme.System,
+      ...this.preferences.getPreferences(),
+    };
   };
 
   private sendThemeUpdate = (data: PreferencesData): void => {

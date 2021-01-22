@@ -1,10 +1,10 @@
+import { isDevelopment, isUiTest } from '@common/BuildModes';
 import { RendererDelegate } from '@common/Delegates';
 import { FileManager } from '@common/files/FileManager';
 import { Logger } from '@common/Logger';
 import { Managers } from '@common/Managers';
 import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
-import { autoUpdater } from 'electron-updater';
 import { platform } from 'os';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
@@ -12,9 +12,6 @@ import { createAppMenu } from './app-menu';
 import { appComponent } from './AppComponent';
 import { createRendererDelegate } from './Delegates';
 import { QuitManager } from './platform/QuitManager';
-
-const isUiTest = process.env.NODE_ENV === 'spectron-test';
-const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export let mainWindow: BrowserWindow;
 let rendererDelegate: RendererDelegate;
@@ -59,7 +56,6 @@ function createWindow(): void {
   rendererDelegate = createRendererDelegate(mainWindow);
   appComponent.get<Managers>().forEach((manager) => manager.register());
   registerListeners();
-  setupUpdater();
 
   logger.info('Platform information', {
     appPlatform: 'Electron',
@@ -105,14 +101,6 @@ function registerListeners() {
   appComponent.get<FileManager>().addOnFileChangedListener((_, recentFiles) => {
     setMenu(recentFiles);
   });
-}
-
-function setupUpdater() {
-  autoUpdater.logger = logger;
-  autoUpdater.autoDownload = false;
-  autoUpdater.autoInstallOnAppQuit = false;
-  // noinspection JSIgnoredPromiseFromCall
-  autoUpdater.checkForUpdatesAndNotify();
 }
 
 function setMenu(recentFiles?: string[]): void {

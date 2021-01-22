@@ -1,19 +1,29 @@
+import { isDevelopment } from '@common/BuildModes';
 import {
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogTitle,
+  TextareaAutosize,
   Typography,
 } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { logger } from '../globals';
 
-export function AppError({ editorText }: { editorText: string }) {
+interface AppErrorProps {
+  editorText: string;
+  error: Error;
+}
+export function AppError({ editorText, error }: AppErrorProps) {
   const onClose = useCallback(() => window.location.reload(), []);
   const onCopy = useCallback(
     () => window.navigator.clipboard.writeText(editorText),
     []
   );
+  useEffect(() => {
+    logger.error('Error in renderer', error);
+  }, [error]);
   return (
     <Dialog onClose={onClose} open={true}>
       <DialogTitle>Application Error</DialogTitle>
@@ -22,6 +32,21 @@ export function AppError({ editorText }: { editorText: string }) {
           Sorry, an error has occurred in Lyricistant. Please reload the page to
           continue. You can copy your current lyrics to the clipboard.{' '}
         </Typography>
+        {isDevelopment && (
+          <Box
+            fontFamily={'Roboto Mono'}
+            width={'100%'}
+            minWidth={'100%'}
+            maxWidth={'100%'}
+          >
+            <TextareaAutosize
+              wrap={'soft'}
+              rowsMax={6}
+              readOnly
+              defaultValue={error.stack}
+            />
+          </Box>
+        )}
       </Box>
       <DialogActions>
         <Button variant={'contained'} onClick={onCopy}>

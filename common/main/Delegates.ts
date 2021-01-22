@@ -1,3 +1,4 @@
+import { DialogData } from './dialogs/Dialog';
 import { DroppableFile } from './files/Files';
 import { PreferencesData } from './preferences/PreferencesData';
 import { UiConfig } from './ui/UiConfig';
@@ -19,6 +20,7 @@ export interface RendererToPlatformListener {
   'save-file-attempt': (data: string) => void;
   'request-ui-config': () => void;
   'save-logs': () => void;
+  'dialog-button-clicked': (dialogTag: string, buttonLabel: string) => void;
 }
 
 /**
@@ -48,6 +50,7 @@ export interface PlatformToRendererListener {
   'ui-config': (config: UiConfig) => void;
   'app-title-changed': (title: string) => void;
   'open-about': () => void;
+  'show-dialog': (dialog: DialogData) => void;
 }
 
 export type RendererChannel = Extract<keyof PlatformToRendererListener, string>;

@@ -21,6 +21,7 @@ ts_project(
         "@npm//electron",
         "@npm//electron-debug",
         "@npm//electron-log",
+        "@npm//electron-store",
         "@npm//electron-updater",
         "@npm//istextorbinary",
         "@npm//luxon",

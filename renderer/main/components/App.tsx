@@ -17,6 +17,7 @@ import { AppLayout } from './AppLayout';
 import { ChooseDownloadDialog } from './ChooseDownloadDialog';
 import { Editor, TextReplacement, WordAtPosition } from './Editor';
 import { Menu } from './Menu';
+import { PlatformDialog } from './PlatformDialogs';
 import { Preferences } from './Preferences';
 import { Rhymes } from './Rhymes';
 
@@ -68,7 +69,11 @@ export function App() {
   useChannel('open-about', () => setScreen(Screen.ABOUT));
 
   return (
-    <ErrorBoundary fallbackRender={() => <AppError editorText={editorText} />}>
+    <ErrorBoundary
+      fallbackRender={({ error }) => (
+        <AppError error={error} editorText={editorText} />
+      )}
+    >
       <Switch>
         <Route path={'/download'}>
           <ChooseDownloadDialog show={true} onClose={() => history.goBack()} />
@@ -111,6 +116,7 @@ export function App() {
         </Route>
         <Route render={() => <Redirect to="/" />} />
       </Switch>
+      <PlatformDialog />
     </ErrorBoundary>
   );
 }

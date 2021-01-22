@@ -21,7 +21,7 @@ def bundle_js(name, outs, entries, target, data, config = None, visibility = Non
     config_args = [x for x in ["--config", config] for y in [config] if y != None]
     output_args = None
     env_args = select({
-        "//:test_build": ["--define", 'process.env.NODE_ENV="spectron-test"'],
+        "//:test_build": ["--define", 'process.env.NODE_ENV="ui-testing"'],
         "//conditions:default": [],
     })
     if len(outs) > 1:
