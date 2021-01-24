@@ -1,45 +1,68 @@
 import { RendererDelegate } from '../Delegates';
-import { Dialogs } from '../dialogs/Dialogs';
 import { Logger } from '../Logger';
-import { Manager } from '../Manager';
+import { Manager, withDialogSupport } from '../Manager';
+import { YES_NO_BUTTONS } from '../dialogs/Dialog';
 import { FileManager } from './FileManager';
 import { TemporaryFiles } from './TemporaryFiles';
 
 export class UnsavedDataManager implements Manager {
+  private static readonly RECOVER_UNSAVED_LYRICS_TAG =
+    'unsaved-data-manager-recover-lyrics';
+
   public constructor(
     private rendererDelegate: RendererDelegate,
     private fileManager: FileManager,
     private temporaryFiles: TemporaryFiles,
-    private dialogs: Dialogs,
     private logger: Logger
-  ) {}
-
-  public register(): void {
-    this.fileManager.setInitialFileLoadedListener(this.checkForUnsavedData);
+  ) {
+    withDialogSupport(
+      this,
+      rendererDelegate,
+      this.onDialogClicked,
+      UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG
+    );
   }
+
+  public register = (): void => {
+    this.fileManager.setInitialFileLoadedListener(this.checkForUnsavedData);
+  };
 
   private checkForUnsavedData = async () => {
     this.logger.verbose('Checking for unsaved data...');
     if (this.temporaryFiles.exists()) {
       this.logger.verbose('Unsaved data found.');
-      const unsavedData = await this.temporaryFiles.get();
-      const result = await this.dialogs.showDialog(
-        'Unsaved lyrics found. Would you like to recover them?'
-      );
-      if (result === 'yes') {
-        this.rendererDelegate.send(
-          'file-opened',
-          undefined,
-          undefined,
-          unsavedData,
-          false
-        );
-      }
+      this.rendererDelegate.send('show-dialog', {
+        tag: UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
+        title: 'Recover unsaved lyrics',
+        message: 'Unsaved lyrics found. Would you like to recover them?',
+        buttons: YES_NO_BUTTONS,
+      });
+    } else {
+      this.startAutomaticFileSaver();
     }
+
+  };
+
+  private startAutomaticFileSaver = () => {
     setTimeout(this.saveFile, 5000);
     this.fileManager.addOnFileChangedListener(() => {
       this.temporaryFiles.delete();
     });
+  }
+
+  private onDialogClicked = async (tag: string, buttonLabel: string) => {
+    if (tag === UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG) {
+      if (buttonLabel === 'Yes') {
+        this.rendererDelegate.send(
+          'file-opened',
+          undefined,
+          undefined,
+          await this.temporaryFiles.get(),
+          false
+        );
+      }
+      this.startAutomaticFileSaver();
+    }
   };
 
   private saveFile = () => {

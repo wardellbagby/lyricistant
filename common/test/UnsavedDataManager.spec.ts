@@ -1,5 +1,4 @@
 import { RendererDelegate } from '@common/Delegates';
-import { Dialogs } from '@common/dialogs/Dialogs';
 import { FileManager } from '@common/files/FileManager';
 import { TemporaryFiles } from '@common/files/TemporaryFiles';
 import { UnsavedDataManager } from '@common/files/UnsavedDataManager';
@@ -15,7 +14,6 @@ describe('Unsaved Data Manager', () => {
   let rendererDelegate: StubbedInstance<RendererDelegate>;
   let fileManager: StubbedInstance<FileManager>;
   let temporaryFiles: StubbedInstance<TemporaryFiles>;
-  let dialogs: StubbedInstance<Dialogs>;
   const rendererListeners = new RendererListeners();
   let fileChangedListener: (...args: any[]) => void;
   let initialFileLoadedListener: (...args: any[]) => void;
@@ -32,7 +30,6 @@ describe('Unsaved Data Manager', () => {
     fileManager.setInitialFileLoadedListener.callsFake((listener) => {
       initialFileLoadedListener = listener;
     });
-    dialogs = stubInterface<Dialogs>();
     rendererDelegate = stubInterface();
     rendererDelegate.send.returns(undefined);
     rendererDelegate.on.callsFake(function (channel, listener) {
@@ -44,7 +41,6 @@ describe('Unsaved Data Manager', () => {
       rendererDelegate,
       fileManager,
       temporaryFiles,
-      dialogs,
       stubInterface()
     );
   });
@@ -65,15 +61,34 @@ describe('Unsaved Data Manager', () => {
     manager.register();
     await initialFileLoadedListener();
 
-    expect(dialogs.showDialog).to.have.been.called;
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'show-dialog',
+      sinon.match({
+        tag: (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
+        title: 'Recover unsaved lyrics',
+      })
+    );
+  });
+
+  it('does not prompt if unsaved data is not found', async () => {
+    temporaryFiles.exists.returns(false);
+
+    manager.register();
+    await initialFileLoadedListener();
+
+    expect(rendererDelegate.send).to.have.not.been.called;
   });
 
   it('loads the unsaved data if user selects to', async () => {
     temporaryFiles.exists.returns(true);
-    dialogs.showDialog.returns(Promise.resolve('yes'));
 
     manager.register();
     await initialFileLoadedListener();
+    await rendererListeners.invoke(
+      'dialog-button-clicked',
+      (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
+      'Yes'
+    );
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
@@ -86,10 +101,14 @@ describe('Unsaved Data Manager', () => {
 
   it('does not load the unsaved data if user selects to', async () => {
     temporaryFiles.exists.returns(true);
-    dialogs.showDialog.returns(Promise.resolve('no'));
 
     manager.register();
     await initialFileLoadedListener();
+    await rendererListeners.invoke(
+      'dialog-button-clicked',
+      (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
+      'No'
+    );
 
     expect(rendererDelegate.send).to.have.not.been.calledWith(
       'file-opened',
@@ -101,11 +120,26 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('deletes the unsaved data on file change', async () => {
-    temporaryFiles.exists.returns(true);
-    dialogs.showDialog.returns(Promise.resolve('no'));
+    temporaryFiles.exists.returns(false);
 
     manager.register();
     await initialFileLoadedListener();
+    fileChangedListener();
+
+    expect(temporaryFiles.delete).to.have.been.called;
+  });
+
+  it('deletes the unsaved data on file change after user did not load unsaved data', async () => {
+    temporaryFiles.exists.returns(true);
+
+    manager.register();
+    await initialFileLoadedListener();
+    await rendererListeners.invoke(
+      'dialog-button-clicked',
+      (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
+      'No'
+    );
+
     fileChangedListener();
 
     expect(temporaryFiles.delete).to.have.been.called;

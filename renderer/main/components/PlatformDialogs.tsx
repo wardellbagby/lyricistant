@@ -47,10 +47,14 @@ export function PlatformDialog() {
       {dialogData.buttons && (
         <DialogActions>
           {dialogData.buttons.map((label) => (
-              <Button onClick={() => onButtonClick(label)} color="primary">
-                {label}
-              </Button>
-            ))}
+            <Button
+              key={label}
+              onClick={() => onButtonClick(label)}
+              color="primary"
+            >
+              {label}
+            </Button>
+          ))}
         </DialogActions>
       )}
     </Dialog>
@@ -60,21 +64,21 @@ export function PlatformDialog() {
 const LinearProgressWithLabel = (
   props: LinearProgressProps & { value: number }
 ) => (
-    <Box
-      display="flex"
-      alignItems="center"
-      paddingTop={'16px'}
-      paddingBottom={'16px'}
-      paddingLeft={'8px'}
-      paddingRight={'8px'}
-    >
-      <Box width="100%" mr={1}>
-        <LinearProgress variant="determinate" {...props} />
-      </Box>
-      <Box minWidth={35}>
-        <Typography variant="body2" color="textSecondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
-      </Box>
+  <Box
+    display="flex"
+    alignItems="center"
+    paddingTop={'16px'}
+    paddingBottom={'16px'}
+    paddingLeft={'8px'}
+    paddingRight={'8px'}
+  >
+    <Box width="100%" mr={1}>
+      <LinearProgress variant="determinate" {...props} />
     </Box>
-  );
+    <Box minWidth={35}>
+      <Typography variant="body2" color="textSecondary">{`${Math.round(
+        props.value
+      )}%`}</Typography>
+    </Box>
+  </Box>
+);
