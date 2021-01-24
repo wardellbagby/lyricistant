@@ -12,5 +12,5 @@ js_library(
 ts_project(
     name = "compile_ts",
     srcs = glob(["**/*.ts"]),
-    deps = ["//common/main"]
+    deps = ["//common/main"],
 )

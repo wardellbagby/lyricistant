@@ -12,11 +12,24 @@ export class WebFiles implements IFiles {
       }
       return new FileData(file.path, new TextDecoder().decode(file.data));
     }
-    const result = await fileOpen({
-      mimeTypes: ['text/plain'],
-      extensions: ['.txt'],
-      multiple: false,
-    });
+
+    let result: File;
+    try {
+      result = await fileOpen({
+        mimeTypes: ['text/plain'],
+        extensions: ['.txt'],
+        multiple: false,
+      });
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        this.logger.verbose(
+          'Swallowing exception since user closed the open file picker',
+          e
+        );
+      } else {
+        throw e;
+      }
+    }
 
     if (result) {
       return new FileData(result.name, await readAsText(result));
