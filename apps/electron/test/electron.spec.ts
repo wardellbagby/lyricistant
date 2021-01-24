@@ -26,9 +26,8 @@ describe('Electron launch', () => {
   });
 
   afterEach(async () => {
-    if (app && app.isRunning()) {
-      await client.closeWindow();
-      app.mainProcess.exit(0);
+    if (app) {
+      await app.stop();
     }
   });
 

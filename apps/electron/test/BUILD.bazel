@@ -8,6 +8,7 @@ ts_node_project(
         "//apps/electron/main",
         "//common/main",
         "//testing/ui-utilities",
+        "//testing/utilities",
         "@npm//@types/chai-as-promised",
         "@npm//@types/chai-subset",
         "@npm//@types/mocha",

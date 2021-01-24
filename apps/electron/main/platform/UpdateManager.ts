@@ -2,7 +2,7 @@ import { isDevelopment, isUiTest } from '@common/BuildModes';
 import { RendererDelegate } from '@common/Delegates';
 import { Logger } from '@common/Logger';
 import { Manager } from '@common/Manager';
-import { autoUpdater, UpdateInfo } from 'electron-updater';
+import { AppUpdater, UpdateInfo } from 'electron-updater';
 import { AppStore } from '../AppStore';
 
 export class UpdateManager implements Manager {
@@ -14,13 +14,14 @@ export class UpdateManager implements Manager {
   private updateInfo: UpdateInfo;
 
   public constructor(
-    private logger: Logger,
     private rendererDelegate: RendererDelegate,
-    private store: AppStore
+    private store: AppStore,
+    private appUpdater: AppUpdater,
+    private logger: Logger,
   ) {}
 
   public register(): void {
-    this.setupAutoUpdater();
+    this.setupAppUpdater();
     this.rendererDelegate.on(
       'dialog-button-clicked',
       this.onDialogButtonClicked
@@ -28,10 +29,10 @@ export class UpdateManager implements Manager {
     this.rendererDelegate.on('ready-for-events', this.checkForUpdates);
   }
 
-  private setupAutoUpdater = () => {
-    autoUpdater.logger = this.logger;
-    autoUpdater.autoDownload = false;
-    autoUpdater.autoInstallOnAppQuit = true;
+  private setupAppUpdater = () => {
+    this.appUpdater.logger = this.logger;
+    this.appUpdater.autoDownload = false;
+    this.appUpdater.autoInstallOnAppQuit = true;
   };
 
   private checkForUpdates = () => {
@@ -39,9 +40,9 @@ export class UpdateManager implements Manager {
       this.logger.verbose('Skipping update checks since this is a dev build.');
       return;
     }
-    autoUpdater.removeAllListeners();
+    this.appUpdater.removeAllListeners();
 
-    autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+    this.appUpdater.on('update-available', (updateInfo: UpdateInfo) => {
       if (!updateInfo) {
         this.logger.warn("Couldn't update the app as update info was null");
         return;
@@ -61,14 +62,14 @@ export class UpdateManager implements Manager {
         buttons: ['Never', 'No', 'Yes'],
       });
     });
-    autoUpdater.on('download-progress', ({ transferred, total }) => {
+    this.appUpdater.on('download-progress', ({ transferred, total }) => {
       const percent = transferred / total;
       this.rendererDelegate.send('show-dialog', {
         title: 'Downloading Update',
         progress: percent * 100,
       });
     });
-    autoUpdater.on('error', (error) => {
+    this.appUpdater.on('error', (error) => {
       this.logger.warn('An error occurred with the auto updater.', error);
       this.rendererDelegate.send('show-dialog', {
         title: 'Error Downloading',
@@ -77,7 +78,7 @@ export class UpdateManager implements Manager {
         buttons: ['OK'],
       });
     });
-    autoUpdater.on('update-downloaded', () => {
+    this.appUpdater.on('update-downloaded', () => {
       this.rendererDelegate.send('show-dialog', {
         tag: UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG,
         title: 'Update Downloaded',
@@ -86,7 +87,7 @@ export class UpdateManager implements Manager {
         buttons: ['Later', 'Restart'],
       });
     });
-    autoUpdater
+    this.appUpdater
       .checkForUpdates()
       .catch((reason) =>
         this.logger.warn('Failed to check for updates', reason)
@@ -107,7 +108,7 @@ export class UpdateManager implements Manager {
   private onUpdateAvailableDialogClicked = (buttonLabel: string) => {
     switch (buttonLabel) {
       case 'Yes':
-        autoUpdater
+        this.appUpdater
           .downloadUpdate()
           .catch((reason) =>
             this.logger.warn('Failed to download updates.', reason)
@@ -124,7 +125,7 @@ export class UpdateManager implements Manager {
   private onUpdateDownloadedDialogClicked = (buttonLabel: string) => {
     switch (buttonLabel) {
       case 'Restart':
-        autoUpdater.quitAndInstall();
+        this.appUpdater.quitAndInstall();
         break;
     }
   };

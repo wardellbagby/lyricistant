@@ -6,7 +6,7 @@ import { expect, use } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { StubbedInstance, stubInterface } from 'ts-sinon';
-import { RendererListeners } from './utils';
+import { RendererListeners } from '@testing/utilities';
 
 use(sinonChai);
 

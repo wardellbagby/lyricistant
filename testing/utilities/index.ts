@@ -17,3 +17,13 @@ export class RendererListeners {
     value: RendererToPlatformListener[Channel]
   ) => this.listeners.set(key, value);
 }
+
+export class EventListeners {
+  private listeners: Map<string, Listener> = new Map();
+  public clear = () => this.listeners.clear();
+
+  public invoke = async (key: string, ...args: any[]): Promise<any> =>
+    this.listeners.get(key)(...args);
+
+  public set = (key: string, value: Listener) => this.listeners.set(key, value);
+}

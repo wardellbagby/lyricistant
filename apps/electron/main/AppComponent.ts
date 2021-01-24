@@ -15,6 +15,7 @@ import type { TitleFormatter, UiConfigProvider } from '@common/ui/UiConfig';
 import type { UiConfigManager } from '@common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
 import { BrowserWindow, ipcMain } from 'electron';
+import { AppUpdater, autoUpdater } from "electron-updater";
 import { AppStore } from './AppStore';
 import { ElectronRendererDelegate } from './Delegates';
 import type { ElectronDialogs } from './platform/Dialogs';
@@ -53,6 +54,7 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<TemporaryFiles, ElectronTemporaryFiles>();
   component.registerSingleton<UiConfigProvider>(() => provideUiConfig);
   component.registerSingleton<TitleFormatter>(() => formatTitle);
+  component.registerSingleton<AppUpdater>(() => autoUpdater);
 
   component.registerSingleton<FileManager>();
   component.registerSingleton<UnsavedDataManager>();

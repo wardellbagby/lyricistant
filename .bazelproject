@@ -19,7 +19,8 @@ import_run_configurations:
   .runConfigurations/Debug_Web.xml
 
 test_sources:
-  */test/*
+  apps/*/test/
+  common/test/
 
 ts_config_rules:
   //:tsconfig.json

@@ -6,6 +6,7 @@ ts_node_project(
     srcs = glob(["**/*.ts"]),
     deps = [
         "//common/main",
+        "//testing/utilities",
         "@npm//@types/mocha",
         "@npm//chai",
         "@npm//sinon-chai",
@@ -15,8 +16,6 @@ ts_node_project(
 
 mocha_test(
     name = "test",
-    # if we were in a subdirectory we'd need
-    # package_name() + "/*.spec.js"
     args = [package_name() + "/**/*.spec.js"],
     data = [
         ":compile_ts",
