@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Cancel in-progress builds
-        uses: styfle/cancel-workflow-action@0.5.0
+        uses: styfle/cancel-workflow-action@148d9a848c6acaf90a3ec30bc5062f646f8a4163 # pin@0.5.0
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout the current branch.
-        uses: actions/checkout@v2
+        uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
       - name: Setup Node.js - 14.x.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
         with:
           node-version: '>=14.15'
       - name: Setup virtual display
