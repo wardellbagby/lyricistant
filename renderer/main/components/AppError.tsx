@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useCallback, useEffect } from 'react';
+import Link from '@material-ui/core/Link';
 import { logger } from '../globals';
 
 interface AppErrorProps {
@@ -28,10 +29,17 @@ export function AppError({ editorText, error }: AppErrorProps) {
     <Dialog onClose={onClose} open={true}>
       <DialogTitle>Application Error</DialogTitle>
       <Box paddingLeft={'32px'} paddingRight={'32px'} paddingBottom={'24px'}>
-        <Typography variant={'body2'}>
+        <Typography paragraph>
           Sorry, an error has occurred in Lyricistant. Please reload the page to
-          continue. You can copy your current lyrics to the clipboard.{' '}
+          continue. You can copy your current lyrics to the clipboard.
         </Typography>
+        <Link
+          href={'https://github.com/wardellbagby/lyricistant/issues/new'}
+          rel="noopener"
+          variant={'body1'}
+        >
+          Click here to report an issue.
+        </Link>
         {isDevelopment && (
           <Box
             fontFamily={'Roboto Mono'}

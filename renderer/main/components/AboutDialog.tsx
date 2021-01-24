@@ -31,8 +31,17 @@ const aboutInfo = {
   Author: APP_AUTHOR,
   Version: APP_VERSION,
   Homepage: (
-    <Link target="_blank" href={APP_HOMEPAGE}>
+    <Link target="_blank" rel="noopener" href={APP_HOMEPAGE}>
       GitHub
+    </Link>
+  ),
+  'Report an issue': (
+    <Link
+      target="_blank"
+      rel="noopener"
+      href={'https://github.com/wardellbagby/lyricistant/issues/new'}
+    >
+      Issues
     </Link>
   ),
 };
@@ -71,11 +80,11 @@ export const AboutDialog = (props: AboutDialogProps) => {
               <Table size={'small'}>
                 <TableBody>
                   {Object.entries(aboutInfo).map(([key, value]) => (
-                      <TableRow key={key}>
-                        <DividerlessTableCell>{key}</DividerlessTableCell>
-                        <DividerlessTableCell>{value}</DividerlessTableCell>
-                      </TableRow>
-                    ))}
+                    <TableRow key={key}>
+                      <DividerlessTableCell>{key}</DividerlessTableCell>
+                      <DividerlessTableCell>{value}</DividerlessTableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
