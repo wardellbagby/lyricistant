@@ -6,7 +6,7 @@ on:
 jobs:
   assert-no-issues:
     name: "Assert no issues"
-    runs-on: macos-10.15
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout the current branch.
         uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
@@ -14,10 +14,14 @@ jobs:
         uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
         with:
           node-version: '>=14.15'
+      - name: Setup virtual display
+        run: Xvfb :99 &
       - name: Install Bazelisk
         run: npm install -g @bazel/bazelisk@1.7.3
       - name: Run all tests
         run: bazel test --build_tests_only //...
+        env:
+          DISPLAY: ':99'
       - name: Check for Lint issues.
         run: npm run lint
   deploy-web:
