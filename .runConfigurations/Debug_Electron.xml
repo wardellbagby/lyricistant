@@ -1,0 +1,1 @@
+<configuration name="Debug Electron" type="CompoundRunConfigurationType"><toRun name="Debug Electron - Main" type="ChromiumRemoteDebugType" /><toRun name="Debug Electron - Renderer" type="ChromiumRemoteDebugType" /><method v="2" /></configuration>

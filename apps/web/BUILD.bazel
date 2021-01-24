@@ -14,7 +14,6 @@ ws(
     args = [
         "--directory",
         "apps/web/",
-        "--open",
     ],
     data = [
         ":bundle_web",
@@ -59,7 +58,7 @@ bundle_js(
     target = "web",
     visibility = [":__subpackages__"],
     webpack_args = [
-        "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
-        "--optimize-max-chunks 5",  # TODO Kind of silly to arbitrarily restrict chunk count for Bazel's sake...
+        "--env",
+        "htmlTemplate=$(execpath //renderer/main:index.ejs)",
     ],
 )

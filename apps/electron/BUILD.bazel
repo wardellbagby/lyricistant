@@ -14,6 +14,8 @@ electron(
     name = "start",
     args = [
         "./apps/electron/main.js",
+        "--inspect=9229",
+        "--remote-debugging-port=9222",
     ],
     data = [
         ":bundled_main",
@@ -85,8 +87,6 @@ bundle_js(
     data = [
         ":webpack.config.js",
         "//apps/electron/main",
-        "@npm//webpack",
-        "@npm//webpack-cli",
     ],
     entries = ["./$(GENDIR)/apps/electron/main/index.js"],
     target = "electron-main",
@@ -95,12 +95,11 @@ bundle_js(
 bundle_js(
     name = "bundled_preload",
     outs = ["preload.js"],
+    bundle_name = "preload.js",
     config = "$(execpath :webpack.config.js)",
     data = [
         ":webpack.config.js",
         "//apps/electron/main",
-        "@npm//webpack",
-        "@npm//webpack-cli",
     ],
     entries = ["./$(GENDIR)/apps/electron/main/preload.js"],
     target = "electron-preload",
@@ -128,7 +127,8 @@ bundle_js(
     entries = ["./$(GENDIR)/renderer/main/index.js"],
     target = "web",
     webpack_args = [
-        "--env.htmlTemplate=$(execpath //renderer/main:index.ejs)",
+        "--env",
+        "htmlTemplate=$(execpath //renderer/main:index.ejs)",
     ],
 )
 

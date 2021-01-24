@@ -5,6 +5,7 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "inlineSourceMap": true,
+    "inlineSources": true,
     "allowJs": false,
     "esModuleInterop": true,
     "jsx": "react",

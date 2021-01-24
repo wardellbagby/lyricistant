@@ -1,6 +1,4 @@
 directories:
-  # Add the directories you want added as source here
-  # By default, we've added your entire workspace ('.')
   .
   -dist/
   -bazel-bin/
@@ -9,15 +7,19 @@ directories:
   -bazel-testlogs/
 
 derive_targets_from_directories: true
-# targets:
-#   //apps/electron:start
-#   //apps/electron:app
-#   //apps/web:start
-#   //apps/web:app
-#   //apps/electron/test:test
-#   //apps/web/test:test
-#   //common/test:test
 
 additional_languages:
   javascript
   typescript
+
+import_run_configurations:
+  .runConfigurations/Debug_Electron.xml
+  .runConfigurations/Debug_Electron___Main.xml
+  .runConfigurations/Debug_Electron___Renderer.xml
+  .runConfigurations/Debug_Web.xml
+
+test_sources:
+  */test/*
+
+ts_config_rules:
+  //:tsconfig.json
