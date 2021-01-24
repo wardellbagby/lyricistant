@@ -23,7 +23,7 @@ jobs:
   deploy-web:
     name: "Deploy Web"
     runs-on: ubuntu-20.04
-    needs: cancel-deploys
+    needs: assert-no-issues
     steps:
       - name: Checkout the current branch.
         uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
