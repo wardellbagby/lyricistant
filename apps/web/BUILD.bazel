@@ -2,21 +2,29 @@ load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("//:tooling/bundle_js.bzl", "bundle_js")
 load("@npm//local-web-server:index.bzl", "ws")
 
-package(default_visibility = ["//visibility:private"])
+package(default_visibility = [":__subpackages__"])
 
 filegroup(
     name = "static_resources",
     srcs = glob(["staticResources/*"]),
 )
 
+genrule(
+    name = "index_html",
+    srcs = ["//renderer/main:index.html"],
+    outs = ["index.html"],
+    cmd = "cp $< $@",
+)
+
 ws(
     name = "start",
     args = [
         "--directory",
-        "apps/web/",
+        ".",
     ],
     data = [
         ":bundle_web",
+        ":index_html",
         ":static_resources",
     ],
 )
@@ -25,6 +33,7 @@ pkg_zip(
     name = "app",
     srcs = [
         ":bundle_web",
+        ":index_html",
         ":static_resources",
     ],
 )
@@ -36,7 +45,6 @@ bundle_js(
         "1.renderer.js",
         "2.renderer.js",
         "3.renderer.js",
-        "index.html",
         "renderer.js",
     ],
     config = "$(execpath //renderer/main:webpack.config.js)",
@@ -44,21 +52,12 @@ bundle_js(
         "//:package_info",
         "//apps/web/main",
         "//renderer/main",
-        "//renderer/main:index.ejs",
         "//renderer/main:webpack.config.js",
         "@npm//css-loader",
-        "@npm//file-loader",
-        "@npm//html-webpack-plugin",
         "@npm//style-loader",
         "@npm//url-loader",
-        "@npm//webpack",
-        "@npm//webpack-cli",
     ],
     entries = ["./$(GENDIR)/apps/web/main/index.js"],
     target = "web",
     visibility = [":__subpackages__"],
-    webpack_args = [
-        "--env",
-        "htmlTemplate=$(execpath //renderer/main:index.ejs)",
-    ],
 )

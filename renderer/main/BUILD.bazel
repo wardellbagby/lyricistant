@@ -4,7 +4,7 @@ load("//:tooling/ts_project.bzl", "ts_project")
 package(default_visibility = ["//visibility:private"])
 
 exports_files([
-    "index.ejs",
+    "index.html",
     "webpack.config.js",
 ])
 

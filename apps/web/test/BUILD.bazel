@@ -28,6 +28,7 @@ mocha_test(
         "//:.mocharc.json",
         "//:package.json",
         "//apps/web:bundle_web",
+        "//apps/web:index_html",
         "//testing/ui-utilities",
         "@npm//chai-as-promised",
     ],

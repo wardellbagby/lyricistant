@@ -1,0 +1,18 @@
+load("//:tooling/bundle_js.bzl", "bundle_js")
+
+bundle_js(
+    name = "bundled",
+    outs = ["renderer.js"],
+    config = "$(execpath //renderer/main:webpack.config.js)",
+    data = [
+        "//:package_info",
+        "//renderer/main",
+        "//renderer/main:webpack.config.js",
+        "@npm//css-loader",
+        "@npm//style-loader",
+        "@npm//url-loader",
+    ],
+    entries = ["./$(GENDIR)/renderer/main/index.js"],
+    target = "web",
+    visibility = ["//visibility:public"],
+)

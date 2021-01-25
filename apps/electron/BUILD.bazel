@@ -10,6 +10,31 @@ filegroup(
     srcs = glob(["distResources/**/*"]),
 )
 
+genrule(
+    name = "index_html",
+    srcs = ["//renderer/main:index.html"],
+    outs = ["index.html"],
+    cmd = "cp $< $@",
+)
+
+genrule(
+    name = "renderer",
+    srcs = ["//renderer:bundled"],
+    outs = [
+        "renderer.js",
+        "renderer.js.map",
+    ],
+    cmd = "cp $(SRCS) $(RULEDIR)",
+)
+
+filegroup(
+    name = "bundled_renderer",
+    srcs = [
+        "renderer",
+        ":index_html",
+    ],
+)
+
 electron(
     name = "start",
     args = [
@@ -103,33 +128,6 @@ bundle_js(
     ],
     entries = ["./$(GENDIR)/apps/electron/main/preload.js"],
     target = "electron-preload",
-)
-
-bundle_js(
-    name = "bundled_renderer",
-    outs = [
-        "index.html",
-        "renderer.js",
-    ],
-    config = "$(execpath //renderer/main:webpack.config.js)",
-    data = [
-        "//:package_info",
-        "//renderer/main",
-        "//renderer/main:index.ejs",
-        "//renderer/main:webpack.config.js",
-        "@npm//css-loader",
-        "@npm//html-webpack-plugin",
-        "@npm//style-loader",
-        "@npm//url-loader",
-        "@npm//webpack",
-        "@npm//webpack-cli",
-    ],
-    entries = ["./$(GENDIR)/renderer/main/index.js"],
-    target = "web",
-    webpack_args = [
-        "--env",
-        "htmlTemplate=$(execpath //renderer/main:index.ejs)",
-    ],
 )
 
 nodejs_binary(
