@@ -19,16 +19,18 @@ ts_project(
     ]),
     visibility = ["//visibility:private"],
     deps = [
-        "@npm//@types/react-dom",
-        "@npm//notistack",
-        "@npm//react",
-        "@npm//react-dom",
         "@npm//@codemirror/commands",
+        "@npm//@codemirror/gutter",
         "@npm//@codemirror/history",
         "@npm//@codemirror/state",
         "@npm//@codemirror/text",
         "@npm//@codemirror/view",
         "@npm//@material-ui/core",
-        "@npm//typeface-roboto-mono"
-    ]
+        "@npm//@types/react-dom",
+        "@npm//notistack",
+        "@npm//react",
+        "@npm//react-dom",
+        "@npm//syllable",
+        "@npm//typeface-roboto-mono",
+    ],
 )

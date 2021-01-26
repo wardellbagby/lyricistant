@@ -22,9 +22,16 @@ export const editorTheme = (appTheme: Theme): Extension =>
           outline: 'none',
         },
       },
-      $content: {
+      $scroller: {
         fontFamily: '"Roboto Mono"',
         fontSize: appTheme.typography.fontSize,
+      },
+      $gutters: {
+        width: '60px',
+        justifyContent: 'center',
+        backgroundColor: appTheme.palette.background.default,
+        color: appTheme.palette.text.secondary,
+        borderRight: 'none',
       },
     },
     {

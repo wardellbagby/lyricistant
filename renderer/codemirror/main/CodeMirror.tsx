@@ -6,6 +6,7 @@ import { history, historyKeymap } from '@codemirror/history';
 import { styled, useTheme } from '@material-ui/core';
 import 'typeface-roboto-mono';
 import { editorTheme } from './editorTheme';
+import { syllableCounts } from './syllableCounts';
 
 const EditorContainer = styled('div')({
   height: '100%',
@@ -55,44 +56,46 @@ const EditorContainer = styled('div')({
 
 export function CodeMirror6Editor() {
   const ref = useRef<HTMLDivElement>();
-  const [editor, setEditor] = useState<EditorView>(null);
+  const [view, setView] = useState<EditorView>(null);
   const appTheme = useTheme();
   useEffect(() => {
     if (!ref.current) {
       return;
     }
 
-    if (!editor) {
-      setEditor(
-        new EditorView({
-          state: EditorState.create({
-            extensions: [
-              tagExtension('theme', EditorView.theme({})),
-              history(),
-              keymap.of([...defaultKeymap, ...historyKeymap]),
-            ],
-          }),
-          parent: ref.current,
+    if (!view) {
+      const newView = new EditorView({
+        parent: ref.current,
+      });
+      newView.setState(
+        EditorState.create({
+          extensions: [
+            syllableCounts(() => newView.state.doc),
+            tagExtension('theme', EditorView.theme({})),
+            history(),
+            keymap.of([...defaultKeymap, ...historyKeymap]),
+          ],
         })
       );
+      setView(newView);
     }
 
     return () => {
       if (!ref.current) {
-        editor.destroy();
-        setEditor(null);
+        view.destroy();
+        setView(null);
       }
     };
-  }, [editor, setEditor]);
+  }, [view, setView]);
   useEffect(() => {
-    if (!editor) {
+    if (!view) {
       return;
     }
-    editor.dispatch({
+    view.dispatch({
       reconfigure: {
         theme: editorTheme(appTheme),
       },
     });
-  }, [editor, appTheme]);
+  }, [view, appTheme]);
   return <EditorContainer ref={ref} />;
 }
