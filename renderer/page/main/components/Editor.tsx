@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { styled, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CodeMirror from 'codemirror';
@@ -12,15 +13,14 @@ import 'codemirror/addon/selection/mark-selection';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/javascript/javascript';
 import { useSnackbar } from 'notistack';
-
 import React, { useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { Controlled as CodeMirrorEditor } from 'react-codemirror2';
 import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
+import { CodeMirror6Editor } from "@lyricistant-codemirror/CodeMirror";
 import { logger, platformDelegate } from '../globals';
-import 'typeface-roboto-mono';
 import { useDocumentListener } from '../hooks/useEventListener';
 import { findWordAt, LYRICISTANT_LANGUAGE } from '../util/editor-helpers';
 import { toDroppableFile } from '../util/to-droppable-file';
@@ -50,136 +50,52 @@ const EditorContainer = styled('div')({
   width: '100%',
 });
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    height: '100%',
-    width: '100%',
-    '& .CodeMirror': {
-      height: '100%',
-      background: theme.palette.background.default,
-      color: theme.palette.text.primary,
-      fontSize: theme.typography.fontSize,
-      fontFamily: "'Roboto Mono'",
-    },
-    '& .CodeMirror-dialog input': {
-      fontSize: theme.typography.fontSize,
-      fontFamily: "'Roboto Mono'",
-    },
-    '& .CodeMirror-linenumber': {
-      color: theme.palette.text.secondary,
-    },
-    '& .CodeMirror-gutters': {
-      background: theme.palette.background.default,
-      'border-style': 'none',
-      width: '60px',
-      'text-align': 'center',
-    },
-    '& .CodeMirror-cursor': {
-      'border-left': `1px solid ${theme.palette.text.primary};`,
-    },
-    '& .CodeMirror-guttermarker': {
-      color: theme.palette.background.default,
-    },
-    '& .CodeMirror-selectedtext': {
-      color: theme.palette.getContrastText(theme.palette.primary.main),
-    },
-    '& .CodeMirror-selected': {
-      'background-color': [[theme.palette.primary.main], '!important'],
-    },
-    '& .CodeMirror-empty': {
-      color: theme.palette.action.disabled,
-    },
-  },
-}));
 
 export function Editor(props: EditorProps) {
-  const [editor, setEditor] = useState(null as CodeMirror.Editor);
-  const [version, setVersion] = useState(0);
-  const editorDidMount = (editorInstance: CodeMirror.Editor): void => {
-    setEditor(editorInstance);
-    // @ts-ignore
-    editorInstance.setOption('styleSelectedText', true);
-    // @ts-ignore
-    editorInstance.setOption('search', true);
-    setVersion(editorInstance.changeGeneration(true));
-    editorInstance.focus();
-    CodeMirror.registerHelper('wordChars', LYRICISTANT_LANGUAGE, /[a-zA-Z-']+/);
-  };
-  const classes = useStyles();
-
-  useDocumentListener(
-    'drop',
-    async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (event.dataTransfer?.files?.length > 0) {
-        logger.debug('Attempted to drop a file.');
-        const file = await toDroppableFile(event.dataTransfer.files.item(0));
-        if (!editor.isClean(version)) {
-          platformDelegate.send('prompt-save-file-for-open', file);
-          return;
-        }
-
-        platformDelegate.send('open-file-attempt', file);
-      }
-    },
-    [editor]
-  );
-  useDocumentListener(
-    'dragover',
-    (event) => {
-      event.preventDefault();
-      return true;
-    },
-    [editor]
-  );
-  useEffect(handleSelectedWordChanges(editor, props.onWordSelected), [
-    editor,
-    props.onWordSelected,
-  ]);
-  useEffect(handleTextReplacements(props.textReplacements, editor), [
-    editor,
-    props.textReplacements,
-  ]);
-  useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
-  useBeforeUnload(() => {
-    if (!editor.isClean(version)) {
-      return "Are you sure you want to leave? Your changes haven't been saved.";
-    }
-  });
+  // useDocumentListener(
+  //   'drop',
+  //   async (event) => {
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //
+  //     if (event.dataTransfer?.files?.length > 0) {
+  //       logger.debug('Attempted to drop a file.');
+  //       const file = await toDroppableFile(event.dataTransfer.files.item(0));
+  //       if (!editor.isClean(version)) {
+  //         platformDelegate.send('prompt-save-file-for-open', file);
+  //         return;
+  //       }
+  //
+  //       platformDelegate.send('open-file-attempt', file);
+  //     }
+  //   },
+  //   [editor]
+  // );
+  // useDocumentListener(
+  //   'dragover',
+  //   (event) => {
+  //     event.preventDefault();
+  //     return true;
+  //   },
+  //   [editor]
+  // );
+  // useEffect(handleSelectedWordChanges(editor, props.onWordSelected), [
+  //   editor,
+  //   props.onWordSelected,
+  // ]);
+  // useEffect(handleTextReplacements(props.textReplacements, editor), [
+  //   editor,
+  //   props.textReplacements,
+  // ]);
+  // useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
+  // useBeforeUnload(() => {
+  //   if (!editor.isClean(version)) {
+  //     return "Are you sure you want to leave? Your changes haven't been saved.";
+  //   }
+  // });
 
   return (
-    <EditorContainer>
-      <CodeMirrorEditor
-        className={classes.root}
-        value={props.text}
-        defineMode={{
-          name: LYRICISTANT_LANGUAGE,
-          fn: () => ({
-              name: LYRICISTANT_LANGUAGE,
-              token: (stream) => stream.next(),
-            }),
-        }}
-        options={{
-          mode: LYRICISTANT_LANGUAGE,
-          placeholder: 'Type out some lyrics...',
-          lineNumbers: true,
-          lineWrapping: true,
-          lineNumberFormatter: (line: number): string => {
-            if (!editor) {
-              return `${line}`;
-            }
-            return syllable(editor.getLine(line - 1)).toString();
-          },
-          dragDrop: false,
-        }}
-        editorDidMount={editorDidMount}
-        onBeforeChange={(editorInstance, _, value) => {
-          props.onTextChanged(value);
-        }}
-      />
-    </EditorContainer>
+      <CodeMirror6Editor />
   );
 }
 

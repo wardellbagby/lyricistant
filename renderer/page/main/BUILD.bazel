@@ -30,6 +30,7 @@ ts_project(
     visibility = ["//visibility:private"],
     deps = [
         "//common/main",
+        "//renderer/codemirror/main",
         "@npm//@material-ui/core",
         "@npm//@material-ui/icons",
         "@npm//@material-ui/lab",
