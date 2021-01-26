@@ -23,6 +23,7 @@ import type { WebRecentFiles } from './platform/RecentFiles';
 import type { WebSystemThemeProvider } from './platform/SystemThemeProvider';
 import { WebTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
+import { UnloadManager } from './platform/UnloadManager';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();
@@ -43,6 +44,7 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<UiConfigManager>();
   component.registerSingleton<UnsavedDataManager>();
   component.registerSingleton<LogManager>();
+  component.registerSingleton<UnloadManager>();
 
   component.registerSingleton<Managers>(() => [
     component.get<FileManager>(),
@@ -50,6 +52,7 @@ const createComponent = (): DIContainer => {
     component.get<UiConfigManager>(),
     component.get<UnsavedDataManager>(),
     component.get<LogManager>(),
+    component.get<UnloadManager>(),
   ]);
   return component;
 };
