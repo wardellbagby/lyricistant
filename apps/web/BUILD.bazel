@@ -20,7 +20,7 @@ ws(
     name = "start",
     args = [
         "--directory",
-        ".",
+        "apps/web/",
     ],
     data = [
         ":bundle_web",

@@ -40,10 +40,27 @@ export class WebFiles implements IFiles {
 
   public saveFile = async (file: FileData): Promise<string> => {
     const fileName = file.filePath ?? 'Lyrics.txt';
-    const fileHandle = await fileSave(new Blob([file.data]), {
-      fileName,
-      extensions: ['txt'],
-    });
+    let fileHandle;
+    try {
+      fileHandle = await fileSave(
+        new Blob([file.data], {
+          type: 'text/plain',
+        }),
+        {
+          fileName,
+          extensions: ['.txt'],
+        }
+      );
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') {
+        this.logger.verbose(
+          'Swallowing exception since user closed the save file picker',
+          e
+        );
+      } else {
+        throw e;
+      }
+    }
 
     return fileHandle?.name ?? fileName;
   };
