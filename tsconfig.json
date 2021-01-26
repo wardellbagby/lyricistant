@@ -24,7 +24,7 @@
     ],
     "paths": {
       "@common/*": ["common/main/*"],
-      "@renderer/*": ["renderer/main/*"],
+      "@renderer/*": ["renderer/page/main/*"],
       "@electron-app/*": ["apps/electron/main/*"]
     },
     "plugins": [

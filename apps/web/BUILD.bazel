@@ -11,7 +11,7 @@ filegroup(
 
 genrule(
     name = "index_html",
-    srcs = ["//renderer/main:index.html"],
+    srcs = ["//renderer/page/main:index.html"],
     outs = ["index.html"],
     cmd = "cp $< $@",
 )
@@ -47,12 +47,12 @@ bundle_js(
         "3.renderer.js",
         "renderer.js",
     ],
-    config = "$(execpath //renderer/main:webpack.config.js)",
+    config = "$(execpath //renderer/page/main:webpack.config.js)",
     data = [
         "//:package_info",
         "//apps/web/main",
-        "//renderer/main",
-        "//renderer/main:webpack.config.js",
+        "//renderer/page/main",
+        "//renderer/page/main:webpack.config.js",
         "@npm//css-loader",
         "@npm//style-loader",
         "@npm//url-loader",

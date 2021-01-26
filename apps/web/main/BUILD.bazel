@@ -7,7 +7,7 @@ ts_project(
     srcs = glob(["**/*.ts"]),
     deps = [
         "//common/main",
-        "//renderer/main",
+        "//renderer/page/main",
         "@npm//@types/luxon",
         "@npm//@types/sprintf-js",
         "@npm//@wessberg/di",

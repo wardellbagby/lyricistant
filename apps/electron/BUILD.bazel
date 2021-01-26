@@ -12,14 +12,14 @@ filegroup(
 
 genrule(
     name = "index_html",
-    srcs = ["//renderer/main:index.html"],
+    srcs = ["//renderer/page/main:index.html"],
     outs = ["index.html"],
     cmd = "cp $< $@",
 )
 
 genrule(
     name = "renderer",
-    srcs = ["//renderer:bundled"],
+    srcs = ["//renderer/page:bundled"],
     outs = [
         "renderer.js",
         "renderer.js.map",
