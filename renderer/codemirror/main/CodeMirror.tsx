@@ -7,6 +7,7 @@ import { styled, useTheme } from '@material-ui/core';
 import 'typeface-roboto-mono';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
+import { WordAtPosition, wordSelection } from './wordSelection';
 
 const EditorContainer = styled('div')({
   height: '100%',
@@ -54,7 +55,11 @@ const EditorContainer = styled('div')({
 //   },
 // }));
 
-export function CodeMirror6Editor() {
+interface Props {
+  onWordSelected?: (word: WordAtPosition) => void;
+}
+
+export function CodeMirror6Editor(props: Props) {
   const ref = useRef<HTMLDivElement>();
   const [view, setView] = useState<EditorView>(null);
   const appTheme = useTheme();
@@ -74,6 +79,9 @@ export function CodeMirror6Editor() {
             tagExtension('theme', EditorView.theme({})),
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
+            wordSelection({
+              onWordSelected: props.onWordSelected,
+            }),
           ],
         })
       );

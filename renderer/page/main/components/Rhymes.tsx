@@ -2,20 +2,17 @@ import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, styled, Theme } from '@material-ui/core/styles';
-import * as CodeMirror from 'codemirror';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { VirtuosoGrid } from 'react-virtuoso';
-import { Observable } from 'rxjs';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { logger } from '../globals';
 import { Rhyme } from '../models/rhyme';
 import { fetchRhymes } from '../networking/fetchRhymes';
-import { WordAtPosition } from './Editor';
+import { WordAtPosition } from '../../../codemirror/main/wordSelection';
+import { useSelectedWords } from '../stores/SelectedWordStore';
 
 interface RhymesProp {
-  onRhymeClicked: (rhyme: Rhyme, position: CodeMirror.Range) => void;
-  queries: Observable<WordAtPosition>;
+  onRhymeClicked: (rhyme: Rhyme, from: number, to: number) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -35,28 +32,28 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const ListContainer: React.ComponentType<{ className: string }> = styled('div')(
   ({ className }) => ({
-      className,
-      display: 'flex',
-      'flex-wrap': 'wrap',
-    })
+    className,
+    display: 'flex',
+    'flex-wrap': 'wrap',
+  })
 );
 
 const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
   ({ theme }) => ({
-      display: 'flex',
-      flex: 'none',
-      'align-content': 'stretch',
-      [theme.breakpoints.up('xs')]: {
-        width: '50%',
-      },
-      [theme.breakpoints.up('md')]: {
-        width: '100%',
-        height: '80px',
-      },
-      [theme.breakpoints.up('lg')]: {
-        width: '50%',
-      },
-    })
+    display: 'flex',
+    flex: 'none',
+    'align-content': 'stretch',
+    [theme.breakpoints.up('xs')]: {
+      width: '50%',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: '100%',
+      height: '80px',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '50%',
+    },
+  })
 );
 
 export function Rhymes(props: RhymesProp) {
@@ -65,10 +62,12 @@ export function Rhymes(props: RhymesProp) {
   const classes = useStyles();
 
   const handleError = useErrorHandler();
-  useEffect(
-    handleQueries(props.queries, setRhymes, setQueryData, handleError),
-    [props.queries]
-  );
+  useSelectedWords(setQueryData);
+  useEffect(handleQueries(queryData, setRhymes, handleError), [
+    queryData,
+    setRhymes,
+    handleError,
+  ]);
 
   if (rhymes.length === 0) {
     return <div />;
@@ -85,7 +84,7 @@ export function Rhymes(props: RhymesProp) {
         const rhyme = rhymes[index];
 
         return renderRhyme(rhyme, classes.rhyme, () => {
-          props.onRhymeClicked(rhyme, queryData.range);
+          props.onRhymeClicked(rhyme, queryData.from, queryData.to);
         });
       }}
     />
@@ -116,42 +115,26 @@ function renderRhyme(
 }
 
 function handleQueries(
-  queries: Observable<WordAtPosition>,
+  query: WordAtPosition,
   setRhymes: (rhymes: Rhyme[]) => void,
-  setQueryData: (queryData: WordAtPosition) => void,
   handleError: (error: Error) => void
-): () => () => void {
+) {
   return () => {
-    const subscription = queries
-      .pipe(
-        debounceTime(400),
-        tap((query) => logger.debug(`Querying rhymes for word: ${query.word}`)),
-        switchMap((data: WordAtPosition) =>
-          fetchRhymes(data.word).pipe(
-            map((rhymes: Rhyme[]) =>
-              rhymes.filter((rhyme) => rhyme && rhyme.word && rhyme.score)
-            ),
-            map((rhymes: Rhyme[]) => ({
-                queryData: data,
-                rhymes: [
-                  ...new Set(
-                    rhymes.filter(
-                      (value, index, array) => array.indexOf(value) === index
-                    )
-                  ),
-                ],
-              }))
-          )
-        )
+    if (!query) {
+      return;
+    }
+    logger.debug(`Querying rhymes for word: ${query.word}`);
+    fetchRhymes(query.word)
+      .then((rhymes) =>
+        rhymes.filter((rhyme) => rhyme && rhyme.word && rhyme.score)
       )
-      .subscribe(
-        (result: { queryData: WordAtPosition; rhymes: Rhyme[] }): void => {
-          setRhymes(result.rhymes);
-          setQueryData(result.queryData);
-        },
-        (error) => handleError(error)
-      );
-
-    return () => subscription.unsubscribe();
+      .then(setRhymes)
+      .catch((reason) => {
+        if (reason instanceof Error) {
+          handleError(reason);
+        } else {
+          handleError(new Error(reason));
+        }
+      });
   };
 }

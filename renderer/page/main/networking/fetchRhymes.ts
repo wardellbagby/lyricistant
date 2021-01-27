@@ -1,5 +1,3 @@
-import { from, Observable, of, zip } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { logger } from '../globals';
 import { Rhyme } from '../models/rhyme';
 
@@ -41,30 +39,24 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
   return [];
 };
 
-export const fetchRhymes = (word: string): Observable<Rhyme[]> => {
+export const fetchRhymes = async (word: string): Promise<Rhyme[]> => {
   if (word.length === 0) {
-    return of();
+    return [];
   }
 
-  return zip(
-    from(asyncRhymes(word, 'perfect')).pipe(
-      map((rhymes: Rhyme[]) =>
-        rhymes.map((rhyme: Rhyme) => new Rhyme(rhyme.word, rhyme.score + 10000))
-      )
-    ),
-    from(asyncRhymes(word, 'near')).pipe(
-      map((rhymes: Rhyme[]) =>
-        rhymes.map((rhyme: Rhyme) => new Rhyme(rhyme.word, rhyme.score + 1000))
-      )
-    ),
-    from(asyncRhymes(word, 'sounds-like'))
-  ).pipe(
-    map((results: Rhyme[][]) =>
-      [...new Set(flatten(results))].sort(
-        (left: Rhyme, right: Rhyme) => right.score - left.score
-      )
+  return Promise.all([
+    asyncRhymes(word, 'perfect').then((rhymes) => increaseScore(rhymes, 10000)),
+    asyncRhymes(word, 'near').then((rhymes) => increaseScore(rhymes, 1000)),
+    asyncRhymes(word, 'sounds-like'),
+  ]).then((results) =>
+    [...new Set(flatten(results))].sort(
+      (left: Rhyme, right: Rhyme) => right.score - left.score
     )
   );
 };
 
-const flatten: <T>(input: T[][]) => T[] = (array) => array.reduce((prev, current) => prev.concat(current));
+const increaseScore = (rhymes: Rhyme[], amount: number) =>
+  rhymes.map((rhyme: Rhyme) => new Rhyme(rhyme.word, rhyme.score + amount));
+
+const flatten: <T>(input: T[][]) => T[] = (array) =>
+  array.reduce((prev, current) => prev.concat(current));

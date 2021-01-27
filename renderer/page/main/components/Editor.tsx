@@ -19,28 +19,17 @@ import { Controlled as CodeMirrorEditor } from 'react-codemirror2';
 import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import syllable from 'syllable';
-import { CodeMirror6Editor } from "@lyricistant-codemirror/CodeMirror";
+import { CodeMirror6Editor } from '@lyricistant-codemirror/CodeMirror';
 import { logger, platformDelegate } from '../globals';
 import { useDocumentListener } from '../hooks/useEventListener';
 import { findWordAt, LYRICISTANT_LANGUAGE } from '../util/editor-helpers';
 import { toDroppableFile } from '../util/to-droppable-file';
-
-export interface TextReplacement {
-  word: string;
-  range: CodeMirror.Range;
-}
-
-export interface WordAtPosition {
-  range: CodeMirror.Range;
-  word: string;
-}
+import { useSelectedWordStore } from '../stores/SelectedWordStore';
 
 export interface EditorProps {
   text: string;
   fontSize: number;
-  onWordSelected: (word: WordAtPosition) => void;
   onTextChanged: (text: string) => void;
-  textReplacements: Observable<TextReplacement>;
 }
 
 const cursorUpdateKicker: Subject<undefined> = new Subject();
@@ -49,7 +38,6 @@ const EditorContainer = styled('div')({
   height: '100%',
   width: '100%',
 });
-
 
 export function Editor(props: EditorProps) {
   // useDocumentListener(
@@ -93,70 +81,68 @@ export function Editor(props: EditorProps) {
   //     return "Are you sure you want to leave? Your changes haven't been saved.";
   //   }
   // });
-
-  return (
-      <CodeMirror6Editor />
-  );
+  const store = useSelectedWordStore();
+  return <CodeMirror6Editor onWordSelected={store.onWordSelected} />;
 }
 
-function handleSelectedWordChanges(
-  editor: CodeMirror.Editor,
-  onWordSelected: (word: WordAtPosition) => void
-) {
-  return () => {
-    if (!editor) {
-      return;
-    }
+// function handleSelectedWordChanges(
+//   editor: CodeMirror.Editor,
+//   onWordSelected: (word: WordAtPosition) => void
+// ) {
+//   return () => {
+//     if (!editor) {
+//       return;
+//     }
+//
+//     const cursorChanges: Observable<WordAtPosition> = merge(
+//       fromEvent(editor, 'cursorActivity'),
+//       cursorUpdateKicker
+//     ).pipe(
+//       map(() => {
+//         const cursorPosition = editor.getCursor('from');
+//         const foundWord = findWordAt(editor, cursorPosition);
+//
+//         if (!foundWord || foundWord.empty()) {
+//           return undefined;
+//         }
+//
+//         return foundWord;
+//       }),
+//       filter((value) => !!value)
+//     );
+//
+//     const subscription = cursorChanges
+//       .pipe(distinctUntilChanged())
+//       .subscribe(onWordSelected);
+//
+//     return () => subscription.unsubscribe();
+//   };
+// }
 
-    const cursorChanges: Observable<WordAtPosition> = merge(
-      fromEvent(editor, 'cursorActivity'),
-      cursorUpdateKicker
-    ).pipe(
-      map(() => {
-        const cursorPosition = editor.getCursor('from');
-        const foundWord = findWordAt(editor, cursorPosition);
-
-        if (!foundWord || foundWord.empty()) {
-          return undefined;
-        }
-
-        return foundWord;
-      }),
-      filter((value) => !!value)
-    );
-
-    const subscription = cursorChanges
-      .pipe(distinctUntilChanged())
-      .subscribe(onWordSelected);
-
-    return () => subscription.unsubscribe();
-  };
-}
-
-function handleTextReplacements(
-  textReplacements: Observable<TextReplacement>,
-  editor: CodeMirror.Editor
-) {
-  return () => {
-    if (!editor) {
-      return;
-    }
-
-    const subscription = textReplacements.subscribe(
-      (replacement: TextReplacement): void => {
-        editor.focus();
-        editor.replaceRange(
-          replacement.word,
-          replacement.range.from(),
-          replacement.range.to()
-        );
-        cursorUpdateKicker.next(undefined);
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  };
-}
+// function handleTextReplacements(
+//   textReplacements: Observable<TextReplacement>,
+//   editor: CodeMirror.Editor
+// ) {
+//   return () => {
+//     if (!editor) {
+//       return;
+//     }
+//
+//     const subscription = textReplacements.subscribe(
+//       (replacement: TextReplacement): void => {
+//         editor.focus();
+//         editor.replaceRange(
+//           replacement.word,
+//           replacement.range.from(),
+//           replacement.range.to()
+//         );
+//         cursorUpdateKicker.next(undefined);
+//       }
+//     );
+//
+//     return () => subscription.unsubscribe();
+//   };
+// }
 
 function handleEditorEvents(
   editor: CodeMirror.Editor,
