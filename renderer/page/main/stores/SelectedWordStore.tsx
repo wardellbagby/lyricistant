@@ -14,7 +14,7 @@ const selectedWordStore = {
   subscribe: (subscriber: (word: WordAtPosition) => void): Subscription =>
     subject
       .pipe(
-        filter((value) => !!value),
+        filter((value) => value && !!(value.word)),
         distinctUntilChanged(),
         debounceTime(400)
       )

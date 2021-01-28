@@ -26,19 +26,19 @@ const findWordAt = (document: Text, position: SelectionRange) => {
   const isDelimiter = (c: string) => /[^\w\-']+/.exec(c);
   let start; let end;
   if(position.assoc === 1) {
-    start = position.head;
-    end = position.head + 1
+    start = position.from - line.from;
+    end = position.from + 1 - line.from;
   } else {
-    start = position.head - 1;
-    end = position.head;
+    start = position.from - 1 - line.from;
+    end = position.from - line.from;
   }
 
-  while (start >= line.from && !isDelimiter(line.text[start])) {
+  while (start >= 0 && !isDelimiter(line.text[start])) {
     start -= 1;
   }
   start = Math.max(0, start + 1);
 
-  while (end < line.to && !isDelimiter(line.text[end])) {
+  while (end < line.length && !isDelimiter(line.text[end])) {
     end += 1;
   }
   end = Math.max(start, end);
