@@ -1,112 +1,25 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { styled, Theme } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import CodeMirror from 'codemirror';
-import 'codemirror/addon/dialog/dialog';
-import 'codemirror/addon/dialog/dialog.css';
-import 'codemirror/addon/display/placeholder';
-import 'codemirror/addon/search/jump-to-line';
-import 'codemirror/addon/search/search';
-import 'codemirror/addon/search/searchcursor';
-import 'codemirror/addon/selection/mark-selection';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/mode/javascript/javascript';
 import { useSnackbar } from 'notistack';
-
 import React, { useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
-import { Controlled as CodeMirrorEditor } from 'react-codemirror2';
-import { fromEvent, merge, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
-import syllable from 'syllable';
+import { CodeMirrorEditor } from '@lyricistant-codemirror/CodeMirror';
+import { EditorView } from '@codemirror/view';
+import { redo, undo, undoDepth } from '@codemirror/history';
+import { EditorState, EditorStateConfig } from '@codemirror/state';
+import { openSearchPanel } from '@codemirror/search';
 import { logger, platformDelegate } from '../globals';
-import 'typeface-roboto-mono';
 import { useDocumentListener } from '../hooks/useEventListener';
-import { findWordAt, LYRICISTANT_LANGUAGE } from '../util/editor-helpers';
 import { toDroppableFile } from '../util/to-droppable-file';
-
-export interface TextReplacement {
-  word: string;
-  range: CodeMirror.Range;
-}
-
-export interface WordAtPosition {
-  range: CodeMirror.Range;
-  word: string;
-}
+import {
+  useReplacedWords,
+  useSelectedWordStore,
+} from '../stores/SelectedWordStore';
 
 export interface EditorProps {
-  text: string;
-  fontSize: number;
-  onWordSelected: (word: WordAtPosition) => void;
-  onTextChanged: (text: string) => void;
-  textReplacements: Observable<TextReplacement>;
+  onTextChanged?: (text: string) => void;
 }
-
-const cursorUpdateKicker: Subject<undefined> = new Subject();
-
-const EditorContainer = styled('div')({
-  height: '100%',
-  width: '100%',
-});
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    height: '100%',
-    width: '100%',
-    '& .CodeMirror': {
-      height: '100%',
-      background: theme.palette.background.default,
-      color: theme.palette.text.primary,
-      fontSize: theme.typography.fontSize,
-      fontFamily: "'Roboto Mono'",
-    },
-    '& .CodeMirror-dialog input': {
-      fontSize: theme.typography.fontSize,
-      fontFamily: "'Roboto Mono'",
-    },
-    '& .CodeMirror-linenumber': {
-      color: theme.palette.text.secondary,
-    },
-    '& .CodeMirror-gutters': {
-      background: theme.palette.background.default,
-      'border-style': 'none',
-      width: '60px',
-      'text-align': 'center',
-    },
-    '& .CodeMirror-cursor': {
-      'border-left': `1px solid ${theme.palette.text.primary};`,
-    },
-    '& .CodeMirror-guttermarker': {
-      color: theme.palette.background.default,
-    },
-    '& .CodeMirror-selectedtext': {
-      color: theme.palette.getContrastText(theme.palette.primary.main),
-    },
-    '& .CodeMirror-selected': {
-      'background-color': [[theme.palette.primary.main], '!important'],
-    },
-    '& .CodeMirror-empty': {
-      color: theme.palette.action.disabled,
-    },
-  },
-}));
-
-export function Editor(props: EditorProps) {
-  const [editor, setEditor] = useState(null as CodeMirror.Editor);
-  const [version, setVersion] = useState(0);
-  const editorDidMount = (editorInstance: CodeMirror.Editor): void => {
-    setEditor(editorInstance);
-    // @ts-ignore
-    editorInstance.setOption('styleSelectedText', true);
-    // @ts-ignore
-    editorInstance.setOption('search', true);
-    setVersion(editorInstance.changeGeneration(true));
-    editorInstance.focus();
-    CodeMirror.registerHelper('wordChars', LYRICISTANT_LANGUAGE, /[a-zA-Z-']+/);
-  };
-  const classes = useStyles();
-
+export function Editor({ onTextChanged }: EditorProps) {
+  const [editor, setEditor] = useState<EditorView>(null);
+  const [defaultConfig, setDefaultConfig] = useState<EditorStateConfig>(null);
   useDocumentListener(
     'drop',
     async (event) => {
@@ -116,7 +29,8 @@ export function Editor(props: EditorProps) {
       if (event.dataTransfer?.files?.length > 0) {
         logger.debug('Attempted to drop a file.');
         const file = await toDroppableFile(event.dataTransfer.files.item(0));
-        if (!editor.isClean(version)) {
+
+        if (undoDepth(editor.state) > 0) {
           platformDelegate.send('prompt-save-file-for-open', file);
           return;
         }
@@ -134,118 +48,28 @@ export function Editor(props: EditorProps) {
     },
     [editor]
   );
-  useEffect(handleSelectedWordChanges(editor, props.onWordSelected), [
-    editor,
-    props.onWordSelected,
-  ]);
-  useEffect(handleTextReplacements(props.textReplacements, editor), [
-    editor,
-    props.textReplacements,
-  ]);
-  useEffect(handleEditorEvents(editor, version, setVersion), [editor, version]);
+
+  useEffect(handleEditorEvents(editor, defaultConfig), [editor, defaultConfig]);
   useBeforeUnload(() => {
-    if (!editor.isClean(version)) {
+    if (undoDepth(editor.state) !== 0) {
       return "Are you sure you want to leave? Your changes haven't been saved.";
     }
   });
-
+  const store = useSelectedWordStore();
   return (
-    <EditorContainer>
-      <CodeMirrorEditor
-        className={classes.root}
-        value={props.text}
-        defineMode={{
-          name: LYRICISTANT_LANGUAGE,
-          fn: () => ({
-              name: LYRICISTANT_LANGUAGE,
-              token: (stream) => stream.next(),
-            }),
-        }}
-        options={{
-          mode: LYRICISTANT_LANGUAGE,
-          placeholder: 'Type out some lyrics...',
-          lineNumbers: true,
-          lineWrapping: true,
-          lineNumberFormatter: (line: number): string => {
-            if (!editor) {
-              return `${line}`;
-            }
-            return syllable(editor.getLine(line - 1)).toString();
-          },
-          dragDrop: false,
-        }}
-        editorDidMount={editorDidMount}
-        onBeforeChange={(editorInstance, _, value) => {
-          props.onTextChanged(value);
-        }}
-      />
-    </EditorContainer>
+    <CodeMirrorEditor
+      onEditorMounted={setEditor}
+      onWordSelected={store.onWordSelected}
+      wordReplacement={useReplacedWords()}
+      onDefaultConfigReady={setDefaultConfig}
+      onTextChanged={onTextChanged}
+    />
   );
 }
 
-function handleSelectedWordChanges(
-  editor: CodeMirror.Editor,
-  onWordSelected: (word: WordAtPosition) => void
-) {
-  return () => {
-    if (!editor) {
-      return;
-    }
-
-    const cursorChanges: Observable<WordAtPosition> = merge(
-      fromEvent(editor, 'cursorActivity'),
-      cursorUpdateKicker
-    ).pipe(
-      map(() => {
-        const cursorPosition = editor.getCursor('from');
-        const foundWord = findWordAt(editor, cursorPosition);
-
-        if (!foundWord || foundWord.empty()) {
-          return undefined;
-        }
-
-        return foundWord;
-      }),
-      filter((value) => !!value)
-    );
-
-    const subscription = cursorChanges
-      .pipe(distinctUntilChanged())
-      .subscribe(onWordSelected);
-
-    return () => subscription.unsubscribe();
-  };
-}
-
-function handleTextReplacements(
-  textReplacements: Observable<TextReplacement>,
-  editor: CodeMirror.Editor
-) {
-  return () => {
-    if (!editor) {
-      return;
-    }
-
-    const subscription = textReplacements.subscribe(
-      (replacement: TextReplacement): void => {
-        editor.focus();
-        editor.replaceRange(
-          replacement.word,
-          replacement.range.from(),
-          replacement.range.to()
-        );
-        cursorUpdateKicker.next(undefined);
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  };
-}
-
 function handleEditorEvents(
-  editor: CodeMirror.Editor,
-  lastKnownVersion: number,
-  setVersion: (version: number) => void
+  editor: EditorView,
+  defaultConfig: EditorStateConfig
 ) {
   const { enqueueSnackbar } = useSnackbar();
   return () => {
@@ -255,8 +79,12 @@ function handleEditorEvents(
 
     const onFileSaveEnded = (error: any, path: string) => {
       // Resets the undo stack.
-      editor.clearHistory();
-      setVersion(editor.changeGeneration(true));
+      editor.setState(
+        EditorState.create({
+          ...defaultConfig,
+          doc: editor.state.doc,
+        })
+      );
 
       if (path) {
         enqueueSnackbar(`${path} saved`, { variant: 'success' });
@@ -265,7 +93,7 @@ function handleEditorEvents(
     platformDelegate.on('file-save-ended', onFileSaveEnded);
 
     const onNewFileAttempt = () => {
-      if (editor.isClean(lastKnownVersion)) {
+      if (undoDepth(editor.state) === 0) {
         platformDelegate.send('okay-for-new-file');
       } else {
         platformDelegate.send('prompt-save-file-for-new');
@@ -274,7 +102,7 @@ function handleEditorEvents(
     platformDelegate.on('is-okay-for-new-file', onNewFileAttempt);
 
     const onQuitAttempt = () => {
-      if (editor.isClean(lastKnownVersion)) {
+      if (undoDepth(editor.state) === 0) {
         platformDelegate.send('okay-for-quit');
       } else {
         platformDelegate.send('prompt-save-file-for-quit');
@@ -283,9 +111,7 @@ function handleEditorEvents(
     platformDelegate.on('is-okay-for-quit-file', onQuitAttempt);
 
     const onNewFileCreated = () => {
-      editor.setValue('');
-      editor.clearHistory();
-      setVersion(editor.changeGeneration(true));
+      editor.setState(EditorState.create(defaultConfig));
     };
     platformDelegate.on('new-file-created', onNewFileCreated);
 
@@ -296,30 +122,41 @@ function handleEditorEvents(
       clearHistory: boolean
     ) => {
       if (!error) {
-        editor.setValue(fileContents);
         if (clearHistory) {
-          editor.clearHistory();
-          setVersion(editor.changeGeneration(true));
+          editor.setState(
+            EditorState.create({
+              ...defaultConfig,
+              doc: fileContents,
+            })
+          );
+        } else {
+          editor.dispatch({
+            changes: {
+              from: 0,
+              to: editor.state.doc.length,
+              insert: fileContents,
+            },
+          });
         }
       }
     };
     platformDelegate.on('file-opened', onFileOpened);
 
     const onTextRequested = () => {
-      platformDelegate.send('editor-text', editor.getValue());
+      platformDelegate.send('editor-text', editor.state.doc.toString());
     };
     platformDelegate.on('request-editor-text', onTextRequested);
 
-    const onUndo = () => editor.undo();
+    const onUndo = () => undo(editor);
     platformDelegate.on('undo', onUndo);
 
-    const onRedo = () => editor.redo();
+    const onRedo = () => redo(editor);
     platformDelegate.on('redo', onRedo);
 
-    const onFind = () => editor.execCommand('find');
+    const onFind = () => openSearchPanel(editor);
     platformDelegate.on('find', onFind);
 
-    const onReplace = () => editor.execCommand('replace');
+    const onReplace = () => openSearchPanel(editor);
     platformDelegate.on('replace', onReplace);
 
     return () => {

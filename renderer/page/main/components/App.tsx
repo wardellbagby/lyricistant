@@ -1,21 +1,18 @@
 import { PreferencesData } from '@common/preferences/PreferencesData';
-import { useTheme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
-import { BehaviorSubject, Subject } from 'rxjs';
 import 'typeface-roboto';
 import { logger, platformDelegate } from '../globals';
 import { useChannel } from '../hooks/useChannel';
-import { Rhyme } from '../models/rhyme';
 import { downloadApp } from '../util/download-app';
-import { EmptyRange } from '../util/editor-helpers';
+import { SelectedWordStore } from '../stores/SelectedWordStore';
 import { AboutDialog } from './AboutDialog';
 import { AppError } from './AppError';
 import { AppLayout } from './AppLayout';
 import { ChooseDownloadDialog } from './ChooseDownloadDialog';
-import { Editor, TextReplacement, WordAtPosition } from './Editor';
+import { Editor } from './Editor';
 import { Menu } from './Menu';
 import { PlatformDialog } from './PlatformDialogs';
 import { Preferences } from './Preferences';
@@ -26,18 +23,6 @@ enum Screen {
   EDITOR,
   ABOUT,
 }
-
-const selectedWords: BehaviorSubject<WordAtPosition> = new BehaviorSubject({
-  range: EmptyRange,
-  word: '',
-});
-const textReplacements: Subject<TextReplacement> = new Subject();
-const onWordSelected: (word: WordAtPosition) => void = (word) => {
-  selectedWords.next(word);
-};
-
-const onRhymeClicked = (rhyme: Rhyme, range: any) =>
-  textReplacements.next({ word: rhyme.word, range });
 
 const onPreferencesSaved = (preferencesData: PreferencesData) =>
   platformDelegate.send('save-prefs', preferencesData);
@@ -51,7 +36,6 @@ export function App() {
     null as PreferencesData
   );
   const [editorText, setEditorText] = useState('');
-  const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => logger.debug(`Displaying screen: ${screen}`), [screen]);
@@ -90,29 +74,29 @@ export function App() {
             show={screen === Screen.ABOUT}
             onClose={() => setScreen(Screen.EDITOR)}
           />
-          <AppLayout>
-            <Menu
-              onNewClicked={() => platformDelegate.send('new-file-attempt')}
-              onOpenClicked={() => platformDelegate.send('open-file-attempt')}
-              onSaveClicked={() =>
-                platformDelegate.send('save-file-attempt', editorText)
+          <SelectedWordStore>
+            <AppLayout
+              menu={
+                <Menu
+                  onNewClicked={() => platformDelegate.send('new-file-attempt')}
+                  onOpenClicked={() =>
+                    platformDelegate.send('open-file-attempt')
+                  }
+                  onSaveClicked={() =>
+                    platformDelegate.send('save-file-attempt', editorText)
+                  }
+                  onSettingsClicked={() => setScreen(Screen.PREFERENCES)}
+                  onDownloadClicked={() => {
+                    if (!downloadApp()) {
+                      history.push('/download');
+                    }
+                  }}
+                />
               }
-              onSettingsClicked={() => setScreen(Screen.PREFERENCES)}
-              onDownloadClicked={() => {
-                if (!downloadApp()) {
-                  history.push('/download');
-                }
-              }}
+              main={<Editor onTextChanged={setEditorText} />}
+              detail={<Rhymes />}
             />
-            <Editor
-              text={editorText}
-              fontSize={theme.typography.fontSize}
-              onWordSelected={onWordSelected}
-              onTextChanged={setEditorText}
-              textReplacements={textReplacements}
-            />
-            <Rhymes queries={selectedWords} onRhymeClicked={onRhymeClicked} />
-          </AppLayout>
+          </SelectedWordStore>
         </Route>
         <Route render={() => <Redirect to="/" />} />
       </Switch>

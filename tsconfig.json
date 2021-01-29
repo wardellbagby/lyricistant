@@ -25,7 +25,8 @@
     "paths": {
       "@common/*": ["common/main/*"],
       "@renderer/*": ["renderer/page/main/*"],
-      "@electron-app/*": ["apps/electron/main/*"]
+      "@electron-app/*": ["apps/electron/main/*"],
+      "@lyricistant-codemirror/*": ["renderer/codemirror/main/*"]
     },
     "plugins": [
       { "transform": "./di-ts-transformer.js" }

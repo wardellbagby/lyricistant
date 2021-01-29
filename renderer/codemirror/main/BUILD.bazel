@@ -1,0 +1,37 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
+load("//:tooling/ts_project.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:private"])
+
+js_library(
+    name = "main",
+    package_name = "@lyricistant-codemirror",
+    srcs = [],
+    visibility = ["//visibility:public"],
+    deps = [":compile_ts"],
+)
+
+ts_project(
+    name = "compile_ts",
+    srcs = glob([
+        "**/*.ts",
+        "**/*.tsx",
+    ]),
+    visibility = ["//visibility:private"],
+    deps = [
+        "@npm//@codemirror/commands",
+        "@npm//@codemirror/gutter",
+        "@npm//@codemirror/history",
+        "@npm//@codemirror/search",
+        "@npm//@codemirror/state",
+        "@npm//@codemirror/text",
+        "@npm//@codemirror/view",
+        "@npm//@material-ui/core",
+        "@npm//@types/react-dom",
+        "@npm//notistack",
+        "@npm//react",
+        "@npm//react-dom",
+        "@npm//syllable",
+        "@npm//typeface-roboto-mono",
+    ],
+)
