@@ -1,14 +1,13 @@
 import { Extension } from '@codemirror/state';
-import { lineNumbers } from "@codemirror/gutter";
-import { Text } from '@codemirror/text';
+import { lineNumbers } from '@codemirror/gutter';
 import syllable from 'syllable';
 
-export const syllableCounts = (getDocument: () => Text): Extension =>
+export const syllableCounts = (): Extension =>
   lineNumbers({
-    formatNumber: (lineNo) => {
-      if (lineNo > getDocument().lines) {
+    formatNumber: (lineNo, state) => {
+      if (lineNo > state.doc.lines) {
         return '0';
       }
-      return syllable(getDocument().line(lineNo).text).toString();
-    }
+      return syllable(state.doc.line(lineNo).text).toString();
+    },
   });

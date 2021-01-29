@@ -1,5 +1,4 @@
 import { PreferencesData } from '@common/preferences/PreferencesData';
-import { useTheme } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -37,7 +36,6 @@ export function App() {
     null as PreferencesData
   );
   const [editorText, setEditorText] = useState('');
-  const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => logger.debug(`Displaying screen: ${screen}`), [screen]);
@@ -95,13 +93,7 @@ export function App() {
                   }}
                 />
               }
-              main={
-                <Editor
-                  text={editorText}
-                  fontSize={theme.typography.fontSize}
-                  onTextChanged={setEditorText}
-                />
-              }
+              main={<Editor onTextChanged={setEditorText} />}
               detail={<Rhymes />}
             />
           </SelectedWordStore>

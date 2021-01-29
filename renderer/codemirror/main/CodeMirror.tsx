@@ -1,10 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { EditorSelection, EditorState, tagExtension } from '@codemirror/state';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  EditorSelection,
+  EditorState,
+  EditorStateConfig,
+  tagExtension,
+} from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
 import { EditorView, keymap } from '@codemirror/view';
 import { history, historyKeymap } from '@codemirror/history';
 import { styled, useTheme } from '@material-ui/core';
 import 'typeface-roboto-mono';
+import { searchKeymap } from '@codemirror/search';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
 import { WordAtPosition, wordSelection } from './wordSelection';
@@ -20,14 +26,41 @@ export interface WordReplacement {
 }
 
 interface Props {
+  onEditorMounted: (view: EditorView) => void;
   onWordSelected?: (word: WordAtPosition) => void;
   wordReplacement?: WordReplacement;
+  onDefaultConfigReady?: (state: EditorStateConfig) => void;
+  onTextChanged?: (text: string) => void;
 }
 
 export function CodeMirror6Editor(props: Props) {
   const ref = useRef<HTMLDivElement>();
   const [view, setView] = useState<EditorView>(null);
   const appTheme = useTheme();
+  const defaultConfig = useMemo<EditorStateConfig>(
+    () => ({
+      extensions: [
+        syllableCounts(),
+        tagExtension('theme', editorTheme(appTheme)),
+        history(),
+        wordSelection({
+          onWordSelected: props.onWordSelected,
+        }),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            props.onTextChanged(update.state.doc.toString());
+          }
+        }),
+        keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
+      ],
+    }),
+    [appTheme, props.onTextChanged]
+  );
+  useEffect(() => {
+    if (defaultConfig) {
+      props.onDefaultConfigReady?.(defaultConfig);
+    }
+  }, [props.onDefaultConfigReady, defaultConfig]);
   useEffect(() => {
     if (!ref.current) {
       return;
@@ -37,19 +70,7 @@ export function CodeMirror6Editor(props: Props) {
       const newView = new EditorView({
         parent: ref.current,
       });
-      newView.setState(
-        EditorState.create({
-          extensions: [
-            syllableCounts(() => newView.state.doc),
-            tagExtension('theme', EditorView.theme({})),
-            history(),
-            keymap.of([...defaultKeymap, ...historyKeymap]),
-            wordSelection({
-              onWordSelected: props.onWordSelected,
-            }),
-          ],
-        })
-      );
+      newView.setState(EditorState.create(defaultConfig));
       setView(newView);
     }
 
@@ -60,6 +81,11 @@ export function CodeMirror6Editor(props: Props) {
       }
     };
   }, [view, setView]);
+  useEffect(() => {
+    if (view) {
+      props.onEditorMounted(view);
+    }
+  }, [view, props.onEditorMounted]);
   useEffect(() => {
     if (!view) {
       return;
