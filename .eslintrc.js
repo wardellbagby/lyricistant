@@ -152,7 +152,6 @@ module.exports = {
         allow: [
           '@common/**/*',
           'rxjs/*',
-          'codemirror/**/*',
           '@material-ui/**/*',
           '**/images/**'
         ],
