@@ -52,8 +52,8 @@ const findWordAt = (document: Text, position: SelectionRange) => {
   end = Math.max(start, end);
 
   return {
-    from: start,
-    to: end,
+    from: start + line.from,
+    to: end + line.from,
     word: line.text.substring(start, end),
   };
 };
