@@ -94,6 +94,7 @@ export const editorTheme = (appTheme: Theme): Extension =>
         '&:focus': {
           outline: 'none',
         },
+        color: appTheme.palette.text.primary,
       },
     },
     {
