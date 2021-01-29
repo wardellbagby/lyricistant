@@ -76,29 +76,35 @@ export function App() {
             show={screen === Screen.ABOUT}
             onClose={() => setScreen(Screen.EDITOR)}
           />
-          <AppLayout>
-            <Menu
-              onNewClicked={() => platformDelegate.send('new-file-attempt')}
-              onOpenClicked={() => platformDelegate.send('open-file-attempt')}
-              onSaveClicked={() =>
-                platformDelegate.send('save-file-attempt', editorText)
+          <SelectedWordStore>
+            <AppLayout
+              menu={
+                <Menu
+                  onNewClicked={() => platformDelegate.send('new-file-attempt')}
+                  onOpenClicked={() =>
+                    platformDelegate.send('open-file-attempt')
+                  }
+                  onSaveClicked={() =>
+                    platformDelegate.send('save-file-attempt', editorText)
+                  }
+                  onSettingsClicked={() => setScreen(Screen.PREFERENCES)}
+                  onDownloadClicked={() => {
+                    if (!downloadApp()) {
+                      history.push('/download');
+                    }
+                  }}
+                />
               }
-              onSettingsClicked={() => setScreen(Screen.PREFERENCES)}
-              onDownloadClicked={() => {
-                if (!downloadApp()) {
-                  history.push('/download');
-                }
-              }}
+              main={
+                <Editor
+                  text={editorText}
+                  fontSize={theme.typography.fontSize}
+                  onTextChanged={setEditorText}
+                />
+              }
+              detail={<Rhymes />}
             />
-            <SelectedWordStore>
-              <Editor
-                text={editorText}
-                fontSize={theme.typography.fontSize}
-                onTextChanged={setEditorText}
-              />
-              <Rhymes />
-            </SelectedWordStore>
-          </AppLayout>
+          </SelectedWordStore>
         </Route>
         <Route render={() => <Redirect to="/" />} />
       </Switch>

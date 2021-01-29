@@ -1,7 +1,7 @@
 import { Box, Theme } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import React, { FunctionComponent, ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { logger } from '../globals';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -10,22 +10,31 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const AppLayout: FunctionComponent = ({ children }) => {
+interface AppLayoutProps {
+  main: ReactNode;
+  detail: ReactNode;
+  menu: ReactNode;
+}
+
+export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
   const theme = useTheme();
   const classes = useStyles();
   const useSmallLayout = useMediaQuery(theme.breakpoints.down('sm'));
-  const childArray = React.Children.toArray(children);
   let displayableChildren: ReactNode[];
   if (useSmallLayout) {
     displayableChildren = [
-      childArray[0],
-      <div />,
-      ...childArray.slice(1, 2),
-      <div className={classes.divider} />,
-      childArray[childArray.length - 1],
+      <React.Fragment key={'menu'}>{menu}</React.Fragment>,
+      <div key={'menu-main-divider'} />,
+      <React.Fragment key={'main'}>{main}</React.Fragment>,
+      <div key={'main-detail-divider'} className={classes.divider} />,
+      <React.Fragment key={'detail'}>{detail}</React.Fragment>,
     ];
   } else {
-    displayableChildren = childArray;
+    displayableChildren = [
+      <React.Fragment key={'menu'}>{menu}</React.Fragment>,
+      <React.Fragment key={'main'}>{main}</React.Fragment>,
+      <React.Fragment key={'detail'}>{detail}</React.Fragment>,
+    ];
   }
 
   useEffect(
@@ -43,9 +52,7 @@ export const AppLayout: FunctionComponent = ({ children }) => {
       gridTemplateRows={createGridTemplateRows(useSmallLayout)}
       gridTemplateColumns={createGridTemplateColumns(useSmallLayout)}
     >
-      {displayableChildren.map((child, index) => (
-        <React.Fragment key={index}>{child}</React.Fragment>
-      ))}
+      {displayableChildren}
     </Box>
   );
 };
