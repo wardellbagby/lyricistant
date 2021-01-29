@@ -1,6 +1,6 @@
 import { EditorView } from '@codemirror/view';
-import { Text } from "@codemirror/text";
-import { SelectionRange } from "@codemirror/state";
+import { Text } from '@codemirror/text';
+import { SelectionRange } from '@codemirror/state';
 
 export interface WordAtPosition {
   from: number;
@@ -12,25 +12,33 @@ export interface WordSelectionConfig {
   onWordSelected: (word: WordAtPosition) => void;
 }
 export const wordSelection = (config: WordSelectionConfig) => [
-    EditorView.updateListener.of((update) => {
-      if (update.selectionSet) {
-        config.onWordSelected(
-          findWordAt(update.state.doc, update.state.selection.asSingle().main)
-        );
-      }
-    }),
-  ];
+  EditorView.updateListener.of((update) => {
+    if (update.selectionSet) {
+      config.onWordSelected(
+        findWordAt(update.state.doc, update.state.selection.asSingle().main)
+      );
+    }
+  }),
+];
 
 const findWordAt = (document: Text, position: SelectionRange) => {
   const line = document.lineAt(position.head);
   const isDelimiter = (c: string) => /[^\w\-']+/.exec(c);
-  let start; let end;
-  if(position.assoc === 1) {
-    start = position.from - line.from;
-    end = position.from + 1 - line.from;
+
+  let start;
+  let end;
+
+  if (position.empty) {
+    if (position.assoc === 1) {
+      start = position.from - line.from;
+      end = position.from + 1 - line.from;
+    } else {
+      start = position.from - 1 - line.from;
+      end = position.from - line.from;
+    }
   } else {
-    start = position.from - 1 - line.from;
-    end = position.from - line.from;
+    start = position.from - line.from;
+    end = position.to - line.from;
   }
 
   while (start >= 0 && !isDelimiter(line.text[start])) {

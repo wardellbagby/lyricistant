@@ -96,11 +96,7 @@ export function App() {
                 fontSize={theme.typography.fontSize}
                 onTextChanged={setEditorText}
               />
-              <Rhymes
-                onRhymeClicked={() => {
-                  throw Error('Implement me!');
-                }}
-              />
+              <Rhymes />
             </SelectedWordStore>
           </AppLayout>
         </Route>

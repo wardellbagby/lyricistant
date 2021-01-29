@@ -24,7 +24,10 @@ import { logger, platformDelegate } from '../globals';
 import { useDocumentListener } from '../hooks/useEventListener';
 import { findWordAt, LYRICISTANT_LANGUAGE } from '../util/editor-helpers';
 import { toDroppableFile } from '../util/to-droppable-file';
-import { useSelectedWordStore } from '../stores/SelectedWordStore';
+import {
+  useReplacedWords,
+  useSelectedWordStore,
+} from '../stores/SelectedWordStore';
 
 export interface EditorProps {
   text: string;
@@ -82,7 +85,12 @@ export function Editor(props: EditorProps) {
   //   }
   // });
   const store = useSelectedWordStore();
-  return <CodeMirror6Editor onWordSelected={store.onWordSelected} />;
+  return (
+    <CodeMirror6Editor
+      onWordSelected={store.onWordSelected}
+      wordReplacement={useReplacedWords()}
+    />
+  );
 }
 
 // function handleSelectedWordChanges(

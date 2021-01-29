@@ -8,12 +8,11 @@ import { VirtuosoGrid } from 'react-virtuoso';
 import { logger } from '../globals';
 import { Rhyme } from '../models/rhyme';
 import { fetchRhymes } from '../networking/fetchRhymes';
-import { WordAtPosition } from '../../../codemirror/main/wordSelection';
-import { useSelectedWords } from '../stores/SelectedWordStore';
-
-interface RhymesProp {
-  onRhymeClicked: (rhyme: Rhyme, from: number, to: number) => void;
-}
+import {
+  useSelectedWordPosition,
+  useSelectedWords,
+  useSelectedWordStore,
+} from '../stores/SelectedWordStore';
 
 const useStyles = makeStyles((theme: Theme) => ({
   rhymeList: {
@@ -56,15 +55,48 @@ const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
   })
 );
 
-export function Rhymes(props: RhymesProp) {
+export function Rhymes() {
   const [rhymes, setRhymes] = useState<Rhyme[]>([]);
-  const [queryData, setQueryData] = useState<WordAtPosition>(null);
   const classes = useStyles();
 
+  const selectedWordStore = useSelectedWordStore();
   const handleError = useErrorHandler();
-  useSelectedWords(setQueryData);
-  useEffect(handleQueries(queryData, setRhymes, handleError), [
-    queryData,
+  const selectedWord = useSelectedWords();
+  const selectedWordPosition = useSelectedWordPosition();
+
+  useEffect(() => {
+    if (!selectedWord) {
+      setRhymes([]);
+      return;
+    }
+
+    let isCancelled = false;
+    new Promise((resolve) => {
+      // Debounce.
+      setTimeout(() => {
+        if (!isCancelled) {
+          logger.debug(`Querying rhymes for word: ${selectedWord}`);
+          resolve(selectedWord);
+        }
+      }, 400);
+    })
+      .then(fetchRhymes)
+      .then((results) =>
+        results.filter((rhyme) => rhyme && rhyme.word && rhyme.score)
+      )
+      .then(setRhymes)
+      .catch((reason) => {
+        if (reason instanceof Error) {
+          handleError(reason);
+        } else {
+          handleError(new Error(reason));
+        }
+      });
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    selectedWord,
     setRhymes,
     handleError,
   ]);
@@ -84,7 +116,15 @@ export function Rhymes(props: RhymesProp) {
         const rhyme = rhymes[index];
 
         return renderRhyme(rhyme, classes.rhyme, () => {
-          props.onRhymeClicked(rhyme, queryData.from, queryData.to);
+          setRhymes([]);
+          selectedWordStore.onWordReplaced({
+            originalWord: {
+              word: selectedWord,
+              from: selectedWordPosition[0],
+              to: selectedWordPosition[1],
+            },
+            newWord: rhyme.word,
+          });
         });
       }}
     />
@@ -112,29 +152,4 @@ function renderRhyme(
       </ListItem>
     </Box>
   );
-}
-
-function handleQueries(
-  query: WordAtPosition,
-  setRhymes: (rhymes: Rhyme[]) => void,
-  handleError: (error: Error) => void
-) {
-  return () => {
-    if (!query) {
-      return;
-    }
-    logger.debug(`Querying rhymes for word: ${query.word}`);
-    fetchRhymes(query.word)
-      .then((rhymes) =>
-        rhymes.filter((rhyme) => rhyme && rhyme.word && rhyme.score)
-      )
-      .then(setRhymes)
-      .catch((reason) => {
-        if (reason instanceof Error) {
-          handleError(reason);
-        } else {
-          handleError(new Error(reason));
-        }
-      });
-  };
 }

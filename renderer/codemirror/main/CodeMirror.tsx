@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { EditorState, tagExtension } from '@codemirror/state';
+import { EditorSelection, EditorState, tagExtension } from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
 import { EditorView, keymap } from '@codemirror/view';
 import { history, historyKeymap } from '@codemirror/history';
@@ -13,50 +13,15 @@ const EditorContainer = styled('div')({
   height: '100%',
   width: '100%',
 });
-// const useStyles = makeStyles((theme: Theme) => ({
-//   root: {
-//     height: '100%',
-//     width: '100%',
-//     '& .CodeMirror': {
-//       height: '100%',
-//       background: theme.palette.background.default,
-//       color: theme.palette.text.primary,
-//       fontSize: theme.typography.fontSize,
-//       fontFamily: "'Roboto Mono'",
-//     },
-//     '& .CodeMirror-dialog input': {
-//       fontSize: theme.typography.fontSize,
-//       fontFamily: "'Roboto Mono'",
-//     },
-//     '& .CodeMirror-linenumber': {
-//       color: theme.palette.text.secondary,
-//     },
-//     '& .CodeMirror-gutters': {
-//       background: theme.palette.background.default,
-//       'border-style': 'none',
-//       width: '60px',
-//       'text-align': 'center',
-//     },
-//     '& .CodeMirror-cursor': {
-//       'border-left': `1px solid ${theme.palette.text.primary};`,
-//     },
-//     '& .CodeMirror-guttermarker': {
-//       color: theme.palette.background.default,
-//     },
-//     '& .CodeMirror-selectedtext': {
-//       color: theme.palette.getContrastText(theme.palette.primary.main),
-//     },
-//     '& .CodeMirror-selected': {
-//       'background-color': [[theme.palette.primary.main], '!important'],
-//     },
-//     '& .CodeMirror-empty': {
-//       color: theme.palette.action.disabled,
-//     },
-//   },
-// }));
+
+export interface WordReplacement {
+  originalWord: WordAtPosition;
+  newWord: string;
+}
 
 interface Props {
   onWordSelected?: (word: WordAtPosition) => void;
+  wordReplacement?: WordReplacement;
 }
 
 export function CodeMirror6Editor(props: Props) {
@@ -105,5 +70,26 @@ export function CodeMirror6Editor(props: Props) {
       },
     });
   }, [view, appTheme]);
+  useEffect(() => {
+    if (!view || !props.wordReplacement) {
+      return;
+    }
+    const {
+      originalWord: { from, to },
+      newWord: insert,
+    } = props.wordReplacement;
+    const changes = view.state.changes({
+      from: Math.max(0, from),
+      to: Math.min(to, view.state.doc.length),
+      insert,
+    });
+    const selection = EditorSelection.cursor(
+      changes.mapPos(Math.min(to, view.state.doc.length))
+    );
+    view.dispatch({
+      changes,
+      selection,
+    });
+  }, [view, props.wordReplacement, props.onWordSelected]);
   return <EditorContainer ref={ref} />;
 }
