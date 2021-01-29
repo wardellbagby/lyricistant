@@ -23,7 +23,7 @@ export const editorTheme = (appTheme: Theme): Extension =>
         },
       },
       $scroller: {
-        fontFamily: '"Roboto"',
+        fontFamily: '"Roboto Mono"',
         fontSize: appTheme.typography.fontSize,
       },
       $gutters: {
