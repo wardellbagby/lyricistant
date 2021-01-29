@@ -95,11 +95,7 @@ export function Rhymes() {
     return () => {
       isCancelled = true;
     };
-  }, [
-    selectedWord,
-    setRhymes,
-    handleError,
-  ]);
+  }, [selectedWord, setRhymes, handleError]);
 
   if (rhymes.length === 0) {
     return <div />;
@@ -137,7 +133,7 @@ function renderRhyme(
   onClick: () => void
 ): React.ReactElement {
   return (
-    <Box flex={1} width={'100%'} height={'100%'}>
+    <Box flex={1} width={'100%'} height={'100%'} onClick={onClick}>
       <ListItem
         className={className}
         button
@@ -145,7 +141,6 @@ function renderRhyme(
         style={{ height: '100%' }}
       >
         <ListItemText
-          onClick={onClick}
           primary={rhyme.word ?? ''}
           primaryTypographyProps={{ align: 'center' }}
         />
