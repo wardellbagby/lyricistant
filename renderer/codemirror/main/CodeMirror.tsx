@@ -33,7 +33,7 @@ interface Props {
   onTextChanged?: (text: string) => void;
 }
 
-export function CodeMirror6Editor(props: Props) {
+export function CodeMirrorEditor(props: Props) {
   const ref = useRef<HTMLDivElement>();
   const [view, setView] = useState<EditorView>(null);
   const appTheme = useTheme();

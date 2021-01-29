@@ -1,7 +1,7 @@
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
-import { CodeMirror6Editor } from '@lyricistant-codemirror/CodeMirror';
+import { CodeMirrorEditor } from '@lyricistant-codemirror/CodeMirror';
 import { EditorView } from '@codemirror/view';
 import { redo, undo, undoDepth } from '@codemirror/history';
 import { EditorState, EditorStateConfig } from '@codemirror/state';
@@ -57,7 +57,7 @@ export function Editor({ onTextChanged }: EditorProps) {
   });
   const store = useSelectedWordStore();
   return (
-    <CodeMirror6Editor
+    <CodeMirrorEditor
       onEditorMounted={setEditor}
       onWordSelected={store.onWordSelected}
       wordReplacement={useReplacedWords()}
