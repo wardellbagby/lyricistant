@@ -1,35 +1,42 @@
-import { existsSync, promises as fs } from 'fs';
 import path from 'path';
 import { TemporaryFiles } from '@common/files/TemporaryFiles';
 import { Logger } from '@common/Logger';
-import { app } from 'electron';
+import { FileSystem } from '../wrappers/FileSystem';
 
 export class ElectronTemporaryFiles implements TemporaryFiles {
-  private temporaryFile = path.resolve(app.getPath('temp'), 'temp_lyrics.txt');
+  private temporaryFile = path.resolve(
+    this.fs.getDataDirectory('temp'),
+    'temp_lyrics.txt'
+  );
 
-  public constructor(private logger: Logger) {}
+  public constructor(private fs: FileSystem, private logger: Logger) {}
 
   public set = (data: string | null) => {
-    fs.writeFile(this.temporaryFile, data).catch((reason) =>
-      this.logger.warn(
-        'Failed to save to temporary file!',
-        reason,
-        this.temporaryFile
-      )
-    );
-  };
-  public get = async () => fs.readFile(this.temporaryFile, { encoding: 'utf8' });
-
-  public exists = () => existsSync(this.temporaryFile);
-  public delete = () => {
-    if (this.exists()) {
-      fs.unlink(this.temporaryFile).catch((reason) =>
+    this.fs
+      .writeFile(this.temporaryFile, data)
+      .catch((reason) =>
         this.logger.warn(
-          'Failed to delete temporary file!',
+          'Failed to save to temporary file!',
           reason,
           this.temporaryFile
         )
       );
+  };
+  public get = async () =>
+    this.fs.readFile(this.temporaryFile, { encoding: 'utf8' });
+
+  public exists = () => this.fs.existsSync(this.temporaryFile);
+  public delete = () => {
+    if (this.exists()) {
+      this.fs
+        .unlink(this.temporaryFile)
+        .catch((reason) =>
+          this.logger.warn(
+            'Failed to delete temporary file!',
+            reason,
+            this.temporaryFile
+          )
+        );
     }
   };
 }

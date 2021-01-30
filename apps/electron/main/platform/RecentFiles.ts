@@ -1,20 +1,23 @@
-import { existsSync } from 'fs';
+import path from 'path';
 import { RecentFiles as IRecentFiles } from '@common/files/RecentFiles';
-import { app } from 'electron';
-import { readFileSync, writeFile } from 'original-fs';
+import { Logger } from '@common/Logger';
+import { FileSystem } from '../wrappers/FileSystem';
 
 export class ElectronRecentFiles implements IRecentFiles {
-  private readonly recentFilesFilePath = `${app.getPath(
-    'userData'
-  )}/recent_files.json`;
+  private readonly recentFilesFilePath = path.resolve(
+    this.fs.getDataDirectory('userData'),
+    'recent_files.json'
+  );
 
   private cachedRecentFiles: string[];
 
+  public constructor(private fs: FileSystem, private logger: Logger) {}
+
   public getRecentFiles = (): string[] => {
     if (!this.cachedRecentFiles) {
-      if (existsSync(this.recentFilesFilePath)) {
+      if (this.fs.existsSync(this.recentFilesFilePath)) {
         this.cachedRecentFiles = JSON.parse(
-          readFileSync(this.recentFilesFilePath, 'utf8')
+          this.fs.readFileSync(this.recentFilesFilePath, 'utf8')
         );
       } else {
         this.cachedRecentFiles = [];
@@ -26,10 +29,10 @@ export class ElectronRecentFiles implements IRecentFiles {
 
   public setRecentFiles = (recentFiles: string[]) => {
     this.cachedRecentFiles = recentFiles;
-    writeFile(
-      this.recentFilesFilePath,
-      JSON.stringify(recentFiles),
-      () => undefined
-    );
+    this.fs
+      .writeFile(this.recentFilesFilePath, JSON.stringify(recentFiles))
+      .catch((reason) => {
+        this.logger.warn('Failed to save recent files', reason);
+      });
   };
 }

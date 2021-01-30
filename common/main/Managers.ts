@@ -1,3 +1,3 @@
 import { Manager } from './Manager';
 
-export type Managers = Manager[];
+export type Managers = Array<() => Manager>;

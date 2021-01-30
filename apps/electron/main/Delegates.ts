@@ -1,5 +1,4 @@
 import { PlatformDelegate, RendererDelegate } from '@common/Delegates';
-import { Logger } from '@common/Logger';
 import {
   BrowserWindow,
   IpcMain,
@@ -7,9 +6,9 @@ import {
   IpcRenderer,
   ipcRenderer as electronRenderer,
 } from 'electron';
-import { ElectronLogger } from './platform/Logger';
+import log from 'electron-log';
 
-const logger: Logger = new ElectronLogger();
+const logger = log;
 
 export class ElectronRendererDelegate implements RendererDelegate {
   private ipcMain: IpcMain;
@@ -111,7 +110,8 @@ const isError = (e: any) => e instanceof Error;
 
 export const createRendererDelegate: (
   window: BrowserWindow
-) => RendererDelegate = (window) => new ElectronRendererDelegate(electronMain, window);
+) => RendererDelegate = (window) =>
+  new ElectronRendererDelegate(electronMain, window);
 export const platformDelegate: PlatformDelegate = new ElectronPlatformDelegate(
   electronRenderer
 );

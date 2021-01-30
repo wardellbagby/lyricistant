@@ -5,6 +5,7 @@ import { BrowserWindow, dialog } from 'electron';
 import log from 'electron-log';
 
 export class ElectronLogger implements Logger {
+  public constructor(private window: BrowserWindow) {}
   public debug(message: string, ...args: any[]): void {
     log.debug(message, ...args);
   }
@@ -26,13 +27,10 @@ export class ElectronLogger implements Logger {
   }
 
   public async save() {
-    const result = await dialog.showSaveDialog(
-      BrowserWindow.getFocusedWindow(),
-      {
-        defaultPath: 'logs',
-        filters: [{ name: 'Zip Files', extensions: ['zip'] }],
-      }
-    );
+    const result = await dialog.showSaveDialog(this.window, {
+      defaultPath: 'logs',
+      filters: [{ name: 'Zip Files', extensions: ['zip'] }],
+    });
 
     if (result.filePath) {
       const zip = new AdmZip();
@@ -44,7 +42,8 @@ export class ElectronLogger implements Logger {
   }
 }
 
-const writeZip = async (zip: AdmZip, targetFileName: string) => new Promise((resolve, reject) => {
+const writeZip = async (zip: AdmZip, targetFileName: string) =>
+  new Promise((resolve, reject) => {
     zip.writeZip(targetFileName, (error) => {
       if (error) {
         reject(error);

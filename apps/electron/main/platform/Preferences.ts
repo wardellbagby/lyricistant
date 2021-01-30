@@ -1,18 +1,24 @@
-import { existsSync, readFileSync, writeFile } from 'fs';
+import path from 'path';
 import { Preferences as IPreferences } from '@common/preferences/Preferences';
 import { PreferencesData } from '@common/preferences/PreferencesData';
-import { app } from 'electron';
+import { Logger } from '@common/Logger';
+import { FileSystem } from '../wrappers/FileSystem';
 
 export class ElectronPreferences implements IPreferences {
-  private readonly preferencesFilePath = `${app.getPath(
-    'userData'
-  )}/preferences.json`;
+  private readonly preferencesFilePath: string;
   private cachedPreferences: PreferencesData;
 
+  public constructor(private fs: FileSystem, private logger: Logger) {
+    this.preferencesFilePath = path.resolve(
+      this.fs.getDataDirectory('userData'),
+      'preferences.json'
+    );
+  }
+
   public getPreferences = (): PreferencesData | undefined => {
-    if (existsSync(this.preferencesFilePath)) {
+    if (this.fs.existsSync(this.preferencesFilePath)) {
       this.cachedPreferences = JSON.parse(
-        readFileSync(this.preferencesFilePath, 'utf8')
+        this.fs.readFileSync(this.preferencesFilePath, 'utf8')
       );
       return this.cachedPreferences;
     } else {
@@ -21,6 +27,10 @@ export class ElectronPreferences implements IPreferences {
   };
   public setPreferences = (data: PreferencesData) => {
     this.cachedPreferences = data;
-    writeFile(this.preferencesFilePath, JSON.stringify(data), () => undefined);
+    this.fs
+      .writeFile(this.preferencesFilePath, JSON.stringify(data))
+      .catch((reason) =>
+        this.logger.warn('Failed to saved preferences', reason)
+      );
   };
 }

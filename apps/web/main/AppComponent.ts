@@ -47,12 +47,12 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<UnloadManager>();
 
   component.registerSingleton<Managers>(() => [
-    component.get<FileManager>(),
-    component.get<PreferenceManager>(),
-    component.get<UiConfigManager>(),
-    component.get<UnsavedDataManager>(),
-    component.get<LogManager>(),
-    component.get<UnloadManager>(),
+    () => component.get<FileManager>(),
+    () => component.get<PreferenceManager>(),
+    () => component.get<UiConfigManager>(),
+    () => component.get<UnsavedDataManager>(),
+    () => component.get<LogManager>(),
+    () => component.get<UnloadManager>(),
   ]);
   return component;
 };

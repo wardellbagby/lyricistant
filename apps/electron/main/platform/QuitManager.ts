@@ -4,7 +4,7 @@ import { Dialogs } from '@common/dialogs/Dialogs';
 import { TemporaryFiles } from '@common/files/TemporaryFiles';
 import { Logger } from '@common/Logger';
 import { Manager } from '@common/Manager';
-import { mainWindow } from '../index';
+import { BrowserWindow } from 'electron';
 
 export class QuitManager implements Manager {
   private forceQuitTimeout?: NodeJS.Timeout;
@@ -13,7 +13,8 @@ export class QuitManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private dialogs: Dialogs,
     private temporaryFiles: TemporaryFiles,
-    private logger: Logger
+    private logger: Logger,
+    private window: BrowserWindow
   ) {}
 
   public register(): void {
@@ -27,14 +28,14 @@ export class QuitManager implements Manager {
       this.logger.error(
         'Force-closing app because renderer never responded and user attempted quit!'
       );
-      mainWindow.destroy();
+      this.window.destroy();
     }, 2500);
   }
 
   private onOkayForQuit = () => {
     clearTimeout(this.forceQuitTimeout);
     this.temporaryFiles.delete();
-    mainWindow.destroy();
+    this.window.destroy();
   };
 
   private onPromptQuit = async () => {

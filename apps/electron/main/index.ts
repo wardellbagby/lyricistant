@@ -8,14 +8,16 @@ import { Logger } from '@common/Logger';
 import { Managers } from '@common/Managers';
 import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
+import { DIContainer } from '@wessberg/di';
 import { createAppMenu } from './app-menu';
-import { appComponent } from './AppComponent';
 import { createRendererDelegate } from './Delegates';
 import { QuitManager } from './platform/QuitManager';
+import { createAppComponent } from './AppComponent';
 
 export let mainWindow: BrowserWindow;
+let appComponent: DIContainer;
 let rendererDelegate: RendererDelegate;
-const logger = appComponent.get<Logger>();
+let logger: Logger;
 
 if (isDevelopment) {
   debug({
@@ -103,9 +105,6 @@ const registerListeners = () => {
 };
 
 const createWindow = (): void => {
-  if (!appComponent.has<Logger>()) {
-    throw new Error('app component is empty');
-  }
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
@@ -119,8 +118,10 @@ const createWindow = (): void => {
       preload: path.resolve(__dirname, 'preload.js'),
     },
   });
+  appComponent = createAppComponent(mainWindow);
+  logger = appComponent.get<Logger>();
   rendererDelegate = createRendererDelegate(mainWindow);
-  appComponent.get<Managers>().forEach((manager) => manager.register());
+  appComponent.get<Managers>().forEach((manager) => manager().register());
   registerListeners();
 
   logger.info('Platform information', {

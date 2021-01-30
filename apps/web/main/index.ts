@@ -9,7 +9,7 @@ window.logger = logger;
 window.platformDelegate = platformDelegate;
 
 new Promise((resolve) => {
-  appComponent.get<Managers>().forEach((manager) => manager.register());
+  appComponent.get<Managers>().forEach((manager) => manager().register());
   resolve();
 })
   .then(async () => {

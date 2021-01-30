@@ -2,17 +2,18 @@ import {
   SystemTheme,
   SystemThemeProvider as ISystemThemeProvider,
 } from '@common/theme/SystemTheme';
-import { nativeTheme } from 'electron';
+import { NativeTheme } from 'electron';
 
 export class ElectronSystemThemeProvider implements ISystemThemeProvider {
+  public constructor(private nativeTheme: NativeTheme) {}
   public onChange = (listener: (theme: SystemTheme) => void) => {
     listener(this.getSystemTheme());
 
-    nativeTheme.on('updated', () => {
+    this.nativeTheme.on('updated', () => {
       listener(this.getSystemTheme());
     });
   };
 
   private getSystemTheme = (): SystemTheme =>
-    nativeTheme.shouldUseDarkColors ? SystemTheme.Dark : SystemTheme.Light;
+    this.nativeTheme.shouldUseDarkColors ? SystemTheme.Dark : SystemTheme.Light;
 }

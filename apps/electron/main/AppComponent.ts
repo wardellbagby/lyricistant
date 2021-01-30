@@ -14,8 +14,15 @@ import type { SystemThemeProvider } from '@common/theme/SystemTheme';
 import type { TitleFormatter, UiConfigProvider } from '@common/ui/UiConfig';
 import type { UiConfigManager } from '@common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
-import { BrowserWindow, ipcMain } from 'electron';
-import { AppUpdater, autoUpdater } from "electron-updater";
+import {
+  BrowserWindow,
+  Dialog as ElectronDialog,
+  dialog,
+  ipcMain,
+  nativeTheme,
+  NativeTheme,
+} from 'electron';
+import { AppUpdater, autoUpdater } from 'electron-updater';
 import { AppStore } from './AppStore';
 import { ElectronRendererDelegate } from './Delegates';
 import type { ElectronDialogs } from './platform/Dialogs';
@@ -28,19 +35,14 @@ import type { ElectronSystemThemeProvider } from './platform/SystemThemeProvider
 import { ElectronTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
 import { UpdateManager } from './platform/UpdateManager';
+import type { FileSystem, NodeFileSystem } from './wrappers/FileSystem';
 
-const createComponent = (): DIContainer => {
-  const component = new DIContainer();
-  component.registerTransient<RendererDelegate>(() => {
-    const mainWindow = BrowserWindow.getAllWindows()[0];
-    if (!mainWindow) {
-      throw Error(
-        'Tried to initialize an ElectronRendererDelegate with no mainWindow!'
-      );
-    }
-    return new ElectronRendererDelegate(ipcMain, mainWindow);
-  });
-
+const registerElectronFunctionality = (component: DIContainer) => {
+  component.registerSingleton<ElectronDialog>(() => dialog);
+  component.registerSingleton<FileSystem, NodeFileSystem>();
+  component.registerSingleton<NativeTheme>(() => nativeTheme);
+};
+const registerPlatformFunctionality = (component: DIContainer) => {
   component.registerSingleton<AppStore>();
   component.registerSingleton<Dialogs, ElectronDialogs>();
   component.registerSingleton<Files, ElectronFiles>();
@@ -55,7 +57,9 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<UiConfigProvider>(() => provideUiConfig);
   component.registerSingleton<TitleFormatter>(() => formatTitle);
   component.registerSingleton<AppUpdater>(() => autoUpdater);
+};
 
+const registerManagers = (component: DIContainer) => {
   component.registerSingleton<FileManager>();
   component.registerSingleton<UnsavedDataManager>();
   component.registerSingleton<PreferenceManager>();
@@ -65,14 +69,29 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<UpdateManager>();
 
   component.registerTransient<Managers>(() => [
-    component.get<FileManager>(),
-    component.get<UnsavedDataManager>(),
-    component.get<PreferenceManager>(),
-    component.get<UiConfigManager>(),
-    component.get<QuitManager>(),
-    component.get<LogManager>(),
-    component.get<UpdateManager>(),
+    () => component.get<FileManager>(),
+    () => component.get<UnsavedDataManager>(),
+    () => component.get<PreferenceManager>(),
+    () => component.get<UiConfigManager>(),
+    () => component.get<QuitManager>(),
+    () => component.get<LogManager>(),
+    () => component.get<UpdateManager>(),
   ]);
+};
+
+const createComponent = (): DIContainer => {
+  const component = new DIContainer();
+  component.registerTransient<RendererDelegate>(
+    () => new ElectronRendererDelegate(ipcMain, component.get<BrowserWindow>())
+  );
+
+  registerElectronFunctionality(component);
+  registerPlatformFunctionality(component);
+  registerManagers(component);
   return component;
 };
-export const appComponent = createComponent();
+export const createAppComponent = (window: BrowserWindow): DIContainer => {
+  const component = createComponent();
+  component.registerSingleton<BrowserWindow>(() => window);
+  return component;
+};
