@@ -10,5 +10,5 @@ export const useDocumentListener = <EventName extends keyof DocumentEventMap>(
       listener(documentEvent);
     document.addEventListener(event, nestedListener);
     return () => document.removeEventListener(event, nestedListener);
-  }, [listener, event, ...deps]);
+  }, [listener, event, ...(deps ?? [])]);
 };

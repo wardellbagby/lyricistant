@@ -1,16 +1,18 @@
-import { SnackbarProvider } from 'notistack';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { HashRouter } from 'react-router-dom';
-import { setupAnalytics } from './analytics/setupAnalytics';
-import { App } from './components/App';
-import { PlatformEventsReadyHandler } from './components/PlatformEventsReadyHandler';
-import { Themed } from './components/Themed';
-import { logger } from './globals';
+import { SnackbarProvider } from "notistack";
+import React from "react";
+import ReactDOM from "react-dom";
+import { HashRouter } from "react-router-dom";
+import { ErrorBoundary } from "react-error-boundary";
+import { setupAnalytics } from "./analytics/setupAnalytics";
+import { AppRouter } from "./components/AppRouter";
+import { PlatformEventsReadyHandler } from "./components/PlatformEventsReadyHandler";
+import { Themed } from "./components/Themed";
+import { logger } from "./globals";
+import { AppError } from "./components/AppError";
 
 window.onerror = (message, url, line, col, error) => {
   logger.error(
-    JSON.stringify(message) + '\n',
+    JSON.stringify(message) + "\n",
     `Url: ${url}\n`,
     `Line: ${line}\n`,
     `Column: ${col}\n`,
@@ -49,8 +51,12 @@ ReactDOM.render(
           horizontal: 'right',
         }}
       >
-        <HashRouter hashType={'noslash'}>
-          <App />
+        <HashRouter hashType={"noslash"}>
+          <ErrorBoundary
+            fallbackRender={({ error }) => <AppError error={error} />}
+          >
+            <AppRouter />
+          </ErrorBoundary>
         </HashRouter>
       </SnackbarProvider>
     </Themed>

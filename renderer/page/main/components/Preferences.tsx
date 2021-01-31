@@ -1,7 +1,4 @@
-import {
-  PreferencesData,
-  Theme as LyricistantTheme,
-} from '@common/preferences/PreferencesData';
+import { Theme as LyricistantTheme } from '@common/preferences/PreferencesData';
 import {
   Box,
   Button,
@@ -23,14 +20,9 @@ import { Info } from '@material-ui/icons';
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import React, { useEffect, useState } from 'react';
-
-export interface PreferencesProps {
-  show: boolean;
-  data: PreferencesData;
-  onPreferencesSaved: (data: PreferencesData) => void;
-  onClosed: () => void;
-  onAboutClicked: () => void;
-}
+import { useHistory } from 'react-router-dom';
+import { platformDelegate } from '../globals';
+import { usePreferences } from '../stores/PreferencesStore';
 
 const DialogTransition = React.forwardRef<unknown, SlideProps>(
   function Transition(props, ref) {
@@ -49,15 +41,17 @@ const dialogStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Preferences = (props: PreferencesProps) => {
+export const Preferences = () => {
+  const history = useHistory();
   const classes = dialogStyles(undefined);
-  const [preferencesData, setPreferencesData] = useState(props.data);
+  const originalPreferenceData = usePreferences();
+  const [preferencesData, setPreferencesData] = useState(
+    originalPreferenceData
+  );
 
   useEffect(() => {
-    if (!preferencesData) {
-      setPreferencesData(props.data);
-    }
-  }, [props.data]);
+    setPreferencesData(originalPreferenceData);
+  }, [originalPreferenceData]);
 
   const onDetailsSizeChanged = (
     event: React.ChangeEvent<{ value: number }>
@@ -81,7 +75,14 @@ export const Preferences = (props: PreferencesProps) => {
     }
   };
 
-  if (!props.show && !preferencesData) {
+  const onPreferencesSaved = () =>
+    platformDelegate.send('save-prefs', preferencesData);
+
+  const closePreferences = () => history.replace('/');
+
+  const onAboutClicked = () => history.replace('/about');
+
+  if (!preferencesData) {
     return <div />;
   }
 
@@ -89,21 +90,18 @@ export const Preferences = (props: PreferencesProps) => {
     <Dialog
       fullScreen
       className={classes.appBar}
-      open={props.show}
+      open={true}
       TransitionComponent={DialogTransition}
     >
       <AppBar color={'primary'} position="sticky">
         <Toolbar>
-          <IconButton color={'inherit'} edge="start" onClick={props.onClosed}>
+          <IconButton color={'inherit'} edge="start" onClick={closePreferences}>
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Preferences
           </Typography>
-          <IconButton
-            color={'inherit'}
-            onClick={() => props.onPreferencesSaved(preferencesData)}
-          >
+          <IconButton color={'inherit'} onClick={onPreferencesSaved}>
             <SaveIcon />
           </IconButton>
         </Toolbar>
@@ -159,7 +157,7 @@ export const Preferences = (props: PreferencesProps) => {
           variant={'text'}
           startIcon={<Info />}
           size={'large'}
-          onClick={props.onAboutClicked}
+          onClick={onAboutClicked}
         >
           About Lyricistant
         </Button>

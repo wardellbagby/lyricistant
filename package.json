@@ -47,7 +47,7 @@
     "@types/react": "^16.9.45",
     "@types/react-beforeunload": "^2.1.0",
     "@types/react-dom": "^16.9.8",
-    "@types/react-router-dom": "^5.1.5",
+    "@types/react-router-dom": "^5.1.7",
     "@types/sinon": "^9.0.5",
     "@types/sprintf-js": "^1.1.2",
     "@types/terser-webpack-plugin": "^3.0.0",

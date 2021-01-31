@@ -9,6 +9,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { Apple, Linux, MicrosoftWindows, Ubuntu } from 'mdi-material-ui';
 import React, { useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
 import { logger } from '../globals';
 import {
   latestReleaseUrl,
@@ -70,17 +71,9 @@ const DownloadButton = (props: { release: Release; onClick: () => void }) => {
   );
 };
 
-export interface ChooseDownloadDialogProps {
-  show: boolean;
-  onClose: () => void;
-}
-
-export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
-  const { onClose, show } = props;
-
-  const handleClose = () => {
-    onClose();
-  };
+export const ChooseDownloadDialog = () => {
+  const history = useHistory();
+  const onClose = () => history.replace('/');
 
   const handleReleaseClicked = (url: string) => {
     logger.info(`App download link clicked. Chosen URL: ${url}`);
@@ -88,17 +81,21 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
     onClose();
   };
 
-  const releases = useMemo(() => supportedReleases.reduce((map, release) => {
-      const list = map.get(release.platform) ?? [];
-      map.set(release.platform, [...list, release]);
-      return map;
-    }, new Map<string, Release[]>()), []);
+  const releases = useMemo(
+    () =>
+      supportedReleases.reduce((map, release) => {
+        const list = map.get(release.platform) ?? [];
+        map.set(release.platform, [...list, release]);
+        return map;
+      }, new Map<string, Release[]>()),
+    []
+  );
 
   return (
     <Dialog
-      onClose={handleClose}
+      onClose={onClose}
       aria-labelledby="choose-download-dialog-title"
-      open={show}
+      open={true}
     >
       <DialogTitle id="choose-download-dialog-title">
         Download Lyricistant
@@ -106,44 +103,33 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
       <Box paddingLeft={'16px'} paddingRight={'16px'} paddingBottom={'32px'}>
         <Grid container spacing={4} alignItems={'center'} justify={'center'}>
           {[...releases.keys()].map((platform) => (
-              <Grid
-                container
-                item
-                alignItems={'center'}
-                justify={'center'}
-                key={platform}
-              >
-                <Grid item xs={12}>
-                  <Typography align={'center'} variant={'h6'}>
-                    {platform}
-                  </Typography>
-                </Grid>
-                {releases.get(platform).map((release, index, archs) => (
-                    <Grid
-                      key={release.asset}
-                      item
-                      xs={archs.length === 1 ? 8 : 6}
-                    >
-                      <DownloadButton
-                        release={release}
-                        onClick={() => {
-                          handleReleaseClicked(
-                            latestReleaseUrl + release.asset
-                          );
-                        }}
-                      />
-                    </Grid>
-                  ))}
+            <Grid
+              container
+              item
+              alignItems={'center'}
+              justify={'center'}
+              key={platform}
+            >
+              <Grid item xs={12}>
+                <Typography align={'center'} variant={'h6'}>
+                  {platform}
+                </Typography>
               </Grid>
-            ))}
+              {releases.get(platform).map((release, index, archs) => (
+                <Grid key={release.asset} item xs={archs.length === 1 ? 8 : 6}>
+                  <DownloadButton
+                    release={release}
+                    onClick={() => {
+                      handleReleaseClicked(latestReleaseUrl + release.asset);
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          ))}
         </Grid>
       </Box>
-      <Button
-        size={'large'}
-        variant={'contained'}
-        fullWidth
-        onClick={() => handleClose()}
-      >
+      <Button size={'large'} variant={'contained'} fullWidth onClick={onClose}>
         Close
       </Button>
     </Dialog>

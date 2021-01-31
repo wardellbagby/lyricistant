@@ -13,11 +13,9 @@ import {
   useReplacedWords,
   useSelectedWordStore,
 } from '../stores/SelectedWordStore';
+import { useEditorTextStore } from '../stores/EditorTextStore';
 
-export interface EditorProps {
-  onTextChanged?: (text: string) => void;
-}
-export function Editor({ onTextChanged }: EditorProps) {
+export function Editor() {
   const [editor, setEditor] = useState<EditorView>(null);
   const [defaultConfig, setDefaultConfig] = useState<EditorStateConfig>(null);
   useDocumentListener(
@@ -56,13 +54,14 @@ export function Editor({ onTextChanged }: EditorProps) {
     }
   });
   const store = useSelectedWordStore();
+  const { onEditorText } = useEditorTextStore();
   return (
     <CodeMirrorEditor
       onEditorMounted={setEditor}
       onWordSelected={store.onWordSelected}
       wordReplacement={useReplacedWords()}
       onDefaultConfigReady={setDefaultConfig}
-      onTextChanged={onTextChanged}
+      onTextChanged={onEditorText}
     />
   );
 }

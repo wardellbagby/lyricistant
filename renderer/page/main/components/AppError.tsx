@@ -11,17 +11,18 @@ import {
 import React, { useCallback, useEffect } from 'react';
 import Link from '@material-ui/core/Link';
 import { logger } from '../globals';
+import { useEditorText } from '../stores/EditorTextStore';
 
 interface AppErrorProps {
-  editorText: string;
   error: Error;
 }
-export function AppError({ editorText, error }: AppErrorProps) {
+export function AppError({ error }: AppErrorProps) {
   const onClose = useCallback(() => window.location.reload(), []);
   const onCopy = useCallback(
     () => window.navigator.clipboard.writeText(editorText),
     []
   );
+  const editorText = useEditorText();
   useEffect(() => {
     logger.error('Error in renderer', error);
   }, [error]);

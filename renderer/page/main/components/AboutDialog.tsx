@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   APP_AUTHOR,
   APP_HOMEPAGE,
@@ -21,11 +22,6 @@ import {
   platformDelegate,
 } from '../globals';
 import appIcon from '../images/app_icon.png';
-
-export interface AboutDialogProps {
-  show: boolean;
-  onClose: () => void;
-}
 
 const aboutInfo = {
   Author: APP_AUTHOR,
@@ -52,15 +48,12 @@ const DividerlessTableCell = withStyles({
   },
 })(TableCell);
 
-export const AboutDialog = (props: AboutDialogProps) => {
-  const { onClose, show } = props;
-
-  const handleClose = () => {
-    onClose();
-  };
+export const AboutDialog = () => {
+  const history = useHistory();
+  const onClose = () => history.replace('/');
 
   return (
-    <Dialog onClose={handleClose} open={show} className={'paper'}>
+    <Dialog onClose={onClose} open={true} className={'paper'}>
       <DialogContent>
         <Grid
           container

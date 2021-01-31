@@ -9,11 +9,18 @@ import {
   Save,
   Settings,
 } from '@material-ui/icons';
-import clsx from 'clsx';
 
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import { useHistory } from 'react-router-dom';
 import { platformDelegate } from '../globals';
+import { downloadApp } from '../util/download-app';
+import { useEditorText } from '../stores/EditorTextStore';
 
 const useIconStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -53,28 +60,27 @@ const MenuIcon: FunctionComponent<{ onClick?: () => void }> = ({
   );
 };
 
-interface MenuProps {
-  className?: string;
-  onNewClicked?: () => void;
-  onOpenClicked: () => void;
-  onSaveClicked: () => void;
-  onSettingsClicked: () => void;
-  onDownloadClicked: () => void;
-}
-
-export function Menu({
-  onNewClicked,
-  onOpenClicked,
-  onSaveClicked,
-  onSettingsClicked,
-  onDownloadClicked,
-  className,
-}: MenuProps) {
+export function Menu() {
   const theme = useTheme();
   const classes = useMenuStyles();
   const useHorizontal = useMediaQuery(theme.breakpoints.down('sm'));
   const [uiConfig, setUiConfig] = useState<UiConfig>(null);
+  const editorText = useEditorText();
+  const history = useHistory();
 
+  const onNewClicked = () => platformDelegate.send('new-file-attempt');
+  const onOpenClicked = () => platformDelegate.send('open-file-attempt');
+  const onSaveClicked = useCallback(
+    () => platformDelegate.send('save-file-attempt', editorText),
+    [editorText]
+  );
+
+  const onSettingsClicked = () => history.replace('/preferences');
+  const onDownloadClicked = () => {
+    if (!downloadApp()) {
+      history.replace('/download');
+    }
+  };
   useEffect(() => {
     const onConfigChange = (config: UiConfig) => {
       setUiConfig(config);
@@ -89,11 +95,7 @@ export function Menu({
   }, []);
 
   return (
-    <Paper
-      square
-      className={clsx(className, classes.menu)}
-      color={theme.palette.primary.main}
-    >
+    <Paper square className={classes.menu} color={theme.palette.primary.main}>
       <Box
         display={'flex'}
         height={'100%'}
