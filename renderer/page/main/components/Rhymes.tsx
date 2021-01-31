@@ -4,7 +4,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, styled, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
-import { VirtuosoGrid } from 'react-virtuoso';
+import { GridItem, VirtuosoGrid } from 'react-virtuoso';
 import { logger } from '../globals';
 import { Rhyme } from '../models/rhyme';
 import { fetchRhymes } from '../networking/fetchRhymes';
@@ -37,7 +37,7 @@ const ListContainer: React.ComponentType<{ className: string }> = styled('div')(
   })
 );
 
-const ItemContainer: React.ComponentType<{ className: string }> = styled('div')(
+const ItemContainer: React.ComponentType<GridItem> = styled('div')(
   ({ theme }) => ({
     display: 'flex',
     flex: 'none',
@@ -102,14 +102,17 @@ export function Rhymes() {
   }
   return (
     <VirtuosoGrid
-      ListContainer={ListContainer}
-      ItemContainer={ItemContainer}
+      components={{ Item: ItemContainer, List: ListContainer }}
       style={{ width: '100%', height: '100%' }}
       overscan={100}
       totalCount={rhymes.length}
       listClassName={classes.rhymeList}
-      item={(index) => {
+      itemContent={(index) => {
         const rhyme = rhymes[index];
+
+        if (!rhyme) {
+          return;
+        }
 
         return renderRhyme(rhyme, classes.rhyme, () => {
           setRhymes([]);
