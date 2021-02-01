@@ -21,7 +21,7 @@ ts_node_project(
 
 mocha_test(
     name = "test",
-    args = [package_name() + "/platform/*.spec.js"],
+    args = [package_name() + "/**/*.spec.js"],
     configuration_env_vars = ["PATH"],
     data = [
         ":compile_ts",

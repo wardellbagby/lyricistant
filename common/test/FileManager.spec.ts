@@ -32,7 +32,6 @@ describe('File Manager', () => {
       showDialog: Promise.resolve('cancelled'),
     });
     rendererDelegate = stubInterface();
-    rendererDelegate.send.returns(undefined);
     rendererDelegate.on.callsFake(function (channel, listener) {
       rendererListeners.set(channel, listener);
       return this;

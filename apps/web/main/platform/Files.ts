@@ -73,10 +73,10 @@ const readAsText = async (blob: Blob): Promise<string> => {
   if (Blob.prototype.text) {
     return await blob.text();
   }
-  return new Promise((resolve) => {
+  return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => resolve();
+    reader.onerror = () => reject('Failed to load file');
     reader.readAsText(blob, 'utf-8');
   });
 };

@@ -31,7 +31,6 @@ describe('Unsaved Data Manager', () => {
       initialFileLoadedListener = listener;
     });
     rendererDelegate = stubInterface();
-    rendererDelegate.send.returns(undefined);
     rendererDelegate.on.callsFake(function (channel, listener) {
       rendererListeners.set(channel, listener);
       return this;

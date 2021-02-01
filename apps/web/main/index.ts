@@ -8,7 +8,7 @@ const logger = appComponent.get<Logger>();
 window.logger = logger;
 window.platformDelegate = platformDelegate;
 
-new Promise((resolve) => {
+new Promise<void>((resolve) => {
   appComponent.get<Managers>().forEach((manager) => manager().register());
   resolve();
 })

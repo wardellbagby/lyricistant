@@ -43,7 +43,7 @@ export class ElectronLogger implements Logger {
 }
 
 const writeZip = async (zip: AdmZip, targetFileName: string) =>
-  new Promise((resolve, reject) => {
+  new Promise<void>((resolve, reject) => {
     zip.writeZip(targetFileName, (error) => {
       if (error) {
         reject(error);
