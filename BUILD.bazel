@@ -7,6 +7,8 @@ package(default_visibility = ["//visibility:public"])
 exports_files([
     "workspace_status.sh",
     ".mocharc.json",
+    "jest.config.js",
+    "default-jest-env.js",
     "tooling/default.webpack.config.js",
     "package-lock.json",
 ] + glob([

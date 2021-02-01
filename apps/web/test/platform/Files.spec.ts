@@ -6,7 +6,6 @@ import { FileData } from '@common/files/Files';
 import chaiAsPromised from 'chai-as-promised';
 import { Files } from '@common/files/Files';
 import { FileSystem } from '@web-app/wrappers/FileSystem';
-import { removeJSDOM, setupJSDOM } from './setupJSDOM';
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -17,12 +16,7 @@ describe('Files', () => {
 
   beforeEach(() => {
     sinon.reset();
-    setupJSDOM();
     files = new WebFiles(fs, stubInterface());
-  });
-
-  afterEach(() => {
-    removeJSDOM();
   });
 
   it('shows a dialog to choose a file', async () => {

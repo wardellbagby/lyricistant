@@ -5,7 +5,6 @@ import chaiAsPromised from 'chai-as-promised';
 import { WebPreferences } from '@web-app/platform/Preferences';
 import { PreferencesData } from '@common/preferences/PreferencesData';
 import { Preferences } from '@common/preferences/Preferences';
-import { removeJSDOM, setupJSDOM } from './setupJSDOM';
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -15,11 +14,7 @@ describe('Preferences', () => {
 
   beforeEach(() => {
     sinon.reset();
-    setupJSDOM();
     preferences = new WebPreferences();
-  });
-  afterEach(() => {
-    removeJSDOM();
   });
 
   it('round-trip works', async () => {

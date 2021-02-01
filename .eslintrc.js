@@ -39,6 +39,7 @@ module.exports = {
       files: ['*.js'],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/explicit-member-accessibility': 'off',
         'no-console': 'off',
       },
     },
@@ -149,12 +150,7 @@ module.exports = {
     'import/no-internal-modules': [
       'error',
       {
-        allow: [
-          '@common/**/*',
-          'rxjs/*',
-          '@material-ui/**/*',
-          '**/images/**'
-        ],
+        allow: ['@common/**/*', 'rxjs/*', '@material-ui/**/*', '**/images/**'],
       },
     ],
     'import/order': 'error',

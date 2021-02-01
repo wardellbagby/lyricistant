@@ -1,5 +1,5 @@
-load("@npm//mocha:index.bzl", "mocha_test")
 load("//:tooling/ts_project.bzl", "ts_node_project")
+load("//:tooling/jest.bzl", "jest_test")
 
 ts_node_project(
     name = "compile_ts",
@@ -7,29 +7,20 @@ ts_node_project(
     deps = [
         "//apps/web/main",
         "//common/main",
-        "//testing/ui-utilities",
         "@npm//@types/chai-as-promised",
         "@npm//@types/chai-subset",
-        "@npm//@types/mocha",
+        "@npm//@types/jest",
         "@npm//chai",
         "@npm//chai-as-promised",
         "@npm//chai-subset",
         "@npm//sinon-chai",
         "@npm//ts-sinon",
-        "@npm//webdriverio",
+        "@npm//jest"
     ],
 )
 
-mocha_test(
+jest_test(
     name = "test",
-    args = [package_name() + "/**/*.spec.js"],
-    configuration_env_vars = ["PATH"],
-    data = [
-        ":compile_ts",
-        "//:.mocharc.json",
-        "//:package.json",
-        "//apps/web:bundle_web",
-        "//apps/web:index_html",
-        "//testing/ui-utilities",
-    ],
+    srcs = [":compile_ts"],
+    deps = [],
 )
