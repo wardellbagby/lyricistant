@@ -27,14 +27,12 @@ export function App() {
   useChannel('open-about', () => history.replace('/about'));
 
   return (
-    <>
-      <EditorTextStore>
-        <PreferencesStore>
-          <SelectedWordStore>
-            <AppLayout menu={<Menu />} main={<Editor />} detail={<Rhymes />} />
-          </SelectedWordStore>
-        </PreferencesStore>
-      </EditorTextStore>
-    </>
+    <EditorTextStore>
+      <PreferencesStore>
+        <SelectedWordStore>
+          <AppLayout menu={<Menu />} main={<Editor />} detail={<Rhymes />} />
+        </SelectedWordStore>
+      </PreferencesStore>
+    </EditorTextStore>
   );
 }

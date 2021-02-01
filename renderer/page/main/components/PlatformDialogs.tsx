@@ -33,7 +33,7 @@ export function PlatformDialog() {
   }
 
   return (
-    <Dialog open={true}>
+    <Dialog open>
       <DialogTitle>{dialogData.title}</DialogTitle>
       <DialogContent>
         {dialogData.message && (

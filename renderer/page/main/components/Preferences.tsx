@@ -90,7 +90,7 @@ export const Preferences = () => {
     <Dialog
       fullScreen
       className={classes.appBar}
-      open={true}
+      open
       TransitionComponent={DialogTransition}
     >
       <AppBar color={'primary'} position="sticky">

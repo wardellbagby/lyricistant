@@ -95,7 +95,7 @@ export const ChooseDownloadDialog = () => {
     <Dialog
       onClose={onClose}
       aria-labelledby="choose-download-dialog-title"
-      open={true}
+      open
     >
       <DialogTitle id="choose-download-dialog-title">
         Download Lyricistant

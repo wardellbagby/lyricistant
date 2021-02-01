@@ -27,7 +27,7 @@ export function AppError({ error }: AppErrorProps) {
     logger.error('Error in renderer', error);
   }, [error]);
   return (
-    <Dialog onClose={onClose} open={true}>
+    <Dialog onClose={onClose} open>
       <DialogTitle>Application Error</DialogTitle>
       <Box paddingLeft={'32px'} paddingRight={'32px'} paddingBottom={'24px'}>
         <Typography paragraph>

@@ -53,7 +53,7 @@ export const AboutDialog = () => {
   const onClose = () => history.replace('/');
 
   return (
-    <Dialog onClose={onClose} open={true} className={'paper'}>
+    <Dialog onClose={onClose} open className={'paper'}>
       <DialogContent>
         <Grid
           container
