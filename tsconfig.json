@@ -26,6 +26,7 @@
       "@common/*": ["common/main/*"],
       "@renderer/*": ["renderer/page/main/*"],
       "@electron-app/*": ["apps/electron/main/*"],
+      "@web-app/*": ["apps/web/main/*"],
       "@lyricistant-codemirror/*": ["renderer/codemirror/main/*"]
     },
     "plugins": [

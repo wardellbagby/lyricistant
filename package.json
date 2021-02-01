@@ -77,6 +77,7 @@
     "html-webpack-plugin": "^4.3.0",
     "husky": "^4.2.5",
     "js-yaml": "^3.14.0",
+    "jsdom": "^16.4.0",
     "local-web-server": "^4.2.1",
     "mocha": "^7.2.0",
     "prettier": "^2.1.2",

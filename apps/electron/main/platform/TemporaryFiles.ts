@@ -1,10 +1,9 @@
-import path from 'path';
 import { TemporaryFiles } from '@common/files/TemporaryFiles';
 import { Logger } from '@common/Logger';
 import { FileSystem } from '../wrappers/FileSystem';
 
 export class ElectronTemporaryFiles implements TemporaryFiles {
-  private temporaryFile = path.resolve(
+  private temporaryFile = this.fs.resolve(
     this.fs.getDataDirectory('temp'),
     'temp_lyrics.txt'
   );

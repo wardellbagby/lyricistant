@@ -24,10 +24,13 @@ import type { WebSystemThemeProvider } from './platform/SystemThemeProvider';
 import { WebTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
 import { UnloadManager } from './platform/UnloadManager';
+import { FileSystem, WebFileSystem } from './wrappers/FileSystem';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();
   component.registerSingleton<RendererDelegate, WebRendererDelegate>();
+
+  component.registerSingleton<FileSystem, WebFileSystem>();
 
   component.registerSingleton<Dialogs, WebDialogs>();
   component.registerSingleton<Files, WebFiles>();

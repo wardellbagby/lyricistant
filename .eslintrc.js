@@ -43,7 +43,7 @@ module.exports = {
       },
     },
     {
-      files: ['*.spec.ts'],
+      files: ['**/test/**/*.ts'],
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-unused-expressions': 'off',

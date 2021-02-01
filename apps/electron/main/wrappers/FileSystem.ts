@@ -1,11 +1,13 @@
 import {
   existsSync,
-  writeFileSync,
-  readFileSync,
   promises as fspromises,
+  readFileSync,
+  writeFileSync,
 } from 'fs';
+import path from 'path';
 import { isText } from 'istextorbinary';
 import { app } from 'electron';
+
 export interface FileSystem {
   writeFile: typeof fspromises.writeFile;
   readFile: typeof fspromises.readFile;
@@ -16,6 +18,7 @@ export interface FileSystem {
 
   isText: typeof isText;
   getDataDirectory: typeof app.getPath;
+  resolve: typeof path.resolve;
 }
 
 export class NodeFileSystem implements FileSystem {
@@ -25,6 +28,7 @@ export class NodeFileSystem implements FileSystem {
   public readFileSync = readFileSync;
   public existsSync = existsSync;
   public unlink = fspromises.unlink;
+  public resolve = path.resolve;
 
   public isText = isText;
   public getDataDirectory = (...args: Parameters<typeof app.getPath>) =>

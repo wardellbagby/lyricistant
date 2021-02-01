@@ -21,7 +21,7 @@ ts_node_project(
 
 mocha_test(
     name = "test",
-    args = [package_name() + "/**/*.spec.js"],
+    args = [package_name() + "/platform/*.spec.js"],
     configuration_env_vars = ["PATH"],
     data = [
         ":compile_ts",
@@ -31,5 +31,6 @@ mocha_test(
         "//apps/web:index_html",
         "//testing/ui-utilities",
         "@npm//chai-as-promised",
+        "@npm//jsdom",
     ],
 )

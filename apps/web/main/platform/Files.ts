@@ -1,9 +1,9 @@
 import { DroppableFile, FileData, Files as IFiles } from '@common/files/Files';
 import { Logger } from '@common/Logger';
-import { fileOpen, fileSave } from 'browser-nativefs';
+import { FileSystem } from '../wrappers/FileSystem';
 
 export class WebFiles implements IFiles {
-  public constructor(private logger: Logger) {}
+  public constructor(private fs: FileSystem, private logger: Logger) {}
 
   public openFile = async (file?: DroppableFile) => {
     if (file) {
@@ -15,7 +15,7 @@ export class WebFiles implements IFiles {
 
     let result: File;
     try {
-      result = await fileOpen({
+      result = await this.fs.openFile({
         mimeTypes: ['text/plain'],
         extensions: ['.txt'],
         multiple: false,
@@ -42,7 +42,7 @@ export class WebFiles implements IFiles {
     const fileName = file.filePath ?? 'Lyrics.txt';
     let fileHandle;
     try {
-      fileHandle = await fileSave(
+      fileHandle = await this.fs.saveFile(
         new Blob([file.data], {
           type: 'text/plain',
         }),

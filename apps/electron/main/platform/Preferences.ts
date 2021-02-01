@@ -1,4 +1,3 @@
-import path from 'path';
 import { Preferences as IPreferences } from '@common/preferences/Preferences';
 import { PreferencesData } from '@common/preferences/PreferencesData';
 import { Logger } from '@common/Logger';
@@ -9,21 +8,22 @@ export class ElectronPreferences implements IPreferences {
   private cachedPreferences: PreferencesData;
 
   public constructor(private fs: FileSystem, private logger: Logger) {
-    this.preferencesFilePath = path.resolve(
+    this.preferencesFilePath = this.fs.resolve(
       this.fs.getDataDirectory('userData'),
       'preferences.json'
     );
   }
 
   public getPreferences = (): PreferencesData | undefined => {
-    if (this.fs.existsSync(this.preferencesFilePath)) {
+    if (
+      !this.cachedPreferences &&
+      this.fs.existsSync(this.preferencesFilePath)
+    ) {
       this.cachedPreferences = JSON.parse(
         this.fs.readFileSync(this.preferencesFilePath, 'utf8')
       );
-      return this.cachedPreferences;
-    } else {
-      return undefined;
     }
+    return this.cachedPreferences;
   };
   public setPreferences = (data: PreferencesData) => {
     this.cachedPreferences = data;
