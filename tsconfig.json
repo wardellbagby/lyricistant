@@ -27,10 +27,9 @@
       "@renderer/*": ["renderer/page/main/*"],
       "@electron-app/*": ["apps/electron/main/*"],
       "@web-app/*": ["apps/web/main/*"],
-      "@lyricistant-codemirror/*": ["renderer/codemirror/main/*"]
+      "@lyricistant-codemirror/*": ["renderer/codemirror/main/*"],
+      "@testing/utilities/*": ["testing/utilities/*"]
     },
-    "plugins": [
-      { "transform": "./di-ts-transformer.js" }
-    ]
+    "plugins": [{ "transform": "./di-ts-transformer.js" }]
   }
 }

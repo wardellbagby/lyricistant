@@ -5,7 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { NativeTheme } from 'electron';
 import { ElectronSystemThemeProvider } from '@electron-app/platform/SystemThemeProvider';
 import { SystemThemeProvider, SystemTheme } from '@common/theme/SystemTheme';
-import { EventListeners } from '@testing/utilities';
+import { EventListeners } from '@testing/utilities/Listeners';
 
 use(sinonChai);
 use(chaiAsPromised);
