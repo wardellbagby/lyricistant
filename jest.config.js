@@ -1,4 +1,7 @@
 module.exports = {
   testMatch: ['**/*.spec.js'],
-  testPathIgnorePatterns: []
+  moduleNameMapper: {
+    '^.+\\.(css|scss)$': 'identity-obj-proxy',
+    'typeface-.+': 'identity-obj-proxy',
+  },
 };

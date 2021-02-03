@@ -44,10 +44,11 @@ module.exports = {
       },
     },
     {
-      files: ['**/test/**/*.ts'],
+      files: ['**/test/**/*'],
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-unused-expressions': 'off',
+        '@typescript-eslint/no-var-requires': 'off',
       },
     },
     {
@@ -150,7 +151,14 @@ module.exports = {
     'import/no-internal-modules': [
       'error',
       {
-        allow: ['@common/**/*', 'rxjs/*', '@material-ui/**/*', '**/images/**'],
+        allow: [
+          '@common/**/*',
+          'rxjs/*',
+          '@material-ui/**/*',
+          '**/images/**',
+          '@testing-library/jest-dom/*',
+          'msw/*'
+        ],
       },
     ],
     'import/order': 'error',

@@ -13,9 +13,9 @@ ts_node_project(
         "@npm//chai",
         "@npm//chai-as-promised",
         "@npm//chai-subset",
+        "@npm//jest",
         "@npm//sinon-chai",
         "@npm//ts-sinon",
-        "@npm//jest"
     ],
 )
 

@@ -42,15 +42,19 @@ const useMenuStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const MenuIcon: FunctionComponent<{ onClick?: () => void }> = ({
-  onClick,
-  children,
-}) => {
+const MenuIcon: FunctionComponent<{
+  onClick?: () => void;
+  ariaLabel: string;
+}> = ({ onClick, ariaLabel, children }) => {
   const classes = useIconStyles();
   const [debouncedClick] = useDebouncedCallback(onClick, 200);
 
   return (
-    <ButtonBase className={classes.root} onClick={debouncedClick}>
+    <ButtonBase
+      className={classes.root}
+      onClick={debouncedClick}
+      aria-label={ariaLabel}
+    >
       <Box display="flex" alignItems="center" justifyContent="center">
         {React.Children.map(children, (child: React.ReactElement) =>
           React.cloneElement(child, { className: classes.icon })
@@ -102,24 +106,24 @@ export function Menu() {
         width={'100%'}
         flexDirection={useHorizontal ? 'row' : 'column'}
       >
-        <MenuIcon onClick={onNewClicked}>
+        <MenuIcon ariaLabel={'New'} onClick={onNewClicked}>
           <AddCircle />
         </MenuIcon>
         {uiConfig?.showOpen && (
-          <MenuIcon onClick={onOpenClicked}>
+          <MenuIcon ariaLabel={'Open'} onClick={onOpenClicked}>
             <FolderOpen />
           </MenuIcon>
         )}
-        <MenuIcon onClick={onSaveClicked}>
+        <MenuIcon ariaLabel={'Save'} onClick={onSaveClicked}>
           <Save />
         </MenuIcon>
         <Box flexGrow={'1'} />
         {uiConfig?.showDownload && (
-          <MenuIcon onClick={onDownloadClicked}>
+          <MenuIcon ariaLabel={'Download App'} onClick={onDownloadClicked}>
             <GetApp />
           </MenuIcon>
         )}
-        <MenuIcon onClick={onSettingsClicked}>
+        <MenuIcon ariaLabel={'Open Preferences'} onClick={onSettingsClicked}>
           <Settings />
         </MenuIcon>
       </Box>

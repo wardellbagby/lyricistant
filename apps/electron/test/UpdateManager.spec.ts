@@ -44,6 +44,7 @@ describe('Update Manager', () => {
 
   afterEach(() => {
     rendererListeners.clear();
+    appUpdaterListeners.clear();
   });
 
   it('registers for dialog button clicks on register', async () => {

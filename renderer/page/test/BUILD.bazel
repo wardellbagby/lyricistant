@@ -1,0 +1,25 @@
+load("//:tooling/ts_project.bzl", "ts_node_project")
+load("//:tooling/jest.bzl", "jest_test")
+
+ts_node_project(
+    name = "compile_ts",
+    srcs = glob([
+        "**/*.ts",
+        "**/*.tsx",
+    ]),
+    deps = [
+        "//renderer/page/main",
+        "//testing/utilities",
+        "@npm//@testing-library/jest-dom",
+        "@npm//@testing-library/react",
+        "@npm//@testing-library/user-event",
+        "@npm//@types/jest",
+        "@npm//jest",
+    ],
+)
+
+jest_test(
+    name = "test",
+    srcs = [":compile_ts"],
+    deps = [],
+)
