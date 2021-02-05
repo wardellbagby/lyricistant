@@ -111,6 +111,7 @@ const createWindow = (): void => {
     minWidth: 600,
     minHeight: 400,
     backgroundColor: '#00000000',
+    show: false,
     webPreferences: {
       nodeIntegration: isUiTest,
       contextIsolation: false,
@@ -147,6 +148,9 @@ const createWindow = (): void => {
   mainWindow.on('close', (event) => {
     appComponent.get<QuitManager>().attemptQuit();
     event.preventDefault();
+  });
+  mainWindow.on('ready-to-show', () => {
+    mainWindow.show();
   });
   mainWindow.webContents.on('new-window', (event, urlString) => {
     const url = new URL(urlString);
