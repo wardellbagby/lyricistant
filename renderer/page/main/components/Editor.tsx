@@ -21,6 +21,9 @@ export function Editor() {
   useDocumentListener(
     'drop',
     async (event) => {
+      if (!editor) {
+        return;
+      }
       event.preventDefault();
       event.stopPropagation();
 
@@ -49,7 +52,7 @@ export function Editor() {
 
   useEffect(handleEditorEvents(editor, defaultConfig), [editor, defaultConfig]);
   useBeforeUnload(() => {
-    if (undoDepth(editor.state) !== 0) {
+    if (editor && undoDepth(editor.state) !== 0) {
       return "Are you sure you want to leave? Your changes haven't been saved.";
     }
   });

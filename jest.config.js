@@ -4,4 +4,5 @@ module.exports = {
     '^.+\\.(css|scss)$': 'identity-obj-proxy',
     'typeface-.+': 'identity-obj-proxy',
   },
+  verbose: true
 };

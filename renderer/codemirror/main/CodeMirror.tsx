@@ -25,7 +25,7 @@ export interface WordReplacement {
   newWord: string;
 }
 
-interface Props {
+export interface CodeMirrorEditorProps {
   onEditorMounted: (view: EditorView) => void;
   onWordSelected?: (word: WordAtPosition) => void;
   wordReplacement?: WordReplacement;
@@ -33,7 +33,7 @@ interface Props {
   onTextChanged?: (text: string) => void;
 }
 
-export function CodeMirrorEditor(props: Props) {
+export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
   const ref = useRef<HTMLDivElement>();
   const [view, setView] = useState<EditorView>(null);
   const appTheme = useTheme();
