@@ -21,7 +21,7 @@ export const wordSelection = (config: WordSelectionConfig) => [
   }),
 ];
 
-const findWordAt = (document: Text, position: SelectionRange) => {
+export const findWordAt = (document: Text, position: SelectionRange) => {
   const line = document.lineAt(position.head);
   const isDelimiter = (c: string) => /[^\w\-']+/.exec(c);
 
