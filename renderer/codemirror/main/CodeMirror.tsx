@@ -6,7 +6,7 @@ import {
   tagExtension,
 } from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
-import { EditorView, keymap } from '@codemirror/view';
+import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { history, historyKeymap } from '@codemirror/history';
 import { styled, useTheme } from '@material-ui/core';
 import 'typeface-roboto-mono';
@@ -51,6 +51,7 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
             props.onTextChanged(update.state.doc.toString());
           }
         }),
+        placeholder('Type out some lyrics...'),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
       ],
     }),
