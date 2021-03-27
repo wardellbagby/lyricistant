@@ -1,0 +1,10 @@
+{
+  "include": ["main/**/*"],
+  "compilerOptions": {
+    "lib": ["dom", "es6"],
+    "types": ["node"],
+    "composite": true
+  },
+  "references": [],
+  "extends": "../../tsconfig.json"
+}

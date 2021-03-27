@@ -1,9 +1,9 @@
 import { setTimeout } from 'timers';
-import { RendererDelegate } from '@common/Delegates';
-import { Dialogs } from '@common/dialogs/Dialogs';
-import { TemporaryFiles } from '@common/files/TemporaryFiles';
-import { Logger } from '@common/Logger';
-import { Manager } from '@common/Manager';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
+import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
+import { Logger } from '@lyricistant/common/Logger';
+import { Manager } from '@lyricistant/common/Manager';
 import { BrowserWindow } from 'electron';
 
 export class QuitManager implements Manager {

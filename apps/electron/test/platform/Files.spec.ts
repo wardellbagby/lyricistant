@@ -5,9 +5,9 @@ import sinon, { stubInterface } from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import { BrowserWindow, Dialog } from 'electron';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { FileData } from '@common/files/Files';
+import { FileData } from '@lyricistant/common/files/Files';
 import chaiAsPromised from 'chai-as-promised';
-import { Files } from '@common/files/Files';
+import { Files } from '@lyricistant/common/files/Files';
 
 use(sinonChai);
 use(chaiAsPromised);

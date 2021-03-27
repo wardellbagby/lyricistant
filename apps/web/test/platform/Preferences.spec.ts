@@ -3,8 +3,8 @@ import sinon from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
 import { WebPreferences } from '@web-app/platform/Preferences';
-import { PreferencesData } from '@common/preferences/PreferencesData';
-import { Preferences } from '@common/preferences/Preferences';
+import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
 use(sinonChai);
 use(chaiAsPromised);

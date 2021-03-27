@@ -1,16 +1,17 @@
 import { platform } from 'os';
 import * as path from 'path';
 import { format as formatUrl } from 'url';
-import { isDevelopment, isUiTest } from '@common/BuildModes';
-import { RendererDelegate } from '@common/Delegates';
-import { FileManager } from '@common/files/FileManager';
-import { Logger } from '@common/Logger';
-import { Managers } from '@common/Managers';
+import { URL } from 'url';
+import { isDevelopment, isUiTest } from '@lyricistant/common/BuildModes';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { FileManager } from '@lyricistant/common/files/FileManager';
+import { Logger } from '@lyricistant/common/Logger';
+import { Managers } from '@lyricistant/common/Managers';
 import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
 import { DIContainer } from '@wessberg/di';
+import { createRendererDelegate } from '../packages/delegates/Delegates';
 import { createAppMenu } from './app-menu';
-import { createRendererDelegate } from './Delegates';
 import { QuitManager } from './platform/QuitManager';
 import { createAppComponent } from './AppComponent';
 
@@ -41,7 +42,7 @@ const showLoadingError = (reason: any) => {
 };
 
 const newMenuItemHandler = async () => {
-  await appComponent.get<FileManager>().onNewFile();
+  appComponent.get<FileManager>().onNewFile();
 };
 
 const quitHandler = (): void => {
@@ -132,15 +133,21 @@ const createWindow = (): void => {
     isDevelopment,
   });
 
-  mainWindow
-    .loadURL(
-      formatUrl({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file',
-        slashes: true,
-      })
-    )
-    .catch(showLoadingError);
+  if (process.env.RENDERER_SERVER_PORT) {
+    mainWindow
+      .loadURL(`http://localhost:${process.env.RENDERER_SERVER_PORT}`)
+      .catch(showLoadingError);
+  } else {
+    mainWindow
+      .loadURL(
+        formatUrl({
+          pathname: path.join(__dirname, 'index.html'),
+          protocol: 'file',
+          slashes: true,
+        })
+      )
+      .catch(showLoadingError);
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = undefined;

@@ -1,4 +1,4 @@
-import { RendererDelegate } from '@common/Delegates';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';

@@ -1,7 +1,7 @@
 import {
   TitleFormatter,
   UiConfigProvider as IUiConfigProvider,
-} from '@common/ui/UiConfig';
+} from '@lyricistant/common/ui/UiConfig';
 
 export const provideUiConfig: IUiConfigProvider = () => ({
     showDownload: true,

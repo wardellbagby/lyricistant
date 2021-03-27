@@ -2,9 +2,9 @@ import { WebFiles } from '@web-app/platform/Files';
 import { expect, use } from 'chai';
 import sinon, { stubInterface } from 'ts-sinon';
 import sinonChai from 'sinon-chai';
-import { FileData } from '@common/files/Files';
+import { FileData } from '@lyricistant/common/files/Files';
 import chaiAsPromised from 'chai-as-promised';
-import { Files } from '@common/files/Files';
+import { Files } from '@lyricistant/common/files/Files';
 import { FileSystem } from '@web-app/wrappers/FileSystem';
 
 use(sinonChai);

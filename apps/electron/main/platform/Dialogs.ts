@@ -1,4 +1,4 @@
-import { Dialogs as IDialogs } from '@common/dialogs/Dialogs';
+import { Dialogs as IDialogs } from '@lyricistant/common/dialogs/Dialogs';
 import { dialog } from 'electron';
 import { mainWindow } from '../index';
 

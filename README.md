@@ -48,18 +48,18 @@ Lyricistant!
 ## Information for developers
 ### Getting Started
 
-This project uses [Bazel](https://www.bazel.build/) to build. 
+This project uses [Gulp](https://gulpjs.com/) to build. 
 
-The easiest way to use Bazel is via installing Bazelisk. [More information is available here.](https://docs.bazel.build/versions/master/install-bazelisk.html)
+The easiest way to use Bazel is via installing Gulp globally via `npm install -g gulp`, but this isn't required as `Gulp` is included as a dev dependency for this project, and so doing `npm install; node_modules/.bin/gulp <task>` will also work.
 
 How to check out and run the project:
 ```bash
 git checkout https://github.com/wardellbagby/lyricistant.git
 cd lyricistant
 # Starts the Electron app.
-bazel run //apps/electron:start
+gulp startElectron
 # Starts the Web app.
-bazel run //apps/web:start
+gulp startWeb
 ```
 
 
@@ -75,16 +75,8 @@ There are currently unit and UI tests in the project.
 You can run all tests via:
 
 ```bash
-bazel test --build_tests_only //...
+gulp test
 ```
-
-If you want to attach a debugger to the tests, you can run this:
-
-```bash
-bazel test --build_tests_only --config=debug //...
-```
-
-The test will then wait until you attach a NodeJS debugger on port `9229`.
 
 ## License
 

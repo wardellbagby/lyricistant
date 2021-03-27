@@ -1,5 +1,5 @@
-import { PlatformDelegate, RendererDelegate } from '@common/Delegates';
-import { Logger } from '@common/Logger';
+import { PlatformDelegate, RendererDelegate } from '@lyricistant/common/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
 import { WebLogger } from './platform/Logger';
 
 const logger: Logger = new WebLogger();

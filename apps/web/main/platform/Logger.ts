@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Logger } from '@common/Logger';
+import { Logger } from '@lyricistant/common/Logger';
 import { fileSave } from 'browser-nativefs';
 import { DateTime } from 'luxon';
 import { Subject } from 'rxjs';

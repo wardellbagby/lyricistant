@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   cancel-deploys:
-    name: "Cancel in-progress deployments"
+    name: 'Cancel in-progress deployments'
     runs-on: ubuntu-20.04
     steps:
       - name: Cancel in-progress deployments
@@ -13,57 +13,60 @@ jobs:
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
   deploy-web:
-    name: "Deploy Web"
+    name: 'Deploy Web'
     runs-on: ubuntu-20.04
     needs: cancel-deploys
     steps:
       - name: Checkout the current branch.
         uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
-      - name: Setup Node.js - 14.x.x
+      - name: Setup Node.js - 15.x.x
         uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
         with:
-          node-version: '>=14.15'
-      - name: Install Bazelisk
-        run: npm install -g @bazel/bazelisk@1.7.3
+          node-version: '>=15.10'
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
       - name: Build Web.
-        run: 'bazel build //apps/web:app --define=nightly=1 --define=mode=release'
-      - name: Unzip Web archive
-        run: 'unzip dist/bin/apps/web/app.zip -d /tmp/web'
+        env:
+          NIGHTLY: 'true'
+        run: 'gulp buildWeb'
       - name: Deploy Web
         uses: peaceiris/actions-gh-pages@de5cfc7ec76b2c3cf19e3e55d1ad085fe1192c9a # pin@v3
         with:
           personal_token: ${{ secrets.LYRICISTANT_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: '/tmp/web'
+          publish_dir: 'apps/web/dist/production/'
           force_orphan: true
           cname: dev.lyricistant.app
   deploy-app:
-    name: "Deploy App"
+    name: 'Deploy App'
     runs-on: macos-10.15
     needs: cancel-deploys
     steps:
       - name: Checkout the current branch.
         uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
-      - name: Setup Node.js - 14.x.x
+      - name: Setup Node.js - 15.x.x
         uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
         with:
-          node-version: '>=14.15'
-      - name: Install Bazelisk
-        run: npm install -g @bazel/bazelisk@1.7.3
+          node-version: '>=15.10'
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
       - name: Build artifacts for all supported OSes.
         uses: nick-invision/retry@7c68161adf97a48beb850a595b8784ec57a98cbb # pin@v2
+        env:
+          CSC_LINK: ${{ secrets.MACOS_CERT }}
+          CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          NIGHTLY: 'true'
         with:
           timeout_minutes: 20
           max_attempts: 3
-          command: |
-            bazel build //apps/electron:app --define=nightly=1 --define=mode=release \
-            --action_env=CSC_LINK=${{ secrets.MACOS_CERT }} --action_env=CSC_KEY_PASSWORD=${{ secrets.MACOS_CERT_PASSWORD }} \
-            --action_env=APPLE_ID=${{ secrets.APPLE_ID }} --action_env=APPLE_ID_PASSWORD=${{ secrets.APPLE_ID_PASSWORD }}
-      - name: "Deploy App"
+          command: gulp buildElectronApps
+      - name: 'Deploy App'
         uses: marvinpinto/action-automatic-releases@4e86dbcfb19c3e408a4984b2b7d9a6de082f3c3f # pin@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: "latest"
+          automatic_release_tag: 'latest'
           prerelease: true
-          title: "Lyricistant - Nightly"
-          files: dist/bin/apps/electron/app/*.*
+          title: 'Lyricistant - Nightly'
+          files: apps/electron/dist/production/app/*.*

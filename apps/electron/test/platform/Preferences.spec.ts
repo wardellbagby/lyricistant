@@ -5,8 +5,8 @@ import sinonChai from 'sinon-chai';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import chaiAsPromised from 'chai-as-promised';
 import { ElectronPreferences } from '@electron-app/platform/Preferences';
-import { PreferencesData } from '@common/preferences/PreferencesData';
-import { Preferences } from '@common/preferences/Preferences';
+import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
 use(sinonChai);
 use(chaiAsPromised);

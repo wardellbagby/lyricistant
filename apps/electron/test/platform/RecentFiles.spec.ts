@@ -4,7 +4,7 @@ import sinonChai from 'sinon-chai';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import chaiAsPromised from 'chai-as-promised';
 import { ElectronRecentFiles } from '@electron-app/platform/RecentFiles';
-import { RecentFiles } from '@common/files/RecentFiles';
+import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
 
 use(sinonChai);
 use(chaiAsPromised);

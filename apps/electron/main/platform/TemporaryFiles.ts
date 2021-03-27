@@ -1,5 +1,5 @@
-import { TemporaryFiles } from '@common/files/TemporaryFiles';
-import { Logger } from '@common/Logger';
+import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
+import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '../wrappers/FileSystem';
 
 export class ElectronTemporaryFiles implements TemporaryFiles {
