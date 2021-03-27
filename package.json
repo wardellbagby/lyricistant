@@ -108,6 +108,10 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
+    "@capacitor/android": "^3.0.0-rc.0",
+    "@capacitor/cli": "^3.0.0-rc.0",
+    "@capacitor/core": "^3.0.0-rc.0",
+    "@capacitor/ios": "^3.0.0-rc.0",
     "@codemirror/commands": "^0.17.2",
     "@codemirror/gutter": "^0.17.2",
     "@codemirror/history": "^0.17.2",

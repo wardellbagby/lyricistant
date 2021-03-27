@@ -1,0 +1,12 @@
+{
+  "include": ["main/**/*"],
+  "compilerOptions": {
+    "lib": ["dom", "es6"],
+    "types": ["../../packages/renderer-window"]
+  },
+  "references": [
+    { "path": "../../packages/common" },
+    { "path": "../../packages/renderer/" }
+  ],
+  "extends": "../../tsconfig.json"
+}

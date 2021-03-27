@@ -7,10 +7,8 @@ import { series } from "gulp";
 import rendererWebpackConfig from "@lyricistant/renderer/webpack.config";
 import defaultWebpackConfig from "@tooling/default.webpack.config";
 
-import { getOutputDirectory as getOutDir, titleCase } from "@tooling/common-tasks.gulp";
+import { getOutputDirectory as getOutDir, Mode, titleCase } from "@tooling/common-tasks.gulp";
 import webpack, { Configuration } from "webpack";
-
-type Mode = "development" | "production" | "test";
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
 

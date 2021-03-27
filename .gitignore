@@ -26,4 +26,6 @@ out
 .idea/modules
 *.iml
 *.ipr
-/bazel-*
+.gradle
+apps/mobile/android/
+apps/mobile/ios/

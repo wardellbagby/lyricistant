@@ -4,7 +4,11 @@ module.exports = {
     es6: true,
     node: true,
   },
-  "ignorePatterns": ["**/dist/**/*"],
+  ignorePatterns: [
+    '**/dist/**/*',
+    'apps/mobile/android/**/*',
+    'apps/mobile/ios/**/*',
+  ],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'prettier',
