@@ -1,0 +1,9 @@
+{
+  "include": ["*.ts"],
+  "compilerOptions": {
+    "lib": ["dom", "es6"],
+    "types": ["../../../../packages/renderer-window", "node"]
+  },
+  "references": [{ "path": "../delegates" }],
+  "extends": "../../tsconfig.json"
+}

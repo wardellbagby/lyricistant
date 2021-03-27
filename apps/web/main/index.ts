@@ -1,5 +1,5 @@
-import { Logger } from '@common/Logger';
-import { Managers } from '@common/Managers';
+import { Logger } from '@lyricistant/common/Logger';
+import { Managers } from '@lyricistant/common/Managers';
 import { appComponent } from './AppComponent';
 import { platformDelegate } from './Delegates';
 
@@ -15,11 +15,11 @@ new Promise<void>((resolve) => {
   .then(async () => {
     logger.info('Platform information', {
       appPlatform: 'Web',
-      version: (await import('@renderer/globals')).APP_VERSION ?? 'Error',
+      version: (await import('@lyricistant/renderer/globals')).APP_VERSION ?? 'Error',
       userAgent: navigator.userAgent,
     });
   })
-  .then(() => import('@renderer/index'))
+  .then(() => import('@lyricistant/renderer/index'))
   .catch((reason) => {
     throw Error(`Could not load the renderer page: ${reason}`);
   });

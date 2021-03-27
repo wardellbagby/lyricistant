@@ -1,7 +1,7 @@
 import {
   SystemTheme,
   SystemThemeProvider as ISystemThemeProvider,
-} from '@common/theme/SystemTheme';
+} from '@lyricistant/common/theme/SystemTheme';
 
 export class WebSystemThemeProvider implements ISystemThemeProvider {
   public onChange = (listener: (theme: SystemTheme) => void) => {

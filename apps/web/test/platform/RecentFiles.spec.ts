@@ -2,7 +2,7 @@ import { expect, use } from 'chai';
 import sinon from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
-import { RecentFiles } from '@common/files/RecentFiles';
+import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
 import { WebRecentFiles } from '@web-app/platform/RecentFiles';
 
 use(sinonChai);
@@ -16,7 +16,7 @@ describe('Recent Files', () => {
     recentFiles = new WebRecentFiles();
   });
 
-  it('round-trip works', async () => {
+  it('round-trip works', () => {
     const expected = ['hi.txt'];
 
     recentFiles.setRecentFiles(expected);
@@ -26,7 +26,7 @@ describe('Recent Files', () => {
     expect(expected).to.deep.equal(actual);
   });
 
-  it('updates work', async () => {
+  it('updates work', () => {
     const initial = ['hi.txt'];
     const expected = ['tambiet.txt'];
 

@@ -3,8 +3,8 @@ import sinon from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
 import { WebPreferences } from '@web-app/platform/Preferences';
-import { PreferencesData } from '@common/preferences/PreferencesData';
-import { Preferences } from '@common/preferences/Preferences';
+import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -17,7 +17,7 @@ describe('Preferences', () => {
     preferences = new WebPreferences();
   });
 
-  it('round-trip works', async () => {
+  it('round-trip works',  () => {
     const expected: PreferencesData = {
       textSize: 2,
     };
@@ -29,7 +29,7 @@ describe('Preferences', () => {
     expect(expected).to.deep.equal(actual);
   });
 
-  it('updates work', async () => {
+  it('updates work', () => {
     const initial: PreferencesData = {
       textSize: 24,
     };

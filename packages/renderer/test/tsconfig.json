@@ -1,0 +1,13 @@
+{
+  "include": ["**/*"],
+  "exclude": ["**/*.gulp.ts"],
+  "compilerOptions": {
+    "types": ["jest", "node", "../../third-party-types"]
+  },
+  "references": [
+    { "path": "../" },
+    { "path": "../codemirror" },
+    { "path": "../../testing" }
+  ],
+  "extends": "../tsconfig.json"
+}

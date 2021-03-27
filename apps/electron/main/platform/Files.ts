@@ -1,4 +1,4 @@
-import { DroppableFile, FileData, Files as IFiles } from '@common/files/Files';
+import { DroppableFile, FileData, Files as IFiles } from '@lyricistant/common/files/Files';
 import { BrowserWindow, Dialog as ElectronDialog } from 'electron';
 import { FileSystem } from '../wrappers/FileSystem';
 

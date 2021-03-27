@@ -1,4 +1,4 @@
-import { TemporaryFiles } from '@common/files/TemporaryFiles';
+import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 
 export class WebTemporaryFiles implements TemporaryFiles {
   private temporaryFileKey = 'temporary_file';

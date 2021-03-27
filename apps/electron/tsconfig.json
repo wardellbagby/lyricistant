@@ -1,0 +1,13 @@
+{
+  "include": ["main/**/*"],
+  "compilerOptions": {
+    "lib": ["es6"],
+    "types": ["node"]
+  },
+  "references": [
+    { "path": "../../packages/common" },
+    { "path": "../../packages/renderer/" },
+    { "path": "./packages/delegates/" }
+  ],
+  "extends": "../../tsconfig.json"
+}

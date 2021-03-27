@@ -1,8 +1,18 @@
+const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { defaults: tsjPreset } = require('ts-jest/presets');
+const { compilerOptions } = require('./tsconfig.json');
+
 module.exports = {
-  testMatch: ['**/*.spec.js'],
+  testEnvironment: require.resolve('./default-jest-env.js'),
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
     '^.+\\.(css|scss)$': 'identity-obj-proxy',
     'typeface-.+': 'identity-obj-proxy',
+    ...pathsToModuleNameMapper(compilerOptions.paths),
   },
-  verbose: true
+  moduleDirectories: ['.', 'node_modules'],
+  transform: {
+    ...tsjPreset.transform,
+  },
+  verbose: true,
 };

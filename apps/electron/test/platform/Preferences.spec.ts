@@ -5,8 +5,8 @@ import sinonChai from 'sinon-chai';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import chaiAsPromised from 'chai-as-promised';
 import { ElectronPreferences } from '@electron-app/platform/Preferences';
-import { PreferencesData } from '@common/preferences/PreferencesData';
-import { Preferences } from '@common/preferences/Preferences';
+import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -22,7 +22,7 @@ describe('Preferences', () => {
     preferences = new ElectronPreferences(fs, stubInterface());
   });
 
-  it('gets preferences when preferences have been set', async () => {
+  it('gets preferences when preferences have been set', () => {
     const expected: PreferencesData = {
       textSize: 2,
     };
@@ -35,7 +35,7 @@ describe('Preferences', () => {
     expect(fs.readFileSync).to.have.been.calledWith('user/preferences.json');
   });
 
-  it('caches preferences when preferences have been set', async () => {
+  it('caches preferences when preferences have been set', () => {
     fs.readFileSync.returns(JSON.stringify({ textSize: 2 }));
     fs.existsSync.returns(true);
 
@@ -49,7 +49,7 @@ describe('Preferences', () => {
     );
   });
 
-  it('returns nothing when preferences have not been set', async () => {
+  it('returns nothing when preferences have not been set', () => {
     fs.existsSync.returns(false);
 
     expect(preferences.getPreferences()).to.be.undefined;
@@ -65,7 +65,7 @@ describe('Preferences', () => {
     expect(fs.writeFile).to.have.been.calledWith('user/preferences.json');
   });
 
-  it('caches the preferences after setting them', async () => {
+  it('caches the preferences after setting them', () => {
     fs.writeFile.resolves();
 
     preferences.setPreferences({ textSize: 2 });

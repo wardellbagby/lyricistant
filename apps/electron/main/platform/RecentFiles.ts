@@ -1,5 +1,5 @@
-import { RecentFiles as IRecentFiles } from '@common/files/RecentFiles';
-import { Logger } from '@common/Logger';
+import { RecentFiles as IRecentFiles } from '@lyricistant/common/files/RecentFiles';
+import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '../wrappers/FileSystem';
 
 export class ElectronRecentFiles implements IRecentFiles {

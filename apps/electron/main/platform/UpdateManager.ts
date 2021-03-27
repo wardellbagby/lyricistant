@@ -1,7 +1,7 @@
-import { isDevelopment, isUiTest } from '@common/BuildModes';
-import { RendererDelegate } from '@common/Delegates';
-import { Logger } from '@common/Logger';
-import { Manager } from '@common/Manager';
+import { isDevelopment, isUiTest } from '@lyricistant/common/BuildModes';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
+import { Manager } from '@lyricistant/common/Manager';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
 import { AppStore } from '../AppStore';
 

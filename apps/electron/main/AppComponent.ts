@@ -1,18 +1,18 @@
-import type { RendererDelegate } from '@common/Delegates';
-import type { Dialogs } from '@common/dialogs/Dialogs';
-import type { FileManager } from '@common/files/FileManager';
-import type { Files } from '@common/files/Files';
-import type { RecentFiles } from '@common/files/RecentFiles';
-import { TemporaryFiles } from '@common/files/TemporaryFiles';
-import { UnsavedDataManager } from '@common/files/UnsavedDataManager';
-import type { Logger } from '@common/Logger';
-import { LogManager } from '@common/logging/LogManager';
-import type { Managers } from '@common/Managers';
-import type { PreferenceManager } from '@common/preferences/PreferenceManager';
-import type { Preferences } from '@common/preferences/Preferences';
-import type { SystemThemeProvider } from '@common/theme/SystemTheme';
-import type { TitleFormatter, UiConfigProvider } from '@common/ui/UiConfig';
-import type { UiConfigManager } from '@common/ui/UiConfigManager';
+import type { RendererDelegate } from '@lyricistant/common/Delegates';
+import type { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
+import type { FileManager } from '@lyricistant/common/files/FileManager';
+import type { Files } from '@lyricistant/common/files/Files';
+import type { RecentFiles } from '@lyricistant/common/files/RecentFiles';
+import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
+import { UnsavedDataManager } from '@lyricistant/common/files/UnsavedDataManager';
+import type { Logger } from '@lyricistant/common/Logger';
+import { LogManager } from '@lyricistant/common/logging/LogManager';
+import type { Managers } from '@lyricistant/common/Managers';
+import type { PreferenceManager } from '@lyricistant/common/preferences/PreferenceManager';
+import type { Preferences } from '@lyricistant/common/preferences/Preferences';
+import type { SystemThemeProvider } from '@lyricistant/common/theme/SystemTheme';
+import type { TitleFormatter, UiConfigProvider } from '@lyricistant/common/ui/UiConfig';
+import type { UiConfigManager } from '@lyricistant/common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
 import {
   BrowserWindow,
@@ -23,8 +23,8 @@ import {
   NativeTheme,
 } from 'electron';
 import { AppUpdater, autoUpdater } from 'electron-updater';
+import { ElectronRendererDelegate } from '../packages/delegates/Delegates';
 import { AppStore } from './AppStore';
-import { ElectronRendererDelegate } from './Delegates';
 import type { ElectronDialogs } from './platform/Dialogs';
 import type { ElectronFiles } from './platform/Files';
 import type { ElectronLogger } from './platform/Logger';

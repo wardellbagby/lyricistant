@@ -1,0 +1,10 @@
+{
+  "include": ["*.ts"],
+  "compilerOptions": {
+    "lib": ["dom", "es6"],
+    "types": [ "node"],
+    "composite": true
+  },
+  "references": [{ "path": "../../../../packages/common" }],
+  "extends": "../../tsconfig.json"
+}

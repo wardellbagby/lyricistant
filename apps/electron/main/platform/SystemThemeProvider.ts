@@ -1,7 +1,7 @@
 import {
   SystemTheme,
   SystemThemeProvider as ISystemThemeProvider,
-} from '@common/theme/SystemTheme';
+} from '@lyricistant/common/theme/SystemTheme';
 import { NativeTheme } from 'electron';
 
 export class ElectronSystemThemeProvider implements ISystemThemeProvider {

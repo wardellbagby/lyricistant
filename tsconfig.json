@@ -1,35 +1,32 @@
 {
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "target": "es2015",
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
     "allowJs": false,
     "esModuleInterop": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "typeRoots": ["node_modules/@types", "types/main/"],
+    "resolveJsonModule": true,
     "jsx": "react",
     "downlevelIteration": true,
-    "lib": ["dom", "es2015"],
+    "lib": ["es2015"],
     "baseUrl": "./",
-    "declaration": true,
-    "rootDirs": [
-      ".",
-      "bazel-out/darwin-fastbuild/bin/",
-      "bazel-out/k8-fastbuild/bin/",
-      "bazel-out/x64_windows-fastbuild/bin/",
-      "bazel-out/darwin-dbg/bin/",
-      "bazel-out/k8-dbg/bin/",
-      "bazel-out/x64_windows-dbg/bin/"
-    ],
+    "outDir": "dist",
+    "plugins": [{ "transform": "./di-ts-transformer.js" }],
     "paths": {
-      "@common/*": ["common/main/*"],
-      "@renderer/*": ["renderer/page/main/*"],
+      "@lyricistant/common/*": ["packages/common/main/*"],
+      "@lyricistant/renderer/*": ["packages/renderer/main/*"],
       "@electron-app/*": ["apps/electron/main/*"],
       "@web-app/*": ["apps/web/main/*"],
-      "@lyricistant-codemirror/*": ["renderer/codemirror/main/*"],
-      "@testing/utilities/*": ["testing/utilities/*"]
-    },
-    "plugins": [{ "transform": "./di-ts-transformer.js" }]
+      "@lyricistant/codemirror/*": ["packages/codemirror/main/*"],
+      "@tooling/*": ["tooling/*"],
+      "@testing/utilities/*": ["packages/testing/utilities/*"]
+    }
   }
 }

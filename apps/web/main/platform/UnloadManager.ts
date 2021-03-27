@@ -1,6 +1,6 @@
-import { Manager } from '@common/Manager';
-import { TemporaryFiles } from '@common/files/TemporaryFiles';
-import { Logger } from '@common/Logger';
+import { Manager } from '@lyricistant/common/Manager';
+import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
+import { Logger } from '@lyricistant/common/Logger';
 
 export class UnloadManager implements Manager {
   public constructor(

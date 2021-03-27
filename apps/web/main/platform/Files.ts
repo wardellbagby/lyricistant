@@ -1,5 +1,5 @@
-import { DroppableFile, FileData, Files as IFiles } from '@common/files/Files';
-import { Logger } from '@common/Logger';
+import { DroppableFile, FileData, Files as IFiles } from '@lyricistant/common/files/Files';
+import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '../wrappers/FileSystem';
 
 export class WebFiles implements IFiles {

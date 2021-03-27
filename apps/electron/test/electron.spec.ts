@@ -12,8 +12,12 @@ describe('Electron launch', () => {
   beforeEach(async () => {
     app = new Application({
       path: require.resolve('electron/cli'),
-      args: ['main.js', '--no-sandbox', '--disable-gpu', '--enable-logging'],
-      cwd: path.resolve('apps', 'electron'),
+      args: [
+        path.resolve('apps/electron/dist/test/main.js'),
+        '--no-sandbox',
+        '--disable-gpu',
+        '--enable-logging',
+      ],
     });
 
     await app.start();
@@ -31,9 +35,11 @@ describe('Electron launch', () => {
     }
   });
 
-  it('shows an initial window', () => expect(client.getWindowCount()).to.eventually.equal(1));
+  it('shows an initial window', () =>
+    expect(client.getWindowCount()).to.eventually.equal(1));
 
-  it('has a title of untitled', () => expect(app.browserWindow.getTitle()).to.eventually.equal('Untitled'));
+  it('has a title of untitled', () =>
+    expect(app.browserWindow.getTitle()).to.eventually.equal('Untitled'));
 
   it('shows the basic components', async () => {
     const components = [
@@ -48,10 +54,9 @@ describe('Electron launch', () => {
   });
 
   it('allows you to type in the editor', async () => {
-    await (await client.$('.cm-content')).click();
     const editorTextArea = await client.$('.cm-content');
     await client.elementSendKeys(editorTextArea.elementId, 'Hello World!');
 
-    expect(editorTextArea.getValue()).to.eventually.equal('Hello World!');
+    await expect(editorTextArea.getText()).to.eventually.equal('Hello World!');
   });
 });

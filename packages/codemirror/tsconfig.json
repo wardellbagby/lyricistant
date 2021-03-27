@@ -1,0 +1,9 @@
+{
+  "include": ["main/**/*"],
+  "compilerOptions": {
+    "lib": ["dom", "es6"],
+    "composite": true,
+    "types": ["../third-party-types"]
+  },
+  "extends": "../../tsconfig.json"
+}

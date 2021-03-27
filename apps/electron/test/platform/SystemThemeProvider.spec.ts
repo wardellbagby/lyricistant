@@ -4,14 +4,16 @@ import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
 import { NativeTheme } from 'electron';
 import { ElectronSystemThemeProvider } from '@electron-app/platform/SystemThemeProvider';
-import { SystemThemeProvider, SystemTheme } from '@common/theme/SystemTheme';
+import { SystemThemeProvider, SystemTheme } from '@lyricistant/common/theme/SystemTheme';
 import { EventListeners } from '@testing/utilities/Listeners';
 
 use(sinonChai);
 use(chaiAsPromised);
 
 describe('System Theme', () => {
-  const nativeTheme = stubInterface<NativeTheme>();
+  const nativeTheme = stubInterface<
+    { -readonly [P in keyof NativeTheme]: NativeTheme[P] }
+  >();
   const nativeThemeListeners = new EventListeners();
   let systemThemeProvider: SystemThemeProvider;
 
@@ -28,12 +30,10 @@ describe('System Theme', () => {
   it('updates listener when native theme updates', async () => {
     const listener = sinon.fake();
 
-    // @ts-ignore
     nativeTheme.shouldUseDarkColors = false;
     systemThemeProvider.onChange(listener);
     expect(listener).calledWith(SystemTheme.Light);
 
-    // @ts-ignore
     nativeTheme.shouldUseDarkColors = true;
     await nativeThemeListeners.invoke('updated');
     expect(listener).calledWith(SystemTheme.Dark);

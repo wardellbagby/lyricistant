@@ -1,6 +1,6 @@
-import { Preferences as IPreferences } from '@common/preferences/Preferences';
-import { PreferencesData } from '@common/preferences/PreferencesData';
-import { Logger } from '@common/Logger';
+import { Preferences as IPreferences } from '@lyricistant/common/preferences/Preferences';
+import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '../wrappers/FileSystem';
 
 export class ElectronPreferences implements IPreferences {

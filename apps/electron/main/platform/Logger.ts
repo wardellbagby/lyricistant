@@ -1,5 +1,5 @@
 import { parse } from 'path';
-import { Logger } from '@common/Logger';
+import { Logger } from '@lyricistant/common/Logger';
 import AdmZip from 'adm-zip';
 import { BrowserWindow, dialog } from 'electron';
 import log from 'electron-log';
