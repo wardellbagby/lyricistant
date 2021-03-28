@@ -8,6 +8,9 @@ export const useDocumentListener = <EventName extends keyof DocumentEventMap>(
   useEffect(() => {
     const nestedListener = (documentEvent: DocumentEventMap[EventName]) =>
       listener(documentEvent);
+      if(deps?.length === 2 && deps[0] === 6){
+      console.log("nestedListener is being passed to document", event)
+      }
     document.addEventListener(event, nestedListener);
     return () => document.removeEventListener(event, nestedListener);
   }, [listener, event, ...(deps ?? [])]);

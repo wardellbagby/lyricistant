@@ -21,6 +21,8 @@ export function Editor() {
   useDocumentListener(
     'drop',
     async (event) => {
+      console.log("Editor useDocumentListener called with:", JSON.stringify(event))
+      debugger
       if (!editor) {
         return;
       }
@@ -31,6 +33,9 @@ export function Editor() {
         logger.debug('Attempted to drop a file.');
         const file = await toDroppableFile(event.dataTransfer.files.item(0));
 
+        console.log("file: ", file)
+        debugger
+
         if (undoDepth(editor.state) > 0) {
           platformDelegate.send('prompt-save-file-for-open', file);
           return;
@@ -38,8 +43,9 @@ export function Editor() {
 
         platformDelegate.send('open-file-attempt', file);
       }
+      debugger
     },
-    [editor]
+    [editor, 5]
   );
   useDocumentListener(
     'dragover',
