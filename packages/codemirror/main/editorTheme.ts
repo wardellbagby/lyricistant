@@ -5,49 +5,51 @@ import { EditorView } from '@codemirror/view';
 export const editorTheme = (appTheme: Theme): Extension =>
   EditorView.theme(
     {
-      $: {
+      '&.cm-editor': {
         height: '100%',
         width: '100%',
-        color: appTheme.palette.text.primary,
         backgroundColor: appTheme.palette.background.default,
-        '& ::selection': {
+        caretColor: appTheme.palette.text.primary,
+      },
+      '&.cm-focused': {
+        outline_fallback: 'none',
+        outline: 'none',
+      },
+      '.cm-line': {
+        color: appTheme.palette.text.primary,
+        '&::selection': {
           backgroundColor: appTheme.palette.primary.main,
           color: appTheme.palette.getContrastText(
             appTheme.palette.primary.main
           ),
         },
-        caretColor: appTheme.palette.text.primary,
-        '&$focused': {
-          outline_fallback: 'none',
-          outline: 'none',
-        },
       },
-      $scroller: {
+      '.cm-scroller': {
         fontFamily: '"Roboto Mono"',
         fontSize: appTheme.typography.fontSize,
       },
-      $gutters: {
+      '.cm-gutters': {
         width: '60px',
         justifyContent: 'center',
         backgroundColor: appTheme.palette.background.default,
         color: appTheme.palette.text.secondary,
         borderRight: 'none',
       },
-      $panel: {
+      '.cm-panel': {
         backgroundColor: appTheme.palette.background.paper,
         color: appTheme.palette.getContrastText(
           appTheme.palette.background.paper
         ),
       },
-      $searchMatch: {
+      '.cm-searchMatch': {
         backgroundColor: appTheme.palette.grey.A100,
         color: appTheme.palette.getContrastText(appTheme.palette.grey.A100),
       },
-      '$searchMatch.selected': {
+      '.cm-searchMatch.selected': {
         backgroundColor: appTheme.palette.primary.main,
         color: appTheme.palette.primary.contrastText,
       },
-      $button: {
+      '.cm-button': {
         background: appTheme.palette.primary.main,
         color: appTheme.palette.primary.contrastText,
         border: 'none',
@@ -68,7 +70,7 @@ export const editorTheme = (appTheme: Theme): Extension =>
           background: appTheme.palette.action.active,
         },
       },
-      $textfield: {
+      '.cm-textfield': {
         color: appTheme.palette.text.primary,
         padding: '8px',
         width: '150px',
@@ -80,15 +82,15 @@ export const editorTheme = (appTheme: Theme): Extension =>
           outline: 'none',
         },
       },
-      '$panel label': {
+      '.cm-panel label': {
         display: 'none',
         fontFamily: '"Roboto"',
         fontSize: appTheme.typography.fontSize,
       },
-      '$panel.search button[name = "select"]': {
+      '.cm-panel.cm-search [name=select]': {
         display: 'none',
       },
-      '$panel.search button[name = "close"]': {
+      '.cm-panel.cm-search [name=close]': {
         fontSize: '24px',
         right: '8px',
         '&:focus': {

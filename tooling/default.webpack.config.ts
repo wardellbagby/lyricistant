@@ -17,6 +17,7 @@ export default (mode: Mode): Configuration => ({
       },
       {
         test: /\.js$/,
+        exclude: [/node_modules/],
         enforce: "pre",
         use: ["source-map-loader"],
       },

@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Compartment,
   EditorSelection,
   EditorState,
   EditorStateConfig,
-  tagExtension,
 } from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
@@ -37,11 +37,12 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
   const ref = useRef<HTMLDivElement>();
   const [view, setView] = useState<EditorView>(null);
   const appTheme = useTheme();
+  const themeCompartment = useMemo(() => new Compartment(), []);
   const defaultConfig = useMemo<EditorStateConfig>(
     () => ({
       extensions: [
         syllableCounts(),
-        tagExtension('theme', editorTheme(appTheme)),
+        themeCompartment.of(editorTheme(appTheme)),
         history(),
         wordSelection({
           onWordSelected: props.onWordSelected,
@@ -92,9 +93,7 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
       return;
     }
     view.dispatch({
-      reconfigure: {
-        theme: editorTheme(appTheme),
-      },
+      effects: themeCompartment.reconfigure(editorTheme(appTheme)),
     });
   }, [view, appTheme]);
   useEffect(() => {
