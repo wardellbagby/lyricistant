@@ -44,6 +44,7 @@ const ItemContainer: React.ComponentType<GridItem> = styled('div')(
     'align-content': 'stretch',
     [theme.breakpoints.up('xs')]: {
       width: '50%',
+      height: '50px',
     },
     [theme.breakpoints.up('md')]: {
       width: '100%',

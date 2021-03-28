@@ -11,6 +11,11 @@ const config: CapacitorConfig = {
   ios: {
     path: 'apps/mobile/ios',
   },
+  plugins: {
+    Keyboard: {
+      resize: 'native',
+    },
+  },
 };
 
 export default config;

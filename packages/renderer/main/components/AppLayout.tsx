@@ -59,7 +59,7 @@ export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
 
 const createGridTemplateRows = (useSmallLayout: boolean) => {
   if (useSmallLayout) {
-    return `56px 8px minmax(200px, 1fr) 4px 15%`;
+    return `auto 8px minmax(200px, 1fr) 4px 15%`;
   } else {
     return `100%`;
   }

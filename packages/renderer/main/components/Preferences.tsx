@@ -35,8 +35,13 @@ const dialogStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
-    appBar: {
+    root: {
       color: theme.palette.primary.contrastText,
+    },
+    appBar: {
+      paddingTop: 'env(safe-area-inset-top)',
+      paddingLeft: 'env(safe-area-inset-left)',
+      paddingRight: 'env(safe-area-inset-right)',
     },
   })
 );
@@ -89,11 +94,11 @@ export const Preferences = () => {
   return (
     <Dialog
       fullScreen
-      className={classes.appBar}
+      className={classes.root}
       open
       TransitionComponent={DialogTransition}
     >
-      <AppBar color={'primary'} position="sticky">
+      <AppBar color={'primary'} className={classes.appBar} position="sticky">
         <Toolbar>
           <IconButton color={'inherit'} edge="start" onClick={closePreferences}>
             <CloseIcon />

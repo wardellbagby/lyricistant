@@ -6,7 +6,7 @@ import {
   EditorStateConfig,
 } from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
-import { EditorView, keymap, placeholder } from '@codemirror/view';
+import { EditorView, keymap } from '@codemirror/view';
 import { history, historyKeymap } from '@codemirror/history';
 import { styled, useTheme } from '@material-ui/core';
 import 'typeface-roboto-mono';
@@ -17,7 +17,9 @@ import { WordAtPosition, wordSelection } from './wordSelection';
 
 const EditorContainer = styled('div')({
   height: '100%',
-  width: '100%',
+  width: 'calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right))',
+  paddingLeft: 'env(safe-area-inset-left)',
+  paddingRight: 'env(safe-area-inset-right)',
 });
 
 export interface WordReplacement {
@@ -52,7 +54,8 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
             props.onTextChanged(update.state.doc.toString());
           }
         }),
-        placeholder('Type out some lyrics...'),
+        EditorView.lineWrapping,
+        // TODO(https://github.com/wardellbagby/lyricistant/issues/28) placeholder('Type out some lyrics...'),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
       ],
     }),

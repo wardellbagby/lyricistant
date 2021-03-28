@@ -39,6 +39,10 @@ const useIconStyles = makeStyles((theme: Theme) => ({
 const useMenuStyles = makeStyles((theme: Theme) => ({
   menu: {
     backgroundColor: theme.palette.background.paper,
+    'padding-top': 'env(safe-area-inset-top)',
+    'padding-left': 'env(safe-area-inset-left)',
+    'padding-right': 'env(safe-area-inset-right)',
+    height: 'calc(56px + env(safe-area-inset-top))',
   },
 }));
 
