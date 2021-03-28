@@ -1,3 +1,4 @@
+#!/usr/bin/env -S node -r ./register-ts-node
 import * as fs from 'fs';
 import yaml from 'js-yaml';
 import * as gulpFile from 'gulpfile';

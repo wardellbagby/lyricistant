@@ -15,18 +15,6 @@ export const getOutputDirectory = (mode: Mode, appDirectory: string) => {
   }
 };
 
-export const titleCase = (value: string) =>
-  value
-    .split('')
-    .map((char, index) => {
-      if (index === 0) {
-        return char.toUpperCase();
-      } else {
-        return char;
-      }
-    })
-    .join('');
-
 export const jest = async (directory: string) => {
   runCLI({ _: [], $0: 'jest', rootDir: directory }, [directory]).then(
     ({ results }) => {

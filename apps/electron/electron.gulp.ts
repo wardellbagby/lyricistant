@@ -10,8 +10,8 @@ import defaultWebpackConfig from '@tooling/default.webpack.config';
 import {
   getOutputDirectory as getOutDir,
   Mode,
-  titleCase,
 } from '@tooling/common-tasks.gulp';
+import { capitalCase } from 'change-case';
 import { buildElectronApp } from './build_apps';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
@@ -19,7 +19,7 @@ const clean = (mode: Mode) => {
   const curried = async () => {
     await fs.rmdir(getOutputDirectory(mode), { recursive: true });
   };
-  curried.displayName = `clean${titleCase(mode)}Electron`;
+  curried.displayName = `clean${capitalCase(mode)}Electron`;
   return curried;
 };
 
@@ -90,7 +90,7 @@ const copyElectronHtmlFile = (mode: Mode) => {
       path.resolve(getOutputDirectory(mode), 'index.html')
     );
   };
-  curried.displayName = `copy${titleCase(mode)}ElectronHtmlFile`;
+  curried.displayName = `copy${capitalCase(mode)}ElectronHtmlFile`;
   return curried;
 };
 
@@ -152,7 +152,7 @@ const bundleElectron = (mode: Mode) => {
       });
     });
   };
-  curried.displayName = `bundle${titleCase(mode)}Electron`;
+  curried.displayName = `bundle${capitalCase(mode)}Electron`;
   return curried;
 };
 
@@ -161,7 +161,7 @@ const runElectronBuilder = (...args: Parameters<typeof buildElectronApp>) => {
   const curried = async () => buildElectronApp(...args);
   curried.displayName = `runElectronBuilderFor${
     currentOnly ? 'Current' : 'All'
-  }${titleCase(mode)}App${currentOnly ? '' : 's'}`;
+  }${capitalCase(mode)}App${currentOnly ? '' : 's'}`;
   return curried;
 };
 
@@ -181,7 +181,7 @@ export const buildTestElectron = series(
   copyElectronHtmlFile('test'),
   bundleElectron('test')
 );
-export const buildElectronApps = series(
+export const buildAllElectronApps = series(
   clean('production'),
   copyElectronHtmlFile('production'),
   bundleElectron('production'),

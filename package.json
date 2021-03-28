@@ -15,15 +15,15 @@
   },
   "homepage": "https://github.com/wardellbagby/lyricistant",
   "scripts": {
-    "lint": "eslint -c .eslintrc.js .",
-    "lint-fix": "eslint -c .eslintrc.js . --fix"
+    "lint": "eslint -c .eslintrc.js . && ./bin/check_github_workflows.ts && ./bin/check_run_configs.ts",
+    "lint-fix": "eslint -c .eslintrc.js . --fix && ./bin/generate_run_configs.ts"
   },
   "engines": {
     "node": ">= 14.15.3"
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm run lint && node --require ./register-ts-node bin/check_github_workflows.ts"
+      "pre-push": "npm run lint"
     }
   },
   "devDependencies": {

@@ -65,7 +65,7 @@ jobs:
         with:
           timeout_minutes: 20
           max_attempts: 3
-          command: gulp buildElectronApps
+          command: gulp buildAllElectronApps
       - name: 'Deploy App'
         uses: marvinpinto/action-automatic-releases@4e86dbcfb19c3e408a4984b2b7d9a6de082f3c3f # pin@latest
         with:

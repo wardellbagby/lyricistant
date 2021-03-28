@@ -7,6 +7,9 @@ import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import webpack, { Configuration } from 'webpack';
 
+type CapacitorCommand = 'add' | 'run' | 'sync' | 'open';
+type CapacitorPlatform = 'android' | 'ios';
+
 const outputDir = path.resolve(__dirname, 'dist');
 
 const cleanMobile = async () => {
@@ -50,24 +53,19 @@ const bundleMobile = async () => {
   });
 };
 
+const capacitor = (command: CapacitorCommand, platform: CapacitorPlatform) =>
+  spawnSync('node_modules/.bin/cap', [command, platform], {
+    stdio: 'inherit',
+  });
+
 const runAndroid = async () => {
-  await fs.rmdir(path.resolve(__dirname, 'android'), { recursive: true });
-  spawnSync('node_modules/.bin/cap', ['add', 'android'], {
-    stdio: 'inherit',
-  });
-  return spawnSync('node_modules/.bin/cap', ['run', 'android'], {
-    stdio: 'inherit',
-  });
+  capacitor('sync', 'android');
+  capacitor('run', 'android');
 };
 
 const runIOS = async () => {
-  await fs.rmdir(path.resolve(__dirname, 'ios'), { recursive: true });
-  spawnSync('node_modules/.bin/cap', ['add', 'ios'], {
-    stdio: 'inherit',
-  });
-  return spawnSync('node_modules/.bin/cap', ['run', 'ios'], {
-    stdio: 'inherit',
-  });
+  capacitor('sync', 'ios');
+  capacitor('run', 'ios');
 };
 
 export const startAndroid = series(
@@ -87,3 +85,11 @@ export const buildMobile = series(
   copyMobileHtmlFile,
   bundleMobile
 );
+export const openAndroid = async () => {
+  capacitor('sync', 'android');
+  capacitor('open', 'android');
+};
+export const openIOS = async () => {
+  capacitor('sync', 'ios');
+  capacitor('open', 'ios');
+};

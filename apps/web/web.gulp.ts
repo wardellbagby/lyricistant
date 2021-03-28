@@ -9,9 +9,9 @@ import defaultWebpackConfig from '@tooling/default.webpack.config';
 import {
   getOutputDirectory as getOutDir,
   Mode,
-  titleCase,
 } from '@tooling/common-tasks.gulp';
 import webpack, { Configuration } from 'webpack';
+import { capitalCase } from 'change-case';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
 
@@ -19,7 +19,7 @@ const clean = (mode: Mode) => {
   const curried = async () => {
     await fs.rmdir(getOutputDirectory(mode), { recursive: true });
   };
-  curried.displayName = `clean${titleCase(mode)}Web`;
+  curried.displayName = `clean${capitalCase(mode)}Web`;
   return curried;
 };
 
@@ -52,7 +52,7 @@ const copyWebHtmlFile = (mode: Mode) => {
       path.resolve(getOutputDirectory(mode), 'index.html')
     );
   };
-  curried.displayName = `copy${titleCase(mode)}WebHtmlFile`;
+  curried.displayName = `copy${capitalCase(mode)}WebHtmlFile`;
   return curried;
 };
 
@@ -82,7 +82,7 @@ const bundleWeb = (mode: Mode) => {
       });
     });
   };
-  curried.displayName = `bundle${titleCase(mode)}Web`;
+  curried.displayName = `bundle${capitalCase(mode)}Web`;
   return curried;
 };
 
