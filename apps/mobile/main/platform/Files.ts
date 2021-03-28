@@ -1,4 +1,8 @@
-import { DroppableFile, FileData, Files as IFiles } from '@lyricistant/common/files/Files';
+import {
+  DroppableFile,
+  FileData,
+  Files as IFiles,
+} from '@lyricistant/common/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '../wrappers/FileSystem';
 

@@ -24,7 +24,7 @@ const PreferencesStoreContext = createContext(preferencesStore);
 
 export const PreferencesStore = ({ children }: { children: ReactNode }) => {
   useChannel('prefs-updated', preferencesStore.onPreferences);
-  
+
   return (
     <PreferencesStoreContext.Provider value={preferencesStore}>
       {children}

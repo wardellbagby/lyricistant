@@ -1,8 +1,14 @@
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { PreferenceManager } from '@lyricistant/common/preferences/PreferenceManager';
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
-import { PreferencesData, Theme } from '@lyricistant/common/preferences/PreferencesData';
-import { SystemTheme, SystemThemeProvider } from '@lyricistant/common/theme/SystemTheme';
+import {
+  PreferencesData,
+  Theme,
+} from '@lyricistant/common/preferences/PreferencesData';
+import {
+  SystemTheme,
+  SystemThemeProvider,
+} from '@lyricistant/common/theme/SystemTheme';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import { StubbedInstance, stubInterface } from 'ts-sinon';

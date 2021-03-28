@@ -15,7 +15,8 @@ new Promise<void>((resolve) => {
   .then(async () => {
     logger.info('Platform information', {
       appPlatform: 'Mobile',
-      version: (await import('@lyricistant/renderer/globals')).APP_VERSION ?? 'Error',
+      version:
+        (await import('@lyricistant/renderer/globals')).APP_VERSION ?? 'Error',
       userAgent: navigator.userAgent,
     });
   })

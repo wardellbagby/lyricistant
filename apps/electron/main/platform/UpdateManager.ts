@@ -17,7 +17,7 @@ export class UpdateManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private store: AppStore,
     private appUpdater: AppUpdater,
-    private logger: Logger,
+    private logger: Logger
   ) {}
 
   public register(): void {

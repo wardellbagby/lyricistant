@@ -1,4 +1,7 @@
-import { PlatformDelegate, RendererDelegate } from '@lyricistant/common/Delegates';
+import {
+  PlatformDelegate,
+  RendererDelegate,
+} from '@lyricistant/common/Delegates';
 import {
   BrowserWindow,
   IpcMain,

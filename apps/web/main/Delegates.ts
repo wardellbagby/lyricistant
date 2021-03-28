@@ -1,4 +1,7 @@
-import { PlatformDelegate, RendererDelegate } from '@lyricistant/common/Delegates';
+import {
+  PlatformDelegate,
+  RendererDelegate,
+} from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
 import { WebLogger } from './platform/Logger';
 

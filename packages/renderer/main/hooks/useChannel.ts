@@ -1,7 +1,9 @@
-import { PlatformToRendererListener, RendererChannel } from '@lyricistant/common/Delegates';
+import {
+  PlatformToRendererListener,
+  RendererChannel,
+} from '@lyricistant/common/Delegates';
 import { DependencyList, useEffect } from 'react';
 import { platformDelegate } from '../globals';
-
 
 /**
  * Register the provided listener on the given platform channel. The listener

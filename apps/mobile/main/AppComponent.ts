@@ -11,7 +11,10 @@ import type { Managers } from '@lyricistant/common/Managers';
 import type { PreferenceManager } from '@lyricistant/common/preferences/PreferenceManager';
 import type { Preferences } from '@lyricistant/common/preferences/Preferences';
 import type { SystemThemeProvider } from '@lyricistant/common/theme/SystemTheme';
-import type { TitleFormatter, UiConfigProvider } from '@lyricistant/common/ui/UiConfig';
+import type {
+  TitleFormatter,
+  UiConfigProvider,
+} from '@lyricistant/common/ui/UiConfig';
 import type { UiConfigManager } from '@lyricistant/common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
 import type { MobileRendererDelegate } from './Delegates';

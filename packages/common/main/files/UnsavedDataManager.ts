@@ -40,7 +40,6 @@ export class UnsavedDataManager implements Manager {
     } else {
       this.startAutomaticFileSaver();
     }
-
   };
 
   private startAutomaticFileSaver = () => {
@@ -48,7 +47,7 @@ export class UnsavedDataManager implements Manager {
     this.fileManager.addOnFileChangedListener(() => {
       this.temporaryFiles.delete();
     });
-  }
+  };
 
   private onDialogClicked = async (tag: string, buttonLabel: string) => {
     if (tag === UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG) {

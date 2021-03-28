@@ -42,10 +42,10 @@ export class PreferenceManager implements Manager {
   };
 
   private preferencesOrDefault = (): PreferencesData => ({
-      textSize: 16,
-      theme: Theme.System,
-      ...this.preferences.getPreferences(),
-    });
+    textSize: 16,
+    theme: Theme.System,
+    ...this.preferences.getPreferences(),
+  });
 
   private sendThemeUpdate = (data: PreferencesData): void => {
     const theme = this.normalizeTheme(data.theme);
@@ -62,5 +62,6 @@ export class PreferenceManager implements Manager {
       : theme;
   }
 
-  private systemThemeToTheme = (systemTheme: SystemTheme): Theme => systemTheme === SystemTheme.Dark ? Theme.Dark : Theme.Light;
+  private systemThemeToTheme = (systemTheme: SystemTheme): Theme =>
+    systemTheme === SystemTheme.Dark ? Theme.Dark : Theme.Light;
 }

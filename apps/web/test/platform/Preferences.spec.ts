@@ -17,7 +17,7 @@ describe('Preferences', () => {
     preferences = new WebPreferences();
   });
 
-  it('round-trip works',  () => {
+  it('round-trip works', () => {
     const expected: PreferencesData = {
       textSize: 2,
     };

@@ -7,4 +7,4 @@ export interface Logger {
   save: () => Promise<void>;
 }
 
-export type RendererLogger = Omit<Logger, 'save'>
+export type RendererLogger = Omit<Logger, 'save'>;

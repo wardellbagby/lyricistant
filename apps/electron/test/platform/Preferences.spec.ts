@@ -1,4 +1,3 @@
-
 import { expect, use } from 'chai';
 import sinon, { stubInterface } from 'ts-sinon';
 import sinonChai from 'sinon-chai';

@@ -6,11 +6,11 @@ const config: CapacitorConfig = {
   webDir: 'apps/mobile/dist',
   bundledWebRuntime: false,
   android: {
-    path: 'apps/mobile/android'
+    path: 'apps/mobile/android',
   },
   ios: {
     path: 'apps/mobile/ios',
-  }
+  },
 };
 
 export default config;

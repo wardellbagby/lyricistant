@@ -28,7 +28,8 @@ jest
 describe('App component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    platformDelegate = jest.requireMock('@lyricistant/renderer/globals').platformDelegate;
+    platformDelegate = jest.requireMock('@lyricistant/renderer/globals')
+      .platformDelegate;
     platformDelegate.clear();
   });
 

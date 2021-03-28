@@ -1,14 +1,17 @@
-import { promises as fs } from "fs";
-import path from "path";
-import * as util from "util";
-import { merge } from "webpack-merge";
-import WebpackDevServer from "webpack-dev-server";
-import { series } from "gulp";
-import rendererWebpackConfig from "@lyricistant/renderer/webpack.config";
-import defaultWebpackConfig from "@tooling/default.webpack.config";
-
-import { getOutputDirectory as getOutDir, Mode, titleCase } from "@tooling/common-tasks.gulp";
-import webpack, { Configuration } from "webpack";
+import { promises as fs } from 'fs';
+import path from 'path';
+import * as util from 'util';
+import { merge } from 'webpack-merge';
+import WebpackDevServer from 'webpack-dev-server';
+import { series } from 'gulp';
+import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
+import defaultWebpackConfig from '@tooling/default.webpack.config';
+import {
+  getOutputDirectory as getOutDir,
+  Mode,
+  titleCase,
+} from '@tooling/common-tasks.gulp';
+import webpack, { Configuration } from 'webpack';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
 
@@ -21,20 +24,20 @@ const clean = (mode: Mode) => {
 };
 
 const createWebpackConfig = async (mode: Mode) => {
-  let webpackMode: Configuration["mode"];
-  if (mode === "test") {
-    webpackMode = "production";
+  let webpackMode: Configuration['mode'];
+  if (mode === 'test') {
+    webpackMode = 'production';
   } else {
     webpackMode = mode;
   }
   return merge<Configuration>(
     {
       mode: webpackMode,
-      entry: ["./apps/web/main/index.ts"],
+      entry: ['./apps/web/main/index.ts'],
       output: {
-        filename: "renderer.js",
-        path: getOutputDirectory(mode)
-      }
+        filename: 'renderer.js',
+        path: getOutputDirectory(mode),
+      },
     },
     rendererWebpackConfig(),
     defaultWebpackConfig(mode)
@@ -54,7 +57,7 @@ const copyWebHtmlFile = (mode: Mode) => {
 };
 
 const runWebServer = async () => {
-  const config = await createWebpackConfig("development");
+  const config = await createWebpackConfig('development');
 
   const server = new WebpackDevServer(webpack(config), {
     port: 8080,
@@ -94,9 +97,9 @@ export const startWeb = series(
 );
 export const buildWeb = series(
   buildWebDeps,
-  clean("production"),
-  copyWebHtmlFile("production"),
-  bundleWeb("production")
+  clean('production'),
+  copyWebHtmlFile('production'),
+  bundleWeb('production')
 );
 export const buildTestWeb = series(
   buildWebDeps,

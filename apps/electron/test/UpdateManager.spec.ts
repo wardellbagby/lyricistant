@@ -2,7 +2,10 @@ import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
-import { RendererListeners, EventListeners } from '@testing/utilities/Listeners';
+import {
+  RendererListeners,
+  EventListeners,
+} from '@testing/utilities/Listeners';
 import { UpdateManager } from '@electron-app/platform/UpdateManager';
 import { AppStore } from '@electron-app/AppStore';
 import { AppUpdater } from 'electron-updater';

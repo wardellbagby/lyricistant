@@ -1,6 +1,9 @@
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileManager } from '@lyricistant/common/files/FileManager';
-import { TitleFormatter, UiConfigProvider } from '@lyricistant/common/ui/UiConfig';
+import {
+  TitleFormatter,
+  UiConfigProvider,
+} from '@lyricistant/common/ui/UiConfig';
 import { UiConfigManager } from '@lyricistant/common/ui/UiConfigManager';
 import { expect, use } from 'chai';
 import sinon from 'sinon';
