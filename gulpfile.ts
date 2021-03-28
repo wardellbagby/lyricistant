@@ -12,7 +12,6 @@ export * from './apps/web/test/test.gulp';
 export * from './apps/electron/electron.gulp';
 export * from './apps/electron/test/test.gulp';
 export * from './apps/mobile/mobile.gulp';
-export * from './packages/common/common.gulp';
 export * from './packages/common/test/test.gulp';
 export * from './packages/codemirror/test/test.gulp';
 export * from './packages/renderer/test/test.gulp';

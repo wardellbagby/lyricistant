@@ -27,5 +27,3 @@ out
 *.iml
 *.ipr
 .gradle
-apps/mobile/android/
-apps/mobile/ios/

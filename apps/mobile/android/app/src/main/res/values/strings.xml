@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lyricistant</string>
+    <string name="title_activity_main">Lyricistant</string>
+    <string name="package_name">com.wardellbagby.lyricistant</string>
+    <string name="custom_url_scheme">com.wardellbagby.lyricistant</string>
+</resources>
