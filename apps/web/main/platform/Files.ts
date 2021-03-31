@@ -1,6 +1,7 @@
 import {
   DroppableFile,
   FileData,
+  FileMetadata,
   Files as IFiles,
 } from '@lyricistant/common/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
@@ -14,7 +15,11 @@ export class WebFiles implements IFiles {
       if (file.type !== 'text/plain') {
         throw Error('Selected file is not a text file.');
       }
-      return new FileData(file.path, new TextDecoder().decode(file.data));
+      return new FileData(
+        file.path,
+        file.path,
+        new TextDecoder().decode(file.data)
+      );
     }
 
     let result: File;
@@ -36,13 +41,13 @@ export class WebFiles implements IFiles {
     }
 
     if (result) {
-      return new FileData(result.name, await readAsText(result));
+      return new FileData(result.name, result.name, await readAsText(result));
     } else {
       this.logger.debug('File open cancelled.');
     }
   };
 
-  public saveFile = async (file: FileData): Promise<string> => {
+  public saveFile = async (file: FileData): Promise<FileMetadata> => {
     const fileName = file.filePath ?? 'Lyrics.txt';
     let fileHandle;
     try {
@@ -66,7 +71,7 @@ export class WebFiles implements IFiles {
       }
     }
 
-    return fileHandle?.name ?? fileName;
+    return { filePath: fileHandle?.name ?? fileName };
   };
 }
 

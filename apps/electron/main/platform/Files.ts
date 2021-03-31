@@ -16,7 +16,7 @@ export class ElectronFiles implements IFiles {
     if (file) {
       const data = await Buffer.from(file.data);
       if (this.fs.isText(file.path, data)) {
-        return new FileData(file.path, data.toString('utf8'));
+        return new FileData(file.path, file.path, data.toString('utf8'));
       }
       throw Error(`Cannot open "${file.path}; not a text file."`);
     }
@@ -46,7 +46,10 @@ export class ElectronFiles implements IFiles {
 
       if (result.filePath) {
         await this.fs.writeFile(result.filePath, file.data);
-        return result.filePath;
+        return {
+          filePath: result.filePath,
+          name: result.filePath,
+        };
       }
     }
   };
@@ -54,7 +57,7 @@ export class ElectronFiles implements IFiles {
   public readFile = async (filePath: string) => {
     const data = await this.fs.readFile(filePath);
     if (this.fs.isText(filePath, data)) {
-      return new FileData(filePath, data.toString('utf8'));
+      return new FileData(filePath, filePath, data.toString('utf8'));
     }
     throw Error(`Cannot open "${filePath}; not a text file."`);
   };

@@ -119,20 +119,23 @@ export class FileManager implements Manager {
   };
 
   private saveFileActual = async (text: string, filePath: string) => {
-    const fileData = new FileData(filePath, text);
+    const fileData = new FileData(null, filePath, text);
     this.logger.debug('Saving file with data', fileData);
-    const newFilePath = await this.files.saveFile(new FileData(filePath, text));
-    if (newFilePath) {
-      this.currentFilePath = newFilePath;
+    const newFileMetadata = await this.files.saveFile(fileData);
+    if (newFileMetadata) {
+      const fileTitle = newFileMetadata.name ?? newFileMetadata.filePath;
+      this.currentFilePath = newFileMetadata.filePath;
       this.rendererDelegate.send(
         'file-opened',
         undefined,
-        newFilePath,
+        fileTitle,
         text,
         true
       );
+      this.rendererDelegate.send('file-save-ended', null, fileTitle);
+    } else {
+      this.rendererDelegate.send('file-save-ended', null, null);
     }
-    this.rendererDelegate.send('file-save-ended', null, this.currentFilePath);
     this.fileChangedListeners.forEach((listener) =>
       listener(this.currentFilePath, this.recentFiles.getRecentFiles())
     );

@@ -25,9 +25,10 @@ const createWebpackConfig = async () =>
         filename: 'renderer.js',
         path: outputDir,
       },
+      devtool: 'inline-source-map',
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig('production')
+    defaultWebpackConfig('development')
   );
 
 const copyMobileHtmlFile = async () => {

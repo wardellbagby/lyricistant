@@ -22,6 +22,7 @@ describe('Files', () => {
   it('shows a dialog to choose a file', async () => {
     const expected: FileData = {
       filePath: 'mycoollyrics.txt',
+      name: 'mycoollyrics.txt',
       data: 'Here are lyrics!',
     };
     fs.openFile.resolves(
@@ -30,7 +31,7 @@ describe('Files', () => {
 
     const actual = await files.openFile();
 
-    expect(expected).to.deep.equal(actual);
+    expect(actual).to.deep.equal(expected);
     expect(fs.openFile).to.have.been.calledWith({
       mimeTypes: ['text/plain'],
       extensions: ['.txt'],
@@ -41,6 +42,7 @@ describe('Files', () => {
   it('loads a droppable file', async () => {
     const expected: FileData = {
       filePath: 'mycoollyrics.txt',
+      name: 'mycoollyrics.txt',
       data: 'Here are lyrics!',
     };
 
@@ -50,7 +52,7 @@ describe('Files', () => {
       type: 'text/plain',
     });
 
-    expect(expected).to.deep.equal(actual);
+    expect(actual).to.deep.equal(expected);
     expect(fs.openFile).to.have.not.been.called;
   });
 

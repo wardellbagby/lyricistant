@@ -21,7 +21,7 @@ describe('File Manager', () => {
   beforeEach(() => {
     sinon.reset();
     files = stubInterface<Files>({
-      openFile: Promise.resolve(new FileData('test', '')),
+      openFile: Promise.resolve(new FileData('/path/test', 'test', '')),
       saveFile: Promise.resolve(),
     });
     recentFiles = stubInterface<RecentFiles>({
@@ -180,7 +180,7 @@ describe('File Manager', () => {
     dialogs.showDialog.returns(Promise.resolve('yes'));
     files.openFile.callsFake((file) =>
       Promise.resolve(
-        new FileData(file.path, new TextDecoder().decode(file.data))
+        new FileData(file.path, file.path, new TextDecoder().decode(file.data))
       )
     );
     manager.register();
@@ -229,7 +229,7 @@ describe('File Manager', () => {
     await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
 
     expect(files.saveFile).to.have.been.calledWith(
-      new FileData(null, 'Reeboks on; just do it!')
+      new FileData(null, null, 'Reeboks on; just do it!')
     );
     expect(fileChangeListener).to.have.been.called;
   });
@@ -247,7 +247,7 @@ describe('File Manager', () => {
     await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
 
     expect(files.saveFile).to.have.been.calledWith(
-      new FileData(null, 'Reeboks on; just do it!')
+      new FileData(null, null, 'Reeboks on; just do it!')
     );
     expect(fileChangeListener).to.have.been.called;
   });
@@ -266,7 +266,7 @@ describe('File Manager', () => {
     );
 
     expect(files.saveFile).to.have.been.calledWith(
-      new FileData(null, 'Blessings, blessings.')
+      new FileData(null, null, 'Blessings, blessings.')
     );
     expect(fileChangeListener).to.have.been.called;
   });
@@ -278,7 +278,13 @@ describe('File Manager', () => {
     ) => void = sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
     files.openFile.returns(
-      Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
+      Promise.resolve(
+        new FileData(
+          'whitetuxedo.txt',
+          '/Desktop/whitetuxedo.txt',
+          'This water'
+        )
+      )
     );
     manager.register();
 
@@ -289,14 +295,24 @@ describe('File Manager', () => {
     );
 
     expect(files.saveFile).to.have.been.calledWith(
-      new FileData('whitetuxedo.txt', 'Blessings, blessings.')
+      new FileData(
+        'whitetuxedo.txt',
+        '/Desktop/whitetuxedo.txt',
+        'Blessings, blessings.'
+      )
     );
     expect(fileChangeListener).to.have.been.called;
   });
 
   it('updates the renderer when a file is opened by the platform', async () => {
     files.openFile.returns(
-      Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
+      Promise.resolve(
+        new FileData(
+          'whitetuxedo.txt',
+          '/Desktop/whitetuxedo.txt',
+          'This water'
+        )
+      )
     );
     const fileChangeListener: (
       currentFile: string,
@@ -325,7 +341,13 @@ describe('File Manager', () => {
 
   it('updates the renderer when a file is opened by the platform directly', async () => {
     files.readFile.returns(
-      Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
+      Promise.resolve(
+        new FileData(
+          'whitetuxedo.txt',
+          '/Desktop/whitetuxedo.txt',
+          'This water'
+        )
+      )
     );
     const fileChangeListener: (
       currentFile: string,
@@ -354,7 +376,13 @@ describe('File Manager', () => {
 
   it('updates the renderer when a file is opened by the renderer', async () => {
     files.openFile.returns(
-      Promise.resolve(new FileData('whitetuxedo.txt', 'This water'))
+      Promise.resolve(
+        new FileData(
+          'whitetuxedo.txt',
+          '/Desktop/whitetuxedo.txt',
+          'This water'
+        )
+      )
     );
     const fileChangeListener: (
       currentFile: string,

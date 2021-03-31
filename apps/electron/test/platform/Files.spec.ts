@@ -26,6 +26,7 @@ describe('Files', () => {
   it('shows a dialog to choose a file', async () => {
     const expected: FileData = {
       filePath: 'mycoollyrics.txt',
+      name: 'mycoollyrics.txt',
       data: 'Here are lyrics!',
     };
     dialogs.showOpenDialog.resolves({
