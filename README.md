@@ -53,7 +53,7 @@ This project uses [Gulp](https://gulpjs.com/) to build.
 The easiest way to use Bazel is via installing Gulp globally via `npm install -g gulp`, but this isn't required as `Gulp` is included as a dev dependency for this project, and so doing `npm install; node_modules/.bin/gulp <task>` will also work.
 
 How to check out and run the project:
-```bash
+```shell
 git checkout https://github.com/wardellbagby/lyricistant.git
 cd lyricistant
 # Starts the Electron app.
@@ -61,6 +61,8 @@ gulp startElectron
 # Starts the Web app.
 gulp startWeb
 ```
+
+If you use a Jetbrains IDE (WebStorm, IntelliJ IDEA, etc) or Visual Studio Code, you can build and attach a debugger for all of these tasks natively in the IDE (via either Run Configurations for Jetbrains products or Run & Debug for Visual Studio Code).
 
 
 ### Viewing the latest on `main`
@@ -72,10 +74,18 @@ New commits to `main` are automatically deployed, both on the web and as native 
 ### Running Tests
 There are currently unit and UI tests in the project.
 
-You can run all tests via:
+You can run all tests in a terminal via:
 
-```bash
-gulp test
+```shell
+gulp testAll
+```
+
+There are also run the tests natively in your IDE, which will make it easier to attach a debugger.
+
+If you'd like to attach a debugger while testing via terminal:
+
+```shell
+node --inspect-brk ./node_modules/.bin/gulp testAll # Replace testAll with whatever command you'd like.
 ```
 
 ## License

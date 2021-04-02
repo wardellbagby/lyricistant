@@ -16,8 +16,8 @@ export * from './packages/common/test/test.gulp';
 export * from './packages/codemirror/test/test.gulp';
 export * from './packages/renderer/test/test.gulp';
 
-export const build = parallel(buildWeb, buildElectron);
-export const test = series(
+export const buildAll = parallel(buildWeb, buildElectron);
+export const testAll = series(
   testWeb,
   testElectron,
   testCodemirror,

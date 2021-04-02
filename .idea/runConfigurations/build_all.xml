@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Build" type="js.build_tools.gulp">
+  <configuration default="false" name="Build All" type="js.build_tools.gulp" folderName="Build">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <gulpfile>$PROJECT_DIR$/gulpfile.js</gulpfile>
     <tasks>
-      <task>build</task>
+      <task>buildAll</task>
     </tasks>
     <arguments />
     <envs />

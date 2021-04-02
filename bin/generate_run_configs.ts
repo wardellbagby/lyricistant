@@ -1,14 +1,18 @@
 #!/usr/bin/env -S node -r ./register-ts-node
 import fs from 'fs';
 import { capitalCase } from 'change-case';
+import prettier from 'prettier';
 import {
+  clearIdeaDirectories,
+  clearVSCodeDirectories,
+  getGroup,
   getGulpTasks,
-  getRunConfigFile,
-  runConfigDirectory,
+  getIDEARunConfigFile,
+  vsCodeLaunchFile,
 } from './run_configs';
 
-const runConfigTemplate = `<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="{CONFIG_NAME}" type="js.build_tools.gulp">
+const ideaRunConfigTemplate = `<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="{CONFIG_NAME}" type="js.build_tools.gulp" folderName="{FOLDER_NAME}">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <gulpfile>$PROJECT_DIR$/gulpfile.js</gulpfile>
@@ -21,14 +25,45 @@ const runConfigTemplate = `<component name="ProjectRunConfigurationManager">
   </configuration>
 </component>`;
 
-fs.rmdirSync(runConfigDirectory, { recursive: true });
-fs.mkdirSync(runConfigDirectory);
+const basicVSCodeConfig = {
+  type: 'pwa-node',
+  request: 'launch',
+  skipFiles: ['<node_internals>/**'],
+  console: 'internalConsole',
+  outputCapture: 'std',
+  program: 'node_modules/.bin/gulp',
+};
 
+clearIdeaDirectories();
+clearVSCodeDirectories();
+
+const vsCodeConfigs: Array<Record<string, any>> = [];
 getGulpTasks().forEach((taskName) => {
-  const runConfig = runConfigTemplate
+  const folderName = getGroup(taskName);
+  const displayName = capitalCase(taskName).replace('Ios', 'iOS').trim();
+  const runConfig = ideaRunConfigTemplate
     .replace('{GULP_TASK_NAME}', taskName)
-    .replace('{CONFIG_NAME}', capitalCase(taskName).replace('Ios', 'iOS'));
+    .replace('{CONFIG_NAME}', displayName)
+    .replace('{FOLDER_NAME}', folderName);
 
-  fs.writeFileSync(getRunConfigFile(taskName), runConfig);
+  fs.writeFileSync(getIDEARunConfigFile(taskName), runConfig);
+  vsCodeConfigs.push({
+    name: displayName,
+    args: [taskName],
+    ...basicVSCodeConfig,
+  });
   console.log(`Wrote config for: ${taskName}`);
 });
+
+fs.writeFileSync(
+  vsCodeLaunchFile,
+  prettier.format(
+    JSON.stringify({
+      version: '0.2.0',
+      configurations: vsCodeConfigs,
+    }),
+    {
+      parser: 'json',
+    }
+  )
+);

@@ -23,6 +23,7 @@
   },
   "husky": {
     "hooks": {
+      "pre-commit": "npx cap update",
       "pre-push": "npm run lint"
     }
   },

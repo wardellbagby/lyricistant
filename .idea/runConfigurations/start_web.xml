@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Start Web" type="js.build_tools.gulp">
+  <configuration default="false" name="Start Web" type="js.build_tools.gulp" folderName="Start">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <gulpfile>$PROJECT_DIR$/gulpfile.js</gulpfile>
