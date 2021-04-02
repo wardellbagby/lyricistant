@@ -2,7 +2,7 @@ import { RendererDelegate } from '../Delegates';
 import { Dialogs } from '../dialogs/Dialogs';
 import { Logger } from '../Logger';
 import { Manager } from '../Manager';
-import { DroppableFile, FileData, Files } from './Files';
+import { DroppableFile, Files } from './Files';
 import { RecentFiles } from './RecentFiles';
 
 export class FileManager implements Manager {
@@ -52,18 +52,18 @@ export class FileManager implements Manager {
   public openFile = async (filePath?: string) => {
     if (filePath && this.files.readFile) {
       const fileData = await this.files.readFile(filePath);
-      this.currentFilePath = fileData.filePath;
+      this.currentFilePath = fileData.path;
       this.rendererDelegate.send(
         'file-opened',
         undefined,
-        fileData.filePath,
+        fileData.name ?? fileData.path,
         fileData.data,
         true
       );
       this.addRecentFile(filePath);
       const updatedRecentFiles = this.recentFiles.getRecentFiles();
       this.fileChangedListeners.forEach((listener) =>
-        listener(fileData.filePath, updatedRecentFiles)
+        listener(fileData.path, updatedRecentFiles)
       );
     } else {
       await this.onOpenFile();
@@ -95,11 +95,11 @@ export class FileManager implements Manager {
     try {
       const fileData = await this.files.openFile(file);
       if (fileData) {
-        this.currentFilePath = fileData.filePath;
+        this.currentFilePath = fileData.path;
         this.rendererDelegate.send(
           'file-opened',
           undefined,
-          fileData.filePath,
+          fileData.name ?? fileData.path,
           fileData.data,
           true
         );
@@ -118,18 +118,17 @@ export class FileManager implements Manager {
     await this.saveFileActual(text, this.currentFilePath);
   };
 
-  private saveFileActual = async (text: string, filePath: string) => {
-    const fileData = new FileData(null, filePath, text);
-    this.logger.debug('Saving file with data', fileData);
-    const newFileMetadata = await this.files.saveFile(fileData);
+  private saveFileActual = async (data: string, path: string) => {
+    this.logger.debug('Saving file with data', { path, data });
+    const newFileMetadata = await this.files.saveFile(data, path);
     if (newFileMetadata) {
-      const fileTitle = newFileMetadata.name ?? newFileMetadata.filePath;
-      this.currentFilePath = newFileMetadata.filePath;
+      const fileTitle = newFileMetadata.name ?? newFileMetadata.path;
+      this.currentFilePath = newFileMetadata.path;
       this.rendererDelegate.send(
         'file-opened',
         undefined,
         fileTitle,
-        text,
+        data,
         true
       );
       this.rendererDelegate.send('file-save-ended', null, fileTitle);

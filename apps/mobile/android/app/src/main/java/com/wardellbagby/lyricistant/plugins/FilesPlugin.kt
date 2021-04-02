@@ -28,7 +28,7 @@ class FilesPlugin : Plugin() {
 
   @PluginMethod
   fun saveFile(call: PluginCall) {
-    val filePath = call.getString("filePath");
+    val filePath = call.getString("path")
     if (!filePath.isNullOrBlank()) {
       val uri = Uri.parse(filePath)
       call.attemptFileSave(uri)
@@ -136,7 +136,7 @@ class FilesPlugin : Plugin() {
     filePath: String?,
     name: String?
   ) = JSObject().apply {
-    put("filePath", filePath)
+    put("path", filePath)
     put("name", name)
   }
 

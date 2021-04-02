@@ -2,7 +2,7 @@ import { WebFiles } from '@web-app/platform/Files';
 import { expect, use } from 'chai';
 import sinon, { stubInterface } from 'ts-sinon';
 import sinonChai from 'sinon-chai';
-import { FileData } from '@lyricistant/common/files/Files';
+import { FileData, FileMetadata } from '@lyricistant/common/files/Files';
 import chaiAsPromised from 'chai-as-promised';
 import { Files } from '@lyricistant/common/files/Files';
 import { FileSystem } from '@web-app/wrappers/FileSystem';
@@ -21,8 +21,7 @@ describe('Files', () => {
 
   it('shows a dialog to choose a file', async () => {
     const expected: FileData = {
-      filePath: 'mycoollyrics.txt',
-      name: 'mycoollyrics.txt',
+      path: 'mycoollyrics.txt',
       data: 'Here are lyrics!',
     };
     fs.openFile.resolves(
@@ -41,13 +40,12 @@ describe('Files', () => {
 
   it('loads a droppable file', async () => {
     const expected: FileData = {
-      filePath: 'mycoollyrics.txt',
-      name: 'mycoollyrics.txt',
+      path: 'mycoollyrics.txt',
       data: 'Here are lyrics!',
     };
 
     const actual = await files.openFile({
-      path: expected.filePath,
+      path: expected.path,
       data: new TextEncoder().encode(expected.data).buffer,
       type: 'text/plain',
     });
@@ -74,13 +72,13 @@ describe('Files', () => {
 
   it('throws an error if an invalid file is dropped', async () => {
     const expected: FileData = {
-      filePath: 'mycoollyrics.txt',
+      path: 'mycoollyrics.txt',
       data: 'Here are lyrics!',
     };
 
     await expect(
       files.openFile({
-        path: expected.filePath,
+        path: expected.path,
         data: new TextEncoder().encode(expected.data).buffer,
         type: 'application/binary',
       })
@@ -90,6 +88,7 @@ describe('Files', () => {
   });
 
   it('shows a file picker when saving a file with no file path', async () => {
+    const expected: FileMetadata = { path: 'Lyrics.txt' };
     fs.saveFile.resolves({
       name: 'Lyrics.txt',
       kind: 'file',
@@ -98,10 +97,9 @@ describe('Files', () => {
       requestPermission: undefined,
     });
 
-    await files.saveFile({
-      data: 'oh wow!',
-    });
+    const actual = await files.saveFile('oh wow!');
 
+    expect(actual).to.eql(expected);
     expect(fs.saveFile).to.have.been.calledWith(
       new Blob(['oh wow!'], {
         type: 'text/plain',
@@ -114,6 +112,7 @@ describe('Files', () => {
   });
 
   it('saves the file when saving a file with a file path', async () => {
+    const expected: FileMetadata = { path: 'mycoollyrics.txt' };
     fs.saveFile.resolves({
       name: 'mycoollyrics.txt',
       kind: 'file',
@@ -122,11 +121,9 @@ describe('Files', () => {
       requestPermission: undefined,
     });
 
-    await files.saveFile({
-      data: 'oh wow!',
-      filePath: 'mycoollyrics.txt',
-    });
+    const actual = await files.saveFile('oh wow!', 'mycoollyrics.txt');
 
+    expect(actual).to.eql(expected);
     expect(fs.saveFile).to.have.been.calledWith(
       new Blob(['oh wow!'], {
         type: 'text/plain',

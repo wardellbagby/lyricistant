@@ -37,7 +37,7 @@ export interface PlatformToRendererListener {
   'is-okay-for-new-file': () => void;
   'file-opened': (
     error: Error,
-    filePath: string,
+    fileName: string,
     data: string,
     clearHistory: boolean
   ) => void;

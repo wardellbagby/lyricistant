@@ -1,6 +1,7 @@
 import {
   DroppableFile,
   FileData,
+  FileMetadata,
   Files as IFiles,
 } from '@lyricistant/common/files/Files';
 import { BrowserWindow, Dialog as ElectronDialog } from 'electron';
@@ -12,11 +13,14 @@ export class ElectronFiles implements IFiles {
     private fs: FileSystem,
     private window: BrowserWindow
   ) {}
-  public openFile = async (file?: DroppableFile) => {
+  public openFile = async (file?: DroppableFile): Promise<FileData> => {
     if (file) {
       const data = await Buffer.from(file.data);
       if (this.fs.isText(file.path, data)) {
-        return new FileData(file.path, file.path, data.toString('utf8'));
+        return {
+          path: file.path,
+          data: data.toString('utf8'),
+        };
       }
       throw Error(`Cannot open "${file.path}; not a text file."`);
     }
@@ -36,29 +40,33 @@ export class ElectronFiles implements IFiles {
     }
   };
 
-  public saveFile = async (file: FileData) => {
-    if (file.filePath) {
-      await this.fs.writeFile(file.filePath, file.data);
+  public saveFile = async (
+    data: string,
+    path?: string
+  ): Promise<FileMetadata> => {
+    if (path) {
+      await this.fs.writeFile(path, data);
+      return { path };
     } else {
       const result = await this.dialog.showSaveDialog(this.window, {
         filters: [{ name: 'Text Files', extensions: ['txt'] }],
       });
 
       if (result.filePath) {
-        await this.fs.writeFile(result.filePath, file.data);
-        return {
-          filePath: result.filePath,
-          name: result.filePath,
-        };
+        await this.fs.writeFile(result.filePath, data);
+        return { path: result.filePath };
       }
     }
   };
 
-  public readFile = async (filePath: string) => {
-    const data = await this.fs.readFile(filePath);
-    if (this.fs.isText(filePath, data)) {
-      return new FileData(filePath, filePath, data.toString('utf8'));
+  public readFile = async (path: string): Promise<FileData> => {
+    const data = await this.fs.readFile(path);
+    if (this.fs.isText(path, data)) {
+      return {
+        path,
+        data: data.toString('utf8'),
+      };
     }
-    throw Error(`Cannot open "${filePath}; not a text file."`);
+    throw Error(`Cannot open "${path}; not a text file."`);
   };
 }

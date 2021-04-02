@@ -10,16 +10,15 @@ import { FileSystem } from '../wrappers/FileSystem';
 export class WebFiles implements IFiles {
   public constructor(private fs: FileSystem, private logger: Logger) {}
 
-  public openFile = async (file?: DroppableFile) => {
+  public openFile = async (file?: DroppableFile): Promise<FileData> => {
     if (file) {
       if (file.type !== 'text/plain') {
         throw Error('Selected file is not a text file.');
       }
-      return new FileData(
-        file.path,
-        file.path,
-        new TextDecoder().decode(file.data)
-      );
+      return {
+        path: file.path,
+        data: new TextDecoder().decode(file.data),
+      };
     }
 
     let result: File;
@@ -41,18 +40,24 @@ export class WebFiles implements IFiles {
     }
 
     if (result) {
-      return new FileData(result.name, result.name, await readAsText(result));
+      return {
+        path: result.name,
+        data: await readAsText(result),
+      };
     } else {
       this.logger.debug('File open cancelled.');
     }
   };
 
-  public saveFile = async (file: FileData): Promise<FileMetadata> => {
-    const fileName = file.filePath ?? 'Lyrics.txt';
+  public saveFile = async (
+    data: string,
+    path?: string
+  ): Promise<FileMetadata> => {
+    const fileName = path ?? 'Lyrics.txt';
     let fileHandle;
     try {
       fileHandle = await this.fs.saveFile(
-        new Blob([file.data], {
+        new Blob([data], {
           type: 'text/plain',
         }),
         {
@@ -71,7 +76,7 @@ export class WebFiles implements IFiles {
       }
     }
 
-    return { filePath: fileHandle?.name ?? fileName };
+    return { path: fileHandle?.name ?? fileName };
   };
 }
 

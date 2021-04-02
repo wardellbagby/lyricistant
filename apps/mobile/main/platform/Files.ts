@@ -1,6 +1,5 @@
 import { registerPlugin } from '@capacitor/core';
 import {
-  DroppableFile,
   FileData,
   FileMetadata,
   Files as IFiles,
@@ -10,7 +9,7 @@ import { FileSystem } from '../wrappers/FileSystem';
 
 interface MobileFilesPlugin {
   openFile: () => Promise<FileData | null>;
-  saveFile: (fileData: FileData) => Promise<FileMetadata>;
+  saveFile: (call: { data: string; path?: string }) => Promise<FileMetadata>;
 }
 
 const mobileFilesPlugin = registerPlugin<MobileFilesPlugin>('Files');
@@ -27,6 +26,8 @@ export class MobileFiles implements IFiles {
     }
   };
 
-  public saveFile = async (file: FileData): Promise<FileMetadata> =>
-    mobileFilesPlugin.saveFile(file);
+  public saveFile = async (
+    data: string,
+    path?: string
+  ): Promise<FileMetadata> => mobileFilesPlugin.saveFile({ data, path });
 }
