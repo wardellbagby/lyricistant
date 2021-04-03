@@ -50,7 +50,7 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
           onWordSelected: props.onWordSelected,
         }),
         EditorView.updateListener.of((update) => {
-          if (update.docChanged) {
+          if (update.docChanged || update.state === update.startState) {
             props.onTextChanged(update.state.doc.toString());
           }
         }),
