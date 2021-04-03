@@ -18,6 +18,7 @@ import React, {
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory } from 'react-router-dom';
+import { useSmallLayout } from '@lyricistant/renderer/hooks/useSmallLayout';
 import { platformDelegate } from '../globals';
 import { downloadApp } from '../util/download-app';
 import { useEditorText } from '../stores/EditorTextStore';
@@ -36,15 +37,18 @@ const useIconStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const useMenuStyles = makeStyles((theme: Theme) => ({
-  menu: {
-    backgroundColor: theme.palette.background.paper,
-    'padding-top': 'env(safe-area-inset-top)',
-    'padding-left': 'env(safe-area-inset-left)',
-    'padding-right': 'env(safe-area-inset-right)',
-    height: 'calc(56px + env(safe-area-inset-top))',
-  },
-}));
+const useMenuStyles = makeStyles<Theme, { isSmallLayout: boolean }>(
+  (theme: Theme) => ({
+    menu: {
+      backgroundColor: theme.palette.background.paper,
+      'padding-top': 'env(safe-area-inset-top)',
+      'padding-left': 'env(safe-area-inset-left)',
+      'padding-right': 'env(safe-area-inset-right)',
+      height: (props) => (props.isSmallLayout ? 'fit-content' : '100%'),
+      width: (props) => (props.isSmallLayout ? '100%' : 'fit-content'),
+    },
+  })
+);
 
 const MenuIcon: FunctionComponent<{
   onClick?: () => void;
@@ -70,11 +74,12 @@ const MenuIcon: FunctionComponent<{
 
 export function Menu() {
   const theme = useTheme();
-  const classes = useMenuStyles();
+  const classes = useMenuStyles({ isSmallLayout: useSmallLayout() });
   const useHorizontal = useMediaQuery(theme.breakpoints.down('sm'));
   const [uiConfig, setUiConfig] = useState<UiConfig>(null);
   const editorText = useEditorText();
   const history = useHistory();
+  const isSmallLayout = useSmallLayout();
 
   const onNewClicked = () => platformDelegate.send('new-file-attempt');
   const onOpenClicked = () => platformDelegate.send('open-file-attempt');
@@ -103,34 +108,40 @@ export function Menu() {
   }, []);
 
   return (
-    <Paper square className={classes.menu} color={theme.palette.primary.main}>
-      <Box
-        display={'flex'}
-        height={'100%'}
-        width={'100%'}
-        flexDirection={useHorizontal ? 'row' : 'column'}
-      >
-        <MenuIcon ariaLabel={'New'} onClick={onNewClicked}>
-          <AddCircle />
-        </MenuIcon>
-        {uiConfig?.showOpen && (
-          <MenuIcon ariaLabel={'Open'} onClick={onOpenClicked}>
-            <FolderOpen />
+    <Box
+      marginBottom={isSmallLayout ? '8px' : 'inherit'}
+      marginRight={isSmallLayout ? 'inherit' : '8px'}
+      boxShadow={1}
+    >
+      <Paper square className={classes.menu} color={theme.palette.primary.main}>
+        <Box
+          display={'flex'}
+          height={isSmallLayout ? 'auto' : '100%'}
+          width={isSmallLayout ? '100%' : 'auto'}
+          flexDirection={useHorizontal ? 'row' : 'column'}
+        >
+          <MenuIcon ariaLabel={'New'} onClick={onNewClicked}>
+            <AddCircle />
           </MenuIcon>
-        )}
-        <MenuIcon ariaLabel={'Save'} onClick={onSaveClicked}>
-          <Save />
-        </MenuIcon>
-        <Box flexGrow={'1'} />
-        {uiConfig?.showDownload && (
-          <MenuIcon ariaLabel={'Download App'} onClick={onDownloadClicked}>
-            <GetApp />
+          {uiConfig?.showOpen && (
+            <MenuIcon ariaLabel={'Open'} onClick={onOpenClicked}>
+              <FolderOpen />
+            </MenuIcon>
+          )}
+          <MenuIcon ariaLabel={'Save'} onClick={onSaveClicked}>
+            <Save />
           </MenuIcon>
-        )}
-        <MenuIcon ariaLabel={'Open Preferences'} onClick={onSettingsClicked}>
-          <Settings />
-        </MenuIcon>
-      </Box>
-    </Paper>
+          <Box flexGrow={'1'} />
+          {uiConfig?.showDownload && (
+            <MenuIcon ariaLabel={'Download App'} onClick={onDownloadClicked}>
+              <GetApp />
+            </MenuIcon>
+          )}
+          <MenuIcon ariaLabel={'Open Preferences'} onClick={onSettingsClicked}>
+            <Settings />
+          </MenuIcon>
+        </Box>
+      </Paper>
+    </Box>
   );
 }

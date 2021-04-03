@@ -1,7 +1,7 @@
 import { Box, Theme } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles } from '@material-ui/core/styles';
 import React, { ReactNode, useEffect } from 'react';
+import { useSmallLayout } from '@lyricistant/renderer/hooks/useSmallLayout';
 import { logger } from '../globals';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -17,11 +17,10 @@ interface AppLayoutProps {
 }
 
 export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
-  const theme = useTheme();
   const classes = useStyles();
-  const useSmallLayout = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmallLayout = useSmallLayout();
   let displayableChildren: ReactNode[];
-  if (useSmallLayout) {
+  if (isSmallLayout) {
     displayableChildren = [
       <React.Fragment key={'menu'}>{menu}</React.Fragment>,
       <div key={'menu-main-divider'} />,
@@ -38,8 +37,8 @@ export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
   }
 
   useEffect(
-    () => logger.info(`Switching layout. isSmallLayout: ${useSmallLayout}`),
-    [useSmallLayout]
+    () => logger.info(`Switching layout. isSmallLayout: ${isSmallLayout}`),
+    [isSmallLayout]
   );
   return (
     <Box
@@ -49,26 +48,26 @@ export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
       m={0}
       p={0}
       overflow={'hidden'}
-      gridTemplateRows={createGridTemplateRows(useSmallLayout)}
-      gridTemplateColumns={createGridTemplateColumns(useSmallLayout)}
+      gridTemplateRows={createGridTemplateRows(isSmallLayout)}
+      gridTemplateColumns={createGridTemplateColumns(isSmallLayout)}
     >
       {displayableChildren}
     </Box>
   );
 };
 
-const createGridTemplateRows = (useSmallLayout: boolean) => {
-  if (useSmallLayout) {
+const createGridTemplateRows = (isSmallLayout: boolean) => {
+  if (isSmallLayout) {
     return `auto 8px minmax(200px, 1fr) 4px 15%`;
   } else {
     return `100%`;
   }
 };
 
-const createGridTemplateColumns = (useSmallLayout: boolean) => {
-  if (useSmallLayout) {
+const createGridTemplateColumns = (isSmallLayout: boolean) => {
+  if (isSmallLayout) {
     return `100%`;
   } else {
-    return `56px minmax(200px, 1fr) minmax(25%, auto)`;
+    return `auto minmax(200px, 1fr) minmax(25%, auto)`;
   }
 };
