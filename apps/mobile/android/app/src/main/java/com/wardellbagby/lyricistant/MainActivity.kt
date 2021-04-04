@@ -1,18 +1,12 @@
 package com.wardellbagby.lyricistant
 
+import android.content.res.Configuration
 import android.os.Bundle
-import androidx.webkit.WebSettingsCompat
-import androidx.webkit.WebSettingsCompat.DARK_STRATEGY_WEB_THEME_DARKENING_ONLY
-import androidx.webkit.WebSettingsCompat.FORCE_DARK_ON
-import androidx.webkit.WebViewFeature
-import androidx.webkit.WebViewFeature.FORCE_DARK
-import androidx.webkit.WebViewFeature.FORCE_DARK_STRATEGY
+import android.webkit.JavascriptInterface
 import com.getcapacitor.BridgeActivity
-import com.getcapacitor.CapacitorWebView
 import com.wardellbagby.lyricistant.plugins.FilesPlugin
 
 class MainActivity : BridgeActivity() {
-  private lateinit var webView: CapacitorWebView
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     registerPlugin(FilesPlugin::class.java)
@@ -20,15 +14,27 @@ class MainActivity : BridgeActivity() {
 
   override fun onStart() {
     super.onStart()
-    webView = findViewById(R.id.webview)
-    if (WebViewFeature.isFeatureSupported(FORCE_DARK)) {
-      WebSettingsCompat.setForceDark(webView.settings, FORCE_DARK_ON)
-      if (WebViewFeature.isFeatureSupported(FORCE_DARK_STRATEGY)) {
-        WebSettingsCompat.setForceDarkStrategy(
-          webView.settings,
-          DARK_STRATEGY_WEB_THEME_DARKENING_ONLY
-        )
-      }
-    }
+    bridge.webView.addJavascriptInterface(NativeThemeProvider(), "nativeThemeProvider")
+  }
+
+  override fun onConfigurationChanged(newConfig: Configuration) {
+    super.onConfigurationChanged(newConfig)
+    updateWebViewNativeTheme()
+  }
+
+  private fun updateWebViewNativeTheme() {
+    val isDarkTheme = if (isDarkThemeEnabled()) "true" else "false";
+    bridge.eval("window.onNativeThemeChanged({DARK})".replace("{DARK}", isDarkTheme), null)
+  }
+
+  private fun isDarkThemeEnabled() = when (resources.configuration.uiMode and
+    Configuration.UI_MODE_NIGHT_MASK) {
+    Configuration.UI_MODE_NIGHT_NO -> false
+    else -> true
+  }
+
+  private inner class NativeThemeProvider {
+    @JavascriptInterface
+    fun isDarkTheme() = isDarkThemeEnabled()
   }
 }

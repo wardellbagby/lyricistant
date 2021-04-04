@@ -13,6 +13,7 @@ export class WebSystemThemeProvider implements ISystemThemeProvider {
       }
     } else {
       listener(SystemTheme.Dark);
+      return;
     }
 
     window

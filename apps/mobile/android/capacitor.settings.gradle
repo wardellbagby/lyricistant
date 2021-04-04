@@ -7,3 +7,6 @@ project(':capacitor-filesystem').projectDir = new File('../../../node_modules/@c
 
 include ':capacitor-keyboard'
 project(':capacitor-keyboard').projectDir = new File('../../../node_modules/@capacitor/keyboard/android')
+
+include ':capacitor-splash-screen'
+project(':capacitor-splash-screen').projectDir = new File('../../../node_modules/@capacitor/splash-screen/android')

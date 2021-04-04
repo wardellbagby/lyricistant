@@ -26,8 +26,8 @@ import type { MobileRecentFiles } from './platform/RecentFiles';
 import type { MobileSystemThemeProvider } from './platform/SystemThemeProvider';
 import { MobileTemporaryFiles } from './platform/TemporaryFiles';
 import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
-import { UnloadManager } from './platform/UnloadManager';
 import { FileSystem, MobileFileSystem } from './wrappers/FileSystem';
+import { SplashScreenManager } from './platform/SplashScreenManager';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();
@@ -50,7 +50,7 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<UiConfigManager>();
   component.registerSingleton<UnsavedDataManager>();
   component.registerSingleton<LogManager>();
-  component.registerSingleton<UnloadManager>();
+  component.registerSingleton<SplashScreenManager>();
 
   component.registerSingleton<Managers>(() => [
     () => component.get<FileManager>(),
@@ -58,7 +58,7 @@ const createComponent = (): DIContainer => {
     () => component.get<UiConfigManager>(),
     () => component.get<UnsavedDataManager>(),
     () => component.get<LogManager>(),
-    () => component.get<UnloadManager>(),
+    () => component.get<SplashScreenManager>(),
   ]);
   return component;
 };
