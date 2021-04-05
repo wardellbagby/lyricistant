@@ -34,8 +34,8 @@ export const spawn = (
   options?: SpawnOptions
 ): ChildProcess => {
   const optionsWithCwd = {
-    ...options,
     cwd: path.resolve(__dirname, '..'),
+    ...options,
   };
   const childProcess = nodeSpawn(command, args, optionsWithCwd);
 

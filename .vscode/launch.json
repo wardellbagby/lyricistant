@@ -22,6 +22,16 @@
       "program": "node_modules/.bin/gulp"
     },
     {
+      "name": "Build Android",
+      "args": ["buildAndroid"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
       "name": "Build Current Electron App",
       "args": ["buildCurrentElectronApp"],
       "type": "pwa-node",
@@ -42,8 +52,8 @@
       "program": "node_modules/.bin/gulp"
     },
     {
-      "name": "Build Mobile",
-      "args": ["buildMobile"],
+      "name": "Build iOS",
+      "args": ["buildIOS"],
       "type": "pwa-node",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],

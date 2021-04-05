@@ -1,11 +1,11 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { spawnSync } from 'child_process';
 import { merge } from 'webpack-merge';
 import { series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import webpack, { Configuration } from 'webpack';
+import { spawn } from '@tooling/common-tasks.gulp';
 
 type CapacitorCommand = 'add' | 'run' | 'sync' | 'open';
 type CapacitorPlatform = 'android' | 'ios';
@@ -34,7 +34,7 @@ const createWebpackConfig = async () =>
 const copyMobileHtmlFile = async () => {
   await fs.mkdir(outputDir, { recursive: true });
   await fs.copyFile(
-    'packages/renderer/main/index.html',
+    path.resolve('packages/renderer/main/index.html'),
     path.resolve(outputDir, 'index.html')
   );
 };
@@ -54,20 +54,68 @@ const bundleMobile = async () => {
   });
 };
 
-const capacitor = (command: CapacitorCommand, platform: CapacitorPlatform) =>
-  spawnSync('node_modules/.bin/cap', [command, platform], {
-    stdio: 'inherit',
-  });
+const capacitor = (
+  command: CapacitorCommand,
+  platform: CapacitorPlatform
+) => () => spawn('node_modules/.bin/cap', [command, platform]);
 
-const runAndroid = async () => {
-  capacitor('sync', 'android');
-  capacitor('run', 'android');
-};
+const runAndroid = series(
+  capacitor('sync', 'android'),
+  capacitor('run', 'android')
+);
 
-const runIOS = async () => {
-  capacitor('sync', 'ios');
-  capacitor('run', 'ios');
-};
+const runIOS = series(capacitor('sync', 'ios'), capacitor('run', 'ios'));
+
+const buildAndroidApp = series(
+  () =>
+    spawn('./gradlew', [':clean'], {
+      cwd: path.resolve('apps/mobile/android'),
+    }),
+  () =>
+    spawn('./gradlew', [':app:assembleRelease'], {
+      cwd: path.resolve('apps/mobile/android'),
+    }),
+  async () => {
+    const androidDist = path.resolve('apps/mobile/android/dist');
+    await fs.rmdir(androidDist, { recursive: true });
+    await fs.mkdir(androidDist);
+    await fs.copyFile(
+      path.resolve(
+        'apps/mobile/android/app/build/outputs/apk/release/app-release.apk'
+      ),
+      path.resolve(androidDist, 'lyricistant.apk')
+    );
+  }
+);
+
+const buildIOSApp = series(
+  async () => {
+    await fs.rmdir(path.resolve('apps/mobile/ios/build/'), { recursive: true });
+    await fs.rmdir(path.resolve('apps/mobile/ios/dist/'), { recursive: true });
+  },
+  () =>
+    spawn('xcodebuild', [
+      '-workspace',
+      path.resolve('apps/mobile/ios/App/App.xcworkspace'),
+      '-scheme',
+      'App',
+      '-configuration',
+      'Release',
+      '-archivePath',
+      path.resolve('apps/mobile/ios/build/lyricistant.xcarchive'),
+      'archive',
+    ]),
+  () =>
+    spawn('xcodebuild', [
+      '-exportArchive',
+      '-archivePath',
+      path.resolve('apps/mobile/ios/build/lyricistant.xcarchive'),
+      '-exportPath',
+      path.resolve('apps/mobile/ios/dist'),
+      '-exportOptionsPlist',
+      path.resolve('apps/mobile/ios/export.plist'),
+    ])
+);
 
 export const startAndroid = series(
   cleanMobile,
@@ -81,11 +129,23 @@ export const startIOS = series(
   bundleMobile,
   runIOS
 );
-export const buildMobile = series(
+
+export const buildAndroid = series(
   cleanMobile,
   copyMobileHtmlFile,
-  bundleMobile
+  bundleMobile,
+  capacitor('sync', 'android'),
+  buildAndroidApp
 );
+
+export const buildIOS = series(
+  cleanMobile,
+  copyMobileHtmlFile,
+  bundleMobile,
+  capacitor('sync', 'ios'),
+  buildIOSApp
+);
+
 export const openAndroid = async () => {
   capacitor('sync', 'android');
   capacitor('open', 'android');

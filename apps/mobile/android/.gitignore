@@ -84,3 +84,4 @@ capacitor-cordova-android-plugins
 
 # Copied web assets
 app/src/main/assets/public
+keystore.properties

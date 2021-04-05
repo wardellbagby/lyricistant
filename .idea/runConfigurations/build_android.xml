@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Build Mobile" type="js.build_tools.gulp" folderName="Build">
+  <configuration default="false" name="Build Android" type="js.build_tools.gulp" folderName="Build">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <gulpfile>$PROJECT_DIR$/gulpfile.js</gulpfile>
     <tasks>
-      <task>buildMobile</task>
+      <task>buildAndroid</task>
     </tasks>
     <arguments />
     <envs />
