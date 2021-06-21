@@ -10,6 +10,13 @@ const depsToUpdate = Object.keys(dependencies)
   .concat(Object.keys(devDependencies))
   .filter((it) => it.startsWith(filter));
 
+if (!filter) {
+  console.error(
+    'usage: install-latest.ts filter [version]\nexample: install-latest.ts @codemirror 18.1.0'
+  );
+  process.exit(1);
+}
+
 console.log(
   `Updating deps: \n\n${depsToUpdate.join('\n')} \n\nto version: ${version}`
 );

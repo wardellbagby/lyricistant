@@ -88,6 +88,20 @@ If you'd like to attach a debugger while testing via terminal:
 node --inspect-brk ./node_modules/.bin/gulp testAll # Replace testAll with whatever command you'd like.
 ```
 
+### Updating dependencies
+
+There's a helper script at `bin/install-latest.ts` that can be used to update all dependencies in the project that start with a specific string to a specified version.
+
+This is very useful for updating any scoped NPM dependencies that should be updated in lockstep (i.e., `@codemirror`).
+
+Example usage:
+
+```shell
+./bin/install-latest.ts @codemirror 18.1.0
+```
+
+
+
 ## License
 
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE.md) file for details
