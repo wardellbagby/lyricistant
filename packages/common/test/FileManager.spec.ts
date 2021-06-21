@@ -237,6 +237,12 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith('Reeboks on; just do it!');
     expect(fileChangeListener).to.have.been.called;
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      '/path/test2',
+      '1',
+      '2',
+      '3',
+    ]);
   });
 
   it('saves as the file when the renderer returns the editor text', async () => {
@@ -253,6 +259,12 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith('Reeboks on; just do it!');
     expect(fileChangeListener).to.have.been.called;
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      '/path/test2',
+      '1',
+      '2',
+      '3',
+    ]);
   });
 
   it('saves a new file when the renderer says to save with no file loaded', async () => {
@@ -270,6 +282,12 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith('Blessings, blessings.');
     expect(fileChangeListener).to.have.been.called;
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      '/path/test2',
+      '1',
+      '2',
+      '3',
+    ]);
   });
 
   it('saves the current file when the renderer says to save with a file loaded', async () => {
@@ -298,6 +316,12 @@ describe('File Manager', () => {
       '/Desktop/whitetuxedo.txt'
     );
     expect(fileChangeListener).to.have.been.called;
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      '/Desktop/whitetuxedo.txt',
+      '1',
+      '2',
+      '3',
+    ]);
   });
 
   it('updates the current file when the platform returns a new file path', async () => {
@@ -336,6 +360,13 @@ describe('File Manager', () => {
       '/Desktop/whitetuxedo2.txt'
     );
     expect(fileChangeListener).to.have.been.called.callCount(3);
+    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+      '/Desktop/whitetuxedo2.txt',
+      '/Desktop/whitetuxedo.txt',
+      '1',
+      '2',
+      '3',
+    ]);
   });
 
   it('updates the renderer when a file is opened by the platform', async () => {

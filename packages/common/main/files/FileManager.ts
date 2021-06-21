@@ -131,6 +131,7 @@ export class FileManager implements Manager {
         data,
         true
       );
+      this.addRecentFile(newFileMetadata.path);
       this.rendererDelegate.send('file-save-ended', null, fileTitle);
     } else {
       this.rendererDelegate.send('file-save-ended', null, null);
