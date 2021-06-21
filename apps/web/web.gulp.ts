@@ -86,23 +86,17 @@ const bundleWeb = (mode: Mode) => {
   return curried;
 };
 
-// const buildWebDeps = series(buildCommon, buildRenderer, buildCodeMirror);
-const buildWebDeps = async () => true;
-
 export const startWeb = series(
-  buildWebDeps,
   clean('development'),
   copyWebHtmlFile('development'),
   runWebServer
 );
 export const buildWeb = series(
-  buildWebDeps,
   clean('production'),
   copyWebHtmlFile('production'),
   bundleWeb('production')
 );
 export const buildTestWeb = series(
-  buildWebDeps,
   clean('test'),
   copyWebHtmlFile('test'),
   bundleWeb('test')

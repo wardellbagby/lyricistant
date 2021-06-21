@@ -1,3 +1,5 @@
+import { promises as fs } from 'fs';
+import path from 'path';
 import { parallel, series } from 'gulp';
 import { buildWeb } from './apps/web/web.gulp';
 import { buildElectron } from './apps/electron/electron.gulp';
@@ -24,3 +26,5 @@ export const testAll = series(
   testRenderer,
   testCommon
 );
+export const clean = () => fs.rmdir(path.resolve('dist'), { recursive: true });
+export const check = parallel(buildAll, testAll);

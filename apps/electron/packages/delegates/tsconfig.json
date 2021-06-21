@@ -2,7 +2,7 @@
   "include": ["*.ts"],
   "compilerOptions": {
     "lib": ["dom", "es6"],
-    "types": [ "node"],
+    "types": ["node"],
     "composite": true
   },
   "references": [{ "path": "../../../../packages/common" }],

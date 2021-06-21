@@ -50,15 +50,15 @@ Lyricistant!
 
 This project uses [Gulp](https://gulpjs.com/) to build. 
 
-The easiest way to use Bazel is via installing Gulp globally via `npm install -g gulp`, but this isn't required as `Gulp` is included as a dev dependency for this project, and so doing `npm install; node_modules/.bin/gulp <task>` will also work.
+The easiest way to use Gulp is via installing Gulp globally via `npm install -g gulp`, but this isn't required as `Gulp` is included as a dev dependency for this project, and so doing `npm install; node_modules/.bin/gulp <task>` will also work.
 
 How to check out and run the project:
 ```shell
 git checkout https://github.com/wardellbagby/lyricistant.git
 cd lyricistant
-# Starts the Electron app.
+# Starts the Electron app for development.
 gulp startElectron
-# Starts the Web app.
+# Starts the Web app for development.
 gulp startWeb
 ```
 
