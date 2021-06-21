@@ -20,10 +20,10 @@ const verifyIDEATask = (taskName: string): boolean => {
   );
 };
 
+let hasFailed = false;
 const fail = (taskName: string, type: string) => {
-  console.error(
-    `${type}: Missing run configuration for task "${taskName}". Try running "npm run lint-fix" to generate it.`
-  );
+  console.error(`${type}: Missing run configuration for task "${taskName}".`);
+  hasFailed = true;
 };
 
 getGulpTasks().forEach((taskName) => {
@@ -34,3 +34,10 @@ getGulpTasks().forEach((taskName) => {
     fail(taskName, 'VS Code');
   }
 });
+
+if (hasFailed) {
+  console.error(
+    'Try running "npm run lint-fix" to generate missing run configurations.'
+  );
+  process.exit(1);
+}

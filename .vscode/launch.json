@@ -92,6 +92,26 @@
       "program": "node_modules/.bin/gulp"
     },
     {
+      "name": "Check",
+      "args": ["check"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
+      "name": "Clean",
+      "args": ["clean"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
       "name": "Open Android",
       "args": ["openAndroid"],
       "type": "pwa-node",

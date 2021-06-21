@@ -41,10 +41,15 @@ const vsCodeConfigs: Array<Record<string, any>> = [];
 getGulpTasks().forEach((taskName) => {
   const folderName = getGroup(taskName);
   const displayName = capitalCase(taskName).replace('Ios', 'iOS').trim();
-  const runConfig = ideaRunConfigTemplate
+  let runConfig = ideaRunConfigTemplate
     .replace('{GULP_TASK_NAME}', taskName)
-    .replace('{CONFIG_NAME}', displayName)
-    .replace('{FOLDER_NAME}', folderName);
+    .replace('{CONFIG_NAME}', displayName);
+
+  if (folderName) {
+    runConfig = runConfig.replace('{FOLDER_NAME}', folderName);
+  } else {
+    runConfig = runConfig.replace('folderName="{FOLDER_NAME}"', '');
+  }
 
   fs.writeFileSync(getIDEARunConfigFile(taskName), runConfig);
   vsCodeConfigs.push({
