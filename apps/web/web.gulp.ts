@@ -12,12 +12,13 @@ import {
 } from '@tooling/common-tasks.gulp';
 import webpack, { Configuration } from 'webpack';
 import { capitalCase } from 'change-case';
+import del from 'del';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
 
 const clean = (mode: Mode) => {
   const curried = async () => {
-    await fs.rmdir(getOutputDirectory(mode), { recursive: true });
+    await del(getOutputDirectory(mode));
   };
   curried.displayName = `clean${capitalCase(mode)}Web`;
   return curried;

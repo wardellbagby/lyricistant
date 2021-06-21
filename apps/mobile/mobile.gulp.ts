@@ -6,6 +6,7 @@ import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import webpack, { Configuration } from 'webpack';
 import { spawn } from '@tooling/common-tasks.gulp';
+import del from 'del';
 
 type CapacitorCommand = 'add' | 'run' | 'sync' | 'open';
 type CapacitorPlatform = 'android' | 'ios';
@@ -13,7 +14,7 @@ type CapacitorPlatform = 'android' | 'ios';
 const outputDir = path.resolve(__dirname, 'dist');
 
 const cleanMobile = async () => {
-  await fs.rmdir(outputDir, { recursive: true });
+  await del(outputDir);
 };
 
 const createWebpackConfig = async () =>
@@ -77,7 +78,7 @@ const buildAndroidApp = series(
     }),
   async () => {
     const androidDist = path.resolve('apps/mobile/android/dist');
-    await fs.rmdir(androidDist, { recursive: true });
+    await del(androidDist);
     await fs.mkdir(androidDist);
     await fs.copyFile(
       path.resolve(
@@ -90,8 +91,8 @@ const buildAndroidApp = series(
 
 const buildIOSApp = series(
   async () => {
-    await fs.rmdir(path.resolve('apps/mobile/ios/build/'), { recursive: true });
-    await fs.rmdir(path.resolve('apps/mobile/ios/dist/'), { recursive: true });
+    await del(path.resolve('apps/mobile/ios/build/'));
+    await del(path.resolve('apps/mobile/ios/dist/'));
   },
   () =>
     spawn('xcodebuild', [

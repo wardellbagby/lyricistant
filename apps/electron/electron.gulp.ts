@@ -12,12 +12,13 @@ import {
   Mode,
 } from '@tooling/common-tasks.gulp';
 import { capitalCase } from 'change-case';
+import del from 'del';
 import { buildElectronApp } from './build_apps';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
 const clean = (mode: Mode) => {
   const curried = async () => {
-    await fs.rmdir(getOutputDirectory(mode), { recursive: true });
+    await del(getOutputDirectory(mode));
   };
   curried.displayName = `clean${capitalCase(mode)}Electron`;
   return curried;
