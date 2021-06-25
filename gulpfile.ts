@@ -17,6 +17,7 @@ export * from './apps/mobile/mobile.gulp';
 export * from './packages/common/test/test.gulp';
 export * from './packages/codemirror/test/test.gulp';
 export * from './packages/renderer/test/test.gulp';
+export * from './tooling/pronunciations.gulp';
 
 export const buildAll = parallel(buildWeb, buildElectron);
 export const testAll = series(

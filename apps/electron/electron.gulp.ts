@@ -13,6 +13,7 @@ import {
 } from '@tooling/common-tasks.gulp';
 import { capitalCase } from 'change-case';
 import del from 'del';
+import { generatePronunciations } from '@tooling/pronunciations.gulp';
 import { buildElectronApp } from './build_apps';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
@@ -169,28 +170,33 @@ const runElectronBuilder = (...args: Parameters<typeof buildElectronApp>) => {
 export const startElectron = series(
   clean('development'),
   copyElectronHtmlFile('development'),
+  generatePronunciations,
   parallel(runElectronServer, series(bundleMainAndPreload, startElectronApp))
 );
 export const buildElectron = series(
   clean('production'),
   copyElectronHtmlFile('production'),
+  generatePronunciations,
   bundleElectron('production')
 );
 
 export const buildTestElectron = series(
   clean('test'),
   copyElectronHtmlFile('test'),
+  generatePronunciations,
   bundleElectron('test')
 );
 export const buildAllElectronApps = series(
   clean('production'),
   copyElectronHtmlFile('production'),
+  generatePronunciations,
   bundleElectron('production'),
   runElectronBuilder('production', false)
 );
 export const buildCurrentElectronApp = series(
   clean('development'),
   copyElectronHtmlFile('development'),
+  generatePronunciations,
   bundleElectron('development'),
   runElectronBuilder('development', true)
 );
