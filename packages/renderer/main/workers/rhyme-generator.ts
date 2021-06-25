@@ -9,6 +9,7 @@ interface Pronunciation {
 // Force retype so that the IDE doesn't freak out with the large JSON file.
 const pronunciations: Record<string, Pronunciation> = pronunciationsJson;
 const knownWords: string[] = Object.keys(pronunciations);
+const MAX_POPULARITY_SCORE = 100_000;
 
 export const generateRhymes = (word: string): Rhyme[] => {
   if (!word) {
@@ -57,16 +58,17 @@ const calculateScore = (left: string, right: string) => {
 
   for (let index = 0; index < length; index++) {
     if (leftSyllables[index] !== rightSyllables[index]) {
-      if (leftSyllables.length === rightSyllables.length) {
-        score += 5;
-      }
-      return score;
+      break;
     }
 
-    score += 10;
+    score += MAX_POPULARITY_SCORE;
   }
 
-  return 0;
+  if (leftSyllables.length === rightSyllables.length) {
+    score += MAX_POPULARITY_SCORE;
+  }
+
+  return score;
 };
 
 const getBaseWord = (word: string) => {
@@ -83,7 +85,7 @@ const compare = (
 
   if (score > 1) {
     if (dictPronunciation.p) {
-      score += 10;
+      score += (MAX_POPULARITY_SCORE - dictPronunciation.p) * 2;
     }
     return {
       score,

@@ -7,6 +7,7 @@ import { useErrorHandler } from 'react-error-boundary';
 import { GridItem, VirtuosoGrid } from 'react-virtuoso';
 import { usePreferences } from '@lyricistant/renderer/stores/PreferencesStore';
 import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
+import { isDevelopment } from '@lyricistant/common/BuildModes';
 import { logger } from '../globals';
 import { Rhyme } from '../models/rhyme';
 import { fetchRhymes, generateRhymes } from '../networking/fetchRhymes';
@@ -161,6 +162,7 @@ function renderRhyme(
         <ListItemText
           primary={rhyme.word ?? ''}
           primaryTypographyProps={{ align: 'center' }}
+          secondary={isDevelopment && rhyme.score}
         />
       </ListItem>
     </Box>
