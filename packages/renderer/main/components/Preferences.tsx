@@ -176,7 +176,7 @@ export const Preferences = () => {
                 labelId="rhyme-source-label"
                 value={preferencesData.rhymeSource}
                 onChange={onRhymeSourceChanged}
-                label="Text Size"
+                label="Rhyme Source"
               >
                 <MenuItem value={RhymeSource.Offline}>Offline (alpha)</MenuItem>
                 <MenuItem value={RhymeSource.Datmamuse}>Datamuse</MenuItem>
