@@ -5,9 +5,11 @@ import { makeStyles, styled, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { GridItem, VirtuosoGrid } from 'react-virtuoso';
+import { usePreferences } from '@lyricistant/renderer/stores/PreferencesStore';
+import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
 import { logger } from '../globals';
 import { Rhyme } from '../models/rhyme';
-import { fetchRhymes } from '../networking/fetchRhymes';
+import { fetchRhymes, generateRhymes } from '../networking/fetchRhymes';
 import {
   useSelectedWordPosition,
   useSelectedWords,
@@ -65,7 +67,12 @@ export function Rhymes() {
   const selectedWord = useSelectedWords();
   const selectedWordPosition = useSelectedWordPosition();
 
+  const preferences = usePreferences();
+
   useEffect(() => {
+    if (!preferences) {
+      return;
+    }
     if (!selectedWord) {
       setRhymes([]);
       return;
@@ -81,7 +88,14 @@ export function Rhymes() {
         }
       }, 400);
     })
-      .then(fetchRhymes)
+      .then((word: string) => {
+        switch (preferences.rhymeSource) {
+          case RhymeSource.Offline:
+            return generateRhymes(word);
+          case RhymeSource.Datmamuse:
+            return fetchRhymes(word);
+        }
+      })
       .then((results) =>
         results.filter((rhyme) => rhyme && rhyme.word && rhyme.score)
       )
@@ -96,7 +110,7 @@ export function Rhymes() {
     return () => {
       isCancelled = true;
     };
-  }, [selectedWord, setRhymes, handleError]);
+  }, [selectedWord, setRhymes, handleError, preferences]);
 
   if (rhymes.length === 0) {
     return <div />;

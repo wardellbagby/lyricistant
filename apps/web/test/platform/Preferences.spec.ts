@@ -3,7 +3,11 @@ import sinon from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
 import { WebPreferences } from '@web-app/platform/Preferences';
-import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import {
+  PreferencesData,
+  RhymeSource,
+  Theme,
+} from '@lyricistant/common/preferences/PreferencesData';
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
 use(sinonChai);
@@ -20,6 +24,8 @@ describe('Preferences', () => {
   it('round-trip works', () => {
     const expected: PreferencesData = {
       textSize: 2,
+      rhymeSource: RhymeSource.Datmamuse,
+      theme: Theme.Dark,
     };
 
     preferences.setPreferences(expected);
@@ -32,9 +38,13 @@ describe('Preferences', () => {
   it('updates work', () => {
     const initial: PreferencesData = {
       textSize: 24,
+      rhymeSource: RhymeSource.Datmamuse,
+      theme: Theme.Dark,
     };
     const expected: PreferencesData = {
       textSize: 2,
+      rhymeSource: RhymeSource.Datmamuse,
+      theme: Theme.Dark,
     };
 
     preferences.setPreferences(initial);

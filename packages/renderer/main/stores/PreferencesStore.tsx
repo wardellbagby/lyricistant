@@ -33,7 +33,7 @@ export const PreferencesStore = ({ children }: { children: ReactNode }) => {
 };
 
 export const usePreferencesStore = () => useContext(PreferencesStoreContext);
-export const usePreferences = (): PreferencesData => {
+export const usePreferences = (): PreferencesData | undefined => {
   const store = usePreferencesStore();
   const [prefs, setPrefs] = useState<PreferencesData>();
 

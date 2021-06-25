@@ -4,7 +4,11 @@ import sinonChai from 'sinon-chai';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import chaiAsPromised from 'chai-as-promised';
 import { ElectronPreferences } from '@electron-app/platform/Preferences';
-import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import {
+  PreferencesData,
+  RhymeSource,
+  Theme,
+} from '@lyricistant/common/preferences/PreferencesData';
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
 use(sinonChai);
@@ -24,6 +28,8 @@ describe('Preferences', () => {
   it('gets preferences when preferences have been set', () => {
     const expected: PreferencesData = {
       textSize: 2,
+      rhymeSource: RhymeSource.Datmamuse,
+      theme: Theme.Dark,
     };
     fs.existsSync.returns(true);
     fs.readFileSync.returns(JSON.stringify(expected));
@@ -59,7 +65,11 @@ describe('Preferences', () => {
   it('sets the preferences', async () => {
     fs.writeFile.resolves();
 
-    preferences.setPreferences({ textSize: 2 });
+    preferences.setPreferences({
+      textSize: 2,
+      rhymeSource: RhymeSource.Datmamuse,
+      theme: Theme.Dark,
+    });
 
     expect(fs.writeFile).to.have.been.calledWith('user/preferences.json');
   });
@@ -67,7 +77,11 @@ describe('Preferences', () => {
   it('caches the preferences after setting them', () => {
     fs.writeFile.resolves();
 
-    preferences.setPreferences({ textSize: 2 });
+    preferences.setPreferences({
+      textSize: 2,
+      rhymeSource: RhymeSource.Datmamuse,
+      theme: Theme.Dark,
+    });
     preferences.getPreferences();
 
     expect(fs.readFileSync).to.have.not.been.called;

@@ -1,4 +1,7 @@
-import { Theme as LyricistantTheme } from '@lyricistant/common/preferences/PreferencesData';
+import {
+  RhymeSource,
+  Theme as LyricistantTheme,
+} from '@lyricistant/common/preferences/PreferencesData';
 import {
   Box,
   Button,
@@ -80,6 +83,17 @@ export const Preferences = () => {
     }
   };
 
+  const onRhymeSourceChanged = (
+    event: React.ChangeEvent<{ value: RhymeSource }>
+  ) => {
+    if (event.target.value !== undefined) {
+      setPreferencesData({
+        ...preferencesData,
+        rhymeSource: event.target.value,
+      });
+    }
+  };
+
   const onPreferencesSaved = () =>
     platformDelegate.send('save-prefs', preferencesData);
 
@@ -152,6 +166,20 @@ export const Preferences = () => {
                 <MenuItem value={LyricistantTheme.System}>
                   Follow System
                 </MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel id="rhyme-source-label">Rhyme Source</InputLabel>
+              <Select
+                labelId="rhyme-source-label"
+                value={preferencesData.rhymeSource}
+                onChange={onRhymeSourceChanged}
+                label="Text Size"
+              >
+                <MenuItem value={RhymeSource.Offline}>Offline (alpha)</MenuItem>
+                <MenuItem value={RhymeSource.Datmamuse}>Datamuse</MenuItem>
               </Select>
             </FormControl>
           </Grid>

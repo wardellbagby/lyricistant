@@ -1,5 +1,6 @@
 import { logger } from '../globals';
 import { Rhyme } from '../models/rhyme';
+import { rhymeGenerator } from '../workers';
 
 const url = 'https://lyricistant.wardellbagby.workers.dev';
 type RhymeType = 'perfect' | 'near' | 'sounds-like';
@@ -39,6 +40,7 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
   return [];
 };
 
+export const generateRhymes: typeof fetchRhymes = rhymeGenerator.generateRhymes;
 export const fetchRhymes = async (word: string): Promise<Rhyme[]> => {
   if (word.length === 0) {
     return [];

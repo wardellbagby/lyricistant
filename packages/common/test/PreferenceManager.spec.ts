@@ -3,6 +3,7 @@ import { PreferenceManager } from '@lyricistant/common/preferences/PreferenceMan
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 import {
   PreferencesData,
+  RhymeSource,
   Theme,
 } from '@lyricistant/common/preferences/PreferencesData';
 import {
@@ -62,6 +63,7 @@ describe('Preference Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith('prefs-updated', {
       textSize: 16,
       theme: Theme.System,
+      rhymeSource: RhymeSource.Datmamuse,
     });
   });
 
@@ -69,6 +71,7 @@ describe('Preference Manager', () => {
     const prefs: PreferencesData = {
       textSize: 22,
       theme: Theme.Dark,
+      rhymeSource: RhymeSource.Offline,
     };
     preferences.getPreferences.returns(prefs);
 
@@ -86,6 +89,7 @@ describe('Preference Manager', () => {
     const prefs: PreferencesData = {
       textSize: 22,
       theme: Theme.Dark,
+      rhymeSource: RhymeSource.Datmamuse,
     };
 
     manager.register();

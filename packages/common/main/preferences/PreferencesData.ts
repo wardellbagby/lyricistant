@@ -3,7 +3,12 @@ export enum Theme {
   Dark,
   System,
 }
+export enum RhymeSource {
+  Offline,
+  Datmamuse,
+}
 export interface PreferencesData {
   textSize: number;
-  theme?: Theme;
+  theme: Theme;
+  rhymeSource: RhymeSource;
 }
