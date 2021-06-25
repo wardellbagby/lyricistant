@@ -31,7 +31,7 @@ describe('Electron launch', () => {
 
   afterEach(async () => {
     if (app) {
-      await app.stop();
+      app.mainProcess.exit(0);
     }
   });
 
