@@ -24,7 +24,7 @@ describe('Preferences', () => {
   it('round-trip works', () => {
     const expected: PreferencesData = {
       textSize: 2,
-      rhymeSource: RhymeSource.Datmamuse,
+      rhymeSource: RhymeSource.Datamuse,
       theme: Theme.Dark,
     };
 
@@ -38,12 +38,12 @@ describe('Preferences', () => {
   it('updates work', () => {
     const initial: PreferencesData = {
       textSize: 24,
-      rhymeSource: RhymeSource.Datmamuse,
+      rhymeSource: RhymeSource.Datamuse,
       theme: Theme.Dark,
     };
     const expected: PreferencesData = {
       textSize: 2,
-      rhymeSource: RhymeSource.Datmamuse,
+      rhymeSource: RhymeSource.Datamuse,
       theme: Theme.Dark,
     };
 

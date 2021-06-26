@@ -5,7 +5,7 @@ export enum Theme {
 }
 export enum RhymeSource {
   Offline,
-  Datmamuse,
+  Datamuse,
 }
 export interface PreferencesData {
   textSize: number;

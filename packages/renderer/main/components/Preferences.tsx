@@ -232,7 +232,7 @@ export const Preferences = () => {
                     onChange={onRhymeSourceChanged}
                     items={[
                       { value: RhymeSource.Offline, label: 'Offline (alpha)' },
-                      { value: RhymeSource.Datmamuse, label: 'Datamuse' },
+                      { value: RhymeSource.Datamuse, label: 'Datamuse' },
                     ]}
                     label={'Rhyme Source'}
                   />

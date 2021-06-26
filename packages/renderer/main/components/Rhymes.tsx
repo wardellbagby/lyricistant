@@ -93,7 +93,7 @@ export function Rhymes() {
         switch (preferences.rhymeSource) {
           case RhymeSource.Offline:
             return generateRhymes(word);
-          case RhymeSource.Datmamuse:
+          case RhymeSource.Datamuse:
             return fetchRhymes(word);
         }
       })

@@ -44,7 +44,7 @@ export class PreferenceManager implements Manager {
   private preferencesOrDefault = (): PreferencesData => ({
     textSize: 16,
     theme: Theme.System,
-    rhymeSource: RhymeSource.Datmamuse,
+    rhymeSource: RhymeSource.Datamuse,
     ...this.preferences.getPreferences(),
   });
 

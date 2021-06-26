@@ -63,7 +63,7 @@ describe('Preference Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith('prefs-updated', {
       textSize: 16,
       theme: Theme.System,
-      rhymeSource: RhymeSource.Datmamuse,
+      rhymeSource: RhymeSource.Datamuse,
     });
   });
 
@@ -89,7 +89,7 @@ describe('Preference Manager', () => {
     const prefs: PreferencesData = {
       textSize: 22,
       theme: Theme.Dark,
-      rhymeSource: RhymeSource.Datmamuse,
+      rhymeSource: RhymeSource.Datamuse,
     };
 
     manager.register();

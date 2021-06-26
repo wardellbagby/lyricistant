@@ -28,7 +28,7 @@ describe('Preferences', () => {
   it('gets preferences when preferences have been set', () => {
     const expected: PreferencesData = {
       textSize: 2,
-      rhymeSource: RhymeSource.Datmamuse,
+      rhymeSource: RhymeSource.Datamuse,
       theme: Theme.Dark,
     };
     fs.existsSync.returns(true);
@@ -67,7 +67,7 @@ describe('Preferences', () => {
 
     preferences.setPreferences({
       textSize: 2,
-      rhymeSource: RhymeSource.Datmamuse,
+      rhymeSource: RhymeSource.Datamuse,
       theme: Theme.Dark,
     });
 
@@ -79,7 +79,7 @@ describe('Preferences', () => {
 
     preferences.setPreferences({
       textSize: 2,
-      rhymeSource: RhymeSource.Datmamuse,
+      rhymeSource: RhymeSource.Datamuse,
       theme: Theme.Dark,
     });
     preferences.getPreferences();
