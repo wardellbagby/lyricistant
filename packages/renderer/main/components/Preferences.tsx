@@ -5,10 +5,13 @@ import {
 import {
   Box,
   Button,
+  Container,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   Slide,
 } from '@material-ui/core';
@@ -41,13 +44,82 @@ const dialogStyles = makeStyles((theme: Theme) =>
     root: {
       color: theme.palette.primary.contrastText,
     },
+    container: {
+      height: '100%',
+    },
+    divider: {
+      marginTop: '2px',
+    },
+    dialogPaper: {
+      background: theme.palette.background.default,
+    },
+    paper: {
+      height: '100%',
+      paddingTop: '32px',
+      paddingBottom: '32px',
+      paddingLeft: '32px',
+      paddingRight: '32px',
+    },
     appBar: {
       paddingTop: 'env(safe-area-inset-top)',
       paddingLeft: 'env(safe-area-inset-left)',
       paddingRight: 'env(safe-area-inset-right)',
     },
+    header: {
+      fontWeight: 'bolder',
+    },
+    select: {
+      marginLeft: '16px',
+      marginRight: '16px',
+    },
   })
 );
+
+const Header = ({ label }: { label: string }) => {
+  const classes = dialogStyles(undefined);
+  return (
+    <>
+      <Typography className={classes.header} variant={'h6'}>
+        {label}
+      </Typography>
+      <Divider className={classes.divider} />
+    </>
+  );
+};
+
+interface LabeledValue<T> {
+  label: string;
+  value: T;
+}
+interface SelectBoxProps<T> {
+  value: T;
+  onChange: (value: T) => void;
+  items: Array<LabeledValue<T>>;
+  label: string;
+}
+const SelectBox = <T extends string | number>({
+  value,
+  onChange,
+  items,
+  label,
+}: SelectBoxProps<T>) => {
+  const classes = dialogStyles(undefined);
+  return (
+    <FormControl variant="outlined" fullWidth>
+      <InputLabel className={classes.select}>{label}</InputLabel>
+      <Select
+        className={classes.select}
+        value={value}
+        onChange={(e) => onChange(e.target.value as T)}
+        label={label}
+      >
+        {items.map(({ label: itemLabel, value: itemValue }) => (
+          <MenuItem value={itemValue}>{itemLabel}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
 
 export const Preferences = () => {
   const history = useHistory();
@@ -61,37 +133,25 @@ export const Preferences = () => {
     setPreferencesData(originalPreferenceData);
   }, [originalPreferenceData]);
 
-  const onDetailsSizeChanged = (
-    event: React.ChangeEvent<{ value: number }>
-  ) => {
-    if (event.target.value) {
-      setPreferencesData({
-        ...preferencesData,
-        textSize: event.target.value,
-      });
-    }
+  const onDetailsSizeChanged = (textSize: number) => {
+    setPreferencesData({
+      ...preferencesData,
+      textSize,
+    });
   };
 
-  const onThemeChanged = (
-    event: React.ChangeEvent<{ value: LyricistantTheme }>
-  ) => {
-    if (event.target.value !== undefined) {
-      setPreferencesData({
-        ...preferencesData,
-        theme: event.target.value,
-      });
-    }
+  const onThemeChanged = (theme: LyricistantTheme) => {
+    setPreferencesData({
+      ...preferencesData,
+      theme,
+    });
   };
 
-  const onRhymeSourceChanged = (
-    event: React.ChangeEvent<{ value: RhymeSource }>
-  ) => {
-    if (event.target.value !== undefined) {
-      setPreferencesData({
-        ...preferencesData,
-        rhymeSource: event.target.value,
-      });
-    }
+  const onRhymeSourceChanged = (rhymeSource: RhymeSource) => {
+    setPreferencesData({
+      ...preferencesData,
+      rhymeSource,
+    });
   };
 
   const onPreferencesSaved = () =>
@@ -111,6 +171,7 @@ export const Preferences = () => {
       className={classes.root}
       open
       TransitionComponent={DialogTransition}
+      PaperProps={{ className: classes.dialogPaper }}
     >
       <AppBar color={'primary'} className={classes.appBar} position="sticky">
         <Toolbar>
@@ -125,76 +186,71 @@ export const Preferences = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Box
-        py={'32px'}
-        px={'64px'}
-        display={'flex'}
-        flexDirection={'column'}
-        alignItems={'center'}
-        height={'100%'}
-        width={'100%'}
-      >
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="text-size-label">Text Size</InputLabel>
-              <Select
-                labelId="text-size-label"
-                value={preferencesData.textSize}
-                onChange={onDetailsSizeChanged}
-                label="Text Size"
-              >
-                <MenuItem value={8}>Tiny</MenuItem>
-                <MenuItem value={12}>Small</MenuItem>
-                <MenuItem value={16}>Default</MenuItem>
-                <MenuItem value={24}>Large</MenuItem>
-                <MenuItem value={28}>Huge</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="theme-label">Theme</InputLabel>
-              <Select
-                labelId="theme-label"
-                value={preferencesData.theme}
-                onChange={onThemeChanged}
-                label="Theme"
-              >
-                <MenuItem value={LyricistantTheme.Light}>Light</MenuItem>
-                <MenuItem value={LyricistantTheme.Dark}>Dark</MenuItem>
-                <MenuItem value={LyricistantTheme.System}>
-                  Follow System
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="rhyme-source-label">Rhyme Source</InputLabel>
-              <Select
-                labelId="rhyme-source-label"
-                value={preferencesData.rhymeSource}
-                onChange={onRhymeSourceChanged}
-                label="Rhyme Source"
-              >
-                <MenuItem value={RhymeSource.Offline}>Offline (alpha)</MenuItem>
-                <MenuItem value={RhymeSource.Datmamuse}>Datamuse</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-        <Box flexGrow={'1'} />
-        <Button
-          fullWidth={false}
-          variant={'text'}
-          startIcon={<Info />}
-          size={'large'}
-          onClick={onAboutClicked}
-        >
-          About Lyricistant
-        </Button>
-      </Box>
+      <Container maxWidth={'md'} className={classes.container}>
+        <Paper elevation={4} square className={classes.paper}>
+          <Box display={'flex'} flexDirection={'column'} height={'100%'}>
+            <Box flexGrow={1}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Header label={'Display'} />
+                </Grid>
+                <Grid item xs={12}>
+                  <SelectBox
+                    value={preferencesData.textSize}
+                    onChange={onDetailsSizeChanged}
+                    items={[
+                      { value: 8, label: 'Tiny' },
+                      { value: 12, label: 'Small' },
+                      { value: 16, label: 'Default' },
+                      { value: 24, label: 'Large' },
+                      { value: 28, label: 'Huge' },
+                    ]}
+                    label={'Text Size'}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <SelectBox
+                    value={preferencesData.theme}
+                    onChange={onThemeChanged}
+                    items={[
+                      { value: LyricistantTheme.Light, label: 'Light' },
+                      { value: LyricistantTheme.Dark, label: 'Dark' },
+                      {
+                        value: LyricistantTheme.System,
+                        label: 'Follow System',
+                      },
+                    ]}
+                    label={'Theme'}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Header label={'Other'} />
+                </Grid>
+                <Grid item xs={12}>
+                  <SelectBox
+                    value={preferencesData.rhymeSource}
+                    onChange={onRhymeSourceChanged}
+                    items={[
+                      { value: RhymeSource.Offline, label: 'Offline (alpha)' },
+                      { value: RhymeSource.Datmamuse, label: 'Datamuse' },
+                    ]}
+                    label={'Rhyme Source'}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+            <Button
+              fullWidth={false}
+              variant={'text'}
+              startIcon={<Info />}
+              size={'large'}
+              onClick={onAboutClicked}
+            >
+              About Lyricistant
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
     </Dialog>
   );
 };
