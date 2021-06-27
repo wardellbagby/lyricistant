@@ -20,6 +20,7 @@ describe('Webpage launch', () => {
             '--disable-gpu',
             '--enable-logging',
             '--headless',
+            '--allow-file-access-from-files',
           ],
         },
       },

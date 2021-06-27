@@ -37,7 +37,8 @@ export default (mode: Mode): Configuration => ({
         use: ['source-map-loader'],
       },
       {
-        test: /\.tsx?$/,
+        test: /\.(tsx?)$/,
+        exclude: [/node_modules/],
         loader: 'ts-loader',
         options: {
           projectReferences: true,

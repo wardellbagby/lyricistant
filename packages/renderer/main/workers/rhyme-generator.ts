@@ -1,4 +1,5 @@
 import { Rhyme } from '@lyricistant/renderer/models/rhyme';
+import { expose } from 'comlink';
 import pronunciationsJson from './pronunciations.json';
 
 interface Pronunciation {
@@ -7,7 +8,7 @@ interface Pronunciation {
 }
 
 // Force retype so that the IDE doesn't freak out with the large JSON file.
-const pronunciations: Record<string, Pronunciation> = pronunciationsJson;
+const pronunciations = pronunciationsJson as Record<string, Pronunciation>;
 const knownWords: string[] = Object.keys(pronunciations);
 const MAX_POPULARITY_SCORE = 100_000;
 
@@ -93,3 +94,7 @@ const compare = (
     };
   }
 };
+
+expose({
+  generateRhymes,
+});

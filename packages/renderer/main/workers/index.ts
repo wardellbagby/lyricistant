@@ -1,5 +1,5 @@
-import { createWorkerFactory } from '@shopify/web-worker';
+import { wrap } from 'comlink';
 
-export const rhymeGenerator = createWorkerFactory(
-  () => import('./rhyme-generator')
-)();
+export const rhymeGenerator = wrap<typeof import('./rhyme-generator')>(
+  new Worker(new URL('./rhyme-generator.ts', import.meta.url))
+);
