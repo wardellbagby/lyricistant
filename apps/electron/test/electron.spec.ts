@@ -1,15 +1,19 @@
 import path from 'path';
+import os from 'os';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { Application, SpectronClient } from 'spectron';
+import del from 'del';
 
 use(chaiAsPromised);
 
 describe('Electron launch', () => {
   let app: Application;
   let client: SpectronClient;
+  let tempDir: string;
 
   beforeEach(async () => {
+    tempDir = path.resolve(os.tmpdir(), 'lyricistant-electron-test');
     app = new Application({
       path: require.resolve('electron/cli'),
       args: [
@@ -18,6 +22,7 @@ describe('Electron launch', () => {
         '--disable-gpu',
         '--enable-logging',
       ],
+      chromeDriverArgs: [`user-data-dir=${tempDir}`],
     });
 
     await app.start();
@@ -30,6 +35,9 @@ describe('Electron launch', () => {
   });
 
   afterEach(async () => {
+    await del(tempDir, {
+      force: true,
+    });
     if (app) {
       app.mainProcess.exit(0);
     }
