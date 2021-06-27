@@ -37,10 +37,6 @@ describe('Webpage launch', () => {
     });
   });
 
-  afterEach(() => client.closeWindow());
-
-  after(() => client.deleteSession());
-
   it('has a title of Lyricistant - Untitled', () =>
     expect(client.getTitle()).to.eventually.equal('Lyricistant - Untitled'));
 
