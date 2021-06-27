@@ -17,6 +17,11 @@ if (!filter) {
   process.exit(1);
 }
 
+if (depsToUpdate.length === 0) {
+  console.log(`No dependencies match filter "${filter}"`);
+  process.exit(1);
+}
+
 console.log(
   `Updating deps: \n\n${depsToUpdate.join('\n')} \n\nto version: ${version}`
 );

@@ -9,12 +9,7 @@ module.exports = {
     'apps/mobile/android/**/*',
     'apps/mobile/ios/**/*',
   ],
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-    'prettier/@typescript-eslint',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
