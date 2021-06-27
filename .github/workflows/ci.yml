@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run all tests
-        run: gulp testAll
+        run: gulp testAll --max-old-space-size=8192
         env:
           DISPLAY: ':99'
       - name: Check for Lint issues.

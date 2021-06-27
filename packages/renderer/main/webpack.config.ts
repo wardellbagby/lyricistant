@@ -16,6 +16,7 @@ export default (): Configuration => {
         ),
         'process.env.APP_HOMEPAGE': JSON.stringify(packageInfo.homepage),
         'process.env.APP_AUTHOR': JSON.stringify(packageInfo.author.name),
+        'process.env.IMPORT_META_URL': 'import.meta.url',
       }),
     ],
   };
