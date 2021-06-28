@@ -10,7 +10,7 @@ export interface Release {
 }
 
 export const supportedReleases: Release[] = [
-  { platform: 'Mac', asset: 'lyricistant-mac.dmg' },
+  { platform: 'Mac', asset: 'lyricistant-mac_x64.dmg' },
   {
     platform: 'Windows',
     asset: 'lyricistant-win.exe',
