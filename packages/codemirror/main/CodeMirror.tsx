@@ -6,7 +6,7 @@ import {
   EditorStateConfig,
 } from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
-import { EditorView, keymap } from '@codemirror/view';
+import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { history, historyKeymap } from '@codemirror/history';
 import { styled, useTheme } from '@material-ui/core';
 import 'typeface-roboto-mono';
@@ -55,7 +55,7 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
           }
         }),
         EditorView.lineWrapping,
-        // TODO(https://github.com/wardellbagby/lyricistant/issues/28) placeholder('Type out some lyrics...'),
+        placeholder('Type out some lyrics...'),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
       ],
     }),

@@ -5,6 +5,7 @@ import { HashRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import { setupAnalytics } from './analytics/setupAnalytics';
 import { AppRouter } from './components/AppRouter';
+import { DesktopOnly } from './components/DesktopOnly';
 import { PlatformEventsReadyHandler } from './components/PlatformEventsReadyHandler';
 import { Themed } from './components/Themed';
 import { logger } from './globals';
@@ -57,7 +58,9 @@ ReactDOM.render(
           <ErrorBoundary
             fallbackRender={({ error }) => <AppError error={error} />}
           >
-            <AppRouter />
+            <DesktopOnly>
+              <AppRouter />
+            </DesktopOnly>
           </ErrorBoundary>
         </HashRouter>
       </SnackbarProvider>
