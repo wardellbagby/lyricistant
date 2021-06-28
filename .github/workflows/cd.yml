@@ -30,7 +30,7 @@ jobs:
       - name: Build Web.
         env:
           NIGHTLY: 'true'
-        run: 'gulp buildWeb'
+        run: gulp buildWeb --max-old-space-size=8192
       - name: Deploy Web
         uses: peaceiris/actions-gh-pages@de5cfc7ec76b2c3cf19e3e55d1ad085fe1192c9a # pin@v3
         with:
@@ -65,7 +65,7 @@ jobs:
         with:
           timeout_minutes: 20
           max_attempts: 3
-          command: gulp buildAllElectronApps
+          command: gulp buildAllElectronApps --max-old-space-size=8192
       - name: 'Deploy App'
         uses: marvinpinto/action-automatic-releases@4e86dbcfb19c3e408a4984b2b7d9a6de082f3c3f # pin@latest
         with:

@@ -40,7 +40,7 @@ jobs:
       - name: Install Gulp
         run: npm install -g gulp@4.0.2
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build Web.
         run: 'gulp buildWeb'
       - name: Deploy Web
@@ -66,7 +66,7 @@ jobs:
       - name: Install Gulp
         run: npm install -g gulp@4.0.2
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build artifacts for all supported OSes.
         uses: nick-invision/retry@7c68161adf97a48beb850a595b8784ec57a98cbb # pin@v2
         env:
