@@ -1,7 +1,10 @@
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import React, { FunctionComponent, PropsWithChildren, useState } from 'react';
-import 'typeface-roboto';
+import '@fontsource/roboto/latin-300.css';
+import '@fontsource/roboto/latin-400.css';
+import '@fontsource/roboto/latin-500.css';
+import '@fontsource/roboto/latin-700.css';
 import { useChannel } from '../hooks/useChannel';
 import { createTheme } from '../util/theme';
 

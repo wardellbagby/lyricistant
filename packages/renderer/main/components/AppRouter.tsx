@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-import 'typeface-roboto';
 import { logger } from '../globals';
 import { App } from './App';
 import { ChooseDownloadDialog } from './ChooseDownloadDialog';

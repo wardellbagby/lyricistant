@@ -28,6 +28,7 @@
     }
   },
   "devDependencies": {
+    "@statoscope/webpack-plugin": "*",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.3",
@@ -73,6 +74,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
+    "file-loader": "^6.2.0",
     "gulp": "^4.0.2",
     "gulp-mocha": "^8.0.0",
     "husky": "^4.2.5",
@@ -98,6 +100,7 @@
     "url-loader": "^4.1.1",
     "webdriverio": "^7.7.4",
     "webpack": "^5.41.0",
+    "webpack-bundle-analyzer": "^4.4.2",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.8.0"
   },
@@ -116,6 +119,8 @@
     "@codemirror/state": "^0.18.7",
     "@codemirror/text": "^0.18.0",
     "@codemirror/view": "^0.18.17",
+    "@fontsource/roboto": "^4.4.5",
+    "@fontsource/roboto-mono": "^4.4.5",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@types/adm-zip": "^0.4.33",
@@ -142,8 +147,6 @@
     "rxjs": "^6.6.2",
     "sprintf-js": "^1.1.2",
     "syllable": "^4.1.0",
-    "typeface-roboto": "0.0.75",
-    "typeface-roboto-mono": "0.0.75",
     "use-debounce": "^4.0.0"
   }
 }

@@ -9,7 +9,7 @@ import { defaultKeymap } from '@codemirror/commands';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { history, historyKeymap } from '@codemirror/history';
 import { styled, useTheme } from '@material-ui/core';
-import 'typeface-roboto-mono';
+import '@fontsource/roboto-mono/latin-400.css';
 import { searchKeymap } from '@codemirror/search';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';

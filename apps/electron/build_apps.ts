@@ -44,7 +44,7 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
           filter: [
             'main.js',
             'preload.js',
-            'renderer.js',
+            '*.renderer.js',
             '*.woff2',
             '*.png',
             'index.html',

@@ -48,7 +48,7 @@ export default (mode: Mode): Configuration => ({
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {
         test: /\.(woff|woff2|eot|ttf|svg|png)$/,
-        loader: 'url-loader',
+        loader: 'file-loader',
       },
     ],
   },

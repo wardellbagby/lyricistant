@@ -1,6 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import 'typeface-roboto';
 import { useSnackbar } from 'notistack';
 import { SelectedWordStore } from '../stores/SelectedWordStore';
 import { EditorTextStore } from '../stores/EditorTextStore';

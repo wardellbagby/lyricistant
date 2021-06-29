@@ -153,7 +153,7 @@ module.exports = {
           '@material-ui/**/*',
           '**/images/**',
           '@testing-library/jest-dom/*',
-          'msw/*',
+          '@fontsource/**/*'
         ],
       },
     ],
