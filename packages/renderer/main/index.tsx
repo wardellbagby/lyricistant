@@ -35,6 +35,7 @@ document.body.style.width = '100%';
 document.body.style.overscrollBehavior = 'none';
 container.style.height = '100%';
 container.style.width = '100%';
+document.getElementById('loading-container').remove();
 
 if (module.hot) {
   module.hot.accept();

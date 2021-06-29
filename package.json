@@ -131,6 +131,7 @@
     "luxon": "^1.25.0",
     "mdi-material-ui": "^6.18.0",
     "notistack": "^1.0.0",
+    "pace-js": "^1.2.4",
     "react": "^17.0.1",
     "react-beforeunload": "^2.4.0",
     "react-device-detect": "^1.17.0",
