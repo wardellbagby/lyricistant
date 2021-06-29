@@ -46,13 +46,21 @@ const createWebpackConfig = async (mode: Mode) => {
   );
 };
 
-const copyWebHtmlFile = (mode: Mode) => {
+const copyResources = (mode: Mode) => {
   const curried = async () => {
+    const outputDirectory = getOutputDirectory(mode);
     await fs.mkdir(getOutputDirectory(mode), { recursive: true });
     await fs.copyFile(
-      'packages/renderer/main/index.html',
-      path.resolve(getOutputDirectory(mode), 'index.html')
+      path.resolve('packages/renderer/main/index.html'),
+      path.resolve(outputDirectory, 'index.html')
     );
+    const staticResources = path.resolve('apps/web/staticResources');
+    for (const file of await fs.readdir(staticResources)) {
+      await fs.copyFile(
+        path.resolve(staticResources, file),
+        path.resolve(outputDirectory, file)
+      );
+    }
   };
   curried.displayName = `copy${capitalCase(mode)}WebHtmlFile`;
   return curried;
@@ -90,19 +98,19 @@ const bundleWeb = (mode: Mode) => {
 
 export const startWeb = series(
   clean('development'),
-  copyWebHtmlFile('development'),
+  copyResources('development'),
   generatePronunciations,
   runWebServer
 );
 export const buildWeb = series(
   clean('production'),
-  copyWebHtmlFile('production'),
+  copyResources('production'),
   generatePronunciations,
   bundleWeb('production')
 );
 export const buildTestWeb = series(
   clean('test'),
-  copyWebHtmlFile('test'),
+  copyResources('test'),
   generatePronunciations,
   bundleWeb('test')
 );
