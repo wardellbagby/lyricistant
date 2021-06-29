@@ -36,6 +36,9 @@ const createRendererWebpackConfig = async (mode: Mode) => {
         filename: 'renderer.js',
         path: getOutputDirectory(mode),
       },
+      optimization: {
+        minimize: false,
+      },
     },
     rendererWebpackConfig(),
     defaultWebpackConfig(mode)
@@ -63,6 +66,9 @@ const createMainWebpackConfig = async (mode: Mode, useDevServer: boolean) => {
         __dirname: false,
         __filename: false,
       },
+      optimization: {
+        minimize: false,
+      },
     },
     defaultWebpackConfig(mode)
   );
@@ -78,6 +84,9 @@ const createPreloadWebpackConfig = async (mode: Mode) => {
       output: {
         filename: 'preload.js',
         path: getOutputDirectory(mode),
+      },
+      optimization: {
+        minimize: false,
       },
     },
     defaultWebpackConfig(mode)

@@ -52,9 +52,6 @@ export default (mode: Mode): Configuration => ({
       },
     ],
   },
-  optimization: {
-    minimize: mode === 'production',
-  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.UI_TESTING': JSON.stringify(
