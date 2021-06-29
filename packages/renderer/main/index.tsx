@@ -25,27 +25,28 @@ window.onerror = (message, url, line, col, error) => {
   );
 };
 
-setupAnalytics();
-const container: HTMLElement = document.getElementById('app');
-
-document.documentElement.style.height = '100%';
-document.documentElement.style.width = '100%';
-document.body.style.height = '100%';
-document.body.style.width = '100%';
-document.body.style.overscrollBehavior = 'none';
-container.style.height = '100%';
-container.style.width = '100%';
-document.getElementById('loading-container').remove();
-
 if (module.hot) {
   module.hot.accept();
 }
 
+setupAnalytics();
+const container: HTMLElement = document.getElementById('app');
+const loadingContainer = document.getElementById('loading-container');
+
+loadingContainer.style.opacity = '0%';
+container.style.opacity = '100%';
+setTimeout(() => loadingContainer.remove(), 500);
+
 ReactDOM.render(
   <PlatformEventsReadyHandler>
     <Themed
-      onBackgroundChanged={(background: string) => {
-        container.style.backgroundColor = background;
+      onThemeChanged={(background: string, foreground: string) => {
+        document.body.style.backgroundColor = background;
+        document.body.style.color = foreground;
+        if (loadingContainer.parentNode) {
+          loadingContainer.style.backgroundColor = background;
+          loadingContainer.style.color = foreground;
+        }
       }}
     >
       <SnackbarProvider

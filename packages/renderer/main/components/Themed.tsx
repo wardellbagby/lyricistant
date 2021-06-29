@@ -9,14 +9,17 @@ import { useChannel } from '../hooks/useChannel';
 import { createTheme } from '../util/theme';
 
 export const Themed: FunctionComponent<PropsWithChildren<{
-  onBackgroundChanged: (background: string) => void;
-}>> = ({ onBackgroundChanged, children }) => {
+  onThemeChanged: (background: string, foreground: string) => void;
+}>> = ({ onThemeChanged, children }) => {
   const [theme, setTheme] = useState(createTheme(null, true));
 
   useChannel('dark-mode-toggled', (textSize, useDarkMode) => {
     const appTheme = createTheme(textSize, useDarkMode);
     setTheme(appTheme);
-    onBackgroundChanged(appTheme.palette.background.default);
+    onThemeChanged(
+      appTheme.palette.background.default,
+      appTheme.palette.getContrastText(appTheme.palette.background.default)
+    );
   });
 
   return (
