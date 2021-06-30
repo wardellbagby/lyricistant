@@ -20,12 +20,11 @@ export * from './packages/renderer/test/test.gulp';
 export * from './tooling/pronunciations.gulp';
 
 export const buildAll = parallel(buildWeb, buildElectron);
-export const testAll = series(
-  testWeb,
-  testElectron,
-  testCodemirror,
-  testRenderer,
-  testCommon
-);
+
+export const testCore = series(testCodemirror, testRenderer, testCommon);
+export const testAllWeb = series(testWeb, testCore);
+export const testAllElectron = series(testElectron, testCore);
+export const testAll = series(testWeb, testElectron, testCore);
+
 export const clean = () => del(path.resolve('dist'));
 export const check = parallel(buildAll, testAll);

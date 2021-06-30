@@ -192,6 +192,26 @@
       "program": "node_modules/.bin/gulp"
     },
     {
+      "name": "Test All Electron",
+      "args": ["testAllElectron"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
+      "name": "Test All Web",
+      "args": ["testAllWeb"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
       "name": "Test Codemirror",
       "args": ["testCodemirror"],
       "type": "pwa-node",
@@ -204,6 +224,16 @@
     {
       "name": "Test Common",
       "args": ["testCommon"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
+      "name": "Test Core",
+      "args": ["testCore"],
       "type": "pwa-node",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],

@@ -1,0 +1,55 @@
+name: Production Web Releases
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-web'
+jobs:
+  assert-no-issues:
+    name: 'Assert no issues'
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout the current branch.
+        uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
+        with:
+          node-version: '>=15.10'
+      - name: Setup virtual display
+        run: Xvfb :99 &
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Install dependencies
+        run: npm ci
+      - name: Run all Web and core tests
+        run: gulp testAllWeb --max-old-space-size=8192
+        env:
+          DISPLAY: ':99'
+      - name: Check for Lint issues.
+        run: npm run lint
+  deploy-web:
+    name: 'Deploy Web'
+    runs-on: ubuntu-20.04
+    needs: assert-no-issues
+    steps:
+      - name: Checkout the current branch.
+        uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
+        with:
+          node-version: '>=15.10'
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Web.
+        run: 'gulp buildWeb'
+      - name: Deploy Web
+        uses: peaceiris/actions-gh-pages@de5cfc7ec76b2c3cf19e3e55d1ad085fe1192c9a # pin@v3
+        with:
+          personal_token: ${{ secrets.LYRICISTANT_TOKEN }}
+          external_repository: wardellbagby/lyricistant-website
+          publish_branch: gh-pages
+          publish_dir: 'apps/web/dist/production/'
+          force_orphan: true
+          cname: lyricistant.app
