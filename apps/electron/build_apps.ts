@@ -45,6 +45,7 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
             'main.js',
             'preload.js',
             '*.renderer.js',
+            'renderer.js',
             '*.woff2',
             '*.png',
             'index.html',
