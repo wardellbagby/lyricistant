@@ -6,6 +6,7 @@ import { FileData, FileMetadata } from '@lyricistant/common/files/Files';
 import chaiAsPromised from 'chai-as-promised';
 import { Files } from '@lyricistant/common/files/Files';
 import { FileSystem } from '@web-app/wrappers/FileSystem';
+import { FileSystemHandle, FileWithHandle } from 'browser-fs-access';
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -20,8 +21,8 @@ describe('Files', () => {
   });
 
   it('shows a dialog to choose a file', async () => {
-    const expected: FileData = {
-      path: 'mycoollyrics.txt',
+    const expected: Partial<FileData> = {
+      name: 'mycoollyrics.txt',
       data: 'Here are lyrics!',
     };
     fs.openFile.resolves(
@@ -30,7 +31,7 @@ describe('Files', () => {
 
     const actual = await files.openFile();
 
-    expect(actual).to.deep.equal(expected);
+    expect(actual).to.deep.include(expected);
     expect(fs.openFile).to.have.been.calledWith({
       mimeTypes: ['text/plain'],
       extensions: ['.txt'],
@@ -87,8 +88,8 @@ describe('Files', () => {
     expect(fs.openFile).to.have.not.been.called;
   });
 
-  it('shows a file picker when saving a file with no file path', async () => {
-    const expected: FileMetadata = { path: 'Lyrics.txt' };
+  it('shows a file picker when saving a file with no file handle', async () => {
+    const expected: Partial<FileMetadata> = { name: 'Lyrics.txt' };
     fs.saveFile.resolves({
       name: 'Lyrics.txt',
       kind: 'file',
@@ -99,7 +100,7 @@ describe('Files', () => {
 
     const actual = await files.saveFile('oh wow!');
 
-    expect(actual).to.eql(expected);
+    expect(actual).to.deep.include(expected);
     expect(fs.saveFile).to.have.been.calledWith(
       new Blob(['oh wow!'], {
         type: 'text/plain',
@@ -111,8 +112,27 @@ describe('Files', () => {
     );
   });
 
-  it('saves the file when saving a file with a file path', async () => {
-    const expected: FileMetadata = { path: 'mycoollyrics.txt' };
+  it('saves the file when saving a file with a file handle', async () => {
+    const handle: FileSystemHandle = {
+      name: 'mycoollyrics.txt',
+      kind: 'file',
+      isSameEntry: () => undefined,
+      requestPermission: () => undefined,
+      queryPermission: () => undefined,
+    };
+
+    const file: FileWithHandle = new File(['oh'], 'mycoollyrics.txt', {
+      type: 'text/plain',
+    });
+    file.handle = handle;
+    fs.openFile.resolves(file);
+
+    const openFileResult = (await files.openFile()) as FileData;
+
+    const expected: FileMetadata = {
+      name: 'mycoollyrics.txt',
+      path: openFileResult.path,
+    };
     fs.saveFile.resolves({
       name: 'mycoollyrics.txt',
       kind: 'file',
@@ -121,17 +141,18 @@ describe('Files', () => {
       requestPermission: undefined,
     });
 
-    const actual = await files.saveFile('oh wow!', 'mycoollyrics.txt');
+    const actual = await files.saveFile('oh wow!', openFileResult.path);
 
-    expect(actual).to.eql(expected);
+    expect(actual).to.deep.equal(expected);
     expect(fs.saveFile).to.have.been.calledWith(
       new Blob(['oh wow!'], {
         type: 'text/plain',
       }),
       {
-        fileName: 'mycoollyrics.txt',
+        fileName: 'Lyrics.txt',
         extensions: ['.txt'],
-      }
+      },
+      handle
     );
   });
 });

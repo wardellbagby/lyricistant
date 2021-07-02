@@ -63,7 +63,7 @@ export class FileManager implements Manager {
       this.addRecentFile(filePath);
       const updatedRecentFiles = this.recentFiles.getRecentFiles();
       this.fileChangedListeners.forEach((listener) =>
-        listener(fileData.path, updatedRecentFiles)
+        listener(fileData.name ?? fileData.path, updatedRecentFiles)
       );
     } else {
       await this.onOpenFile();
@@ -104,14 +104,17 @@ export class FileManager implements Manager {
           true
         );
         this.addRecentFile(this.currentFilePath);
+        this.fileChangedListeners.forEach((listener) =>
+          listener(
+            fileData.name ?? fileData.path,
+            this.recentFiles.getRecentFiles()
+          )
+        );
       }
     } catch (e) {
       this.rendererDelegate.send('file-opened', e, undefined, undefined, true);
       return;
     }
-    this.fileChangedListeners.forEach((listener) =>
-      listener(this.currentFilePath, this.recentFiles.getRecentFiles())
-    );
   };
 
   private onSaveFile = async (text: string) => {
@@ -132,13 +135,13 @@ export class FileManager implements Manager {
         true
       );
       this.addRecentFile(newFileMetadata.path);
+      this.fileChangedListeners.forEach((listener) =>
+        listener(fileTitle, this.recentFiles.getRecentFiles())
+      );
       this.rendererDelegate.send('file-save-ended', null, fileTitle);
     } else {
       this.rendererDelegate.send('file-save-ended', null, null);
     }
-    this.fileChangedListeners.forEach((listener) =>
-      listener(this.currentFilePath, this.recentFiles.getRecentFiles())
-    );
   };
 
   private onOkayForNewFile = () => {
