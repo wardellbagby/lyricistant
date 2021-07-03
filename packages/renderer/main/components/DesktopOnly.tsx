@@ -21,33 +21,44 @@ const getTipMessage = () => {
   }
 };
 
-const WarningDialog = ({ onContinue }: { onContinue: () => void }) => (
-    <Dialog open>
-      <DialogTitle>Unsupported Browser</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Lyricistant doesn't currently support your browser. You might
-          experience some bugs or performance issues. {getTipMessage()}
-        </DialogContentText>
-      </DialogContent>
+const WarningDialog = ({
+  onContinue,
+  open,
+}: {
+  onContinue: () => void;
+  open: boolean;
+}) => (
+  <Dialog open={open}>
+    <DialogTitle>Unsupported Browser</DialogTitle>
+    <DialogContent>
+      <DialogContentText>
+        Lyricistant doesn't currently support your browser. You might experience
+        some bugs or performance issues. {getTipMessage()}
+      </DialogContentText>
+    </DialogContent>
 
-      <DialogActions>
-        <Button key="no" onClick={() => window.history.back()} color="primary">
-          Go Back
-        </Button>
-        <Button key="yes" onClick={onContinue} color="primary">
-          Continue
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+    <DialogActions>
+      <Button key="no" onClick={() => window.history.back()} color="primary">
+        Go Back
+      </Button>
+      <Button key="yes" onClick={onContinue} color="primary">
+        Continue
+      </Button>
+    </DialogActions>
+  </Dialog>
+);
 export function DesktopOnly({
   children,
 }: PropsWithChildren<Record<never, never>>) {
   const [isAcknowledged, setAcknowledged] = useState(false);
-  if (isUnsupportedBrowser && !isAcknowledged) {
-    return <WarningDialog onContinue={() => setAcknowledged(true)} />;
-  } else {
-    return <>{children}</>;
-  }
+  const showWarning = isUnsupportedBrowser && !isAcknowledged;
+  return (
+    <>
+      <WarningDialog
+        open={showWarning}
+        onContinue={() => setAcknowledged(true)}
+      />
+      {children}
+    </>
+  );
 }
