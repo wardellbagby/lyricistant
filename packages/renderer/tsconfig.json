@@ -6,9 +6,6 @@
     "types": ["node", "webpack-env", "../renderer-window"],
     "composite": true
   },
-  "references": [
-    { "path": "../common" },
-    { "path": "../codemirror" },
-  ],
+  "references": [{ "path": "../common" }, { "path": "../codemirror" }],
   "extends": "../../tsconfig.json"
 }

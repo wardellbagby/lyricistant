@@ -15,7 +15,7 @@
   },
   "homepage": "https://github.com/wardellbagby/lyricistant",
   "scripts": {
-    "lint": "eslint -c .eslintrc.js . && ./bin/check_github_workflows.ts && ./bin/check_run_configs.ts",
+    "lint": "eslint -c .eslintrc.js . && ./bin/check_github_workflows.ts && ./bin/check_run_configs.ts && ./bin/find_unused_deps.ts",
     "lint-fix": "eslint -c .eslintrc.js . --fix && ./bin/generate_run_configs.ts"
   },
   "engines": {
@@ -62,6 +62,7 @@
     "change-case": "^4.1.2",
     "css-loader": "^5.2.6",
     "del": "^4.1.1",
+    "depcheck": "^1.4.2",
     "dotenv": "^8.2.0",
     "electron": "^13.1.4",
     "electron-builder": "^22.11.7",
@@ -101,7 +102,6 @@
     "url-loader": "^4.1.1",
     "webdriverio": "^7.7.4",
     "webpack": "^5.41.0",
-    "webpack-bundle-analyzer": "^4.4.2",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.8.0"
   },
@@ -137,7 +137,6 @@
     "luxon": "^1.25.0",
     "mdi-material-ui": "^6.18.0",
     "notistack": "^1.0.0",
-    "pace-js": "^1.2.4",
     "react": "^17.0.1",
     "react-beforeunload": "^2.4.0",
     "react-device-detect": "^1.17.0",
