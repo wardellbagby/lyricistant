@@ -33,10 +33,6 @@ setupAnalytics();
 const container: HTMLElement = document.getElementById('app');
 const loadingContainer = document.getElementById('loading-container');
 
-loadingContainer.style.opacity = '0%';
-container.style.opacity = '100%';
-setTimeout(() => loadingContainer.remove(), 500);
-
 ReactDOM.render(
   <PlatformEventsReadyHandler>
     <Themed
@@ -68,5 +64,10 @@ ReactDOM.render(
       </SnackbarProvider>
     </Themed>
   </PlatformEventsReadyHandler>,
-  container
+  container,
+  () => {
+    loadingContainer.style.opacity = '0%';
+    container.style.opacity = '100%';
+    setTimeout(() => loadingContainer.remove(), 500);
+  }
 );
