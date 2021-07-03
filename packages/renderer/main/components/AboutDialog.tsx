@@ -4,13 +4,14 @@ import {
   DialogContent,
   Grid,
   Link,
+  makeStyles,
   Table,
   TableBody,
   TableCell,
+  TableCellProps,
   TableContainer,
   TableRow,
   Typography,
-  withStyles,
 } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import React from 'react';
@@ -42,11 +43,16 @@ const aboutInfo = {
   ),
 };
 
-const DividerlessTableCell = withStyles({
+const useTableCellStyles = makeStyles({
   root: {
     borderBottom: 'none',
   },
-})(TableCell);
+});
+
+const DividerlessTableCell = (props: TableCellProps) => {
+  const classes = useTableCellStyles();
+  return <TableCell className={classes.root} {...props} />;
+};
 
 export const AboutDialog = () => {
   const history = useHistory();

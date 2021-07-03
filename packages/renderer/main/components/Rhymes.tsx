@@ -2,7 +2,7 @@ import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, styled, Theme } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { GridItem, VirtuosoGrid } from 'react-virtuoso';
 import { usePreferences } from '@lyricistant/renderer/stores/PreferencesStore';
@@ -62,6 +62,8 @@ const ItemContainer: React.ComponentType<GridItem> = styled('div')(
 export function Rhymes() {
   const [rhymes, setRhymes] = useState<Rhyme[]>([]);
   const classes = useStyles();
+  const Item = useMemo(() => ItemContainer, []);
+  const List = useMemo(() => ListContainer, []);
 
   const selectedWordStore = useSelectedWordStore();
   const handleError = useErrorHandler();
@@ -118,9 +120,9 @@ export function Rhymes() {
   }
   return (
     <VirtuosoGrid
-      components={{ Item: ItemContainer, List: ListContainer }}
+      components={{ Item, List }}
       style={{ width: '100%', height: '100%' }}
-      overscan={100}
+      overscan={20}
       totalCount={rhymes.length}
       listClassName={classes.rhymeList}
       itemContent={(index) => {
