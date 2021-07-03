@@ -122,10 +122,11 @@ const bundleMainAndPreload = async () => {
   });
 };
 
-const startElectronApp = async () => {
+const startElectronApp = (forceWait: boolean) => async () => {
   spawn(require.resolve('electron/cli'), [
     path.resolve(getOutputDirectory('development'), 'main.js'),
     '--remote-debugging-port=9229',
+    `--inspect${forceWait ? '-brk' : ''}=9228`,
   ]);
 };
 
@@ -176,36 +177,39 @@ const runElectronBuilder = (...args: Parameters<typeof buildElectronApp>) => {
   return curried;
 };
 
+const coreTasks = (mode: Mode) =>
+  series(clean(mode), copyElectronHtmlFile(mode), generatePronunciations);
+
 export const startElectron = series(
-  clean('development'),
-  copyElectronHtmlFile('development'),
-  generatePronunciations,
-  parallel(runElectronServer, series(bundleMainAndPreload, startElectronApp))
+  coreTasks('development'),
+  parallel(
+    runElectronServer,
+    series(bundleMainAndPreload, startElectronApp(false))
+  )
+);
+export const startDebugElectron = series(
+  coreTasks('development'),
+  parallel(
+    runElectronServer,
+    series(bundleMainAndPreload, startElectronApp(true))
+  )
 );
 export const buildElectron = series(
-  clean('production'),
-  copyElectronHtmlFile('production'),
-  generatePronunciations,
+  coreTasks('production'),
   bundleElectron('production')
 );
 
 export const buildTestElectron = series(
-  clean('test'),
-  copyElectronHtmlFile('test'),
-  generatePronunciations,
+  coreTasks('test'),
   bundleElectron('test')
 );
 export const buildAllElectronApps = series(
-  clean('production'),
-  copyElectronHtmlFile('production'),
-  generatePronunciations,
+  coreTasks('production'),
   bundleElectron('production'),
   runElectronBuilder('production', false)
 );
 export const buildCurrentElectronApp = series(
-  clean('development'),
-  copyElectronHtmlFile('development'),
-  generatePronunciations,
+  coreTasks('production'),
   bundleElectron('development'),
   runElectronBuilder('development', true)
 );

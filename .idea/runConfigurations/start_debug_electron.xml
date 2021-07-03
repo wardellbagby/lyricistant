@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start Debug Electron" type="js.build_tools.gulp" folderName="Start">
+    <node-interpreter>project</node-interpreter>
+    <node-options />
+    <gulpfile>$PROJECT_DIR$/gulpfile.js</gulpfile>
+    <tasks>
+      <task>startDebugElectron</task>
+    </tasks>
+    <arguments />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

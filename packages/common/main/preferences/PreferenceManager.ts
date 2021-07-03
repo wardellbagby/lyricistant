@@ -14,20 +14,27 @@ export class PreferenceManager implements Manager {
   ) {}
 
   public register(): void {
-    this.rendererDelegate.on('ready-for-events', this.onRendererReady);
     this.rendererDelegate.on('save-prefs', this.onSavePrefs);
     this.systemThemeProvider.onChange((systemTheme: SystemTheme) => {
       this.systemTheme = systemTheme;
       this.sendThemeUpdate(this.preferencesOrDefault());
     });
+    this.rendererDelegate.addRendererListenerSetListener(
+      'prefs-updated',
+      () => {
+        this.rendererDelegate.send(
+          'prefs-updated',
+          this.preferencesOrDefault()
+        );
+      }
+    );
+    this.rendererDelegate.addRendererListenerSetListener(
+      'dark-mode-toggled',
+      () => {
+        this.sendThemeUpdate(this.preferencesOrDefault());
+      }
+    );
   }
-
-  private onRendererReady = (): void => {
-    const data = this.preferencesOrDefault();
-
-    this.rendererDelegate.send('prefs-updated', data);
-    this.sendThemeUpdate(data);
-  };
 
   private onSavePrefs = (data: PreferencesData): void => {
     if (!data) {

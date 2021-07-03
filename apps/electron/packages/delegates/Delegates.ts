@@ -12,6 +12,7 @@ import {
 import log from 'electron-log';
 
 const logger = log;
+const newRendererListenerListeners = new Map<string, Array<() => void>>();
 
 export class ElectronRendererDelegate implements RendererDelegate {
   private ipcMain: IpcMain;
@@ -25,6 +26,11 @@ export class ElectronRendererDelegate implements RendererDelegate {
   public constructor(ipcMain: IpcMain, window: BrowserWindow) {
     this.ipcMain = ipcMain;
     this.window = window;
+
+    this.ipcMain.on('new-listener-registered', (event, channel: string) => {
+      newRendererListenerListeners.get(channel)?.forEach((value) => value());
+      event.returnValue = null;
+    });
   }
 
   public send(channel: string, ...args: any[]): void {
@@ -47,6 +53,15 @@ export class ElectronRendererDelegate implements RendererDelegate {
 
     this.ipcMain.on(channel, listenerWithEvent);
     return this;
+  }
+
+  public addRendererListenerSetListener(
+    channel: string,
+    listener: () => void
+  ): void {
+    const listeners = newRendererListenerListeners.get(channel) ?? [];
+    listeners.push(listener);
+    newRendererListenerListeners.set(channel, listeners);
   }
 
   public removeListener(
@@ -93,6 +108,7 @@ class ElectronPlatformDelegate implements PlatformDelegate {
     this.listeners.set(listener.toString(), listenerWithEvent);
 
     this.ipcRenderer.on(channel, listenerWithEvent);
+    this.ipcRenderer.sendSync('new-listener-registered', channel);
     return this;
   }
 

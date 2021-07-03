@@ -23,6 +23,7 @@ describe('Preference Manager', () => {
   let systemThemeProvider: StubbedInstance<SystemThemeProvider>;
 
   const rendererListeners: Map<string, (...args: any[]) => void> = new Map();
+  const rendererListenersSetListeners: Map<string, () => void> = new Map();
   let systemThemeChangeListener: (systemTheme: SystemTheme) => void;
 
   beforeEach(() => {
@@ -31,6 +32,11 @@ describe('Preference Manager', () => {
       rendererListeners.set(channel, listener);
       return this;
     });
+    rendererDelegate.addRendererListenerSetListener.callsFake(
+      (channel, onRendererListenerSet) => {
+        rendererListenersSetListeners.set(channel, onRendererListenerSet);
+      }
+    );
     preferences = stubInterface<Preferences>();
     systemThemeProvider = stubInterface<SystemThemeProvider>();
     systemThemeProvider.onChange.callsFake((listener) => {
@@ -51,14 +57,19 @@ describe('Preference Manager', () => {
   it('registers on the renderer delegate the events it cares about', () => {
     manager.register();
 
-    expect(rendererDelegate.on).to.have.been.calledWith('ready-for-events');
     expect(rendererDelegate.on).to.have.been.calledWith('save-prefs');
+    expect(
+      rendererDelegate.addRendererListenerSetListener
+    ).to.have.been.calledWith('prefs-updated');
+    expect(
+      rendererDelegate.addRendererListenerSetListener
+    ).to.have.been.calledWith('dark-mode-toggled');
   });
 
-  it('sends prefs when the renderer is ready', () => {
+  it('sends prefs when the renderer registers for updates', () => {
     manager.register();
 
-    rendererListeners.get('ready-for-events')();
+    rendererListenersSetListeners.get('prefs-updated')();
 
     expect(rendererDelegate.send).to.have.been.calledWith('prefs-updated', {
       textSize: 16,
@@ -77,7 +88,7 @@ describe('Preference Manager', () => {
 
     manager.register();
 
-    rendererListeners.get('ready-for-events')();
+    rendererListenersSetListeners.get('prefs-updated')();
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'prefs-updated',

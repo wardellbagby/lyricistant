@@ -16,6 +16,7 @@ class WebPlatformDelegate implements PlatformDelegate {
   public on(channel: string, listener: (...args: any[]) => void): this {
     logger.info('Registering renderer listener', { channel });
     platformListeners.addListener(channel, listener);
+    newRendererListenerListeners.get(channel)?.forEach((value) => value());
     return this;
   }
 
@@ -39,6 +40,15 @@ export class WebRendererDelegate implements RendererDelegate {
     logger.info('Registering platform listener', { channel });
     rendererListeners.addListener(channel, listener);
     return this;
+  }
+
+  public addRendererListenerSetListener(
+    channel: string,
+    listener: () => void
+  ): void {
+    const listeners = newRendererListenerListeners.get(channel) ?? [];
+    listeners.push(listener);
+    newRendererListenerListeners.set(channel, listeners);
   }
 
   public removeListener(
@@ -93,6 +103,7 @@ const isError = (e: any) => e instanceof Error;
 
 const platformListeners: ListenerManager = new ListenerManager();
 const rendererListeners: ListenerManager = new ListenerManager();
+const newRendererListenerListeners = new Map<string, Array<() => void>>();
 
 export const platformDelegate: PlatformDelegate = new WebPlatformDelegate();
 export const rendererDelegate: RendererDelegate = new WebRendererDelegate();
