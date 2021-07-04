@@ -30,10 +30,11 @@ const createRendererWebpackConfig = async (mode: Mode) => {
   return merge<Configuration>(
     {
       mode: webpackMode,
-      entry: './packages/renderer/main/index.tsx',
+      entry: {
+        renderer: './packages/renderer/main/index.tsx',
+      },
       target: 'web',
       output: {
-        filename: 'renderer.js',
         path: getOutputDirectory(mode),
       },
       optimization: {
@@ -209,7 +210,7 @@ export const buildAllElectronApps = series(
   runElectronBuilder('production', false)
 );
 export const buildCurrentElectronApp = series(
-  coreTasks('production'),
+  coreTasks('development'),
   bundleElectron('development'),
   runElectronBuilder('development', true)
 );

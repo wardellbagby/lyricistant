@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
+import { onPageLoaded, onThemeUpdated } from '@lyricistant/renderer/preload';
 import { setupAnalytics } from './analytics/setupAnalytics';
 import { AppRouter } from './components/AppRouter';
 import { DesktopOnly } from './components/DesktopOnly';
@@ -31,7 +32,6 @@ if (module.hot) {
 
 setupAnalytics();
 const container: HTMLElement = document.getElementById('app');
-const loadingContainer = document.getElementById('loading-container');
 
 ReactDOM.render(
   <PlatformEventsReadyHandler>
@@ -39,10 +39,7 @@ ReactDOM.render(
       onThemeChanged={(background: string, foreground: string) => {
         document.body.style.backgroundColor = background;
         document.body.style.color = foreground;
-        if (loadingContainer.parentNode) {
-          loadingContainer.style.backgroundColor = background;
-          loadingContainer.style.color = foreground;
-        }
+        onThemeUpdated(background);
       }}
     >
       <SnackbarProvider
@@ -66,8 +63,7 @@ ReactDOM.render(
   </PlatformEventsReadyHandler>,
   container,
   () => {
-    loadingContainer.style.opacity = '0%';
+    onPageLoaded();
     container.style.opacity = '100%';
-    setTimeout(() => loadingContainer.remove(), 500);
   }
 );

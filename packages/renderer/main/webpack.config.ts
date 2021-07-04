@@ -7,6 +7,18 @@ export default (): Configuration => {
     execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).substr(0, 8);
 
   return {
+    entry: {
+      preload: './packages/renderer/main/preload.tsx',
+    },
+    output: {
+      filename: ({ chunk }) => {
+        if (chunk.name === 'renderer') {
+          return 'renderer.js';
+        }
+        return '[name].renderer.js';
+      },
+      chunkFilename: '[id].renderer.js',
+    },
     plugins: [
       new webpack.DefinePlugin({
         'process.env.APP_VERSION': JSON.stringify(

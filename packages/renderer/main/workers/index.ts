@@ -16,7 +16,7 @@ export const rhymeGenerator = wrap<typeof import('./rhyme-generator')>(
       process.env.IMPORT_META_URL || 'file:///fake/location'
     ),
     {
-      name: 'Rhyme Generator',
+      name: 'rhyme-generator',
     }
   )
 );

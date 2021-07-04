@@ -35,9 +35,10 @@ const createWebpackConfig = async (mode: Mode) => {
   return merge<Configuration>(
     {
       mode: webpackMode,
-      entry: ['./apps/web/main/index.ts'],
+      entry: {
+        renderer: './apps/web/main/index.ts',
+      },
       output: {
-        filename: 'renderer.js',
         path: getOutputDirectory(mode),
       },
     },
@@ -85,7 +86,7 @@ const bundleWeb = (mode: Mode) => {
         if (error) {
           reject(error);
         }
-        if (stats.hasErrors()) {
+        if (stats?.hasErrors()) {
           reject(stats.toString());
         }
         resolve(undefined);

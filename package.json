@@ -49,7 +49,6 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/sinon": "^9.0.5",
     "@types/sprintf-js": "^1.1.2",
-    "@types/terser-webpack-plugin": "^3.0.0",
     "@types/webpack-dev-server": "^3.11.1",
     "@types/webpack-env": "^1.15.3",
     "@typescript-eslint/eslint-plugin": "^4.28.0",

@@ -35,7 +35,6 @@ const options: Options = {
     '@capacitor/ios',
     '@capacitor/keyboard',
     '@types/jest',
-    '@types/terser-webpack-plugin',
     '@types/webpack-env',
     'css-loader',
     'eslint-plugin-prettier',

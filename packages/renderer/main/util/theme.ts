@@ -1,8 +1,4 @@
-import {
-  createMuiTheme,
-  responsiveFontSizes,
-  Theme,
-} from '@material-ui/core/styles';
+import { createMuiTheme, responsiveFontSizes, Theme } from '@material-ui/core';
 
 export const getThemePalette = (useDarkTheme: boolean) =>
   useDarkTheme ? darkThemePalette : lightThemePalette;
