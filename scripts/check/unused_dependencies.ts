@@ -70,7 +70,7 @@ const logIfExists = (
 
 const check = (value: any) => value && Object.keys(value).length > 0;
 
-depcheck(path.resolve(__dirname, '..'), options).then(
+depcheck(path.resolve(__dirname, '../../'), options).then(
   ({ dependencies, devDependencies, invalidFiles, invalidDirs }: Results) => {
     logIfExists('Unused dependencies:', [...dependencies, ...devDependencies]);
     logIfExists("Files that couldn't be checked:", invalidFiles);

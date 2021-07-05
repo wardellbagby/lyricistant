@@ -1,8 +1,8 @@
 #!/usr/bin/env -S node -r ./register-ts-node
 import * as fs from 'fs';
 import yaml from 'js-yaml';
-import * as gulpFile from '../gulpfile';
-import { scripts } from '../package.json';
+import * as gulpFile from '../../gulpfile';
+import { scripts } from '../../package.json';
 
 const COMMAND_REGEX = /npm run ([\w-_]+)|gulp ([\w-_]+)/g;
 

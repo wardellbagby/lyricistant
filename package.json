@@ -15,8 +15,8 @@
   },
   "homepage": "https://github.com/wardellbagby/lyricistant",
   "scripts": {
-    "lint": "eslint -c .eslintrc.js . && ./bin/check_github_workflows.ts && ./bin/check_run_configs.ts && ./bin/find_unused_deps.ts",
-    "lint-fix": "eslint -c .eslintrc.js . --fix && ./bin/generate_run_configs.ts"
+    "lint": "eslint -c .eslintrc.js . && scripts/check/github_workflows.ts && scripts/check/run_configs.ts && scripts/check/unused_dependencies.ts",
+    "lint-fix": "eslint -c .eslintrc.js . --fix && scripts/check/run_configs.ts --fix"
   },
   "engines": {
     "node": ">= 14.15.3"
@@ -59,6 +59,7 @@
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
     "change-case": "^4.1.2",
+    "commander": "^8.0.0",
     "css-loader": "^5.2.6",
     "del": "^4.1.1",
     "depcheck": "^1.4.2",
