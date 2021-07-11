@@ -1,24 +1,24 @@
 import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles, styled, Theme } from '@material-ui/core/styles';
-import React, { useEffect, useMemo, useState } from 'react';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import React, { useEffect, useLayoutEffect, useMemo } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
-import { GridItem, VirtuosoGrid } from 'react-virtuoso';
+import { Components, VirtuosoGrid } from 'react-virtuoso';
 import { usePreferences } from '@lyricistant/renderer/stores/PreferencesStore';
-import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
 import { isDevelopment } from '@lyricistant/common/BuildModes';
-import { logger } from '../globals';
-import { Rhyme } from '../models/rhyme';
-import { fetchRhymes, generateRhymes } from '../networking/fetchRhymes';
+import { useMachine } from '@xstate/react';
+import { rhymesMachine } from '@lyricistant/renderer/machines/RhymesMachine';
+import { LinearProgress, Typography } from '@material-ui/core';
 import {
   useSelectedWordPosition,
   useSelectedWords,
   useSelectedWordStore,
-} from '../stores/SelectedWordStore';
+} from '@lyricistant/renderer/stores/SelectedWordStore';
+import { Rhyme } from '../models/rhyme';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  rhymeList: {
+const useRhymeListStyles = makeStyles((theme: Theme) => ({
+  root: {
     color: theme.palette.text.disabled,
     '&:hover': {
       color: theme.palette.text.primary,
@@ -30,18 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       background: theme.palette.background.paper,
     },
   },
-}));
-
-const ListContainer: React.ComponentType<{ className: string }> = styled('div')(
-  ({ className }) => ({
-    className,
-    display: 'flex',
-    'flex-wrap': 'wrap',
-  })
-);
-
-const ItemContainer: React.ComponentType<GridItem> = styled('div')(
-  ({ theme }) => ({
+  itemContainer: {
     display: 'flex',
     flex: 'none',
     'align-content': 'stretch',
@@ -56,75 +45,42 @@ const ItemContainer: React.ComponentType<GridItem> = styled('div')(
     [theme.breakpoints.up('lg')]: {
       width: '50%',
     },
-  })
-);
+  },
+  listContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    height: '100%',
+    width: '100%',
+  },
+}));
 
-export function Rhymes() {
-  const [rhymes, setRhymes] = useState<Rhyme[]>([]);
-  const classes = useStyles();
-  const Item = useMemo(() => ItemContainer, []);
-  const List = useMemo(() => ListContainer, []);
+interface RhymesListProps {
+  rhymes: Rhyme[];
+  onRhymeClicked: (rhyme: Rhyme) => void;
+}
 
-  const selectedWordStore = useSelectedWordStore();
-  const handleError = useErrorHandler();
-  const selectedWord = useSelectedWords();
-  const selectedWordPosition = useSelectedWordPosition();
+const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => {
+  const classes = useRhymeListStyles();
 
-  const preferences = usePreferences();
+  const Item: Components['Item'] = useMemo(
+    () => (props) => <div {...props} className={classes.itemContainer} />,
+    [classes.itemContainer]
+  );
+  const List: Components['List'] = useMemo(
+    () =>
+      React.forwardRef((props, ref) => (
+        <div {...props} className={classes.listContainer} ref={ref} />
+      )),
+    [classes.listContainer]
+  );
 
-  useEffect(() => {
-    if (!preferences) {
-      return;
-    }
-    if (!selectedWord) {
-      setRhymes([]);
-      return;
-    }
-
-    let isCancelled = false;
-    new Promise((resolve) => {
-      // Debounce.
-      setTimeout(() => {
-        if (!isCancelled) {
-          logger.debug(`Querying rhymes for word: ${selectedWord}`);
-          resolve(selectedWord);
-        }
-      }, 400);
-    })
-      .then((word: string) => {
-        switch (preferences.rhymeSource) {
-          case RhymeSource.Offline:
-            return generateRhymes(word);
-          case RhymeSource.Datamuse:
-            return fetchRhymes(word);
-        }
-      })
-      .then((results) =>
-        results.filter((rhyme) => rhyme && rhyme.word && rhyme.score)
-      )
-      .then(setRhymes)
-      .catch((reason) => {
-        if (reason instanceof Error) {
-          handleError(reason);
-        } else {
-          handleError(new Error(reason));
-        }
-      });
-    return () => {
-      isCancelled = true;
-    };
-  }, [selectedWord, setRhymes, handleError, preferences]);
-
-  if (rhymes.length === 0) {
-    return <div />;
-  }
   return (
     <VirtuosoGrid
       components={{ Item, List }}
       style={{ width: '100%', height: '100%' }}
       overscan={20}
       totalCount={rhymes.length}
-      listClassName={classes.rhymeList}
+      listClassName={classes.root}
       itemContent={(index) => {
         const rhyme = rhymes[index];
 
@@ -133,18 +89,120 @@ export function Rhymes() {
         }
 
         return renderRhyme(rhyme, classes.rhyme, () => {
-          setRhymes([]);
-          selectedWordStore.onWordReplaced({
-            originalWord: {
-              word: selectedWord,
-              from: selectedWordPosition[0],
-              to: selectedWordPosition[1],
-            },
-            newWord: rhyme.word,
-          });
+          onRhymeClicked(rhyme);
         });
       }}
     />
+  );
+};
+
+const useLoadingIndicatorStyles = makeStyles<Theme, { display: boolean }>(
+  (theme: Theme) => ({
+    root: {
+      visibility: ({ display }) => (display ? 'visible' : 'hidden'),
+    },
+    progressBarColor: {
+      backgroundColor: theme.palette.text.secondary,
+    },
+    progressBarBackground: {
+      backgroundColor: theme.palette.background.default,
+    },
+  })
+);
+const LoadingIndicator = (props: { display: boolean }) => {
+  const classes = useLoadingIndicatorStyles(props);
+  return (
+    <LinearProgress
+      className={classes.root}
+      classes={{
+        colorPrimary: classes.progressBarBackground,
+        barColorPrimary: classes.progressBarColor,
+      }}
+    />
+  );
+};
+
+const useInactiveHelperTextStyles = makeStyles((theme: Theme) => ({
+  root: {
+    color: theme.palette.text.disabled,
+  },
+}));
+const HelperText = ({ text }: { text: string }) => {
+  const classes = useInactiveHelperTextStyles();
+
+  return (
+    <Box
+      height={'100%'}
+      width={'100%'}
+      overflow={'hidden'}
+      textOverflow={'ellipsis'}
+      p={'16px'}
+      display={'flex'}
+      alignItems={'center'}
+      justifyContent={'center'}
+    >
+      <Typography className={classes.root} variant={'body1'}>
+        {text}
+      </Typography>
+    </Box>
+  );
+};
+
+export function Rhymes() {
+  const [state, send] = useMachine(rhymesMachine);
+
+  const selectedWordStore = useSelectedWordStore();
+  const handleError = useErrorHandler();
+  const selectedWord = useSelectedWords();
+  const selectedWordPosition = useSelectedWordPosition();
+
+  const preferences = usePreferences();
+
+  useLayoutEffect(() => {
+    if (!selectedWord || !preferences) {
+      return;
+    }
+    send({
+      type: 'INPUT',
+      input: selectedWord,
+      rhymeSource: preferences.rhymeSource,
+    });
+  }, [selectedWord, preferences]);
+
+  useEffect(() => {
+    if (state.matches('error')) {
+      handleError(state.context.error);
+    }
+  }, [handleError, state]);
+
+  const rhymes: Rhyme[] = state.context.rhymes;
+
+  return (
+    <Box display={'flex'} flexDirection={'column'}>
+      <LoadingIndicator display={state.matches('loading')} />
+
+      {state.matches('inactive') && (
+        <HelperText text={'Waiting for lyrics...'} />
+      )}
+
+      {state.matches('no-results') && <HelperText text={'No rhymes found'} />}
+
+      {rhymes.length > 0 && (
+        <RhymesList
+          rhymes={rhymes}
+          onRhymeClicked={(rhyme) =>
+            selectedWordStore.onWordReplaced({
+              originalWord: {
+                word: selectedWord,
+                from: selectedWordPosition[0],
+                to: selectedWordPosition[1],
+              },
+              newWord: rhyme.word,
+            })
+          }
+        />
+      )}
+    </Box>
   );
 }
 

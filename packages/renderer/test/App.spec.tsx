@@ -15,10 +15,14 @@ jest.mock('@lyricistant/renderer/globals', () => ({
     warn: (): void => undefined,
     error: (): void => undefined,
   },
-  platformDelegate: new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
+  platformDelegate:
+    new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
 }));
 jest.mock('notistack', () => ({
   useSnackbar: jest.fn(),
+}));
+jest.mock('@lyricistant/renderer/components/Rhymes', () => ({
+  Rhymes: jest.fn(() => null),
 }));
 const enqueueSnackbar = jest.fn();
 jest
@@ -28,8 +32,9 @@ jest
 describe('App component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    platformDelegate = jest.requireMock('@lyricistant/renderer/globals')
-      .platformDelegate;
+    platformDelegate = jest.requireMock(
+      '@lyricistant/renderer/globals'
+    ).platformDelegate;
     platformDelegate.clear();
   });
 

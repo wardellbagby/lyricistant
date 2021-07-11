@@ -126,6 +126,7 @@
     "@material-ui/icons": "^4.9.1",
     "@types/adm-zip": "^0.4.33",
     "@wessberg/di": "^2.0.3",
+    "@xstate/react": "^1.5.1",
     "adm-zip": "^0.4.16",
     "browser-fs-access": "^0.18.0",
     "cmu-pronouncing-dictionary": "^2.0.0",
@@ -147,6 +148,7 @@
     "rxjs": "^6.6.2",
     "sprintf-js": "^1.1.2",
     "syllable": "^4.1.0",
-    "use-debounce": "^4.0.0"
+    "use-debounce": "^4.0.0",
+    "xstate": "^4.22.0"
   }
 }
