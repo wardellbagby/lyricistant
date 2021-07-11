@@ -9,8 +9,10 @@ interface Pronunciation {
 
 // Force retype so that the IDE doesn't freak out with the large JSON file.
 const pronunciations = pronunciationsJson as Record<string, Pronunciation>;
-const knownWords: string[] = Object.keys(pronunciations);
+const cache = new Map<string, Rhyme[]>();
 const MAX_POPULARITY_SCORE = 100_000;
+const MAX_RHYMES_COUNT = 100;
+const MAX_CACHE_COUNT = 100;
 
 export const generateRhymes = (word: string): Rhyme[] => {
   if (!word) {
@@ -22,14 +24,15 @@ export const generateRhymes = (word: string): Rhyme[] => {
   if (cache.has(word)) {
     return cache.get(word);
   }
-  if (!knownWords.includes(word)) {
+  const wordPronunciation = pronunciations[word];
+
+  if (!wordPronunciation) {
     return [];
   }
 
-  const wordPronunciation = pronunciations[word];
-  const results: Rhyme[] = [];
+  const generatedRhymes: Rhyme[] = [];
 
-  Object.keys(pronunciations).forEach((dictWord: string) => {
+  for (const dictWord of Object.keys(pronunciations)) {
     const baseWord = getBaseWord(dictWord);
     if (baseWord !== word) {
       const result = compare(
@@ -38,15 +41,22 @@ export const generateRhymes = (word: string): Rhyme[] => {
         wordPronunciation
       );
       if (result) {
-        results.push(result);
+        generatedRhymes.push(result);
       }
     }
-  });
+  }
 
-  return results.sort((a, b) => b.score - a.score).slice(0, 100);
+  const results = generatedRhymes
+    .sort((a, b) => b.score - a.score)
+    .slice(0, MAX_RHYMES_COUNT);
+
+  cache.set(word, results);
+  if (cache.size > MAX_CACHE_COUNT) {
+    cache.delete(cache.keys().next().value);
+  }
+
+  return results;
 };
-
-const cache: Map<string, Rhyme[]> = new Map();
 
 const reverseSyllables = (pronunciation: string) =>
   pronunciation.replace(/[0-9]/g, '').split(' ').reverse();
