@@ -1,4 +1,4 @@
-import { RendererDelegate } from './Delegates';
+import { RendererDelegate } from "@lyricistant/common/Delegates";
 
 export interface Manager {
   register(): void;

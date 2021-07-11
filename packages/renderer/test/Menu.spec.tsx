@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { Menu } from '@lyricistant/renderer/components/Menu';
+import { Menu } from '@lyricistant/renderer/menu/Menu';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { History } from 'history';
@@ -23,11 +23,11 @@ jest.mock('@lyricistant/renderer/globals', () => ({
 let mockUseEditorText: jest.Mock<string>;
 let mockUseHistory: jest.Mock<Partial<History<unknown>>>;
 let mockDownloadApp: jest.Mock<boolean>;
-jest.mock('@lyricistant/renderer/stores/EditorTextStore', () => ({
+jest.mock('@lyricistant/renderer/editor/EditorTextStore', () => ({
   useEditorText: jest.fn(),
 }));
 jest.mock('react-router-dom', () => ({ useHistory: jest.fn() }));
-jest.mock('@lyricistant/renderer/util/download-app', () => ({
+jest.mock('@lyricistant/renderer/download', () => ({
   downloadApp: jest.fn(),
 }));
 
@@ -36,11 +36,11 @@ describe('Menu component', () => {
     platformDelegate = jest.requireMock('@lyricistant/renderer/globals')
       .platformDelegate;
     mockUseEditorText = jest.requireMock(
-      '@lyricistant/renderer/stores/EditorTextStore'
+      '@lyricistant/renderer/editor/EditorTextStore'
     ).useEditorText;
     mockUseHistory = jest.requireMock('react-router-dom').useHistory;
     mockDownloadApp = jest.requireMock(
-      '@lyricistant/renderer/util/download-app'
+      '@lyricistant/renderer/download/'
     ).downloadApp;
 
     jest.clearAllMocks();

@@ -1,11 +1,15 @@
 {
-  "include": ["main/**/*", "main/**/*.json"],
+  "include": ["main/**/*"],
   "exclude": ["main/**/webpack.config.ts"],
   "compilerOptions": {
     "lib": ["dom", "es6"],
-    "types": ["node", "webpack-env", "../renderer-window"],
+    "types": ["webpack-env", "../renderer-window"],
     "composite": true
   },
-  "references": [{ "path": "../common" }, { "path": "../codemirror" }],
+  "references": [
+    { "path": "../common" },
+    { "path": "../codemirror" },
+    { "path": "../rhyme-generator" }
+  ],
   "extends": "../../tsconfig.json"
 }

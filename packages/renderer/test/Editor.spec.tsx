@@ -1,7 +1,7 @@
 import React, { DependencyList, useEffect } from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, waitFor } from '@testing-library/react';
-import { Editor } from '@lyricistant/renderer/components/Editor';
+import { Editor } from '@lyricistant/renderer/editor/Editor';
 import type { EditorView } from '@codemirror/view';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 
@@ -21,7 +21,7 @@ jest.mock('@lyricistant/renderer/globals', () => ({
   },
   platformDelegate: new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
 }));
-jest.mock('@lyricistant/renderer/hooks/useEventListener');
+jest.mock('@lyricistant/renderer/util/useEventListener');
 jest.mock('react-beforeunload');
 jest.mock('@codemirror/history', () => ({
   undoDepth: jest.fn(),
@@ -37,8 +37,8 @@ jest.mock('notistack', () => ({
 jest.mock('@lyricistant/codemirror/CodeMirror', () => ({
   CodeMirrorEditor: jest.fn(),
 }));
-jest.mock('@lyricistant/renderer/util/to-droppable-file');
-jest.mock('@lyricistant/renderer/stores/SelectedWordStore', () => ({
+jest.mock('@lyricistant/renderer/editor/to-droppable-file');
+jest.mock('@lyricistant/renderer/editor/SelectedWordStore', () => ({
   useSelectedWordStore: jest.fn(),
   useReplacedWords: jest.fn(),
 }));
@@ -75,14 +75,14 @@ describe('Editor component', () => {
         return null;
       }
     );
-    require('@lyricistant/renderer/util/to-droppable-file').toDroppableFile.mockImplementation(
+    require('@lyricistant/renderer/editor/to-droppable-file').toDroppableFile.mockImplementation(
       () => droppedFile
     );
     require('notistack').useSnackbar.mockImplementation(() => ({
       enqueueSnackbar,
     }));
     require('@codemirror/state').EditorState.create = createEditorState;
-    require('@lyricistant/renderer/stores/SelectedWordStore').useSelectedWordStore.mockImplementation(
+    require('@lyricistant/renderer/editor/SelectedWordStore').useSelectedWordStore.mockImplementation(
       () => ({
         onWordSelected,
       })
@@ -97,7 +97,7 @@ describe('Editor component', () => {
     const useDocumentListener: jest.Mock<
       void,
       [string, (event: NestedPartial<DragEvent>) => void, DependencyList]
-    > = require('@lyricistant/renderer/hooks/useEventListener')
+    > = require('@lyricistant/renderer/util/useEventListener')
       .useDocumentListener;
     const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
       .undoDepth;
@@ -135,7 +135,7 @@ describe('Editor component', () => {
     const useDocumentListener: jest.Mock<
       void,
       [string, (event: NestedPartial<DragEvent>) => void, DependencyList]
-    > = require('@lyricistant/renderer/hooks/useEventListener')
+    > = require('@lyricistant/renderer/util/useEventListener')
       .useDocumentListener;
     const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
       .undoDepth;
@@ -173,7 +173,7 @@ describe('Editor component', () => {
     const useDocumentListener: jest.Mock<
       void,
       [string, (event: NestedPartial<DragEvent>) => boolean, DependencyList]
-    > = require('@lyricistant/renderer/hooks/useEventListener')
+    > = require('@lyricistant/renderer/util/useEventListener')
       .useDocumentListener;
     const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
       .undoDepth;
@@ -423,7 +423,7 @@ describe('Editor component', () => {
     const CodeMirrorEditor = require('@lyricistant/codemirror/CodeMirror')
       .CodeMirrorEditor;
     const wordReplacement = 'hello';
-    require('@lyricistant/renderer/stores/SelectedWordStore').useReplacedWords.mockReturnValue(
+    require('@lyricistant/renderer/editor/SelectedWordStore').useReplacedWords.mockReturnValue(
       wordReplacement
     );
 

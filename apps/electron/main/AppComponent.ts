@@ -26,19 +26,25 @@ import {
   NativeTheme,
 } from 'electron';
 import { AppUpdater, autoUpdater } from 'electron-updater';
-import { ElectronRendererDelegate } from '../packages/delegates/Delegates';
-import { AppStore } from './AppStore';
-import type { ElectronDialogs } from './platform/Dialogs';
-import type { ElectronFiles } from './platform/Files';
-import type { ElectronLogger } from './platform/Logger';
-import type { ElectronPreferences } from './platform/Preferences';
-import type { QuitManager } from './platform/QuitManager';
-import type { ElectronRecentFiles } from './platform/RecentFiles';
-import type { ElectronSystemThemeProvider } from './platform/SystemThemeProvider';
-import { ElectronTemporaryFiles } from './platform/TemporaryFiles';
-import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
-import { UpdateManager } from './platform/UpdateManager';
-import type { FileSystem, NodeFileSystem } from './wrappers/FileSystem';
+import { ElectronRendererDelegate } from '@electron-delegates/Delegates';
+import { AppStore } from '@electron-app/AppStore';
+import type { ElectronDialogs } from '@electron-app/platform/Dialogs';
+import type { ElectronFiles } from '@electron-app/platform/Files';
+import type { ElectronLogger } from '@electron-app/platform/Logger';
+import type { ElectronPreferences } from '@electron-app/platform/Preferences';
+import type { QuitManager } from '@electron-app/platform/QuitManager';
+import type { ElectronRecentFiles } from '@electron-app/platform/RecentFiles';
+import type { ElectronSystemThemeProvider } from '@electron-app/platform/SystemThemeProvider';
+import { ElectronTemporaryFiles } from '@electron-app/platform/TemporaryFiles';
+import {
+  formatTitle,
+  provideUiConfig,
+} from '@electron-app/platform/UiConfigProvider';
+import { UpdateManager } from '@electron-app/platform/UpdateManager';
+import type {
+  FileSystem,
+  NodeFileSystem,
+} from '@electron-app/wrappers/FileSystem';
 
 const registerElectronFunctionality = (component: DIContainer) => {
   component.registerSingleton<ElectronDialog>(() => dialog);

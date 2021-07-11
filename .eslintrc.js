@@ -9,7 +9,11 @@ module.exports = {
     'apps/mobile/android/**/*',
     'apps/mobile/ios/**/*',
   ],
-  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+    'plugin:import/typescript',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
@@ -30,6 +34,7 @@ module.exports = {
         '@typescript-eslint/explicit-member-accessibility': 'off',
         'no-console': 'off',
         'import/no-internal-modules': 'off',
+        'import/no-relative-parent-imports': 'off',
       },
     },
     {
@@ -37,6 +42,8 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
         'no-console': 'off',
+        'import/no-relative-parent-imports': 'off',
+        'import/no-internal-modules': 'off',
       },
     },
     {
@@ -56,6 +63,7 @@ module.exports = {
     },
   ],
   rules: {
+    'import/no-relative-parent-imports': 'error',
     '@typescript-eslint/adjacent-overload-signatures': 'error',
     '@typescript-eslint/array-type': [
       'error',
@@ -153,7 +161,7 @@ module.exports = {
           '@material-ui/**/*',
           '**/images/**',
           '@testing-library/jest-dom/*',
-          '@fontsource/**/*'
+          '@fontsource/**/*',
         ],
       },
     ],

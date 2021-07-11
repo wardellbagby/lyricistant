@@ -1,6 +1,6 @@
-import { RendererDelegate } from '../Delegates';
-import { FileManager } from '../files/FileManager';
-import { Manager } from '../Manager';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { FileManager } from '@lyricistant/common/files/FileManager';
+import { Manager } from '@lyricistant/common/Manager';
 import { TitleFormatter, UiConfigProvider } from './UiConfig';
 
 export class UiConfigManager implements Manager {

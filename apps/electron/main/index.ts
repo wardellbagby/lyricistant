@@ -10,10 +10,10 @@ import { Managers } from '@lyricistant/common/Managers';
 import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
 import { DIContainer } from '@wessberg/di';
-import { createRendererDelegate } from '../packages/delegates/Delegates';
-import { createAppMenu } from './app-menu';
-import { QuitManager } from './platform/QuitManager';
-import { createAppComponent } from './AppComponent';
+import { createRendererDelegate } from '@electron-delegates/Delegates';
+import { createAppMenu } from '@electron-app/app-menu';
+import { QuitManager } from '@electron-app/platform/QuitManager';
+import { createAppComponent } from '@electron-app/AppComponent';
 
 export let mainWindow: BrowserWindow;
 let appComponent: DIContainer;

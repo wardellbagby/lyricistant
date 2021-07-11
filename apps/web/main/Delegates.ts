@@ -3,7 +3,7 @@ import {
   RendererDelegate,
 } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
-import { WebLogger } from './platform/Logger';
+import { WebLogger } from '@web-app/platform/Logger';
 
 const logger: Logger = new WebLogger();
 

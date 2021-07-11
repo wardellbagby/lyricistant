@@ -1,5 +1,5 @@
 import log from 'electron-log';
-import { platformDelegate } from '../delegates/Delegates';
+import { platformDelegate } from '@electron-delegates/Delegates';
 
 process.on('loaded', () => {
   window.logger = log.functions;

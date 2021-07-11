@@ -1,7 +1,7 @@
 import React from 'react';
 import notistack from 'notistack';
 import '@testing-library/jest-dom/extend-expect';
-import { App } from '@lyricistant/renderer/components/App';
+import { App } from '@lyricistant/renderer/app/App';
 import { render, waitFor } from '@testing-library/react';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 
@@ -21,7 +21,7 @@ jest.mock('@lyricistant/renderer/globals', () => ({
 jest.mock('notistack', () => ({
   useSnackbar: jest.fn(),
 }));
-jest.mock('@lyricistant/renderer/components/Rhymes', () => ({
+jest.mock('@lyricistant/renderer/rhymes/Rhymes', () => ({
   Rhymes: jest.fn(() => null),
 }));
 const enqueueSnackbar = jest.fn();

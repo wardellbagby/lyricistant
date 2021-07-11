@@ -1,6 +1,6 @@
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { Logger } from '@lyricistant/common/Logger';
-import { FileSystem } from '../wrappers/FileSystem';
+import { FileSystem } from "@electron-app/wrappers/FileSystem";
 
 export class ElectronTemporaryFiles implements TemporaryFiles {
   private temporaryFile = this.fs.resolve(

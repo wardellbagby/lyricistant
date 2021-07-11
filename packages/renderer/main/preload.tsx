@@ -1,4 +1,4 @@
-import { getThemePalette } from '@lyricistant/renderer/util/theme';
+import { getThemePalette } from '@lyricistant/renderer/theme';
 import jss, { Styles } from 'jss';
 import camelCase from 'jss-plugin-camel-case';
 

@@ -5,7 +5,7 @@ import {
   Files as IFiles,
 } from '@lyricistant/common/files/Files';
 import { BrowserWindow, Dialog as ElectronDialog } from 'electron';
-import { FileSystem } from '../wrappers/FileSystem';
+import { FileSystem } from "@electron-app/wrappers/FileSystem";
 
 export class ElectronFiles implements IFiles {
   public constructor(

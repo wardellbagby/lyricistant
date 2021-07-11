@@ -1,7 +1,7 @@
 import { Logger } from '@lyricistant/common/Logger';
 import { Managers } from '@lyricistant/common/Managers';
-import { appComponent } from './AppComponent';
-import { platformDelegate } from './Delegates';
+import { appComponent } from '@mobile-app/AppComponent';
+import { platformDelegate } from '@mobile-app/Delegates';
 
 const logger = appComponent.get<Logger>();
 

@@ -4,13 +4,13 @@ import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import { onPageLoaded, onThemeUpdated } from '@lyricistant/renderer/preload';
-import { setupAnalytics } from './analytics/setupAnalytics';
-import { AppRouter } from './components/AppRouter';
-import { DesktopOnly } from './components/DesktopOnly';
-import { PlatformEventsReadyHandler } from './components/PlatformEventsReadyHandler';
-import { Themed } from './components/Themed';
-import { logger } from './globals';
-import { AppError } from './components/AppError';
+import { setupAnalytics } from '@lyricistant/renderer/analytics/setupAnalytics';
+import { AppRouter } from '@lyricistant/renderer/app/AppRouter';
+import { DesktopOnly } from '@lyricistant/renderer/app/DesktopOnly';
+import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEventsReadyHandler';
+import { Themed } from '@lyricistant/renderer/theme/Themed';
+import { logger } from '@lyricistant/renderer/globals';
+import { AppError } from '@lyricistant/renderer/app/AppError';
 
 window.onerror = (message, url, line, col, error) => {
   if (!logger) {

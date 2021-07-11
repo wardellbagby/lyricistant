@@ -17,17 +17,20 @@ import type {
 } from '@lyricistant/common/ui/UiConfig';
 import type { UiConfigManager } from '@lyricistant/common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
+import type { WebDialogs } from '@web-app/platform/Dialogs';
+import type { WebFiles } from '@web-app/platform/Files';
+import type { WebLogger } from '@web-app/platform/Logger';
+import type { WebPreferences } from '@web-app/platform/Preferences';
+import type { WebRecentFiles } from '@web-app/platform/RecentFiles';
+import type { WebSystemThemeProvider } from '@web-app/platform/SystemThemeProvider';
+import { WebTemporaryFiles } from '@web-app/platform/TemporaryFiles';
+import {
+  formatTitle,
+  provideUiConfig,
+} from '@web-app/platform/UiConfigProvider';
+import { UnloadManager } from '@web-app/platform/UnloadManager';
+import { FileSystem, WebFileSystem } from '@web-app/wrappers/FileSystem';
 import type { WebRendererDelegate } from './Delegates';
-import type { WebDialogs } from './platform/Dialogs';
-import type { WebFiles } from './platform/Files';
-import type { WebLogger } from './platform/Logger';
-import type { WebPreferences } from './platform/Preferences';
-import type { WebRecentFiles } from './platform/RecentFiles';
-import type { WebSystemThemeProvider } from './platform/SystemThemeProvider';
-import { WebTemporaryFiles } from './platform/TemporaryFiles';
-import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
-import { UnloadManager } from './platform/UnloadManager';
-import { FileSystem, WebFileSystem } from './wrappers/FileSystem';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();

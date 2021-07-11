@@ -1,0 +1,9 @@
+{
+  "include": ["main/**/*", "main/**/*.json"],
+  "compilerOptions": {
+    "lib": ["es6", "WebWorker"],
+    "types": ["webpack-env"],
+    "composite": true
+  },
+  "extends": "../../tsconfig.json"
+}

@@ -1,9 +1,9 @@
-import { RendererDelegate } from '../Delegates';
-import { Logger } from '../Logger';
-import { Manager, withDialogSupport } from '../Manager';
-import { YES_NO_BUTTONS } from '../dialogs/Dialog';
-import { FileManager } from './FileManager';
-import { TemporaryFiles } from './TemporaryFiles';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
+import { Manager, withDialogSupport } from '@lyricistant/common/Manager';
+import { YES_NO_BUTTONS } from '@lyricistant/common/dialogs/Dialog';
+import { FileManager } from '@lyricistant/common/files/FileManager';
+import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 
 export class UnsavedDataManager implements Manager {
   private static readonly RECOVER_UNSAVED_LYRICS_TAG =

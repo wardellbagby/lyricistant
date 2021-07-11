@@ -23,8 +23,13 @@
       "@lyricistant/common/*": ["packages/common/main/*"],
       "@lyricistant/renderer/*": ["packages/renderer/main/*"],
       "@electron-app/*": ["apps/electron/main/*"],
+      "@electron-delegates/*": ["apps/electron/packages/delegates/*"],
+      "@mobile-app/*": ["apps/mobile/main/*"],
       "@web-app/*": ["apps/web/main/*"],
       "@lyricistant/codemirror/*": ["packages/codemirror/main/*"],
+      "@lyricistant/rhyme-generator": [
+        "packages/rhyme-generator/main/index.ts"
+      ],
       "@tooling/*": ["tooling/*"],
       "@testing/utilities/*": ["packages/testing/utilities/*"]
     }

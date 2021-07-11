@@ -3,7 +3,7 @@ import {
   RendererDelegate,
 } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
-import { MobileLogger } from './platform/Logger';
+import { MobileLogger } from '@mobile-app/platform/Logger';
 
 const logger: Logger = new MobileLogger();
 

@@ -3,7 +3,7 @@ import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
 import { Manager } from '@lyricistant/common/Manager';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
-import { AppStore } from '../AppStore';
+import { AppStore } from '@electron-app/AppStore';
 
 export class UpdateManager implements Manager {
   private static readonly INSTALL_UPDATE_DIALOG_TAG =

@@ -1,9 +1,9 @@
-import { RendererDelegate } from '../Delegates';
-import { Dialogs } from '../dialogs/Dialogs';
-import { Logger } from '../Logger';
-import { Manager } from '../Manager';
-import { DroppableFile, Files } from './Files';
-import { RecentFiles } from './RecentFiles';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
+import { Logger } from '@lyricistant/common/Logger';
+import { Manager } from '@lyricistant/common/Manager';
+import { DroppableFile, Files } from '@lyricistant/common/files/Files';
+import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
 
 export class FileManager implements Manager {
   private currentFilePath: string | null = null;

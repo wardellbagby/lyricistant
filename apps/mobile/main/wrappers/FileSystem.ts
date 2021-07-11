@@ -1,4 +1,4 @@
-import { fileOpen, fileSave } from 'browser-nativefs';
+import { fileOpen, fileSave } from 'browser-fs-access';
 
 export interface FileSystem {
   openFile: typeof fileOpen;

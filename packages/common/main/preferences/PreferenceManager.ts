@@ -1,8 +1,15 @@
-import { RendererDelegate } from '../Delegates';
-import { Manager } from '../Manager';
-import { SystemTheme, SystemThemeProvider } from '../theme/SystemTheme';
-import { Preferences } from './Preferences';
-import { PreferencesData, RhymeSource, Theme } from './PreferencesData';
+import { Manager } from '@lyricistant/common/Manager';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import {
+  SystemTheme,
+  SystemThemeProvider,
+} from '@lyricistant/common/theme/SystemTheme';
+import { Preferences } from '@lyricistant/common/preferences/Preferences';
+import {
+  PreferencesData,
+  RhymeSource,
+  Theme,
+} from '@lyricistant/common/preferences/PreferencesData';
 
 export class PreferenceManager implements Manager {
   private systemTheme: SystemTheme;

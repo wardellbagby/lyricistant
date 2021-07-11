@@ -5,7 +5,7 @@ import {
   Files as IFiles,
 } from '@lyricistant/common/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
-import { FileSystem } from '../wrappers/FileSystem';
+import { FileSystem } from '@mobile-app/wrappers/FileSystem';
 
 interface MobileFilesPlugin {
   openFile: () => Promise<FileData | null>;

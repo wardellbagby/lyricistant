@@ -17,17 +17,20 @@ import type {
 } from '@lyricistant/common/ui/UiConfig';
 import type { UiConfigManager } from '@lyricistant/common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
+import type { MobileDialogs } from '@mobile-app/platform/Dialogs';
+import type { MobileFiles } from '@mobile-app/platform/Files';
+import type { MobileLogger } from '@mobile-app/platform/Logger';
+import type { MobilePreferences } from '@mobile-app/platform/Preferences';
+import type { MobileRecentFiles } from '@mobile-app/platform/RecentFiles';
+import type { MobileSystemThemeProvider } from '@mobile-app/platform/SystemThemeProvider';
+import { MobileTemporaryFiles } from '@mobile-app/platform/TemporaryFiles';
+import {
+  formatTitle,
+  provideUiConfig,
+} from '@mobile-app/platform/UiConfigProvider';
+import { FileSystem, MobileFileSystem } from '@mobile-app/wrappers/FileSystem';
+import { SplashScreenManager } from '@mobile-app/platform/SplashScreenManager';
 import type { MobileRendererDelegate } from './Delegates';
-import type { MobileDialogs } from './platform/Dialogs';
-import type { MobileFiles } from './platform/Files';
-import type { MobileLogger } from './platform/Logger';
-import type { MobilePreferences } from './platform/Preferences';
-import type { MobileRecentFiles } from './platform/RecentFiles';
-import type { MobileSystemThemeProvider } from './platform/SystemThemeProvider';
-import { MobileTemporaryFiles } from './platform/TemporaryFiles';
-import { formatTitle, provideUiConfig } from './platform/UiConfigProvider';
-import { FileSystem, MobileFileSystem } from './wrappers/FileSystem';
-import { SplashScreenManager } from './platform/SplashScreenManager';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();

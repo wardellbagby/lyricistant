@@ -6,7 +6,7 @@ import {
 } from '@lyricistant/common/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystemHandle, FileWithHandle } from 'browser-fs-access';
-import { FileSystem } from '../wrappers/FileSystem';
+import { FileSystem } from '@web-app/wrappers/FileSystem';
 
 export class WebFiles implements IFiles {
   /*

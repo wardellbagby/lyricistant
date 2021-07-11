@@ -1,6 +1,6 @@
 import { Dialogs as IDialogs } from '@lyricistant/common/dialogs/Dialogs';
 import { dialog } from 'electron';
-import { mainWindow } from '../index';
+import { mainWindow } from "@electron-app/index";
 
 export class ElectronDialogs implements IDialogs {
   public showDialog = async (message: string) => {

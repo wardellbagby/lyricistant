@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { Logger } from '@lyricistant/common/Logger';
-import { fileSave } from 'browser-nativefs';
+import { fileSave } from 'browser-fs-access';
 import { DateTime } from 'luxon';
 import { Subject } from 'rxjs';
 import { bufferCount, map } from 'rxjs/operators';
