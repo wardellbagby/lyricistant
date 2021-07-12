@@ -46,6 +46,10 @@ const options: Options = {
     'ts-loader',
     'ttypescript',
     'url-loader',
+    'react-devtools',
+    '@types/react-devtools',
+    'react-devtools',
+    'tslib',
   ],
 };
 

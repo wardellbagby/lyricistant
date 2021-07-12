@@ -6,7 +6,9 @@ import { merge } from 'webpack-merge';
 import WebpackDevServer from 'webpack-dev-server';
 import { parallel, series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
-import defaultWebpackConfig from '@tooling/default.webpack.config';
+import defaultWebpackConfig, {
+  webpackMode,
+} from '@tooling/default.webpack.config';
 import {
   getOutputDirectory as getOutDir,
   Mode,
@@ -25,11 +27,10 @@ const clean = (mode: Mode) => {
   return curried;
 };
 
-const createRendererWebpackConfig = async (mode: Mode) => {
-  const webpackMode = mode === 'test' ? 'development' : mode;
-  return merge<Configuration>(
+const createRendererWebpackConfig = async (mode: Mode) =>
+  merge<Configuration>(
     {
-      mode: webpackMode,
+      mode: webpackMode(mode),
       entry: {
         renderer: './packages/renderer/main/index.tsx',
       },
@@ -44,13 +45,11 @@ const createRendererWebpackConfig = async (mode: Mode) => {
     rendererWebpackConfig(),
     defaultWebpackConfig(mode)
   );
-};
 
-const createMainWebpackConfig = async (mode: Mode, useDevServer: boolean) => {
-  const webpackMode = mode === 'test' ? 'development' : mode;
-  return merge<Configuration>(
+const createMainWebpackConfig = async (mode: Mode, useDevServer: boolean) =>
+  merge<Configuration>(
     {
-      mode: webpackMode,
+      mode: webpackMode(mode),
       entry: './apps/electron/main/index.ts',
       target: 'electron-main',
       output: {
@@ -73,13 +72,11 @@ const createMainWebpackConfig = async (mode: Mode, useDevServer: boolean) => {
     },
     defaultWebpackConfig(mode)
   );
-};
 
-const createPreloadWebpackConfig = async (mode: Mode) => {
-  const webpackMode = mode === 'test' ? 'development' : mode;
-  return merge<Configuration>(
+const createPreloadWebpackConfig = async (mode: Mode) =>
+  merge<Configuration>(
     {
-      mode: webpackMode,
+      mode: webpackMode(mode),
       entry: './apps/electron/packages/preload/preload.ts',
       target: 'electron-preload',
       output: {
@@ -92,7 +89,6 @@ const createPreloadWebpackConfig = async (mode: Mode) => {
     },
     defaultWebpackConfig(mode)
   );
-};
 
 const copyElectronHtmlFile = (mode: Mode) => {
   const curried = async () => {
