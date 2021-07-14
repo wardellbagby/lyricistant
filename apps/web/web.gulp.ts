@@ -7,6 +7,7 @@ import { series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import {
+  cleanBuildDirectory,
   getOutputDirectory as getOutDir,
   Mode,
 } from '@tooling/common-tasks.gulp';
@@ -104,12 +105,14 @@ export const startWeb = series(
   runWebServer
 );
 export const buildWeb = series(
+  cleanBuildDirectory,
   clean('production'),
   copyResources('production'),
   generatePronunciations,
   bundleWeb('production')
 );
 export const buildTestWeb = series(
+  cleanBuildDirectory,
   clean('test'),
   copyResources('test'),
   generatePronunciations,

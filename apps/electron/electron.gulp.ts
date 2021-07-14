@@ -10,6 +10,7 @@ import defaultWebpackConfig, {
   webpackMode,
 } from '@tooling/default.webpack.config';
 import {
+  cleanBuildDirectory,
   getOutputDirectory as getOutDir,
   Mode,
 } from '@tooling/common-tasks.gulp';
@@ -19,7 +20,7 @@ import { generatePronunciations } from '@tooling/pronunciations.gulp';
 import { buildElectronApp } from './build_apps';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
-const clean = (mode: Mode) => {
+const cleanDistFiles = (mode: Mode) => {
   const curried = async () => {
     await del(getOutputDirectory(mode));
   };
@@ -175,7 +176,11 @@ const runElectronBuilder = (...args: Parameters<typeof buildElectronApp>) => {
 };
 
 const coreTasks = (mode: Mode) =>
-  series(clean(mode), copyElectronHtmlFile(mode), generatePronunciations);
+  series(
+    cleanDistFiles(mode),
+    copyElectronHtmlFile(mode),
+    generatePronunciations
+  );
 
 export const startElectron = series(
   coreTasks('development'),
@@ -192,15 +197,18 @@ export const startDebugElectron = series(
   )
 );
 export const buildElectron = series(
+  cleanBuildDirectory,
   coreTasks('production'),
   bundleElectron('production')
 );
 
 export const buildTestElectron = series(
+  cleanBuildDirectory,
   coreTasks('test'),
   bundleElectron('test')
 );
 export const buildAllElectronApps = series(
+  cleanBuildDirectory,
   coreTasks('production'),
   bundleElectron('production'),
   runElectronBuilder('production', false)

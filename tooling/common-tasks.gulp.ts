@@ -1,19 +1,15 @@
 import { ChildProcess, spawn as nodeSpawn, SpawnOptions } from 'child_process';
 import path from 'path';
 import { runCLI } from '@jest/core';
+import del from 'del';
 
 export type Mode = 'development' | 'production' | 'test';
 
-export const getOutputDirectory = (mode: Mode, appDirectory: string) => {
-  switch (mode) {
-    case 'development':
-      return path.resolve(appDirectory, 'dist/development');
-    case 'production':
-      return path.resolve(appDirectory, 'dist/production');
-    case 'test':
-      return path.resolve(appDirectory, 'dist/test');
-  }
-};
+export const getOutputDirectory = (mode: Mode, appDirectory: string) =>
+  path.resolve(appDirectory, 'dist', mode);
+
+export const cleanBuildDirectory = async () =>
+  del(path.resolve(__dirname, '..', 'build'));
 
 export const jest = async (directory: string) => {
   runCLI({ _: [], $0: 'jest', rootDir: directory }, [directory]).then(

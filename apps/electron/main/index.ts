@@ -14,6 +14,7 @@ import { createRendererDelegate } from '@electron-delegates/Delegates';
 import { createAppMenu } from '@electron-app/app-menu';
 import { QuitManager } from '@electron-app/platform/QuitManager';
 import { createAppComponent } from '@electron-app/AppComponent';
+import { Manager } from '@lyricistant/common/Manager';
 
 export let mainWindow: BrowserWindow;
 let appComponent: DIContainer;
@@ -100,9 +101,11 @@ const setMenu = (recentFiles?: string[]): void => {
 };
 
 const registerListeners = () => {
-  appComponent.get<FileManager>().addOnFileChangedListener((_, recentFiles) => {
-    setMenu(recentFiles);
-  });
+  appComponent
+    .get<FileManager>()
+    .addOnFileChangedListener((_: undefined, recentFiles: string[]) => {
+      setMenu(recentFiles);
+    });
 };
 
 const createWindow = (): void => {
@@ -123,7 +126,9 @@ const createWindow = (): void => {
   appComponent = createAppComponent(mainWindow);
   logger = appComponent.get<Logger>();
   rendererDelegate = createRendererDelegate(mainWindow);
-  appComponent.get<Managers>().forEach((manager) => manager().register());
+  appComponent
+    .get<Managers>()
+    .forEach((manager: () => Manager) => manager().register());
   registerListeners();
 
   logger.info('Platform information', {

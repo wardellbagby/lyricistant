@@ -1,5 +1,6 @@
 import { Logger } from '@lyricistant/common/Logger';
 import { Managers } from '@lyricistant/common/Managers';
+import { Manager } from '@lyricistant/common/Manager';
 import { appComponent } from './AppComponent';
 import { platformDelegate } from './Delegates';
 
@@ -9,7 +10,9 @@ window.logger = logger;
 window.platformDelegate = platformDelegate;
 
 new Promise<void>((resolve) => {
-  appComponent.get<Managers>().forEach((manager) => manager().register());
+  appComponent
+    .get<Managers>()
+    .forEach((manager: () => Manager) => manager().register());
   resolve();
 })
   .then(async () => {

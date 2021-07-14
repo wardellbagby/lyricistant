@@ -1,6 +1,5 @@
 {
-  "include": [],
-  "exclude": ["node_modules"],
+  "files": [],
   "compilerOptions": {
     "target": "es2015",
     "module": "esnext",
@@ -16,7 +15,7 @@
     "downlevelIteration": true,
     "lib": ["es2015"],
     "baseUrl": "./",
-    "outDir": "dist",
+    "outDir": "build",
     "rootDir": "./",
     "importHelpers": true,
     "plugins": [
