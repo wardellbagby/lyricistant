@@ -28,6 +28,7 @@
     }
   },
   "devDependencies": {
+    "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.3",
@@ -125,8 +126,8 @@
     "@codemirror/view": "^0.18.17",
     "@fontsource/roboto": "^4.4.5",
     "@fontsource/roboto-mono": "^4.4.5",
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
+    "@material-ui/core": "^4.12.1",
+    "@material-ui/icons": "^4.11.2",
     "@types/adm-zip": "^0.4.33",
     "@wessberg/di": "^2.0.3",
     "@xstate/react": "^1.5.1",

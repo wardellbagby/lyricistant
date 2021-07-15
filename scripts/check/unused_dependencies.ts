@@ -45,6 +45,7 @@ const options: Options = {
     'mocha',
     'style-loader',
     'ts-loader',
+    '@svgr/webpack',
     'ttypescript',
     'url-loader',
     'react-devtools',

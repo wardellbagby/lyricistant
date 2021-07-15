@@ -26,5 +26,5 @@ export const testAllWeb = series(testWeb, testCore);
 export const testAllElectron = series(testElectron, testCore);
 export const testAll = series(testWeb, testElectron, testCore);
 
-export const clean = () => del(path.resolve('dist'));
+export const clean = () => del(path.resolve('build'));
 export const check = parallel(buildAll, testAll);

@@ -9,12 +9,13 @@ import { usePreferences } from '@lyricistant/renderer/preferences/PreferencesSto
 import { isDevelopment } from '@lyricistant/common/BuildModes';
 import { useMachine } from '@xstate/react';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
-import { LinearProgress, Typography } from '@material-ui/core';
+import { LinearProgress, Typography, useTheme } from '@material-ui/core';
 import {
   useSelectedWordPosition,
   useSelectedWords,
   useSelectedWordStore,
 } from '@lyricistant/renderer/editor/SelectedWordStore';
+import Feather from '@lyricistant/renderer/lyricistant_feather.svg';
 import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles((theme: Theme) => ({
@@ -129,6 +130,7 @@ const useInactiveHelperTextStyles = makeStyles((theme: Theme) => ({
 }));
 const HelperText = ({ text }: { text: string }) => {
   const classes = useInactiveHelperTextStyles();
+  const theme = useTheme();
 
   return (
     <Box
@@ -136,11 +138,20 @@ const HelperText = ({ text }: { text: string }) => {
       width={'100%'}
       overflow={'hidden'}
       textOverflow={'ellipsis'}
+      fontStyle={'italic'}
       p={'16px'}
       display={'flex'}
+      gridGap={'12px'}
       alignItems={'center'}
       justifyContent={'center'}
+      flexDirection={'column'}
     >
+      <Feather
+        height={'64px'}
+        width={'64px'}
+        fill={theme.palette.text.disabled}
+        viewBox={'0 0 100 100'}
+      />
       <Typography className={classes.root} variant={'body1'}>
         {text}
       </Typography>
@@ -181,9 +192,7 @@ export const Rhymes: React.FC = () => {
     <Box display={'flex'} flexDirection={'column'}>
       <LoadingIndicator display={state.matches('loading')} />
 
-      {state.matches('inactive') && (
-        <HelperText text={'Waiting for lyrics...'} />
-      )}
+      {state.matches('inactive') && <HelperText text={'Waiting for lyrics'} />}
 
       {state.matches('no-results') && <HelperText text={'No rhymes found'} />}
 
