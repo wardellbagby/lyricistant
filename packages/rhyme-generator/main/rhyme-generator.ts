@@ -1,10 +1,22 @@
 import { expose } from 'comlink';
 import pronunciationsJson from './pronunciations.json';
 
+/**
+ * The data structure used in the Pronunciations JSON that will be keyed by
+ * a word.
+ */
 interface Pronunciation {
+  /**
+  The pronunciation of the word.
+   */
   pr: string;
+  /**
+   * The popularity of the word, ranked from MAX_POPULARITY_SCORE to 0, with 0
+   * being the most popular and MAX_POPULARITY_SCORE being the least.
+   */
   p?: number;
 }
+
 interface Rhyme {
   score: number;
   word: string;
@@ -17,17 +29,17 @@ const MAX_POPULARITY_SCORE = 100_000;
 const MAX_RHYMES_COUNT = 100;
 const MAX_CACHE_COUNT = 100;
 
-export const generateRhymes = (word: string): Rhyme[] => {
-  if (!word) {
+export const generateRhymes = (input: string): Rhyme[] => {
+  if (!input) {
     return [];
   }
 
-  word = word.toLowerCase();
+  input = input.toLowerCase();
 
-  if (cache.has(word)) {
-    return cache.get(word);
+  if (cache.has(input)) {
+    return cache.get(input);
   }
-  const wordPronunciation = pronunciations[word];
+  const wordPronunciation = pronunciations[input];
 
   if (!wordPronunciation) {
     return [];
@@ -36,12 +48,12 @@ export const generateRhymes = (word: string): Rhyme[] => {
   const generatedRhymes: Rhyme[] = [];
 
   for (const dictWord of Object.keys(pronunciations)) {
-    const baseWord = getBaseWord(dictWord);
-    if (baseWord !== word) {
+    const match = getBaseWord(dictWord);
+    if (match !== input) {
       const result = compare(
+        wordPronunciation,
         pronunciations[dictWord],
-        baseWord,
-        wordPronunciation
+        match
       );
       if (result) {
         generatedRhymes.push(result);
@@ -53,7 +65,7 @@ export const generateRhymes = (word: string): Rhyme[] => {
     .sort((a, b) => b.score - a.score)
     .slice(0, MAX_RHYMES_COUNT);
 
-  cache.set(word, results);
+  cache.set(input, results);
   if (cache.size > MAX_CACHE_COUNT) {
     cache.delete(cache.keys().next().value);
   }
@@ -62,50 +74,73 @@ export const generateRhymes = (word: string): Rhyme[] => {
 };
 
 const reverseSyllables = (pronunciation: string) =>
-  pronunciation.replace(/[0-9]/g, '').split(' ').reverse();
+  pronunciation.split(' ').reverse();
 
-const calculateScore = (left: string, right: string) => {
-  const leftSyllables = reverseSyllables(left);
-  const rightSyllables = reverseSyllables(right);
-  const length = Math.max(left.length, right.length);
+const removeStress = (syllable: string) => syllable.replace(/[0-9]/g, '');
+
+const calculateScore = (input: string, match: string) => {
+  const inputSyllables = reverseSyllables(input);
+  const inputStressedIndex = inputSyllables.findIndex((value) =>
+    value.includes('1')
+  );
+  const matchSyllables = reverseSyllables(match);
+  const length = Math.min(inputSyllables.length, matchSyllables.length);
   let score = 0;
 
   for (let index = 0; index < length; index++) {
-    if (leftSyllables[index] !== rightSyllables[index]) {
+    const inputSyllable = inputSyllables[index];
+    const matchSyllable = matchSyllables[index];
+
+    if (removeStress(inputSyllable) !== removeStress(matchSyllable)) {
+      if (index <= inputStressedIndex) {
+        // If we don't match up to the first stressed syllable, the rhyme is probably bad.
+        return 0;
+      }
       break;
     }
 
-    score += MAX_POPULARITY_SCORE;
+    score += 1;
+    if (inputSyllable.includes('1') && matchSyllable.includes('1')) {
+      // If the same syllable is stressed in both, that's a good sign!
+      score += 1;
+    }
   }
 
-  if (leftSyllables.length === rightSyllables.length) {
-    score += MAX_POPULARITY_SCORE;
+  if (inputSyllables.length === matchSyllables.length) {
+    score += 1;
   }
 
-  return score;
+  return score * MAX_POPULARITY_SCORE;
+};
+
+const compare = (
+  inputPronunciation: Pronunciation,
+  matchPronunciation: Pronunciation,
+  matchWord: string
+) => {
+  let score = calculateScore(inputPronunciation.pr, matchPronunciation.pr);
+
+  if (score > 1) {
+    if (matchPronunciation.p) {
+      /*
+       Popular words should match better than their unpopular peers, but not so
+       well that they match higher than more "correct" matches.
+      */
+      score += (MAX_POPULARITY_SCORE - matchPronunciation.p) / 10;
+    } else {
+      // Unpopular words tend to be pretty weird, so demote them heavy.
+      score -= MAX_POPULARITY_SCORE * 2;
+    }
+    return {
+      score,
+      word: matchWord,
+    };
+  }
 };
 
 const getBaseWord = (word: string) => {
   const index = word.indexOf('(');
   return index < 0 ? word : word.slice(0, index).trim();
-};
-
-const compare = (
-  dictPronunciation: Pronunciation,
-  dictWord: string,
-  pronunciation: Pronunciation
-) => {
-  let score = calculateScore(dictPronunciation.pr, pronunciation.pr);
-
-  if (score > 1) {
-    if (dictPronunciation.p) {
-      score += (MAX_POPULARITY_SCORE - dictPronunciation.p) * 2;
-    }
-    return {
-      score,
-      word: dictWord,
-    };
-  }
 };
 
 expose({
