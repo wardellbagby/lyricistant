@@ -120,5 +120,14 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
       selection,
     });
   }, [view, props.wordReplacement, props.onWordSelected]);
+  useEffect(() => {
+    Array.from(ref.current.getElementsByClassName('cm-content')).forEach(
+      (element) => {
+        element.setAttribute('spellcheck', 'on');
+        element.setAttribute('autocorrect', 'on');
+        element.setAttribute('autocapitalize', 'on');
+      }
+    );
+  }, [ref]);
   return <EditorContainer ref={ref} />;
 }

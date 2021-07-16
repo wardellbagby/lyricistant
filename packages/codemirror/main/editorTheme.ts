@@ -6,10 +6,14 @@ export const editorTheme = (appTheme: Theme): Extension =>
   EditorView.theme(
     {
       '&.cm-editor': {
-        height: '100%',
-        width: '100%',
         backgroundColor: appTheme.palette.background.default,
         caretColor: appTheme.palette.text.primary,
+      },
+      '&.cm-wrap': {
+        height: '100%',
+      },
+      '&.cm-scroller': {
+        overflow: 'auto',
       },
       '&.cm-focused': {
         outline_fallback: 'none',
