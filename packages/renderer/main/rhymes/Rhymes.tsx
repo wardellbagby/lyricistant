@@ -4,7 +4,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useLayoutEffect, useMemo } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
-import { Components, VirtuosoGrid } from 'react-virtuoso';
+import { GridComponents, VirtuosoGrid } from 'react-virtuoso';
 import { usePreferences } from '@lyricistant/renderer/preferences/PreferencesStore';
 import { isDevelopment } from '@lyricistant/common/BuildModes';
 import { useMachine } from '@xstate/react';
@@ -19,12 +19,6 @@ import Feather from '@lyricistant/renderer/lyricistant_feather.svg';
 import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles((theme: Theme) => ({
-  root: {
-    color: theme.palette.text.disabled,
-    '&:hover': {
-      color: theme.palette.text.primary,
-    },
-  },
   rhyme: {
     'text-align': 'center',
     '&:hover': {
@@ -52,6 +46,10 @@ const useRhymeListStyles = makeStyles((theme: Theme) => ({
     flexWrap: 'wrap',
     height: '100%',
     width: '100%',
+    color: theme.palette.text.disabled,
+    '&:hover': {
+      color: theme.palette.text.primary,
+    },
   },
 }));
 
@@ -63,14 +61,18 @@ interface RhymesListProps {
 const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => {
   const classes = useRhymeListStyles();
 
-  const Item: Components['Item'] = useMemo(
+  const Item: GridComponents['Item'] = useMemo(
     () => (props) => <div {...props} className={classes.itemContainer} />,
     [classes.itemContainer]
   );
-  const List: Components['List'] = useMemo(
+  const List: GridComponents['List'] = useMemo(
     () =>
       React.forwardRef((props, ref) => (
-        <div {...props} className={classes.listContainer} ref={ref} />
+        <div
+          {...props}
+          className={`${classes.listContainer} ${props.className}`}
+          ref={ref}
+        />
       )),
     [classes.listContainer]
   );
@@ -81,7 +83,6 @@ const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => {
       style={{ width: '100%', height: '100%' }}
       overscan={20}
       totalCount={rhymes.length}
-      listClassName={classes.root}
       itemContent={(index) => {
         const rhyme = rhymes[index];
 
