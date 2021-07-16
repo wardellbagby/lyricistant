@@ -27,7 +27,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { platformDelegate } from "@lyricistant/renderer/globals";
+import { platformDelegate } from '@lyricistant/renderer/globals';
 import { usePreferences } from './PreferencesStore';
 
 const DialogTransition = React.forwardRef<unknown, SlideProps>(
@@ -114,7 +114,9 @@ const SelectBox = <T extends string | number>({
         label={label}
       >
         {items.map(({ label: itemLabel, value: itemValue }) => (
-          <MenuItem value={itemValue}>{itemLabel}</MenuItem>
+          <MenuItem key={itemLabel} value={itemValue}>
+            {itemLabel}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>
