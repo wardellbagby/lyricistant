@@ -44,7 +44,7 @@ export default (mode: Mode): Configuration => ({
         test: /\.(woff|woff2|eot|ttf|png)$/,
         loader: 'file-loader',
       },
-      { test: /\.svg$/, use: ['@svgr/webpack'] },
+      { test: /\.svg$/, use: ['@svgr/webpack', 'raw-loader'] },
     ],
   },
   plugins: [

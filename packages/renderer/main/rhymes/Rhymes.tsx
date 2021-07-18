@@ -15,7 +15,7 @@ import {
   useSelectedWords,
   useSelectedWordStore,
 } from '@lyricistant/renderer/editor/SelectedWordStore';
-import Feather from '@lyricistant/renderer/lyricistant_feather.svg';
+import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_feather.svg';
 import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles((theme: Theme) => ({

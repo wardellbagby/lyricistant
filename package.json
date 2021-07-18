@@ -88,6 +88,7 @@
     "js-yaml": "^3.14.0",
     "mocha": "^7.2.0",
     "prettier": "^2.3.2",
+    "raw-loader": "^4.0.2",
     "react-devtools": "^4.13.5",
     "sinon": "^9.0.3",
     "sinon-chai": "^3.5.0",
