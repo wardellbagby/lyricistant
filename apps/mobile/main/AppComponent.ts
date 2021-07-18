@@ -17,34 +17,31 @@ import type {
 } from '@lyricistant/common/ui/UiConfig';
 import type { UiConfigManager } from '@lyricistant/common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
-import type { MobileDialogs } from '@mobile-app/platform/Dialogs';
+import type { CoreDialogs } from '@lyricistant/core-platform/platform/Dialogs';
 import type { MobileFiles } from '@mobile-app/platform/Files';
-import type { MobileLogger } from '@mobile-app/platform/Logger';
-import type { MobilePreferences } from '@mobile-app/platform/Preferences';
-import type { MobileRecentFiles } from '@mobile-app/platform/RecentFiles';
+import type { CoreLogger } from '@lyricistant/core-platform/platform/Logger';
+import type { CorePreferences } from '@lyricistant/core-platform/platform/Preferences';
+import type { CoreRecentFiles } from '@lyricistant/core-platform/platform/RecentFiles';
 import type { MobileSystemThemeProvider } from '@mobile-app/platform/SystemThemeProvider';
-import { MobileTemporaryFiles } from '@mobile-app/platform/TemporaryFiles';
+import { CoreTemporaryFiles } from '@lyricistant/core-platform/platform/TemporaryFiles';
 import {
   formatTitle,
   provideUiConfig,
 } from '@mobile-app/platform/UiConfigProvider';
-import { FileSystem, MobileFileSystem } from '@mobile-app/wrappers/FileSystem';
 import { SplashScreenManager } from '@mobile-app/platform/SplashScreenManager';
-import type { MobileRendererDelegate } from './Delegates';
+import type { CoreRendererDelegate } from '@lyricistant/core-platform/Delegates';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();
-  component.registerSingleton<RendererDelegate, MobileRendererDelegate>();
+  component.registerSingleton<RendererDelegate, CoreRendererDelegate>();
 
-  component.registerSingleton<FileSystem, MobileFileSystem>();
-
-  component.registerSingleton<Dialogs, MobileDialogs>();
+  component.registerSingleton<Dialogs, CoreDialogs>();
   component.registerSingleton<Files, MobileFiles>();
-  component.registerSingleton<Logger, MobileLogger>();
-  component.registerSingleton<Preferences, MobilePreferences>();
-  component.registerSingleton<RecentFiles, MobileRecentFiles>();
+  component.registerSingleton<Logger, CoreLogger>();
+  component.registerSingleton<Preferences, CorePreferences>();
+  component.registerSingleton<RecentFiles, CoreRecentFiles>();
   component.registerSingleton<SystemThemeProvider, MobileSystemThemeProvider>();
-  component.registerSingleton<TemporaryFiles, MobileTemporaryFiles>();
+  component.registerSingleton<TemporaryFiles, CoreTemporaryFiles>();
   component.registerSingleton<UiConfigProvider>(() => provideUiConfig);
   component.registerSingleton<TitleFormatter>(() => formatTitle);
 

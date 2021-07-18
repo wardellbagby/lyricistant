@@ -1,6 +1,6 @@
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 
-export class WebTemporaryFiles implements TemporaryFiles {
+export class CoreTemporaryFiles implements TemporaryFiles {
   private temporaryFileKey = 'temporary_file';
   public set = (data: string | null) => {
     localStorage.setItem(this.temporaryFileKey, JSON.stringify(data));

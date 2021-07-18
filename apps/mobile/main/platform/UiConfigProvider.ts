@@ -5,7 +5,7 @@ import {
 
 export const provideUiConfig: IUiConfigProvider = () => ({
   showDownload: false,
-  showOpen: !!Blob && !!File,
+  showOpen: true
 });
 
 export const formatTitle: TitleFormatter = (filename: string) =>

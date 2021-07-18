@@ -17,34 +17,37 @@ import type {
 } from '@lyricistant/common/ui/UiConfig';
 import type { UiConfigManager } from '@lyricistant/common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
-import type { WebDialogs } from '@web-app/platform/Dialogs';
-import type { WebFiles } from '@web-app/platform/Files';
-import type { WebLogger } from '@web-app/platform/Logger';
-import type { WebPreferences } from '@web-app/platform/Preferences';
-import type { WebRecentFiles } from '@web-app/platform/RecentFiles';
-import type { WebSystemThemeProvider } from '@web-app/platform/SystemThemeProvider';
-import { WebTemporaryFiles } from '@web-app/platform/TemporaryFiles';
+import type { CoreDialogs } from '@lyricistant/core-platform/platform/Dialogs';
+import type { CoreFiles } from '@lyricistant/core-platform/platform/Files';
+import type { CoreLogger } from '@lyricistant/core-platform/platform/Logger';
+import type { CorePreferences } from '@lyricistant/core-platform/platform/Preferences';
+import type { CoreRecentFiles } from '@lyricistant/core-platform/platform/RecentFiles';
+import type { CoreSystemThemeProvider } from '@lyricistant/core-platform/platform/SystemThemeProvider';
+import { CoreTemporaryFiles } from '@lyricistant/core-platform/platform/TemporaryFiles';
 import {
   formatTitle,
   provideUiConfig,
-} from '@web-app/platform/UiConfigProvider';
-import { UnloadManager } from '@web-app/platform/UnloadManager';
-import { FileSystem, WebFileSystem } from '@web-app/wrappers/FileSystem';
-import type { WebRendererDelegate } from './Delegates';
+} from '@lyricistant/core-platform/platform/UiConfigProvider';
+import { UnloadManager } from '@lyricistant/core-platform/platform/UnloadManager';
+import {
+  FileSystem,
+  CoreFileSystem,
+} from '@lyricistant/core-platform/wrappers/FileSystem';
+import type { CoreRendererDelegate } from '@lyricistant/core-platform/Delegates';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();
-  component.registerSingleton<RendererDelegate, WebRendererDelegate>();
+  component.registerSingleton<RendererDelegate, CoreRendererDelegate>();
 
-  component.registerSingleton<FileSystem, WebFileSystem>();
+  component.registerSingleton<FileSystem, CoreFileSystem>();
 
-  component.registerSingleton<Dialogs, WebDialogs>();
-  component.registerSingleton<Files, WebFiles>();
-  component.registerSingleton<Logger, WebLogger>();
-  component.registerSingleton<Preferences, WebPreferences>();
-  component.registerSingleton<RecentFiles, WebRecentFiles>();
-  component.registerSingleton<SystemThemeProvider, WebSystemThemeProvider>();
-  component.registerSingleton<TemporaryFiles, WebTemporaryFiles>();
+  component.registerSingleton<Dialogs, CoreDialogs>();
+  component.registerSingleton<Files, CoreFiles>();
+  component.registerSingleton<Logger, CoreLogger>();
+  component.registerSingleton<Preferences, CorePreferences>();
+  component.registerSingleton<RecentFiles, CoreRecentFiles>();
+  component.registerSingleton<SystemThemeProvider, CoreSystemThemeProvider>();
+  component.registerSingleton<TemporaryFiles, CoreTemporaryFiles>();
   component.registerSingleton<UiConfigProvider>(() => provideUiConfig);
   component.registerSingleton<TitleFormatter>(() => formatTitle);
 

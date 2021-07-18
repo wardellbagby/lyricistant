@@ -7,6 +7,7 @@
   },
   "references": [
     { "path": "../../packages/common" },
+    { "path": "../../packages/core-platform" },
     { "path": "../../packages/renderer/" }
   ],
   "extends": "../../tsconfig.json"

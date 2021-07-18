@@ -5,7 +5,7 @@ export interface FileSystem {
   saveFile: typeof fileSave;
 }
 
-export class MobileFileSystem implements FileSystem {
+export class CoreFileSystem implements FileSystem {
   public openFile = fileOpen;
   public saveFile = fileSave;
 }

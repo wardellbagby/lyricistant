@@ -1,11 +1,11 @@
-import { WebFiles } from '@web-app/platform/Files';
+import { CoreFiles } from '@lyricistant/core-platform/platform/Files';
 import { expect, use } from 'chai';
 import sinon, { stubInterface } from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import { FileData, FileMetadata } from '@lyricistant/common/files/Files';
 import chaiAsPromised from 'chai-as-promised';
 import { Files } from '@lyricistant/common/files/Files';
-import { FileSystem } from '@web-app/wrappers/FileSystem';
+import { FileSystem } from '@lyricistant/core-platform/wrappers/FileSystem';
 import { FileSystemHandle, FileWithHandle } from 'browser-fs-access';
 
 use(sinonChai);
@@ -17,7 +17,7 @@ describe('Files', () => {
 
   beforeEach(() => {
     sinon.reset();
-    files = new WebFiles(fs, stubInterface());
+    files = new CoreFiles(fs, stubInterface());
   });
 
   it('shows a dialog to choose a file', async () => {

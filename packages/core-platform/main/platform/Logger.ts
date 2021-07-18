@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { bufferCount, map } from 'rxjs/operators';
 import { sprintf } from 'sprintf-js';
 
-export class MobileLogger implements Logger {
+export class CoreLogger implements Logger {
   public debug(message: string, ...args: any[]): void {
     console.debug(message, ...args);
     logMessages.next(['debug', message, args]);

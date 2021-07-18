@@ -30,6 +30,7 @@
       "@mobile-app/*": ["apps/mobile/main/*"],
       "@web-app/*": ["apps/web/main/*"],
       "@lyricistant/codemirror/*": ["packages/codemirror/main/*"],
+      "@lyricistant/core-platform/*": ["packages/core-platform/main/*"],
       "@lyricistant/rhyme-generator": [
         "packages/rhyme-generator/main/index.ts"
       ],

@@ -21,9 +21,10 @@ const createWebpackConfig = async () =>
   merge<Configuration>(
     {
       mode: 'production',
-      entry: ['./apps/mobile/main/index.ts'],
+      entry: {
+        renderer: './apps/mobile/main/index.ts',
+      },
       output: {
-        filename: 'renderer.js',
         path: outputDir,
       },
       devtool: 'inline-source-map',
@@ -55,10 +56,9 @@ const bundleMobile = async () => {
   });
 };
 
-const capacitor = (
-  command: CapacitorCommand,
-  platform: CapacitorPlatform
-) => () => spawn('node_modules/.bin/cap', [command, platform]);
+const capacitor =
+  (command: CapacitorCommand, platform: CapacitorPlatform) => () =>
+    spawn('node_modules/.bin/cap', [command, platform]);
 
 const runAndroid = series(
   capacitor('sync', 'android'),

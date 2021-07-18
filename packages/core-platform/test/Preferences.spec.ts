@@ -2,7 +2,7 @@ import { expect, use } from 'chai';
 import sinon from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
-import { WebPreferences } from '@web-app/platform/Preferences';
+import { CorePreferences } from '@lyricistant/core-platform/platform/Preferences';
 import {
   PreferencesData,
   RhymeSource,
@@ -18,7 +18,7 @@ describe('Preferences', () => {
 
   beforeEach(() => {
     sinon.reset();
-    preferences = new WebPreferences();
+    preferences = new CorePreferences();
   });
 
   it('round-trip works', () => {

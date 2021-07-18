@@ -5,7 +5,6 @@ import {
   Files as IFiles,
 } from '@lyricistant/common/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
-import { FileSystem } from '@mobile-app/wrappers/FileSystem';
 
 interface MobileFilesPlugin {
   openFile: () => Promise<FileData | null>;
@@ -15,7 +14,7 @@ interface MobileFilesPlugin {
 const mobileFilesPlugin = registerPlugin<MobileFilesPlugin>('Files');
 
 export class MobileFiles implements IFiles {
-  public constructor(private fs: FileSystem, private logger: Logger) {}
+  public constructor(private logger: Logger) {}
 
   public openFile = async () => {
     const result = await mobileFilesPlugin.openFile();

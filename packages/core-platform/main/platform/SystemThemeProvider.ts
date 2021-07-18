@@ -3,7 +3,7 @@ import {
   SystemThemeProvider as ISystemThemeProvider,
 } from '@lyricistant/common/theme/SystemTheme';
 
-export class WebSystemThemeProvider implements ISystemThemeProvider {
+export class CoreSystemThemeProvider implements ISystemThemeProvider {
   public onChange = (listener: (theme: SystemTheme) => void) => {
     if (window.matchMedia) {
       if (window.matchMedia('(prefers-color-scheme: dark)').matches) {

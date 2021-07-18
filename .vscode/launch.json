@@ -252,6 +252,16 @@
       "program": "node_modules/.bin/gulp"
     },
     {
+      "name": "Test Core Platform",
+      "args": ["testCorePlatform"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
       "name": "Test Electron",
       "args": ["testElectron"],
       "type": "pwa-node",

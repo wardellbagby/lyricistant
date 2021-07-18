@@ -3,7 +3,7 @@ import sinon from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
 import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
-import { WebRecentFiles } from '@web-app/platform/RecentFiles';
+import { CoreRecentFiles } from '@lyricistant/core-platform/platform/RecentFiles';
 
 use(sinonChai);
 use(chaiAsPromised);
@@ -13,7 +13,7 @@ describe('Recent Files', () => {
 
   beforeEach(() => {
     sinon.reset();
-    recentFiles = new WebRecentFiles();
+    recentFiles = new CoreRecentFiles();
   });
 
   it('round-trip works', () => {

@@ -1,7 +1,6 @@
-import { parallel, series, src } from 'gulp';
+import { series, src } from 'gulp';
 import mocha from 'gulp-mocha';
 import { buildTestWeb } from '../web.gulp';
-import { testWebPlatform } from './platform/test.gulp';
 
 const testWebMocha = () =>
   src(['apps/web/test/*.spec.ts']).pipe(
@@ -11,7 +10,4 @@ const testWebMocha = () =>
     })
   );
 
-export const testWeb = parallel(
-  series(buildTestWeb, testWebMocha),
-  testWebPlatform
-);
+export const testWeb = series(buildTestWeb, testWebMocha);

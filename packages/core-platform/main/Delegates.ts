@@ -3,11 +3,11 @@ import {
   RendererDelegate,
 } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
-import { MobileLogger } from '@mobile-app/platform/Logger';
+import { CoreLogger } from '@lyricistant/core-platform/platform/Logger';
 
-const logger: Logger = new MobileLogger();
+const logger: Logger = new CoreLogger();
 
-class MobilePlatformDelegate implements PlatformDelegate {
+class CorePlatformDelegate implements PlatformDelegate {
   public send(channel: string, ...args: any[]) {
     logger.info('Sending data to platform', { channel, args });
     queue(rendererListeners.getListeners(channel), args);
@@ -16,6 +16,7 @@ class MobilePlatformDelegate implements PlatformDelegate {
   public on(channel: string, listener: (...args: any[]) => void): this {
     logger.info('Registering renderer listener', { channel });
     platformListeners.addListener(channel, listener);
+    newRendererListenerListeners.get(channel)?.forEach((value) => value());
     return this;
   }
 
@@ -29,7 +30,7 @@ class MobilePlatformDelegate implements PlatformDelegate {
   }
 }
 
-export class MobileRendererDelegate implements RendererDelegate {
+export class CoreRendererDelegate implements RendererDelegate {
   public send(channel: string, ...args: any[]) {
     logger.info('Sending data to renderer', { channel, args });
     queue(platformListeners.getListeners(channel), args);
@@ -39,6 +40,15 @@ export class MobileRendererDelegate implements RendererDelegate {
     logger.info('Registering platform listener', { channel });
     rendererListeners.addListener(channel, listener);
     return this;
+  }
+
+  public addRendererListenerSetListener(
+    channel: string,
+    listener: () => void
+  ): void {
+    const listeners = newRendererListenerListeners.get(channel) ?? [];
+    listeners.push(listener);
+    newRendererListenerListeners.set(channel, listeners);
   }
 
   public removeListener(
@@ -93,6 +103,6 @@ const isError = (e: any) => e instanceof Error;
 
 const platformListeners: ListenerManager = new ListenerManager();
 const rendererListeners: ListenerManager = new ListenerManager();
+const newRendererListenerListeners = new Map<string, Array<() => void>>();
 
-export const platformDelegate: PlatformDelegate = new MobilePlatformDelegate();
-export const rendererDelegate: RendererDelegate = new MobileRendererDelegate();
+export const platformDelegate: PlatformDelegate = new CorePlatformDelegate();

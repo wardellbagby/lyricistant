@@ -6,9 +6,9 @@ import {
 } from '@lyricistant/common/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystemHandle, FileWithHandle } from 'browser-fs-access';
-import { FileSystem } from '@web-app/wrappers/FileSystem';
+import { FileSystem } from '@lyricistant/core-platform/wrappers/FileSystem';
 
-export class WebFiles implements IFiles {
+export class CoreFiles implements IFiles {
   /*
     An in-memory mapping of generated IDs to FileSystemHandles. We'd prefer for
     these to be given to the FileManager and fed back to us, but

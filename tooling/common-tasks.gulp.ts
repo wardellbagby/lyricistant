@@ -29,8 +29,9 @@ export const spawn = (
   args?: string[],
   options?: SpawnOptions
 ): ChildProcess => {
-  const optionsWithCwd = {
+  const optionsWithCwd: SpawnOptions = {
     cwd: path.resolve(__dirname, '..'),
+    stdio: 'inherit',
     ...options,
   };
   const childProcess = nodeSpawn(command, args, optionsWithCwd);
@@ -38,12 +39,6 @@ export const spawn = (
   console.log(`Running command: ${childProcess.spawnargs.join(' ')}`);
   console.log(`Options: ${JSON.stringify(optionsWithCwd)}`);
 
-  childProcess.stdout?.on('data', (data) => {
-    process.stdout.write(data);
-  });
-  childProcess.stderr?.on('data', (data) => {
-    console.log(data.toString());
-  });
   childProcess.on('exit', (code) => {
     console.log('Process exited with code ' + code.toString());
   });
