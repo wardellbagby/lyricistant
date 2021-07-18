@@ -42,7 +42,7 @@ export const createTheme = (
 };
 
 const lightThemePalette = {
-  primary: '#00796b',
+  primary: '#0388d1',
   background: '#fafafa',
   surface: '#E0E0E0',
   primaryText: '#212121',
@@ -50,7 +50,7 @@ const lightThemePalette = {
 };
 
 const darkThemePalette = {
-  primary: '#4db6ac',
+  primary: '#2ab6f6',
   background: '#141414',
   surface: '#232323',
   primaryText: '#f8f8f8',
