@@ -28,7 +28,6 @@ import {
   formatTitle,
   provideUiConfig,
 } from '@mobile-app/platform/UiConfigProvider';
-import { SplashScreenManager } from '@mobile-app/platform/SplashScreenManager';
 import type { CoreRendererDelegate } from '@lyricistant/core-platform/Delegates';
 
 const createComponent = (): DIContainer => {
@@ -50,7 +49,6 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<UiConfigManager>();
   component.registerSingleton<UnsavedDataManager>();
   component.registerSingleton<LogManager>();
-  component.registerSingleton<SplashScreenManager>();
 
   component.registerSingleton<Managers>(() => [
     () => component.get<FileManager>(),
@@ -58,7 +56,6 @@ const createComponent = (): DIContainer => {
     () => component.get<UiConfigManager>(),
     () => component.get<UnsavedDataManager>(),
     () => component.get<LogManager>(),
-    () => component.get<SplashScreenManager>(),
   ]);
   return component;
 };

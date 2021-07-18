@@ -6,9 +6,5 @@
 	{
 		"pkg": "@capacitor/keyboard",
 		"classpath": "com.capacitorjs.plugins.keyboard.KeyboardPlugin"
-	},
-	{
-		"pkg": "@capacitor/splash-screen",
-		"classpath": "com.capacitorjs.plugins.splashscreen.SplashScreenPlugin"
 	}
 ]
