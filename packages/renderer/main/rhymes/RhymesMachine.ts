@@ -2,7 +2,14 @@ import { assign, createMachine, EventObject } from 'xstate';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
 import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
-import { rhymeGenerator } from '@lyricistant/rhyme-generator';
+
+type generateRhymes =
+  typeof import('@lyricistant/rhyme-generator')['rhymeGenerator']['generateRhymes'];
+
+const offlineRhymes = (...args: Parameters<generateRhymes>) =>
+  import('@lyricistant/rhyme-generator').then((value) =>
+    value.rhymeGenerator.generateRhymes(...args)
+  );
 
 interface RhymesContext {
   rhymeSource?: RhymeSource;
@@ -21,7 +28,7 @@ const fetchRhymes = async (input: string, rhymeSource: RhymeSource) => {
   let results: Rhyme[];
   switch (rhymeSource) {
     case RhymeSource.Offline:
-      results = await rhymeGenerator.generateRhymes(input);
+      results = await offlineRhymes(input);
       break;
     case RhymeSource.Datamuse:
       results = await datamuseRhymes(input);
