@@ -1,49 +1,112 @@
 #!/usr/bin/env -S node -r ./register-ts-node
 import * as fs from 'fs';
+import * as path from 'path';
 import yaml from 'js-yaml';
 import * as gulpFile from '../../gulpfile';
 import { scripts } from '../../package.json';
 
 const COMMAND_REGEX = /npm run ([\w-_]+)|gulp ([\w-_]+)/g;
 
-interface Workflow {
-  jobs: {
+interface Step {
+  name: string;
+  run?: string;
+  with?: Record<string, string>;
+}
+
+interface WorkflowLike {
+  jobs?: {
     [name: string]: {
       name: string;
-      steps: Array<{
-        name: string;
-        run?: string;
-        with?: Record<string, string>;
-      }>;
+      steps: Step[];
     };
   };
+  runs?: {
+    steps: Step[];
+  };
 }
-const dir = '.github/workflows';
-const files = fs.readdirSync(dir);
+
+const toRelativePath = (file: string) => {
+  const projectDirectory = path.resolve(__dirname, '../../') + path.sep;
+  return file.replace(projectDirectory, '');
+};
+
+const readdirRecursiveSync = (dir: string) => {
+  const results: string[] = [];
+  if (!fs.existsSync(dir)) {
+    return [];
+  }
+
+  fs.readdirSync(dir, { withFileTypes: true }).map((dirent) => {
+    if (dirent.isFile()) {
+      results.push(toRelativePath(path.resolve(dir, dirent.name)));
+    } else if (dirent.isDirectory()) {
+      results.push(...readdirRecursiveSync(path.resolve(dir, dirent.name)));
+    }
+  });
+  return results;
+};
+
+const workflowsDir = '.github/workflows';
+const actionsDir = '.github/actions';
+const workflows = fs
+  .readdirSync(workflowsDir)
+  .map((file) => toRelativePath(path.resolve(workflowsDir, file)));
+
+const actions = readdirRecursiveSync(actionsDir);
+const files = [...workflows, ...actions];
 const npmScripts = Object.keys(scripts).map((name) => `npm run ${name}`);
 const gulpTasks = Object.keys(gulpFile).map((name) => `gulp ${name}`);
 
+const isStepInvalid = ({ run, with: withBlock }: Step) => {
+  const matches =
+    run?.match(COMMAND_REGEX) || withBlock?.command?.match(COMMAND_REGEX);
+  if (matches) {
+    for (const match of matches) {
+      if (!npmScripts.includes(match) && !gulpTasks.includes(match)) {
+        return match;
+      }
+    }
+  }
+  return false;
+};
+
+const isWorkflowEmpty = (workflow: WorkflowLike) =>
+  !workflow.runs?.steps?.length &&
+  !Object.entries(workflow.jobs ?? {})
+    .map((value) => value[1].steps?.length)
+    .reduce((total, next) => total + next);
+
 files.forEach((file) => {
   if (file.endsWith('.yml')) {
-    const workflow: Workflow = yaml.safeLoad(
-      fs.readFileSync(`${dir}/${file}`, 'utf8')
-    ) as Workflow;
+    let workflow: WorkflowLike;
+    try {
+      workflow = yaml.safeLoad(fs.readFileSync(file, 'utf8')) as WorkflowLike;
+    } catch (error) {
+      console.error(`Failure to load file: ${file}`);
+      throw error;
+    }
 
-    Object.entries(workflow.jobs).forEach(([label, job]) => {
+    if (isWorkflowEmpty(workflow)) {
+      throw Error(`No steps found in file: ${file}`);
+    }
+
+    workflow.runs?.steps?.forEach((step) => {
+      const task = isStepInvalid(step);
+      if (task) {
+        console.error(
+          `Task "${task}", used in step "${step.name}" in action "${file}", isn't an NPM script or a gulp task.`
+        );
+        process.exit(1);
+      }
+    });
+    Object.entries(workflow.jobs ?? {}).forEach(([label, job]) => {
       job.steps.forEach((step) => {
-        const { name, run } = step;
-        const withBlock = step['with'];
-        const matches =
-          run?.match(COMMAND_REGEX) || withBlock?.command?.match(COMMAND_REGEX);
-        if (matches) {
-          matches.forEach((match) => {
-            if (!npmScripts.includes(match) && !gulpTasks.includes(match)) {
-              console.error(
-                `Task "${match}", used in job "${label}" at step "${name}" in file "${file}", isn't an NPM script or a gulp task.`
-              );
-              process.exit(1);
-            }
-          });
+        const task = isStepInvalid(step);
+        if (task) {
+          console.error(
+            `Task "${task}", used in job "${label}" at step "${step.name}" in workflow "${file}", isn't an NPM script or a gulp task.`
+          );
+          process.exit(1);
         }
       });
     });
