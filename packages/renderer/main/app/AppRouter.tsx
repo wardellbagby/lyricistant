@@ -5,6 +5,7 @@ import { ChooseDownloadDialog } from "@lyricistant/renderer/download/ChooseDownl
 import { PlatformDialog } from "@lyricistant/renderer/dialog/PlatformDialogs";
 import { Preferences } from "@lyricistant/renderer/preferences/Preferences";
 import { AboutDialog } from "@lyricistant/renderer/about/AboutDialog";
+import { PrivacyPolicy } from "@lyricistant/renderer/privacy/PrivacyPolicy";
 import { App } from './App';
 
 export function AppRouter() {
@@ -21,6 +22,7 @@ export function AppRouter() {
         <Route path="/download" component={ChooseDownloadDialog} />
         <Route path="/preferences" component={Preferences} />
         <Route path="/about" component={AboutDialog} />
+        <Route path="/privacypolicy" component={PrivacyPolicy} />
         <Route render={() => <Redirect to="/" />} />
       </Switch>
 
