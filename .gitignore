@@ -28,3 +28,4 @@ out
 *.iml
 *.ipr
 .gradle
+/.env.default

@@ -18,11 +18,11 @@ default_platform(:ios)
 platform :ios do
   desc "Push a new release build to the App Store"
   lane :release do
-  match(type: "appstore", readonly: is_ci)
+    match(type: "appstore", readonly: is_ci)
     build_app(
-        workspace: "App.xcworkspace",
+        workspace: "apps/mobile/ios/App/App.xcworkspace",
         scheme: "App",
-        output_directory: "../dist",
+        output_directory: "apps/mobile/dist/ios",
         output_name: "lyricistant.ipa"
     )
     upload_to_app_store
