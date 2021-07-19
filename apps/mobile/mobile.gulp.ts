@@ -30,7 +30,7 @@ const createWebpackConfig = async () =>
       devtool: 'inline-source-map',
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig('development')
+    defaultWebpackConfig('production')
   );
 
 const copyMobileHtmlFile = async () => {

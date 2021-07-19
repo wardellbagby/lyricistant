@@ -9,3 +9,4 @@ dist/
 
 # Cordova plugins for Capacitor
 capacitor-cordova-ios-plugins
+/App/.env.default

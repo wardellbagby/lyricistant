@@ -1,0 +1,5 @@
+git_url("https://github.com/wardellbagby/lyricistant-secrets.git")
+
+storage_mode("git")
+
+type("development")
