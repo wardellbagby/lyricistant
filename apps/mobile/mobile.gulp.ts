@@ -118,34 +118,28 @@ const buildIOSApp = series(
     ])
 );
 
-export const startAndroid = series(
-  cleanMobile,
+export const bundleAndroid = series(
   copyMobileHtmlFile,
   bundleMobile,
-  runAndroid
+  capacitor('sync', 'android')
 );
+export const bundleIOS = series(
+  copyMobileHtmlFile,
+  bundleMobile,
+  capacitor('sync', 'ios')
+);
+
+export const startAndroid = series(cleanMobile, bundleAndroid, runAndroid);
 export const startIOS = series(
   cleanMobile,
   copyMobileHtmlFile,
-  bundleMobile,
+  bundleIOS,
   runIOS
 );
 
-export const buildAndroid = series(
-  cleanMobile,
-  copyMobileHtmlFile,
-  bundleMobile,
-  capacitor('sync', 'android'),
-  buildAndroidApp
-);
+export const buildAndroid = series(cleanMobile, bundleAndroid, buildAndroidApp);
 
-export const buildIOS = series(
-  cleanMobile,
-  copyMobileHtmlFile,
-  bundleMobile,
-  capacitor('sync', 'ios'),
-  buildIOSApp
-);
+export const buildIOS = series(cleanMobile, bundleIOS, buildIOSApp);
 
 export const openAndroid = async () => {
   capacitor('sync', 'android');

@@ -1,7 +1,3 @@
-# The Deliverfile allows you to store various App Store Connect metadata
-# For more information, check out the docs
-# https://docs.fastlane.tools/actions/deliver/
-
 app_review_information(
   first_name: ENV["FIRST_NAME"],
   last_name: ENV["LAST_NAME"],

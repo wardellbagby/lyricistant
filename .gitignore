@@ -30,3 +30,4 @@ out
 .gradle
 /.env.default
 fastlane/report.xml
+fastlane/Preview.html

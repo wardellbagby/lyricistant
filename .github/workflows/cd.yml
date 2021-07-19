@@ -13,7 +13,7 @@ jobs:
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
   deploy-web:
-    name: 'Deploy Web'
+    name: 'Deploy Web to dev.lyricistant.app'
     runs-on: ubuntu-20.04
     needs: cancel-deploys
     steps:
@@ -39,8 +39,51 @@ jobs:
           publish_dir: 'apps/web/dist/production/'
           force_orphan: true
           cname: dev.lyricistant.app
-  deploy-app:
-    name: 'Deploy App'
+  build-ios-app:
+    name: 'Build iOS'
+    runs-on: macos-10.15
+    needs: cancel-deploys
+    steps:
+      - name: "Secret secret suspicious stuff, don't look!"
+        run: |
+          echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
+          echo "::add-mask::${{ secrets.APPLE_ID }}"
+      - name: Checkout the current branch.
+        uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
+        with:
+          node-version: '>=15.10'
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Fastlane
+        run: |
+          gem install bundler
+          bundle install
+      - name: Bundle Mobile
+        run: gulp bundleIOS
+        env:
+          NIGHTLY: 'true'
+      - name: Build iOS
+        run: bundle exec fastlane ios release
+        env:
+          FASTLANE_USER: ${{ secrets.APPLE_ID }}
+          FASTLANE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          FIRST_NAME: Wardell
+          LAST_NAME: Bagby
+          PHONE: ${{ secrets.PHONE }}
+          EMAIL: ${{ secrets.APPLE_ID }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      - name: Upload iOS app
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-app
+          path: apps/mobile/dist/ios/*.ipa
+  build-electron-apps:
+    name: 'Build Electron Apps'
     runs-on: macos-10.15
     needs: cancel-deploys
     steps:
@@ -66,11 +109,33 @@ jobs:
           timeout_minutes: 20
           max_attempts: 3
           command: gulp buildAllElectronApps --max-old-space-size=8192
-      - name: 'Deploy App'
+      - name: Upload Electron apps
+        uses: actions/upload-artifact@v2
+        with:
+          name: electron-apps
+          path: apps/electron/dist/production/app/*.*
+  create-github-release:
+    name: 'Create Github Nightly Release'
+    runs-on: ubuntu-20.04
+    needs:
+      - build-ios-app
+      - build-electron-apps
+    steps:
+      - name: 'Download iOS app'
+        uses: actions/download-artifact@v2
+        with:
+          name: ios-app
+          path: /tmp/artifacts
+      - name: 'Download Electron apps'
+        uses: actions/download-artifact@v2
+        with:
+          name: electron-apps
+          path: /tmp/artifacts
+      - name: 'Create Github release'
         uses: marvinpinto/action-automatic-releases@4e86dbcfb19c3e408a4984b2b7d9a6de082f3c3f # pin@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: 'latest'
           prerelease: true
           title: 'Lyricistant - Nightly'
-          files: apps/electron/dist/production/app/*.*
+          files: /tmp/artifacts/*.*

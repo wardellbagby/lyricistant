@@ -5,8 +5,9 @@ default_platform(:ios)
 package = JSON.parse(File.read('../package.json'))
 
 platform :ios do
-  desc "Push a new release build to the App Store"
-  lane :release do
+  setup_ci
+  desc "Build the production iOS app"
+  lane :release do |options|
     match(type: "appstore", readonly: is_ci)
     increment_build_number(
       xcodeproj: "apps/mobile/ios/App/App.xcodeproj"
@@ -21,6 +22,8 @@ platform :ios do
         output_directory: "apps/mobile/dist/ios",
         output_name: "lyricistant.ipa"
     )
-    upload_to_app_store
+    if options[:deploy]
+      upload_to_app_store
+    end
   end
 end

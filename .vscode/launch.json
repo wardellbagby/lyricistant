@@ -92,6 +92,26 @@
       "program": "node_modules/.bin/gulp"
     },
     {
+      "name": "Bundle Android",
+      "args": ["bundleAndroid"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
+      "name": "Bundle iOS",
+      "args": ["bundleIOS"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
       "name": "Check",
       "args": ["check"],
       "type": "pwa-node",
