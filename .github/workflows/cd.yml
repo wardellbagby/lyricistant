@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
         with:
           node-version: '>=15.10'
+          cache: 'npm'
       - name: Install Gulp
         run: npm install -g gulp@4.0.2
       - name: Install dependencies
@@ -54,14 +55,15 @@ jobs:
         uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
         with:
           node-version: '>=15.10'
+          cache: 'npm'
       - name: Install Gulp
         run: npm install -g gulp@4.0.2
       - name: Install dependencies
         run: npm ci
-      - name: Install Fastlane
-        run: |
-          gem install bundler
-          bundle install
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
       - name: Bundle Mobile
         run: gulp bundleIOS
         env:
@@ -82,6 +84,43 @@ jobs:
         with:
           name: ios-app
           path: apps/mobile/dist/ios/*.ipa
+  build-android-app:
+    name: 'Build Android'
+    runs-on: ubuntu-20.04
+    needs: cancel-deploys
+    steps:
+      - name: Checkout the current branch.
+        uses: actions/checkout@f1d3225b5376a0791fdee5a0e8eac5289355e43a # pin@v2
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
+        with:
+          node-version: '>=15.10'
+          cache: 'npm'
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Install dependencies
+        run: npm ci
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Populate keystore
+        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > apps/mobile/android/android.keystore
+      - name: Populate keystore properties
+        run: echo "${{ secrets.KEYSTORE_PROPERTIES }}" | base64 --decode > apps/mobile/android/keystore.properties
+      - name: Populate Play Store credentials
+        run: echo "${{ secrets.PLAY_STORE_CREDS }}" | base64 --decode > play-store-credentials.json
+      - name: Bundle Mobile
+        run: gulp bundleAndroid
+        env:
+          NIGHTLY: 'true'
+      - name: Build Android
+        run: bundle exec fastlane android release
+      - name: Upload Android app
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-app
+          path: apps/mobile/dist/android/*.apk
   build-electron-apps:
     name: 'Build Electron Apps'
     runs-on: macos-10.15
@@ -93,6 +132,7 @@ jobs:
         uses: actions/setup-node@7984c00a6eb7ec35a15dd83fd6d4f88c67421da3 # pin@v1
         with:
           node-version: '>=15.10'
+          cache: 'npm'
       - name: Install Gulp
         run: npm install -g gulp@4.0.2
       - name: Install dependencies
@@ -120,6 +160,7 @@ jobs:
     needs:
       - build-ios-app
       - build-electron-apps
+      - build-android-app
     steps:
       - name: 'Download iOS app'
         uses: actions/download-artifact@v2
@@ -130,6 +171,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: electron-apps
+          path: /tmp/artifacts
+      - name: 'Download Android app'
+        uses: actions/download-artifact@v2
+        with:
+          name: android-app
           path: /tmp/artifacts
       - name: 'Create Github release'
         uses: marvinpinto/action-automatic-releases@4e86dbcfb19c3e408a4984b2b7d9a6de082f3c3f # pin@latest

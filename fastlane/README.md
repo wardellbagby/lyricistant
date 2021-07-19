@@ -24,6 +24,15 @@ Build the production iOS app
 
 ----
 
+## Android
+### android release
+```
+fastlane android release
+```
+Build the production Android app
+
+----
+
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 More information about fastlane can be found on [fastlane.tools](https://fastlane.tools).
 The documentation of fastlane can be found on [docs.fastlane.tools](https://docs.fastlane.tools).

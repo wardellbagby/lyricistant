@@ -1,4 +1,9 @@
+# iOS
 app_identifier("com.wardellbagby.lyricistant")
 itc_team_id("122139352")
 team_id("46CHV69543")
+
+# Android
+json_key_file("play-store-credentials.json")
+package_name("com.wardellbagby.lyricistant")
 

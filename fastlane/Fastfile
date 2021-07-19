@@ -1,4 +1,5 @@
 require 'json'
+require 'fileutils'
 
 default_platform(:ios)
 
@@ -23,7 +24,42 @@ platform :ios do
         output_name: "lyricistant.ipa"
     )
     if options[:deploy]
-      upload_to_app_store
+      upload_to_app_store(
+        metadata_path: "./fastfile/metadata/ios"
+      )
+    end
+  end
+end
+
+platform :android do
+  desc "Build the production Android app"
+  lane :release do |options|
+    versions = google_play_track_version_codes
+    next_version_code = versions[0].to_i + 1
+    android_set_version_code(
+        gradle_file: "apps/mobile/android/app/build.gradle",
+        version_code: next_version_code
+    )
+    android_set_version_name(
+        version_name: package["version"],
+        gradle_file: "apps/mobile/android/app/build.gradle"
+    )
+    gradle(
+        project_dir: "apps/mobile/android/",
+        task: ":app:clean :app:assembleRelease"
+    )
+    copy_artifacts(
+      target_path: "apps/mobile/dist/android/",
+      artifacts: ["apps/mobile/android/app/build/outputs/apk/release/app-release.apk"],
+      fail_on_missing: true
+    )
+    Dir.chdir("..") do
+      File.rename("apps/mobile/dist/android/app-release.apk", "apps/mobile/dist/android/lyricistant.apk")
+    end
+    if options[:deploy]
+        upload_to_play_store(
+          apk: "apps/mobile/dist/android/lyricistant.apk"
+        )
     end
   end
 end
