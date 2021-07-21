@@ -52,6 +52,7 @@ const buildElectronApps: Job = {
 const createGithubRelease: Job = {
   name: 'Create Github Release',
   'runs-on': 'ubuntu-20.04',
+  if: 'always()',
   needs: [buildIOSApp, buildElectronApps, buildAndroidApp],
   steps: [
     {

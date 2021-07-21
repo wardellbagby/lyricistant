@@ -211,6 +211,7 @@ jobs:
   createGithubRelease:
     name: Create Github Release
     runs-on: ubuntu-20.04
+    if: always()
     needs:
       - buildIOSApp
       - buildElectronApps
