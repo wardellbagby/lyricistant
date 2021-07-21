@@ -1,7 +1,18 @@
 #!/usr/bin/env -S node -r ./register-ts-node
-import { spawnSync } from 'child_process';
+import { spawnSync, SpawnSyncReturns } from 'child_process';
 import inquirer from 'inquirer';
 
+const requireSuccessful = <T = string | Buffer>(
+  result: SpawnSyncReturns<T>,
+  onFailure: (result: SpawnSyncReturns<T>) => void
+) => {
+  if (result.error || result.status !== 0) {
+    console.log(result.stdout.toString());
+    console.error(result.stderr.toString());
+    onFailure(result);
+    process.exit(result.status ?? 1);
+  }
+};
 const versionBumpChoices = [
   { name: 'Major (x.0.0)', value: 'major' },
   { name: 'Minor (1.x.0)', value: 'minor' },
@@ -28,6 +39,11 @@ const questions: inquirer.QuestionCollection = [
     choices: appUpdateChoices,
     default: appUpdateChoices.map((it) => it.value),
   },
+  {
+    type: 'confirm',
+    name: 'push',
+    message: 'Push the new version now?',
+  },
 ];
 
 inquirer.prompt(questions).then(async (answers) => {
@@ -51,8 +67,23 @@ inquirer.prompt(questions).then(async (answers) => {
   }
   const commitMessage = newVersion.substr(1);
 
-  spawnSync('git', ['commit', '--all', '-m', `${commitMessage}`]);
-  spawnSync('git', ['tag', '-a', newVersion, '-m', '""']);
+  requireSuccessful(
+    spawnSync('git', ['commit', '--all', '-m', `${commitMessage}`]),
+    () => {
+      console.error('Failed to create commit');
+    }
+  );
+  requireSuccessful(
+    spawnSync('git', ['tag', '-a', newVersion, '-m', '""']),
+    () => {
+      console.error('Failed to create tag', newVersion);
+    }
+  );
 
   console.log('New version:' + newVersion);
+  if (answers['push']) {
+    requireSuccessful(spawnSync('git', ['push', '--follow-tags']), () => {
+      console.error('Failed to push tags');
+    });
+  }
 });
