@@ -3,39 +3,36 @@ import { spawnSync } from 'child_process';
 import inquirer from 'inquirer';
 
 const versionBumpChoices = [
-  { label: 'Major (x.0.0)', value: 'major' },
-  { label: 'Minor (1.x.0)', value: 'minor' },
-  { label: 'Patch (1.0.x)', value: 'patch' },
+  { name: 'Major (x.0.0)', value: 'major' },
+  { name: 'Minor (1.x.0)', value: 'minor' },
+  { name: 'Patch (1.0.x)', value: 'patch' },
 ];
 const appUpdateChoices = [
-  { label: 'All', value: 'all' },
-  { label: 'Web only', value: 'web' },
-  { label: 'Electron only', value: 'electron' },
+  { name: 'Web', value: 'web' },
+  { name: 'Electron', value: 'electron' },
+  { name: 'Android', value: 'android' },
+  { name: 'iOS', value: 'ios' },
 ];
-const questions = [
+const questions: inquirer.QuestionCollection = [
   {
     type: 'rawlist',
     name: 'version',
     message: 'What type of version update?',
-    choices: versionBumpChoices.map((choice) => choice.label),
-    default: versionBumpChoices[2].label,
+    choices: versionBumpChoices,
+    default: versionBumpChoices[2].value,
   },
   {
-    type: 'rawlist',
+    type: 'checkbox',
     name: 'apps',
     message: 'Which apps are being updated?',
-    choices: appUpdateChoices.map((choice) => choice.label),
-    default: appUpdateChoices[0].label,
+    choices: appUpdateChoices,
+    default: appUpdateChoices.map((it) => it.value),
   },
 ];
 
 inquirer.prompt(questions).then(async (answers) => {
-  const versionBumpType = versionBumpChoices.find(
-    (choice) => choice.label === answers['version']
-  ).value;
-  const appUpdateType = appUpdateChoices.find(
-    (choice) => choice.label === answers['apps']
-  ).value;
+  const versionBumpType: string = answers['version'];
+  const appUpdateTypes: string[] = answers['apps'];
 
   let newVersion = spawnSync('npm', [
     'version',
@@ -45,8 +42,12 @@ inquirer.prompt(questions).then(async (answers) => {
     .stdout.toString()
     .trim();
 
-  if (appUpdateType !== 'all') {
-    newVersion = `${newVersion}-${appUpdateType}`;
+  if (appUpdateTypes.length === appUpdateChoices.length) {
+    newVersion += `-all`;
+  } else {
+    appUpdateTypes.forEach((type) => {
+      newVersion += `-${type}`;
+    });
   }
   const commitMessage = newVersion.substr(1);
 

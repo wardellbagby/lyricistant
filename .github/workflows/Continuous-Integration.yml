@@ -18,8 +18,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-20.04
-    needs:
-      - cancelCurrentRuns
     steps:
       - name: Mask any potential PII
         run: |-
@@ -50,6 +48,8 @@ jobs:
           path: |-
             apps/**/dist/
             dist/
+    needs:
+      - cancelCurrentRuns
   lint:
     name: Lint
     runs-on: ubuntu-20.04

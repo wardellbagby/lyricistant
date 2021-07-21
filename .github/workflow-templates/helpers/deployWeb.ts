@@ -3,8 +3,7 @@ import { DEPLOY_GH_PAGES } from './versions';
 
 export const deployWeb = (
   site: 'lyricistant.app' | 'dev.lyricistant.app'
-): Step => {
-  return {
+): Step => ({
     name: 'Deploy Web',
     uses: DEPLOY_GH_PAGES,
     with: {
@@ -18,5 +17,4 @@ export const deployWeb = (
           ? 'wardellbagby/lyricistant-website'
           : undefined,
     },
-  };
-};
+  });

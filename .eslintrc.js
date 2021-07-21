@@ -5,6 +5,7 @@ module.exports = {
     node: true,
   },
   ignorePatterns: [
+    '!/.github',
     '**/dist/**/*',
     '**/build/**/*',
     'apps/mobile/android/**/*',
@@ -29,7 +30,7 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['*.js', 'scripts/**/*.ts'],
+      files: ['*.js', 'scripts/**/*.ts', '.github/**/*.ts'],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/explicit-member-accessibility': 'off',

@@ -7,7 +7,8 @@ interface BranchesOrTags {
 export interface Job {
   name: string;
   'runs-on': 'ubuntu-20.04' | 'macos-10.15';
-  needs?: (string | Job)[] | string | Job;
+  needs?: Array<string | Job> | string | Job;
+  if?: string;
   steps: Step[];
 }
 export interface Step {

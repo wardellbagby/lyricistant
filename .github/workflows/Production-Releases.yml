@@ -1,22 +1,48 @@
-name: Nightly Releases
+name: Production Releases
 'on':
   push:
-    branches:
-      - main
+    tags:
+      - v*
 jobs:
-  cancelCurrentRuns:
-    name: Cancel in-progress Workflow runs
+  test:
+    name: Test
     runs-on: ubuntu-20.04
     steps:
-      - name: Cancel in-progress Workflow runs
-        uses: styfle/cancel-workflow-action@148d9a848c6acaf90a3ec30bc5062f646f8a4163
+      - name: Mask any potential PII
+        run: |-
+          echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
+          echo "::add-mask::${{ secrets.APPLE_ID }}"
+      - name: Checkout the current branch
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f
         with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
+          node-version: '>=15.10'
+          cache: npm
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Set virtual display if Ubuntu
+        if: runner.os == 'Linux'
+        run: Xvfb :99 &
+      - name: Install Node modules
+        run: npm ci
+      - name: Run all tests
+        run: gulp testAll --max-old-space-size=8192
+        env:
+          DISPLAY: ':99'
+      - name: Upload build artifacts if failed
+        if: failure()
+        uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074
+        with:
+          path: |-
+            apps/**/dist/
+            dist/
   deployWeb:
-    name: Deploy Web to dev.lyricistant.app
+    name: Deploy Web to lyricistant.app
     runs-on: ubuntu-20.04
     needs:
-      - cancelCurrentRuns
+      - test
+    if: ${{ contains(github.ref, 'web') || contains(github.ref, 'all') }}
     steps:
       - name: Mask any potential PII
         run: |-
@@ -35,8 +61,6 @@ jobs:
         run: npm ci
       - name: Build Web
         run: gulp buildWeb --max-old-space-size=8192
-        env:
-          NIGHTLY: true
       - name: Deploy Web
         uses: peaceiris/actions-gh-pages@068dc23d9710f1ba62e86896f84735d869951305
         with:
@@ -44,7 +68,8 @@ jobs:
           publish_branch: gh-pages
           publish_dir: apps/web/dist/production/
           force_orphan: true
-          cname: dev.lyricistant.app
+          cname: lyricistant.app
+          external_repository: wardellbagby/lyricistant-website
   buildIOSApp:
     name: Build iOS
     runs-on: macos-10.15
@@ -73,7 +98,7 @@ jobs:
       - name: Bundle Mobile
         run: gulp bundleIOS --max-old-space-size=8192
         env:
-          NIGHTLY: true
+          NIGHTLY: false
       - name: Build iOS
         run: bundle exec fastlane ios release
         env:
@@ -91,7 +116,8 @@ jobs:
           name: ios-app
           path: apps/mobile/dist/ios/*.ipa
     needs:
-      - cancelCurrentRuns
+      - test
+    if: ${{ contains(github.ref, 'ios') || contains(github.ref, 'all') }}
   buildAndroidApp:
     name: Build Android
     runs-on: ubuntu-20.04
@@ -132,7 +158,7 @@ jobs:
       - name: Bundle Mobile
         run: gulp bundleAndroid --max-old-space-size=8192
         env:
-          NIGHTLY: true
+          NIGHTLY: false
       - name: Build Android
         run: bundle exec fastlane android release
       - name: Upload Android app
@@ -141,7 +167,8 @@ jobs:
           name: android-app
           path: apps/mobile/dist/android/*.apk
     needs:
-      - cancelCurrentRuns
+      - test
+    if: ${{ contains(github.ref, 'android') || contains(github.ref, 'all') }}
   buildElectronApps:
     name: Build Electron Apps
     runs-on: macos-10.15
@@ -168,7 +195,7 @@ jobs:
           CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          NIGHTLY: true
+          NIGHTLY: false
         with:
           timeout_minutes: 20
           max_attempts: 3
@@ -179,9 +206,10 @@ jobs:
           name: electron-apps
           path: apps/electron/dist/production/app/*.*
     needs:
-      - cancelCurrentRuns
+      - test
+    if: ${{ contains(github.ref, 'electron') || contains(github.ref, 'all') }}
   createGithubRelease:
-    name: Create Github Nightly Release
+    name: Create Github Release
     runs-on: ubuntu-20.04
     needs:
       - buildIOSApp
@@ -193,22 +221,27 @@ jobs:
         with:
           name: ios-app
           path: /tmp/artifacts
+        if: needs.buildIOSApp.result == 'success'
       - name: Download Electron apps
         uses: actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60
         with:
           name: electron-apps
           path: /tmp/artifacts
+        if: needs.buildElectronApps.result == 'success'
       - name: Download Android app
         uses: actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60
         with:
           name: android-app
           path: /tmp/artifacts
-      - name: Create Nightly Github release
+        if: needs.buildAndroidApp.result == 'success'
+      - name: Create Github release
         uses: >-
           marvinpinto/action-automatic-releases@5bd3ab50e845612718d9a3a3c954dc99ba6868a4
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: latest
-          prerelease: true
-          title: Lyricistant - Nightly
+          prerelease: false
           files: /tmp/artifacts/*.*
+        if: >-
+          ${{ needs.buildIOSApp.result == 'success' ||
+          needs.buildElectronApps.result == 'success' ||
+          needs.buildAndroidApp.result == 'success' }}

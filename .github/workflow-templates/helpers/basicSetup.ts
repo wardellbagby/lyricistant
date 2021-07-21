@@ -2,10 +2,10 @@ import { Step } from './Workflow';
 import { ifTrue } from './addIfTrue';
 import { CHECKOUT, SETUP_NODE, SETUP_RUBY } from './versions';
 
-type Options = {
+interface Options {
   forTests?: boolean;
   forMobileBuilds?: boolean;
-};
+}
 export const basicSetup = (options?: Options): Step[] => {
   const { forTests, forMobileBuilds } = options ?? {
     forTests: false,

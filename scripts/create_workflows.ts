@@ -6,6 +6,7 @@ import yaml from 'js-yaml';
 import { nightlyReleases } from '../.github/workflow-templates/nightlyReleases';
 import { Job, Workflow } from '../.github/workflow-templates/helpers/Workflow';
 import { continuousIntegration } from '../.github/workflow-templates/continuousIntegration';
+import { productionReleases } from '../.github/workflow-templates/productionReleases';
 
 const fromEntries = <T>(entries: Array<[keyof T, T[keyof T]]>): T => {
   const newObject = Object.create(null);
@@ -53,12 +54,12 @@ const normalize = (workflow: Workflow): Workflow => ({
 const writeWorkflow = (workflow: Workflow) => {
   const file = path.resolve(
     '.github/workflows',
-    `${workflow.name.replace(' ', '-')}.yml`
+    `${workflow.name.replace(/\s/g, '-')}.yml`
   );
   workflow = normalize(workflow);
   fs.writeFileSync(file, yaml.dump(workflow));
 };
-const templates = [continuousIntegration, nightlyReleases];
+const templates = [continuousIntegration, nightlyReleases, productionReleases];
 
 const createWorkflows = () => {
   templates.forEach(writeWorkflow);

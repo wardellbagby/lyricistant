@@ -13,7 +13,7 @@ export const UPLOAD_ARTIFACT =
 // pin@v2
 export const DOWNLOAD_ARTIFACT =
   'actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60';
-//pin@v2
+// pin@v2
 export const RETRY =
   'nick-invision/retry@45ba062d357edb3b29c4a94b456b188716f61020';
 // pin@latest
