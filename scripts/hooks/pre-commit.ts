@@ -7,18 +7,27 @@ const spawnSync = (
   command: string,
   args?: string[],
   options?: SpawnSyncOptions
-) =>
-  nodeSpawnSync(command, args, {
+) => {
+  const result = nodeSpawnSync(command, args, {
     cwd: path.resolve(__dirname, '../../'),
     ...options,
   });
-const changableFiles = [
+  if (result.error) {
+    throw result.error;
+  }
+  if (result.status !== 0) {
+    console.log(result.stdout.toString());
+    console.error(result.stderr.toString());
+    process.exit(result.status);
+  }
+};
+const changeableFiles = [
   'apps/mobile/android/capacitor.settings.gradle',
   'apps/mobile/android/app/capacitor.build.gradle',
-  'apps/mobile/android/capacitor-cordova-android-plugins/cordova.variables.gradle',
   'apps/mobile/ios/App/Podfile',
-  'apps/mobile/ios/capacitor-cordova-ios-plugins',
+  '.github/workflows',
 ];
 spawnSync('npx', ['cap', 'update', 'android']);
 spawnSync('npx', ['cap', 'update', 'ios']);
-spawnSync('git', ['add', ...changableFiles]);
+spawnSync('./scripts/create_workflows.ts');
+spawnSync('git', ['add', ...changeableFiles]);

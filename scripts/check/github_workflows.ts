@@ -4,22 +4,14 @@ import * as path from 'path';
 import yaml from 'js-yaml';
 import * as gulpFile from '../../gulpfile';
 import { scripts } from '../../package.json';
+import {
+  Workflow,
+  Step,
+} from '../../.github/workflow-templates/helpers/Workflow';
 
 const COMMAND_REGEX = /npm run ([\w-_]+)|gulp ([\w-_]+)/g;
 
-interface Step {
-  name: string;
-  run?: string;
-  with?: Record<string, string>;
-}
-
-interface WorkflowLike {
-  jobs?: {
-    [name: string]: {
-      name: string;
-      steps: Step[];
-    };
-  };
+interface WorkflowLike extends Workflow {
   runs?: {
     steps: Step[];
   };
@@ -51,7 +43,6 @@ const actionsDir = '.github/actions';
 const workflows = fs
   .readdirSync(workflowsDir)
   .map((file) => toRelativePath(path.resolve(workflowsDir, file)));
-
 const actions = readdirRecursiveSync(actionsDir);
 const files = [...workflows, ...actions];
 const npmScripts = Object.keys(scripts).map((name) => `npm run ${name}`);
@@ -59,7 +50,8 @@ const gulpTasks = Object.keys(gulpFile).map((name) => `gulp ${name}`);
 
 const isStepInvalid = ({ run, with: withBlock }: Step) => {
   const matches =
-    run?.match(COMMAND_REGEX) || withBlock?.command?.match(COMMAND_REGEX);
+    run?.match(COMMAND_REGEX) ||
+    (withBlock?.command as string)?.match(COMMAND_REGEX);
   if (matches) {
     for (const match of matches) {
       if (!npmScripts.includes(match) && !gulpTasks.includes(match)) {
@@ -80,7 +72,7 @@ files.forEach((file) => {
   if (file.endsWith('.yml')) {
     let workflow: WorkflowLike;
     try {
-      workflow = yaml.safeLoad(fs.readFileSync(file, 'utf8')) as WorkflowLike;
+      workflow = yaml.load(fs.readFileSync(file, 'utf8')) as WorkflowLike;
     } catch (error) {
       console.error(`Failure to load file: ${file}`);
       throw error;

@@ -1,0 +1,214 @@
+name: Nightly Releases
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  cancelCurrentRuns:
+    name: Cancel in-progress Workflow runs
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Cancel in-progress Workflow runs
+        uses: styfle/cancel-workflow-action@148d9a848c6acaf90a3ec30bc5062f646f8a4163
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+  deployWeb:
+    name: Deploy Web to dev.lyricistant.app
+    runs-on: ubuntu-20.04
+    needs:
+      - cancelCurrentRuns
+    steps:
+      - name: Mask any potential PII
+        run: |-
+          echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
+          echo "::add-mask::${{ secrets.APPLE_ID }}"
+      - name: Checkout the current branch
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f
+        with:
+          node-version: '>=15.10'
+          cache: npm
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Install Node modules
+        run: npm ci
+      - name: Build Web
+        run: gulp buildWeb --max-old-space-size=8192
+        env:
+          NIGHTLY: true
+      - name: Deploy Web
+        uses: peaceiris/actions-gh-pages@068dc23d9710f1ba62e86896f84735d869951305
+        with:
+          personal_token: ${{ secrets.LYRICISTANT_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: apps/web/dist/production/
+          force_orphan: true
+          cname: dev.lyricistant.app
+  buildIOSApp:
+    name: Build iOS
+    runs-on: macos-10.15
+    needs:
+      - cancelCurrentRuns
+    steps:
+      - name: Mask any potential PII
+        run: |-
+          echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
+          echo "::add-mask::${{ secrets.APPLE_ID }}"
+      - name: Checkout the current branch
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f
+        with:
+          node-version: '>=15.10'
+          cache: npm
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@cae9d256bd9e1300706428bfd1ce211fa1388c4b
+        with:
+          bundler-cache: true
+      - name: Install Fastlane
+        run: gem install bundler && bundle install
+      - name: Install Node modules
+        run: npm ci
+      - name: Bundle Mobile
+        run: gulp bundleIOS --max-old-space-size=8192
+        env:
+          NIGHTLY: true
+      - name: Build iOS
+        run: bundle exec fastlane ios release
+        env:
+          FASTLANE_USER: ${{ secrets.APPLE_ID }}
+          FASTLANE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          FIRST_NAME: Wardell
+          LAST_NAME: Bagby
+          PHONE: ${{ secrets.PHONE }}
+          EMAIL: ${{ secrets.APPLE_ID }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      - name: Upload iOS app
+        uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074
+        with:
+          name: ios-app
+          path: apps/mobile/dist/ios/*.ipa
+  buildAndroidApp:
+    name: Build Android
+    runs-on: ubuntu-20.04
+    needs:
+      - cancelCurrentRuns
+    steps:
+      - name: Mask any potential PII
+        run: |-
+          echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
+          echo "::add-mask::${{ secrets.APPLE_ID }}"
+      - name: Checkout the current branch
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f
+        with:
+          node-version: '>=15.10'
+          cache: npm
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@cae9d256bd9e1300706428bfd1ce211fa1388c4b
+        with:
+          bundler-cache: true
+      - name: Install Fastlane
+        run: gem install bundler && bundle install
+      - name: Install Node modules
+        run: npm ci
+      - name: Populate keystore
+        run: >-
+          echo "${{ secrets.KEYSTORE }}" | base64 --decode >
+          apps/mobile/android/android.keystore
+      - name: Populate keystore properties
+        run: >-
+          echo "${{ secrets.KEYSTORE_PROPERTIES }}" | base64 --decode >
+          apps/mobile/android/keystore.properties
+      - name: Populate Play Store credentials
+        run: >-
+          echo "${{ secrets.PLAY_STORE_CREDS }}" | base64 --decode >
+          play-store-credentials.json
+      - name: Bundle Mobile
+        run: gulp bundleAndroid --max-old-space-size=8192
+        env:
+          NIGHTLY: true
+      - name: Build Android
+        run: bundle exec fastlane android release
+      - name: Upload Android app
+        uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074
+        with:
+          name: android-app
+          path: apps/mobile/dist/android/*.apk
+  buildElectronApps:
+    name: Build Electron Apps
+    runs-on: macos-10.15
+    needs:
+      - cancelCurrentRuns
+    steps:
+      - name: Mask any potential PII
+        run: |-
+          echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
+          echo "::add-mask::${{ secrets.APPLE_ID }}"
+      - name: Checkout the current branch
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - name: Setup Node.js - 15.x.x
+        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f
+        with:
+          node-version: '>=15.10'
+          cache: npm
+      - name: Install Gulp
+        run: npm install -g gulp@4.0.2
+      - name: Install Node modules
+        run: npm ci
+      - name: Build Electron apps
+        uses: nick-invision/retry@45ba062d357edb3b29c4a94b456b188716f61020
+        env:
+          CSC_LINK: ${{ secrets.MACOS_CERT }}
+          CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          NIGHTLY: true
+        with:
+          timeout_minutes: 20
+          max_attempts: 3
+          command: gulp buildAllElectronApps --max-old-space-size=8192
+      - name: Upload Electron apps
+        uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074
+        with:
+          name: electron-apps
+          path: apps/electron/dist/production/app/*.*
+  createGithubRelease:
+    name: Create Github Nightly Release
+    runs-on: ubuntu-20.04
+    needs:
+      - buildIOSApp
+      - buildElectronApps
+      - buildAndroidApp
+    steps:
+      - name: Download iOS app
+        uses: actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60
+        with:
+          name: ios-app
+          path: /tmp/artifacts
+      - name: Download Electron apps
+        uses: actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60
+        with:
+          name: electron-apps
+          path: /tmp/artifacts
+      - name: Download Android app
+        uses: actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60
+        with:
+          name: android-app
+          path: /tmp/artifacts
+      - name: Create Nightly Github release
+        uses: >-
+          marvinpinto/action-automatic-releases@5bd3ab50e845612718d9a3a3c954dc99ba6868a4
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: latest
+          prerelease: true
+          title: Lyricistant - Nightly
+          files: /tmp/artifacts/*.*
