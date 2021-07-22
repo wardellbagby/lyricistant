@@ -15,6 +15,9 @@ export class UiConfigManager implements Manager {
     this.rendererDelegate.on('request-ui-config', () => {
       this.rendererDelegate.send('ui-config', this.provideUiConfig());
     });
+    this.rendererDelegate.addRendererListenerSetListener('ui-config', () => {
+      this.rendererDelegate.send('ui-config', this.provideUiConfig());
+    });
 
     this.fileManager.addOnFileChangedListener((filename) => {
       this.rendererDelegate.send(

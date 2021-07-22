@@ -9,6 +9,8 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@material-ui/core';
+import { useChannel } from '@lyricistant/renderer/platform/useChannel';
+import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 
 const isUnsupportedBrowser = isMobile || isIE;
 
@@ -50,8 +52,11 @@ const WarningDialog = ({
 export function DesktopOnly({
   children,
 }: PropsWithChildren<Record<never, never>>) {
+  const [uiConfig, setUiConfig] = useState<UiConfig>(null);
+  useChannel('ui-config', setUiConfig);
   const [isAcknowledged, setAcknowledged] = useState(false);
-  const showWarning = isUnsupportedBrowser && !isAcknowledged;
+  const showWarning =
+    uiConfig?.showBrowserWarning && isUnsupportedBrowser && !isAcknowledged;
   return (
     <>
       <WarningDialog
