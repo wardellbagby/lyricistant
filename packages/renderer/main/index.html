@@ -42,11 +42,17 @@
         width: 100%;
         overscroll-behavior: none;
       }
+      .MuiDialog-root {
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
       #app {
         height: 100%;
         width: 100%;
         opacity: 0;
         transition: opacity 500ms linear;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
       }
     </style>
     <title>Lyricistant</title>

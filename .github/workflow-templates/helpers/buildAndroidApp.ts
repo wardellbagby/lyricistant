@@ -37,7 +37,9 @@ export const buildAndroidApp = (options?: Options): Job => {
       },
       {
         name: 'Build Android',
-        run: 'bundle exec fastlane android release',
+        run: `bundle exec fastlane android release${
+          nightly ? '' : ' deploy:true'
+        }`,
       },
       {
         name: 'Upload Android app',

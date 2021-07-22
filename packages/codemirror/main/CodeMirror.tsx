@@ -17,9 +17,7 @@ import { WordAtPosition, wordSelection } from './wordSelection';
 
 const EditorContainer = styled('div')({
   height: '100%',
-  width: 'calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right))',
-  paddingLeft: 'env(safe-area-inset-left)',
-  paddingRight: 'env(safe-area-inset-right)',
+  width: '100%',
 });
 
 export interface WordReplacement {

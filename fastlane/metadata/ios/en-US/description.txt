@@ -1,1 +1,11 @@
+Lyricistant is a writing app geared toward helping you write lyrics, poetry, or anything else you desire!
+
+Unlike other apps with a focus on rhyming, Lyricistant is first and foremost a writing app. It's made for you to use to write your lyrics, while offering helpful features to keep you in the writing zone.
+
+Its features include:
+
+Showing the amount of syllables per line.
+Contextually displaying rhymes as you type or select words.
+Easily saving and reopening lyrics that you've made.
+Both a light and dark theme that it can automatically switch between.
 

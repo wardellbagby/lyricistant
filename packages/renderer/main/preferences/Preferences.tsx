@@ -60,11 +60,6 @@ const dialogStyles = makeStyles((theme: Theme) =>
       paddingLeft: '32px',
       paddingRight: '32px',
     },
-    appBar: {
-      paddingTop: 'env(safe-area-inset-top)',
-      paddingLeft: 'env(safe-area-inset-left)',
-      paddingRight: 'env(safe-area-inset-right)',
-    },
     header: {
       fontWeight: 'bolder',
     },
@@ -175,7 +170,7 @@ export const Preferences = () => {
       TransitionComponent={DialogTransition}
       PaperProps={{ className: classes.dialogPaper }}
     >
-      <AppBar color={'primary'} className={classes.appBar} position="sticky">
+      <AppBar color={'primary'} position="sticky">
         <Toolbar>
           <IconButton color={'inherit'} edge="start" onClick={closePreferences}>
             <CloseIcon />

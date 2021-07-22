@@ -106,10 +106,11 @@ jobs:
         env:
           NIGHTLY: false
       - name: Build iOS
-        run: bundle exec fastlane ios release
+        run: bundle exec fastlane ios release deploy:true
         env:
           FASTLANE_USER: ${{ secrets.APPLE_ID }}
           FASTLANE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           FIRST_NAME: Wardell
           LAST_NAME: Bagby
           PHONE: ${{ secrets.PHONE }}
@@ -172,7 +173,7 @@ jobs:
         env:
           NIGHTLY: false
       - name: Build Android
-        run: bundle exec fastlane android release
+        run: bundle exec fastlane android release deploy:true
       - name: Upload Android app
         uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074
         with:

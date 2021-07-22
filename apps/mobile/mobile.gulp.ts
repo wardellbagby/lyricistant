@@ -5,7 +5,7 @@ import { series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import webpack, { Configuration } from 'webpack';
-import { spawn } from '@tooling/common-tasks.gulp';
+import { cleanBuildDirectory, spawn } from '@tooling/common-tasks.gulp';
 import del from 'del';
 
 type CapacitorCommand = 'add' | 'run' | 'sync' | 'open';
@@ -120,11 +120,13 @@ const buildIOSApp = series(
 
 export const bundleAndroid = series(
   copyMobileHtmlFile,
+  cleanBuildDirectory,
   bundleMobile,
   capacitor('sync', 'android')
 );
 export const bundleIOS = series(
   copyMobileHtmlFile,
+  cleanBuildDirectory,
   bundleMobile,
   capacitor('sync', 'ios')
 );
