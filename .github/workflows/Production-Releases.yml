@@ -42,7 +42,13 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - test
-    if: ${{ contains(github.ref, 'web') || contains(github.ref, 'all') }}
+    if: >-
+      ${{ contains(github.ref, 'web') || endsWith(github.ref, '0') ||
+      endsWith(github.ref, '1') || endsWith(github.ref, '2') ||
+      endsWith(github.ref, '3') || endsWith(github.ref, '4') ||
+      endsWith(github.ref, '5') || endsWith(github.ref, '6') ||
+      endsWith(github.ref, '7') || endsWith(github.ref, '8') ||
+      endsWith(github.ref, '9') }}
     steps:
       - name: Mask any potential PII
         run: |-
@@ -117,7 +123,13 @@ jobs:
           path: apps/mobile/dist/ios/*.ipa
     needs:
       - test
-    if: ${{ contains(github.ref, 'ios') || contains(github.ref, 'all') }}
+    if: >-
+      ${{ contains(github.ref, 'ios') || endsWith(github.ref, '0') ||
+      endsWith(github.ref, '1') || endsWith(github.ref, '2') ||
+      endsWith(github.ref, '3') || endsWith(github.ref, '4') ||
+      endsWith(github.ref, '5') || endsWith(github.ref, '6') ||
+      endsWith(github.ref, '7') || endsWith(github.ref, '8') ||
+      endsWith(github.ref, '9') }}
   buildAndroidApp:
     name: Build Android
     runs-on: ubuntu-20.04
@@ -168,7 +180,13 @@ jobs:
           path: apps/mobile/dist/android/*.apk
     needs:
       - test
-    if: ${{ contains(github.ref, 'android') || contains(github.ref, 'all') }}
+    if: >-
+      ${{ contains(github.ref, 'android') || endsWith(github.ref, '0') ||
+      endsWith(github.ref, '1') || endsWith(github.ref, '2') ||
+      endsWith(github.ref, '3') || endsWith(github.ref, '4') ||
+      endsWith(github.ref, '5') || endsWith(github.ref, '6') ||
+      endsWith(github.ref, '7') || endsWith(github.ref, '8') ||
+      endsWith(github.ref, '9') }}
   buildElectronApps:
     name: Build Electron Apps
     runs-on: macos-10.15
@@ -207,7 +225,13 @@ jobs:
           path: apps/electron/dist/production/app/*.*
     needs:
       - test
-    if: ${{ contains(github.ref, 'electron') || contains(github.ref, 'all') }}
+    if: >-
+      ${{ contains(github.ref, 'electron') || endsWith(github.ref, '0') ||
+      endsWith(github.ref, '1') || endsWith(github.ref, '2') ||
+      endsWith(github.ref, '3') || endsWith(github.ref, '4') ||
+      endsWith(github.ref, '5') || endsWith(github.ref, '6') ||
+      endsWith(github.ref, '7') || endsWith(github.ref, '8') ||
+      endsWith(github.ref, '9') }}
   createGithubRelease:
     name: Create Github Release
     runs-on: ubuntu-20.04

@@ -58,9 +58,7 @@ inquirer.prompt(questions).then(async (answers) => {
     .stdout.toString()
     .trim();
 
-  if (appUpdateTypes.length === appUpdateChoices.length) {
-    newVersion += `-all`;
-  } else {
+  if (appUpdateTypes.length !== appUpdateChoices.length) {
     appUpdateTypes.forEach((type) => {
       newVersion += `-${type}`;
     });

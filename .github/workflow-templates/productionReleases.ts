@@ -18,7 +18,9 @@ import { gulp } from './helpers/local-tasks';
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
 
 const tagMatches = (platform: 'ios' | 'android' | 'electron' | 'web') =>
-  `\${{ contains(github.ref, '${platform}') || contains(github.ref, 'all') }}`;
+  `\${{ contains(github.ref, '${platform}') ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    .map((num) => `|| endsWith(github.ref, '${num}')`)
+    .join(' ')} }}`;
 
 const deployWeb: Job = {
   name: 'Deploy Web to lyricistant.app',
