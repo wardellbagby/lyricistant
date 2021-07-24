@@ -1,7 +1,10 @@
 import {
   SystemTheme,
-  SystemThemeProvider as ISystemThemeProvider,
+  SystemThemeProvider,
 } from '@lyricistant/common/theme/SystemTheme';
+import {
+  setColorSchemeListener,
+} from '@lyricistant/core-platform/platform/SystemThemeProvider';
 
 declare global {
   interface Window {
@@ -21,37 +24,22 @@ declare global {
   const nativeThemeProvider: { isDarkTheme: () => boolean } | undefined;
 }
 
-export class MobileSystemThemeProvider implements ISystemThemeProvider {
+export class MobileSystemThemeProvider implements SystemThemeProvider {
   public onChange = (listener: (theme: SystemTheme) => void) => {
     window.onNativeThemeChanged = (dark: boolean) => {
       listener(dark ? SystemTheme.Dark : SystemTheme.Light);
     };
 
     if (typeof nativeThemeProvider !== 'undefined') {
-      if (nativeThemeProvider?.isDarkTheme()) {
+      if (nativeThemeProvider.isDarkTheme()) {
         listener(SystemTheme.Dark);
         return;
-      } else if (nativeThemeProvider?.isDarkTheme() === false) {
+      } else if (nativeThemeProvider.isDarkTheme() === false) {
         listener(SystemTheme.Light);
         return;
-      }
-    }
-
-    if (window.matchMedia) {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        listener(SystemTheme.Dark);
-      } else {
-        listener(SystemTheme.Light);
       }
     } else {
-      listener(SystemTheme.Dark);
-      return;
+      setColorSchemeListener(listener);
     }
-
-    window
-      .matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', (e) => {
-        listener(e.matches ? SystemTheme.Dark : SystemTheme.Light);
-      });
   };
 }

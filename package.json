@@ -117,6 +117,7 @@
     "@capacitor/filesystem": "^1.0.2",
     "@capacitor/ios": "^3.1.1",
     "@capacitor/keyboard": "^1.0.2",
+    "@capacitor/status-bar": "^1.0.2",
     "@codemirror/commands": "^0.18.3",
     "@codemirror/gutter": "^0.18.4",
     "@codemirror/history": "^0.18.1",

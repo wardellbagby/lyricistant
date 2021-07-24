@@ -12,6 +12,7 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 
 export class PreferenceManager implements Manager {
+  private onThemeChangedListeners: Array<(theme: Theme) => void> = [];
   private systemTheme: SystemTheme;
 
   public constructor(
@@ -43,6 +44,10 @@ export class PreferenceManager implements Manager {
     );
   }
 
+  public addThemeChangedListener = (listener: (theme: Theme) => void) => {
+    this.onThemeChangedListeners.push(listener);
+  };
+
   private onSavePrefs = (data: PreferencesData): void => {
     if (!data) {
       this.rendererDelegate.send('close-prefs');
@@ -69,6 +74,7 @@ export class PreferenceManager implements Manager {
       data.textSize,
       theme === undefined || theme === null || theme === Theme.Dark
     );
+    this.onThemeChangedListeners.forEach((listener) => listener(theme));
   };
 
   private normalizeTheme(theme: Theme): Theme {
