@@ -47,7 +47,7 @@ export class UpdateManager implements Manager {
         this.logger.warn("Couldn't update the app as update info was null");
         return;
       }
-      const ignoredVersions = this.store.get('ignoredVersions');
+      const ignoredVersions = this.store.get('ignoredVersions', []);
       if (ignoredVersions.includes(updateInfo.version)) {
         this.logger.info(
           `Ignoring update to ${updateInfo.version} since user requested not to update to it.`

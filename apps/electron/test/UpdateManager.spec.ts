@@ -46,6 +46,7 @@ describe('Update Manager', () => {
   });
 
   afterEach(() => {
+    store.get.alwaysCalledWithExactly('ignoredVersions', []);
     rendererListeners.clear();
     appUpdaterListeners.clear();
   });
