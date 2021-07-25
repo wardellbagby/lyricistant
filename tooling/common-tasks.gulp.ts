@@ -37,7 +37,6 @@ export const spawn = (
   const childProcess = nodeSpawn(command, args, optionsWithCwd);
 
   console.log(`Running command: ${childProcess.spawnargs.join(' ')}`);
-  console.log(`Options: ${JSON.stringify(optionsWithCwd)}`);
 
   childProcess.on('exit', (code) => {
     console.log('Process exited with code ' + code.toString());

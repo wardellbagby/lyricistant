@@ -1,3 +1,7 @@
+if (module.hot) {
+  module.hot.accept();
+}
+
 import { Logger } from '@lyricistant/common/Logger';
 import { Managers } from '@lyricistant/common/Managers';
 import { appComponent } from '@mobile-app/AppComponent';

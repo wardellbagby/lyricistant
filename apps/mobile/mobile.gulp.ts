@@ -1,12 +1,14 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import util from 'util';
 import { merge } from 'webpack-merge';
-import { series } from 'gulp';
+import { series, parallel } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import webpack, { Configuration } from 'webpack';
-import { cleanBuildDirectory, spawn } from '@tooling/common-tasks.gulp';
+import { cleanBuildDirectory, Mode, spawn } from '@tooling/common-tasks.gulp';
 import del from 'del';
+import WebpackDevServer from 'webpack-dev-server';
 
 type CapacitorCommand = 'add' | 'run' | 'sync' | 'open';
 type CapacitorPlatform = 'android' | 'ios';
@@ -17,10 +19,9 @@ const cleanMobile = async () => {
   await del(outputDir);
 };
 
-const createWebpackConfig = async () =>
+const createWebpackConfig = async (mode: Mode) =>
   merge<Configuration>(
     {
-      mode: 'production',
       entry: {
         renderer: './apps/mobile/main/index.ts',
       },
@@ -30,7 +31,7 @@ const createWebpackConfig = async () =>
       devtool: 'inline-source-map',
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig('production')
+    defaultWebpackConfig(mode)
   );
 
 const copyMobileHtmlFile = async () => {
@@ -42,7 +43,7 @@ const copyMobileHtmlFile = async () => {
 };
 
 const bundleMobile = async () => {
-  const config = await createWebpackConfig();
+  const config = await createWebpackConfig('production');
   return new Promise<undefined>((resolve, reject) => {
     webpack(config, (error, stats) => {
       if (error) {
@@ -56,16 +57,33 @@ const bundleMobile = async () => {
   });
 };
 
-const capacitor =
-  (command: CapacitorCommand, platform: CapacitorPlatform) => () =>
-    spawn('node_modules/.bin/cap', [command, platform]);
+const runWebServer = async () => {
+  const config = await createWebpackConfig('development');
 
-const runAndroid = series(
-  capacitor('sync', 'android'),
-  capacitor('run', 'android')
-);
+  const server = new WebpackDevServer(webpack(config), {
+    port: 8080,
+    hot: true,
+    contentBase: config.output.path,
+  });
+  return util.promisify(server.listen.bind(server, { port: 8080 }))();
+};
 
-const runIOS = series(capacitor('sync', 'ios'), capacitor('run', 'ios'));
+const cap =
+  (
+    command: CapacitorCommand,
+    platform: CapacitorPlatform,
+    options?: { development?: boolean }
+  ) =>
+  () =>
+    spawn('node_modules/.bin/cap', [command, platform], {
+      env: {
+        ...process.env,
+        NODE_ENV: options?.development ? 'development' : 'production',
+      },
+    });
+
+const runIOS = cap('run', 'ios', { development: true });
+const runAndroid = cap('run', 'android', { development: true });
 
 const buildAndroidApp = series(
   () =>
@@ -122,32 +140,25 @@ export const bundleAndroid = series(
   copyMobileHtmlFile,
   cleanBuildDirectory,
   bundleMobile,
-  capacitor('sync', 'android')
+  cap('sync', 'android')
 );
 export const bundleIOS = series(
   copyMobileHtmlFile,
   cleanBuildDirectory,
   bundleMobile,
-  capacitor('sync', 'ios')
+  cap('sync', 'ios')
 );
 
-export const startAndroid = series(cleanMobile, bundleAndroid, runAndroid);
+export const startAndroid = series(
+  cleanMobile,
+  copyMobileHtmlFile,
+  parallel(runWebServer, runAndroid)
+);
 export const startIOS = series(
   cleanMobile,
   copyMobileHtmlFile,
-  bundleIOS,
-  runIOS
+  parallel(runWebServer, runIOS)
 );
 
 export const buildAndroid = series(cleanMobile, bundleAndroid, buildAndroidApp);
-
 export const buildIOS = series(cleanMobile, bundleIOS, buildIOSApp);
-
-export const openAndroid = async () => {
-  capacitor('sync', 'android');
-  capacitor('open', 'android');
-};
-export const openIOS = async () => {
-  capacitor('sync', 'ios');
-  capacitor('open', 'ios');
-};

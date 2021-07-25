@@ -1,3 +1,4 @@
+import ip from 'internal-ip';
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
@@ -10,6 +11,10 @@ const config: CapacitorConfig = {
   },
   ios: {
     path: 'apps/mobile/ios',
+  },
+  server: process.env.NODE_ENV === 'development' && {
+    url: `http://${ip.v4.sync()}:8080`,
+    cleartext: true,
   },
   plugins: {
     Keyboard: {
