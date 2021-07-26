@@ -9,6 +9,7 @@
 	"ios": {
 		"path": "apps/mobile/ios"
 	},
+	"server": false,
 	"plugins": {
 		"Keyboard": {
 			"resize": "native"
