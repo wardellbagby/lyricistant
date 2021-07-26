@@ -59,9 +59,7 @@ inquirer.prompt(questions).then(async (answers) => {
     .trim();
 
   if (appUpdateTypes.length !== appUpdateChoices.length) {
-    appUpdateTypes.forEach((type) => {
-      newVersion += `-${type}`;
-    });
+    newVersion += `+${appUpdateTypes.join('.')}`;
   }
   const commitMessage = newVersion.substr(1);
 
