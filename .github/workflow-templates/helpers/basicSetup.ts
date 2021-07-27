@@ -17,6 +17,7 @@ export const basicSetup = (options?: Options): Step[] => {
       run: [
         'echo "::add-mask::${{ secrets.PHONE_NUMBER }}"',
         'echo "::add-mask::${{ secrets.APPLE_ID }}"',
+        'echo "::add-mask::${{ secrets.FASTLANE_USER }}"',
       ].join('\n'),
     },
     {

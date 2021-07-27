@@ -22,6 +22,7 @@ jobs:
         run: |-
           echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
           echo "::add-mask::${{ secrets.APPLE_ID }}"
+          echo "::add-mask::${{ secrets.FASTLANE_USER }}"
       - name: Checkout the current branch
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
       - name: Setup Node.js - 15.x.x
@@ -53,6 +54,7 @@ jobs:
         run: |-
           echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
           echo "::add-mask::${{ secrets.APPLE_ID }}"
+          echo "::add-mask::${{ secrets.FASTLANE_USER }}"
       - name: Checkout the current branch
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
       - name: Setup Node.js - 15.x.x
@@ -77,8 +79,8 @@ jobs:
       - name: Build iOS
         run: bundle exec fastlane ios release
         env:
-          FASTLANE_USER: ${{ secrets.APPLE_ID }}
-          FASTLANE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
           FIRST_NAME: Wardell
           LAST_NAME: Bagby
           PHONE: ${{ secrets.PHONE }}
@@ -100,6 +102,7 @@ jobs:
         run: |-
           echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
           echo "::add-mask::${{ secrets.APPLE_ID }}"
+          echo "::add-mask::${{ secrets.FASTLANE_USER }}"
       - name: Checkout the current branch
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
       - name: Setup Node.js - 15.x.x
@@ -150,6 +153,7 @@ jobs:
         run: |-
           echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
           echo "::add-mask::${{ secrets.APPLE_ID }}"
+          echo "::add-mask::${{ secrets.FASTLANE_USER }}"
       - name: Checkout the current branch
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
       - name: Setup Node.js - 15.x.x

@@ -27,8 +27,8 @@ export const buildIOSApp = (options?: Options): Job => {
         name: 'Build iOS',
         run: `bundle exec fastlane ios release${nightly ? '' : ' deploy:true'}`,
         env: {
-          FASTLANE_USER: '${{ secrets.APPLE_ID }}',
-          FASTLANE_PASSWORD: '${{ secrets.APPLE_ID_PASSWORD }}',
+          FASTLANE_USER: '${{ secrets.FASTLANE_USER }}',
+          FASTLANE_PASSWORD: '${{ secrets.FASTLANE_PASSWORD }}',
           FIRST_NAME: 'Wardell',
           LAST_NAME: 'Bagby',
           PHONE: '${{ secrets.PHONE }}',
