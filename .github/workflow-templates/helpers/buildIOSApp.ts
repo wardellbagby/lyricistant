@@ -29,6 +29,8 @@ export const buildIOSApp = (options?: Options): Job => {
         env: {
           FASTLANE_USER: '${{ secrets.FASTLANE_USER }}',
           FASTLANE_PASSWORD: '${{ secrets.FASTLANE_PASSWORD }}',
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD:
+            '${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}',
           FIRST_NAME: 'Wardell',
           LAST_NAME: 'Bagby',
           PHONE: '${{ secrets.PHONE }}',

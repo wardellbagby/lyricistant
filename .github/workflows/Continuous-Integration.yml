@@ -1,77 +1,69 @@
-name: Continuous Integration
+name: 'Continuous Integration'
 'on':
   push:
     branches:
-      - main
+      - 'main'
   pull_request:
     branches:
-      - main
+      - 'main'
 jobs:
   cancelCurrentRuns:
-    name: Cancel in-progress Workflow runs
-    runs-on: ubuntu-20.04
+    name: 'Cancel in-progress Workflow runs'
+    runs-on: 'ubuntu-20.04'
     steps:
-      - name: Cancel in-progress Workflow runs
-        uses: styfle/cancel-workflow-action@148d9a848c6acaf90a3ec30bc5062f646f8a4163
+      - name: 'Cancel in-progress Workflow runs'
+        uses: 'styfle/cancel-workflow-action@148d9a848c6acaf90a3ec30bc5062f646f8a4163'
         with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
+          access_token: '${{ secrets.GITHUB_TOKEN }}'
   test:
-    name: Test
-    runs-on: ubuntu-20.04
+    name: 'Test'
+    runs-on: 'ubuntu-20.04'
     steps:
-      - name: Mask any potential PII
-        run: |-
-          echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
-          echo "::add-mask::${{ secrets.APPLE_ID }}"
-          echo "::add-mask::${{ secrets.FASTLANE_USER }}"
-      - name: Checkout the current branch
-        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
-      - name: Setup Node.js - 15.x.x
-        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f
+      - name: 'Mask any potential PII'
+        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\"\necho \"::add-mask::${{ secrets.FASTLANE_USER }}\""
+      - name: 'Checkout the current branch'
+        uses: 'actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f'
+      - name: 'Setup Node.js - 15.x.x'
+        uses: 'actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f'
         with:
           node-version: '>=15.10'
-          cache: npm
-      - name: Install Gulp
-        run: npm install -g gulp@4.0.2
-      - name: Set virtual display if Ubuntu
-        if: runner.os == 'Linux'
-        run: Xvfb :99 &
-      - name: Install Node modules
-        run: npm ci
-      - name: Run all tests
-        run: gulp testAll --max-old-space-size=8192
+          cache: 'npm'
+      - name: 'Install Gulp'
+        run: 'npm install -g gulp@4.0.2'
+      - name: 'Set virtual display if Ubuntu'
+        if: 'runner.os == ''Linux'''
+        run: 'Xvfb :99 &'
+      - name: 'Install Node modules'
+        run: 'npm ci'
+      - name: 'Run all tests'
+        run: 'gulp testAll --max-old-space-size=8192'
         env:
           DISPLAY: ':99'
-      - name: Upload build artifacts if failed
-        if: failure()
-        uses: actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074
+      - name: 'Upload build artifacts if failed'
+        if: 'failure()'
+        uses: 'actions/upload-artifact@27121b0bdffd731efa15d66772be8dc71245d074'
         with:
-          path: |-
-            apps/**/dist/
-            dist/
+          path: "apps/**/dist/\ndist/"
     needs:
-      - cancelCurrentRuns
+      - 'cancelCurrentRuns'
   lint:
-    name: Lint
-    runs-on: ubuntu-20.04
+    name: 'Lint'
+    runs-on: 'ubuntu-20.04'
     needs:
-      - cancelCurrentRuns
+      - 'cancelCurrentRuns'
     steps:
-      - name: Mask any potential PII
-        run: |-
-          echo "::add-mask::${{ secrets.PHONE_NUMBER }}"
-          echo "::add-mask::${{ secrets.APPLE_ID }}"
-          echo "::add-mask::${{ secrets.FASTLANE_USER }}"
-      - name: Checkout the current branch
-        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
-      - name: Setup Node.js - 15.x.x
-        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f
+      - name: 'Mask any potential PII'
+        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\"\necho \"::add-mask::${{ secrets.FASTLANE_USER }}\""
+      - name: 'Checkout the current branch'
+        uses: 'actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f'
+      - name: 'Setup Node.js - 15.x.x'
+        uses: 'actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f'
         with:
           node-version: '>=15.10'
-          cache: npm
-      - name: Install Gulp
-        run: npm install -g gulp@4.0.2
-      - name: Install Node modules
-        run: npm ci
-      - name: Run Lint
-        run: npm run lint
+          cache: 'npm'
+      - name: 'Install Gulp'
+        run: 'npm install -g gulp@4.0.2'
+      - name: 'Install Node modules'
+        run: 'npm ci'
+      - name: 'Run Lint'
+        run: 'npm run lint'

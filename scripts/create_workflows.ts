@@ -57,7 +57,7 @@ const writeWorkflow = (workflow: Workflow) => {
     `${workflow.name.replace(/\s/g, '-')}.yml`
   );
   workflow = normalize(workflow);
-  fs.writeFileSync(file, yaml.dump(workflow));
+  fs.writeFileSync(file, yaml.dump(workflow, { forceQuotes: true }));
 };
 const templates = [continuousIntegration, nightlyReleases, productionReleases];
 
