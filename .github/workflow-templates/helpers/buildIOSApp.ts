@@ -17,6 +17,10 @@ export const buildIOSApp = (options?: Options): Job => {
     steps: [
       ...basicSetup({ forMobileBuilds: true }),
       {
+        name: 'Create App Store Connect credentials',
+        run: 'echo "${{ secrets.APP_STORE_CONNECT_KEY }}" | base64 --decode > apps/mobile/ios/authkey.p8',
+      },
+      {
         name: 'Bundle Mobile',
         run: gulp('bundleIOS'),
         env: {
@@ -27,10 +31,8 @@ export const buildIOSApp = (options?: Options): Job => {
         name: 'Build iOS',
         run: `bundle exec fastlane ios release${nightly ? '' : ' deploy:true'}`,
         env: {
-          FASTLANE_USER: '${{ secrets.FASTLANE_USER }}',
-          FASTLANE_PASSWORD: '${{ secrets.FASTLANE_PASSWORD }}',
-          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD:
-            '${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}',
+          APP_STORE_KEY_ID: '${{ secrets.APP_STORE_KEY_ID }}',
+          APP_STORE_ISSUER_ID: '${{ secrets.APP_STORE_ISSUER_ID }}',
           FIRST_NAME: 'Wardell',
           LAST_NAME: 'Bagby',
           PHONE: '${{ secrets.PHONE }}',

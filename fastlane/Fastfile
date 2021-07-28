@@ -9,7 +9,12 @@ platform :ios do
   setup_ci
   desc "Build the production iOS app"
   lane :release do |options|
-    match(type: "appstore", readonly: is_ci)
+    match(type: "appstore", readonly: true)
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_KEY_ID"],
+      issuer_id: ENV["APP_STORE_ISSUER_ID"],
+      key_filepath: "apps/mobile/ios/authkey.p8"
+    )
     increment_build_number(
       xcodeproj: "apps/mobile/ios/App/App.xcodeproj"
     )
@@ -28,6 +33,7 @@ platform :ios do
         metadata_path: "./fastlane/metadata/ios",
         submit_for_review: true,
         force: true,
+        precheck_include_in_app_purchases: false,
         submission_information: {
           add_id_info_uses_idfa: false,
           export_compliance_uses_encryption: false,

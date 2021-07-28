@@ -34,3 +34,4 @@ fastlane/Preview.html
 **/android.keystore
 play-store-credentials.json
 **/capacitor.config.json
+*.p8
