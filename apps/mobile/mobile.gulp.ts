@@ -137,14 +137,16 @@ const buildIOSApp = series(
 );
 
 export const bundleAndroid = series(
-  copyMobileHtmlFile,
   cleanBuildDirectory,
+  cleanMobile,
+  copyMobileHtmlFile,
   bundleMobile,
   cap('sync', 'android')
 );
 export const bundleIOS = series(
-  copyMobileHtmlFile,
   cleanBuildDirectory,
+  cleanMobile,
+  copyMobileHtmlFile,
   bundleMobile,
   cap('sync', 'ios')
 );
@@ -160,5 +162,5 @@ export const startIOS = series(
   parallel(runWebServer, runIOS)
 );
 
-export const buildAndroid = series(cleanMobile, bundleAndroid, buildAndroidApp);
-export const buildIOS = series(cleanMobile, bundleIOS, buildIOSApp);
+export const buildAndroid = series(bundleAndroid, buildAndroidApp);
+export const buildIOS = series(bundleIOS, buildIOSApp);
