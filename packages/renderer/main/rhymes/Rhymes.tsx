@@ -368,7 +368,7 @@ const useRhymeComponentHeight = () => {
 
 const useRhymeComponentWidth = () => {
   if (useSmallLayout()) {
-    return 200;
+    return 150;
   } else {
     return '100%';
   }
