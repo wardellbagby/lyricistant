@@ -1,6 +1,6 @@
 import { Step } from './Workflow';
 import { ifTrue } from './addIfTrue';
-import { CHECKOUT, SETUP_NODE, SETUP_RUBY } from './versions';
+import { CACHE, CHECKOUT, SETUP_NODE, SETUP_RUBY } from './versions';
 
 interface Options {
   forTests?: boolean;
@@ -17,7 +17,6 @@ export const basicSetup = (options?: Options): Step[] => {
       run: [
         'echo "::add-mask::${{ secrets.PHONE_NUMBER }}"',
         'echo "::add-mask::${{ secrets.APPLE_ID }}"',
-        'echo "::add-mask::${{ secrets.FASTLANE_USER }}"',
       ].join('\n'),
     },
     {
@@ -30,6 +29,15 @@ export const basicSetup = (options?: Options): Step[] => {
       with: {
         'node-version': '>=15.10',
         cache: 'npm',
+      },
+    } as Step,
+    {
+      uses: CACHE,
+      name: 'Cache Node Modules',
+      with: {
+        path: '~/.npm',
+        key: "${{ runner.os}}-node-${{ hashFiles('**/package-lock.json') }}",
+        'restore-keys': '${{ runner.os }}-node-',
       },
     } as Step,
     {

@@ -25,3 +25,6 @@ export const CANCEL_WORKFLOW =
 // pin@v3
 export const DEPLOY_GH_PAGES =
   'peaceiris/actions-gh-pages@068dc23d9710f1ba62e86896f84735d869951305';
+
+// pin@v2
+export const CACHE = 'actions/cache@v2';

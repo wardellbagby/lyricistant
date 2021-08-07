@@ -19,7 +19,7 @@ jobs:
       - 'cancelCurrentRuns'
     steps:
       - name: 'Mask any potential PII'
-        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\"\necho \"::add-mask::${{ secrets.FASTLANE_USER }}\""
+        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
         uses: 'actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f'
       - name: 'Setup Node.js - 15.x.x'
@@ -27,6 +27,12 @@ jobs:
         with:
           node-version: '>=15.10'
           cache: 'npm'
+      - uses: 'actions/cache@v2'
+        name: 'Cache Node Modules'
+        with:
+          path: '~/.npm'
+          key: '${{ runner.os}}-node-${{ hashFiles(''**/package-lock.json'') }}'
+          restore-keys: '${{ runner.os }}-node-'
       - name: 'Install Gulp'
         run: 'npm install -g gulp@4.0.2'
       - name: 'Install Node modules'
@@ -48,7 +54,7 @@ jobs:
     runs-on: 'macos-10.15'
     steps:
       - name: 'Mask any potential PII'
-        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\"\necho \"::add-mask::${{ secrets.FASTLANE_USER }}\""
+        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
         uses: 'actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f'
       - name: 'Setup Node.js - 15.x.x'
@@ -56,6 +62,12 @@ jobs:
         with:
           node-version: '>=15.10'
           cache: 'npm'
+      - uses: 'actions/cache@v2'
+        name: 'Cache Node Modules'
+        with:
+          path: '~/.npm'
+          key: '${{ runner.os}}-node-${{ hashFiles(''**/package-lock.json'') }}'
+          restore-keys: '${{ runner.os }}-node-'
       - name: 'Install Gulp'
         run: 'npm install -g gulp@4.0.2'
       - name: 'Setup Ruby'
@@ -95,7 +107,7 @@ jobs:
     runs-on: 'ubuntu-20.04'
     steps:
       - name: 'Mask any potential PII'
-        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\"\necho \"::add-mask::${{ secrets.FASTLANE_USER }}\""
+        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
         uses: 'actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f'
       - name: 'Setup Node.js - 15.x.x'
@@ -103,6 +115,12 @@ jobs:
         with:
           node-version: '>=15.10'
           cache: 'npm'
+      - uses: 'actions/cache@v2'
+        name: 'Cache Node Modules'
+        with:
+          path: '~/.npm'
+          key: '${{ runner.os}}-node-${{ hashFiles(''**/package-lock.json'') }}'
+          restore-keys: '${{ runner.os }}-node-'
       - name: 'Install Gulp'
         run: 'npm install -g gulp@4.0.2'
       - name: 'Setup Ruby'
@@ -137,7 +155,7 @@ jobs:
     runs-on: 'macos-10.15'
     steps:
       - name: 'Mask any potential PII'
-        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\"\necho \"::add-mask::${{ secrets.FASTLANE_USER }}\""
+        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
         uses: 'actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f'
       - name: 'Setup Node.js - 15.x.x'
@@ -145,6 +163,12 @@ jobs:
         with:
           node-version: '>=15.10'
           cache: 'npm'
+      - uses: 'actions/cache@v2'
+        name: 'Cache Node Modules'
+        with:
+          path: '~/.npm'
+          key: '${{ runner.os}}-node-${{ hashFiles(''**/package-lock.json'') }}'
+          restore-keys: '${{ runner.os }}-node-'
       - name: 'Install Gulp'
         run: 'npm install -g gulp@4.0.2'
       - name: 'Install Node modules'
