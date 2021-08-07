@@ -2,25 +2,46 @@ import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useEffect, useLayoutEffect, useMemo } from 'react';
+import React, {
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useErrorHandler } from 'react-error-boundary';
-import { GridComponents, VirtuosoGrid } from 'react-virtuoso';
 import { usePreferences } from '@lyricistant/renderer/preferences/PreferencesStore';
 import { isDevelopment } from '@lyricistant/common/BuildModes';
 import { useMachine } from '@xstate/react';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
-import { LinearProgress, Typography, useTheme } from '@material-ui/core';
+import {
+  Button,
+  Drawer,
+  IconButton,
+  LinearProgress,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import {
   useSelectedWordPosition,
   useSelectedWords,
   useSelectedWordStore,
 } from '@lyricistant/renderer/editor/SelectedWordStore';
 import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_feather.svg';
+import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
+import { DotsVertical } from 'mdi-material-ui';
+import { FlexDirectionProperty } from 'csstype';
+import useResizeObserver from 'use-resize-observer';
 import { Rhyme } from './rhyme';
 
-const useRhymeListStyles = makeStyles((theme: Theme) => ({
+const useRhymeListStyles = makeStyles<
+  Theme,
+  { listDirection: FlexDirectionProperty; isSmallLayout: boolean }
+>((theme: Theme) => ({
   rhyme: {
     'text-align': 'center',
+    overflow: 'hidden',
     '&:hover': {
       background: theme.palette.background.paper,
     },
@@ -44,8 +65,11 @@ const useRhymeListStyles = makeStyles((theme: Theme) => ({
   listContainer: {
     display: 'flex',
     flexWrap: 'wrap',
+    flexDirection: ({ listDirection }) => listDirection,
     height: '100%',
+    flexGrow: 1,
     width: '100%',
+    overflow: 'hidden',
     color: theme.palette.text.disabled,
     '&:hover': {
       color: theme.palette.text.primary,
@@ -53,48 +77,112 @@ const useRhymeListStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const useDrawerStyles = makeStyles((theme) => ({
+  drawer: {
+    display: 'flex',
+    alignItems: 'center',
+    maxHeight: '50%',
+    color: theme.palette.text.primary,
+  },
+  rhymes: {
+    'text-align': 'center',
+    overflow: 'hidden',
+    '&:hover': {
+      background: theme.palette.text.disabled,
+    },
+    '&::before': {
+      content: '""',
+      display: 'block',
+      position: 'absolute',
+      bottom: '0',
+      width: '30%',
+      left: '35%',
+      'border-bottom': `1px solid ${theme.palette.divider}`,
+    },
+  },
+}));
+
 interface RhymesListProps {
   rhymes: Rhyme[];
+  postItemComponent?: ReactNode;
   onRhymeClicked: (rhyme: Rhyme) => void;
+  onMoreRhymes: (hasMoreRhymes: boolean) => void;
 }
 
-const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => {
-  const classes = useRhymeListStyles();
+const RhymesList = ({
+  rhymes,
+  onRhymeClicked,
+  onMoreRhymes,
+  postItemComponent,
+}: RhymesListProps) => {
+  const isSmallLayout = useSmallLayout();
+  const flexDirection = useMemo(
+    () => (isSmallLayout ? 'row' : 'column'),
+    [isSmallLayout]
+  );
 
-  const Item: GridComponents['Item'] = useMemo(
-    () => (props) => <div {...props} className={classes.itemContainer} />,
-    [classes.itemContainer]
-  );
-  const List: GridComponents['List'] = useMemo(
-    () =>
-      React.forwardRef((props, ref) => (
-        <div
-          {...props}
-          className={`${classes.listContainer} ${props.className}`}
-          ref={ref}
-        />
-      )),
-    [classes.listContainer]
-  );
+  const classes = useRhymeListStyles({
+    listDirection: flexDirection,
+    isSmallLayout,
+  });
+  const {
+    ref,
+    width: containerWidth = 0,
+    height: containerHeight = 0,
+  } = useResizeObserver<HTMLDivElement>();
+
+  const rhymeHeight = useRhymeComponentHeight();
+  const rhymeWidth = useRhymeComponentWidth();
+
+  let rhymeDimension: number;
+  if (isSmallLayout) {
+    rhymeDimension = rhymeWidth as number;
+  } else {
+    rhymeDimension = rhymeHeight;
+  }
+
+  const children = useMemo(() => {
+    let containerDimension;
+    if (isSmallLayout) {
+      containerDimension = containerWidth;
+    } else {
+      containerDimension = containerHeight;
+    }
+    const displayableChildrenCount = Math.floor(
+      containerDimension / rhymeDimension
+    );
+    const displayableRhymes = [...rhymes];
+    displayableRhymes.splice(Math.min(displayableChildrenCount, rhymes.length));
+
+    return displayableRhymes.map((rhyme) => (
+      <RhymeComponent
+        rhyme={rhyme}
+        key={rhyme.word}
+        height={rhymeHeight}
+        width={rhymeWidth}
+        className={classes.rhyme}
+        onClick={() => onRhymeClicked(rhyme)}
+      />
+    ));
+  }, [containerWidth, containerHeight, rhymeDimension, rhymes, isSmallLayout]);
+
+  useEffect(() => {
+    onMoreRhymes(rhymes.length > children.length);
+  }, [onMoreRhymes, rhymes, children]);
 
   return (
-    <VirtuosoGrid
-      components={{ Item, List }}
-      style={{ width: '100%', height: '100%' }}
-      overscan={20}
-      totalCount={rhymes.length}
-      itemContent={(index) => {
-        const rhyme = rhymes[index];
-
-        if (!rhyme) {
-          return;
-        }
-
-        return renderRhyme(rhyme, classes.rhyme, () => {
-          onRhymeClicked(rhyme);
-        });
-      }}
-    />
+    <Box
+      display={'flex'}
+      flexWrap={'nowrap'}
+      height={!isSmallLayout ? '100%' : undefined}
+      width={'100%'}
+      flexDirection={flexDirection}
+    >
+      <div ref={ref} className={classes.listContainer}>
+        {children}
+      </div>
+      {postItemComponent}
+    </Box>
   );
 };
 
@@ -142,6 +230,7 @@ const HelperText = ({ text }: { text: string }) => {
       fontStyle={'italic'}
       p={'16px'}
       display={'flex'}
+      flexWrap={'wrap-reverse'}
       gridGap={'12px'}
       alignItems={'center'}
       justifyContent={'center'}
@@ -163,10 +252,26 @@ const HelperText = ({ text }: { text: string }) => {
 export const Rhymes: React.FC = () => {
   const [state, send] = useMachine(rhymesMachine);
 
+  const classes = useDrawerStyles();
   const selectedWordStore = useSelectedWordStore();
   const handleError = useErrorHandler();
   const selectedWord = useSelectedWords();
   const selectedWordPosition = useSelectedWordPosition();
+  const [hasMoreRhymes, setHasMoreRhymes] = useState(false);
+  const [showMoreRhymes, setShowMoreRhymes] = useState(false);
+
+  const onRhymeClicked = useMemo(
+    () => (rhyme: Rhyme) =>
+      selectedWordStore.onWordReplaced({
+        originalWord: {
+          word: selectedWord,
+          from: selectedWordPosition[0],
+          to: selectedWordPosition[1],
+        },
+        newWord: rhyme.word,
+      }),
+    [selectedWord, selectedWordPosition]
+  );
 
   const preferences = usePreferences();
 
@@ -200,41 +305,109 @@ export const Rhymes: React.FC = () => {
       {rhymes.length > 0 && (
         <RhymesList
           rhymes={rhymes}
-          onRhymeClicked={(rhyme) =>
-            selectedWordStore.onWordReplaced({
-              originalWord: {
-                word: selectedWord,
-                from: selectedWordPosition[0],
-                to: selectedWordPosition[1],
-              },
-              newWord: rhyme.word,
-            })
+          onMoreRhymes={setHasMoreRhymes}
+          postItemComponent={
+            hasMoreRhymes &&
+            rhymes.length > 0 && (
+              <ShowAllButton
+                onClick={() => {
+                  setShowMoreRhymes(true);
+                }}
+              />
+            )
           }
+          onRhymeClicked={onRhymeClicked}
         />
+      )}
+      {showMoreRhymes && (
+        <Drawer
+          anchor={'bottom'}
+          open={true}
+          PaperProps={{
+            className: classes.drawer,
+          }}
+          onClose={() => setShowMoreRhymes(false)}
+        >
+          {rhymes.map((rhyme) => (
+            <RhymeComponent
+              rhyme={rhyme}
+              key={rhyme.word}
+              className={classes.rhymes}
+              height={80}
+              width={'100%'}
+              onClick={() => {
+                setShowMoreRhymes(false);
+                onRhymeClicked(rhyme);
+              }}
+            />
+          ))}
+        </Drawer>
       )}
     </Box>
   );
 };
 
-function renderRhyme(
-  rhyme: Rhyme,
-  className: string,
-  onClick: () => void
-): React.ReactElement {
-  return (
-    <Box flex={1} width={'100%'} height={'100%'} onClick={onClick}>
-      <ListItem
-        className={className}
-        button
-        key={rhyme.word ?? ''}
-        style={{ height: '100%' }}
-      >
-        <ListItemText
-          primary={rhyme.word ?? ''}
-          primaryTypographyProps={{ align: 'center' }}
-          secondary={isDevelopment && rhyme.score}
-        />
-      </ListItem>
-    </Box>
+const ShowAllButton = ({ onClick }: { onClick: () => void }) => {
+  const isSmallLayout = useSmallLayout();
+  return isSmallLayout ? (
+    <IconButton onClick={onClick}>
+      <DotsVertical />
+    </IconButton>
+  ) : (
+    <Button onClick={onClick}>Show more</Button>
   );
+};
+
+const useRhymeComponentHeight = () => {
+  if (useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))) {
+    return 80;
+  } else {
+    return 50;
+  }
+};
+
+const useRhymeComponentWidth = () => {
+  if (useSmallLayout()) {
+    return 200;
+  } else {
+    return '100%';
+  }
+};
+
+interface RhymeProps {
+  rhyme: Rhyme;
+  className: string;
+  onClick: () => void;
+  height: number | string;
+  width: number | string;
 }
+
+const RhymeComponent = ({
+  rhyme,
+  className,
+  onClick,
+  width,
+  height,
+}: RhymeProps) => (
+  <Box
+    width={width}
+    height={height}
+    display={'flex'}
+    flex={'none'}
+    alignContent={'stretch'}
+    onClick={onClick}
+  >
+    <ListItem
+      className={className}
+      button
+      key={rhyme.word ?? ''}
+      style={{ height: '100%' }}
+    >
+      <ListItemText
+        primary={rhyme.word ?? ''}
+        primaryTypographyProps={{ align: 'center' }}
+        secondary={isDevelopment && rhyme.score}
+      />
+    </ListItem>
+  </Box>
+);

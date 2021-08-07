@@ -2,7 +2,7 @@ import { Box, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import React, { ReactNode, useEffect } from 'react';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
-import { logger } from "@lyricistant/renderer/globals";
+import { logger } from '@lyricistant/renderer/globals';
 
 const useStyles = makeStyles((theme: Theme) => ({
   divider: {
@@ -58,7 +58,7 @@ export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
 
 const createGridTemplateRows = (isSmallLayout: boolean) => {
   if (isSmallLayout) {
-    return `auto 8px minmax(200px, 1fr) 4px minmax(20%, 40%)`;
+    return `auto 8px minmax(200px, 1fr) 4px 60px`;
   } else {
     return `100%`;
   }

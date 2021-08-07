@@ -150,12 +150,12 @@
     "react-dom": "^17.0.1",
     "react-error-boundary": "^3.1.0",
     "react-router-dom": "^5.2.0",
-    "react-virtuoso": "^1.5.1",
     "rxjs": "^6.6.2",
     "sprintf-js": "^1.1.2",
     "syllable": "^4.1.0",
     "tslib": "^1.9.3",
     "use-debounce": "^4.0.0",
+    "use-resize-observer": "^7.0.1",
     "xstate": "^4.22.0"
   }
 }
