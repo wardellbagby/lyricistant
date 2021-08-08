@@ -1,6 +1,4 @@
 import Box from '@material-ui/core/Box';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import React, {
   ReactNode,
@@ -11,12 +9,10 @@ import React, {
 } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { usePreferences } from '@lyricistant/renderer/preferences/PreferencesStore';
-import { isDevelopment } from '@lyricistant/common/BuildModes';
 import { useMachine } from '@xstate/react';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
 import {
   Button,
-  Drawer,
   IconButton,
   LinearProgress,
   Typography,
@@ -33,6 +29,8 @@ import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { DotsVertical } from 'mdi-material-ui';
 import { FlexDirectionProperty } from 'csstype';
 import useResizeObserver from 'use-resize-observer';
+import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
+import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
 import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles<
@@ -73,31 +71,6 @@ const useRhymeListStyles = makeStyles<
     color: theme.palette.text.disabled,
     '&:hover': {
       color: theme.palette.text.primary,
-    },
-  },
-}));
-
-const useDrawerStyles = makeStyles((theme) => ({
-  drawer: {
-    display: 'flex',
-    alignItems: 'center',
-    maxHeight: '50%',
-    color: theme.palette.text.primary,
-  },
-  rhymes: {
-    'text-align': 'center',
-    overflow: 'hidden',
-    '&:hover': {
-      background: theme.palette.text.disabled,
-    },
-    '&::before': {
-      content: '""',
-      display: 'block',
-      position: 'absolute',
-      bottom: '0',
-      width: '30%',
-      left: '35%',
-      'border-bottom': `1px solid ${theme.palette.divider}`,
     },
   },
 }));
@@ -155,7 +128,7 @@ const RhymesList = ({
     displayableRhymes.splice(Math.min(displayableChildrenCount, rhymes.length));
 
     return displayableRhymes.map((rhyme) => (
-      <RhymeComponent
+      <RhymeButton
         rhyme={rhyme}
         key={rhyme.word}
         height={rhymeHeight}
@@ -252,7 +225,6 @@ const HelperText = ({ text }: { text: string }) => {
 export const Rhymes: React.FC = () => {
   const [state, send] = useMachine(rhymesMachine);
 
-  const classes = useDrawerStyles();
   const selectedWordStore = useSelectedWordStore();
   const handleError = useErrorHandler();
   const selectedWord = useSelectedWords();
@@ -320,28 +292,15 @@ export const Rhymes: React.FC = () => {
         />
       )}
       {showMoreRhymes && (
-        <Drawer
-          anchor={'bottom'}
-          open={true}
-          PaperProps={{
-            className: classes.drawer,
-          }}
+        <RhymeDrawer
+          rhymes={rhymes}
+          query={selectedWord}
           onClose={() => setShowMoreRhymes(false)}
-        >
-          {rhymes.map((rhyme) => (
-            <RhymeComponent
-              rhyme={rhyme}
-              key={rhyme.word}
-              className={classes.rhymes}
-              height={80}
-              width={'100%'}
-              onClick={() => {
-                setShowMoreRhymes(false);
-                onRhymeClicked(rhyme);
-              }}
-            />
-          ))}
-        </Drawer>
+          onRhymeClicked={(rhyme) => {
+            setShowMoreRhymes(false);
+            onRhymeClicked(rhyme);
+          }}
+        />
       )}
     </Box>
   );
@@ -373,41 +332,3 @@ const useRhymeComponentWidth = () => {
     return '100%';
   }
 };
-
-interface RhymeProps {
-  rhyme: Rhyme;
-  className: string;
-  onClick: () => void;
-  height: number | string;
-  width: number | string;
-}
-
-const RhymeComponent = ({
-  rhyme,
-  className,
-  onClick,
-  width,
-  height,
-}: RhymeProps) => (
-  <Box
-    width={width}
-    height={height}
-    display={'flex'}
-    flex={'none'}
-    alignContent={'stretch'}
-    onClick={onClick}
-  >
-    <ListItem
-      className={className}
-      button
-      key={rhyme.word ?? ''}
-      style={{ height: '100%' }}
-    >
-      <ListItemText
-        primary={rhyme.word ?? ''}
-        primaryTypographyProps={{ align: 'center' }}
-        secondary={isDevelopment && rhyme.score}
-      />
-    </ListItem>
-  </Box>
-);
