@@ -1,18 +1,46 @@
-import { DialogTitle, Drawer } from '@material-ui/core';
+import { Drawer, Typography } from '@material-ui/core';
 import React from 'react';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { makeStyles } from '@material-ui/core/styles';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
 
 const useStyles = makeStyles((theme) => ({
-  drawer: {
+  root: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  paper: {
     display: 'flex',
     alignItems: 'center',
     maxHeight: '50%',
+    width: '100%',
+    maxWidth: '600px',
     color: theme.palette.text.primary,
+    top: 'unset',
+    bottom: 'unset',
+    right: 'unset',
+    left: 'unset',
+    overflow: 'hidden',
+    borderTopLeftRadius: '16px',
+    borderTopRightRadius: '16px',
+  },
+  rhymeContainer: {
+    overflow: 'auto',
+    width: '100%',
+  },
+  header: {
+    width: '100%',
+    background: theme.palette.background.paper,
+    zIndex: 10,
+    textAlign: 'center',
+    position: 'sticky',
+    top: 0,
+    padding: '16px',
+    'border-bottom': `1px solid ${theme.palette.divider}`,
   },
   rhymes: {
-    'text-align': 'center',
+    textAlign: 'center',
     overflow: 'hidden',
     '&:hover': {
       background: theme.palette.text.disabled,
@@ -45,16 +73,20 @@ export const RhymeDrawer = ({
   const classes = useStyles();
 
   return (
-    <>
-      <Drawer
-        anchor={'bottom'}
-        open={true}
-        PaperProps={{
-          className: classes.drawer,
-        }}
-        onClose={onClose}
-      >
-        <DialogTitle>{query}</DialogTitle>
+    <Drawer
+      open={true}
+      PaperProps={{
+        className: classes.paper,
+      }}
+      onClose={onClose}
+      classes={{
+        root: classes.root,
+      }}
+    >
+      <Typography className={classes.header} variant={'h6'}>
+        {query}
+      </Typography>
+      <div className={classes.rhymeContainer}>
         {rhymes.map((rhyme) => (
           <RhymeButton
             rhyme={rhyme}
@@ -65,7 +97,7 @@ export const RhymeDrawer = ({
             onClick={() => onRhymeClicked(rhyme)}
           />
         ))}
-      </Drawer>
-    </>
+      </div>
+    </Drawer>
   );
 };
