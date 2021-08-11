@@ -1,6 +1,6 @@
-import { RendererDelegate } from "@lyricistant/common/Delegates";
-import { Logger } from "@lyricistant/common/Logger";
-import { Manager } from "@lyricistant/common/Manager";
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
+import { Manager } from '@lyricistant/common/Manager';
 
 export class LogManager implements Manager {
   public constructor(

@@ -21,7 +21,7 @@ import {
   APP_HOMEPAGE,
   APP_VERSION,
   platformDelegate,
-} from "@lyricistant/renderer/globals";
+} from '@lyricistant/renderer/globals';
 import appIcon from './app_icon.png';
 
 const aboutInfo = {

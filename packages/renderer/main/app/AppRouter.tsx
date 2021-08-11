@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-import { logger } from "@lyricistant/renderer/globals";
-import { ChooseDownloadDialog } from "@lyricistant/renderer/download/ChooseDownloadDialog";
-import { PlatformDialog } from "@lyricistant/renderer/dialog/PlatformDialogs";
-import { Preferences } from "@lyricistant/renderer/preferences/Preferences";
-import { AboutDialog } from "@lyricistant/renderer/about/AboutDialog";
-import { PrivacyPolicy } from "@lyricistant/renderer/privacy/PrivacyPolicy";
+import { logger } from '@lyricistant/renderer/globals';
+import { ChooseDownloadDialog } from '@lyricistant/renderer/download/ChooseDownloadDialog';
+import { PlatformDialog } from '@lyricistant/renderer/dialog/PlatformDialogs';
+import { Preferences } from '@lyricistant/renderer/preferences/Preferences';
+import { AboutDialog } from '@lyricistant/renderer/about/AboutDialog';
+import { PrivacyPolicy } from '@lyricistant/renderer/privacy/PrivacyPolicy';
 import { App } from './App';
 
 export function AppRouter() {

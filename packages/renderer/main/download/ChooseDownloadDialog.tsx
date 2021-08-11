@@ -15,7 +15,7 @@ import {
   Release,
   supportedReleases,
 } from '@lyricistant/renderer/download';
-import { logger } from "@lyricistant/renderer/globals";
+import { logger } from '@lyricistant/renderer/globals';
 
 const useStyles = (release: Release) =>
   makeStyles(() => ({

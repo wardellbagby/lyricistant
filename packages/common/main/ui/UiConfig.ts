@@ -1,7 +1,7 @@
 export interface UiConfig {
   showDownload: boolean;
   showOpen: boolean;
-  showBrowserWarning: boolean
+  showBrowserWarning: boolean;
 }
 
 export type UiConfigProvider = () => UiConfig;

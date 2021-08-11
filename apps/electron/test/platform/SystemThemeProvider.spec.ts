@@ -14,9 +14,8 @@ use(sinonChai);
 use(chaiAsPromised);
 
 describe('System Theme', () => {
-  const nativeTheme = stubInterface<
-    { -readonly [P in keyof NativeTheme]: NativeTheme[P] }
-  >();
+  const nativeTheme =
+    stubInterface<{ -readonly [P in keyof NativeTheme]: NativeTheme[P] }>();
   const nativeThemeListeners = new EventListeners();
   let systemThemeProvider: SystemThemeProvider;
 

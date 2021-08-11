@@ -27,6 +27,7 @@ module.exports = {
     'eslint-plugin-react',
     '@typescript-eslint',
     '@typescript-eslint/tslint',
+    'prettier',
   ],
   overrides: [
     {
@@ -65,6 +66,7 @@ module.exports = {
     },
   ],
   rules: {
+    'prettier/prettier': 'error',
     'import/no-relative-parent-imports': 'error',
     '@typescript-eslint/adjacent-overload-signatures': 'error',
     '@typescript-eslint/array-type': [

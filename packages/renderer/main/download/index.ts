@@ -1,4 +1,4 @@
-import { logger } from "@lyricistant/renderer/globals";
+import { logger } from '@lyricistant/renderer/globals';
 
 export const latestReleaseUrl =
   'https://github.com/wardellbagby/lyricistant/releases/latest/download/';
@@ -42,14 +42,16 @@ export const downloadApp = (): boolean => {
   switch (window.navigator.platform) {
     case 'MacIntel': {
       logger.info('Downloading app for Mac.');
-      url += supportedReleases.find((release) => release.platform === 'Mac')
-        .asset;
+      url += supportedReleases.find(
+        (release) => release.platform === 'Mac'
+      ).asset;
       break;
     }
     case 'Win32': {
       logger.info('Downloading app for Windows.');
-      url += supportedReleases.find((release) => release.platform === 'Windows')
-        .asset;
+      url += supportedReleases.find(
+        (release) => release.platform === 'Windows'
+      ).asset;
       break;
     }
     default: {

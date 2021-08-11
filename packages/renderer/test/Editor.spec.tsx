@@ -19,7 +19,8 @@ jest.mock('@lyricistant/renderer/globals', () => ({
     warn: (): void => undefined,
     error: (): void => undefined,
   },
-  platformDelegate: new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
+  platformDelegate:
+    new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
 }));
 jest.mock('@lyricistant/renderer/util/useEventListener');
 jest.mock('react-beforeunload');
@@ -55,8 +56,9 @@ const onWordSelected = jest.fn();
 
 describe('Editor component', () => {
   beforeEach(() => {
-    platformDelegate = jest.requireMock('@lyricistant/renderer/globals')
-      .platformDelegate;
+    platformDelegate = jest.requireMock(
+      '@lyricistant/renderer/globals'
+    ).platformDelegate;
     jest.useFakeTimers('modern');
     platformDelegate.clear();
     require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor.mockImplementation(
@@ -97,10 +99,9 @@ describe('Editor component', () => {
     const useDocumentListener: jest.Mock<
       void,
       [string, (event: NestedPartial<DragEvent>) => void, DependencyList]
-    > = require('@lyricistant/renderer/util/useEventListener')
-      .useDocumentListener;
-    const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
-      .undoDepth;
+    > = require('@lyricistant/renderer/util/useEventListener').useDocumentListener;
+    const undoDepth: jest.Mock<number, []> =
+      require('@codemirror/history').undoDepth;
 
     useDocumentListener.mockImplementation((eventName, listener) => {
       useEffect(() => {
@@ -135,10 +136,9 @@ describe('Editor component', () => {
     const useDocumentListener: jest.Mock<
       void,
       [string, (event: NestedPartial<DragEvent>) => void, DependencyList]
-    > = require('@lyricistant/renderer/util/useEventListener')
-      .useDocumentListener;
-    const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
-      .undoDepth;
+    > = require('@lyricistant/renderer/util/useEventListener').useDocumentListener;
+    const undoDepth: jest.Mock<number, []> =
+      require('@codemirror/history').undoDepth;
 
     useDocumentListener.mockImplementation((eventName, listener) => {
       useEffect(() => {
@@ -173,10 +173,9 @@ describe('Editor component', () => {
     const useDocumentListener: jest.Mock<
       void,
       [string, (event: NestedPartial<DragEvent>) => boolean, DependencyList]
-    > = require('@lyricistant/renderer/util/useEventListener')
-      .useDocumentListener;
-    const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
-      .undoDepth;
+    > = require('@lyricistant/renderer/util/useEventListener').useDocumentListener;
+    const undoDepth: jest.Mock<number, []> =
+      require('@codemirror/history').undoDepth;
 
     let result: boolean = null;
     useDocumentListener.mockImplementation((eventName, listener) => {
@@ -214,8 +213,8 @@ describe('Editor component', () => {
   });
 
   it('handles the platform trying to create a new file', async () => {
-    const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
-      .undoDepth;
+    const undoDepth: jest.Mock<number, []> =
+      require('@codemirror/history').undoDepth;
     undoDepth.mockReturnValue(0);
 
     render(<Editor />);
@@ -228,8 +227,8 @@ describe('Editor component', () => {
   });
 
   it('handles the platform trying to create a new file when user has made edits', async () => {
-    const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
-      .undoDepth;
+    const undoDepth: jest.Mock<number, []> =
+      require('@codemirror/history').undoDepth;
     undoDepth.mockReturnValue(1);
 
     render(<Editor />);
@@ -244,8 +243,8 @@ describe('Editor component', () => {
   });
 
   it('handles the platform trying to quit', async () => {
-    const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
-      .undoDepth;
+    const undoDepth: jest.Mock<number, []> =
+      require('@codemirror/history').undoDepth;
     undoDepth.mockReturnValue(0);
 
     render(<Editor />);
@@ -258,8 +257,8 @@ describe('Editor component', () => {
   });
 
   it('handles the platform trying to quit when user has made edits', async () => {
-    const undoDepth: jest.Mock<number, []> = require('@codemirror/history')
-      .undoDepth;
+    const undoDepth: jest.Mock<number, []> =
+      require('@codemirror/history').undoDepth;
     undoDepth.mockReturnValue(1);
 
     render(<Editor />);
@@ -404,8 +403,8 @@ describe('Editor component', () => {
   });
 
   it('passes the selected word store into codemirror', async () => {
-    const CodeMirrorEditor = require('@lyricistant/codemirror/CodeMirror')
-      .CodeMirrorEditor;
+    const CodeMirrorEditor =
+      require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor;
 
     render(<Editor />);
 
@@ -420,8 +419,8 @@ describe('Editor component', () => {
   });
 
   it('passes the replaced word into codemirror', async () => {
-    const CodeMirrorEditor = require('@lyricistant/codemirror/CodeMirror')
-      .CodeMirrorEditor;
+    const CodeMirrorEditor =
+      require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor;
     const wordReplacement = 'hello';
     require('@lyricistant/renderer/editor/SelectedWordStore').useReplacedWords.mockReturnValue(
       wordReplacement

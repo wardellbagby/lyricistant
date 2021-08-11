@@ -43,10 +43,10 @@ export const buildElectronApps = (options?: Options): Job => {
 };
 
 export const downloadElectronApps = ({ path }: { path: string }): Step => ({
-    name: 'Download Electron apps',
-    uses: DOWNLOAD_ARTIFACT,
-    with: {
-      name: ELECTRON_TAG,
-      path,
-    },
-  });
+  name: 'Download Electron apps',
+  uses: DOWNLOAD_ARTIFACT,
+  with: {
+    name: ELECTRON_TAG,
+    path,
+  },
+});

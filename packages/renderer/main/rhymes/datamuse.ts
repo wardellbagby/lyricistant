@@ -1,4 +1,4 @@
-import { logger } from "@lyricistant/renderer/globals";
+import { logger } from '@lyricistant/renderer/globals';
 import { Rhyme } from './rhyme';
 
 const url = 'https://lyricistant.wardellbagby.workers.dev';

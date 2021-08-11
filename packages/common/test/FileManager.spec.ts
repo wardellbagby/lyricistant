@@ -224,10 +224,8 @@ describe('File Manager', () => {
   });
 
   it('saves the file when the renderer returns the editor text', async () => {
-    const fileChangeListener: (
-      currentFile: string,
-      recents: string[]
-    ) => void = sinon.fake();
+    const fileChangeListener: (currentFile: string, recents: string[]) => void =
+      sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
@@ -246,10 +244,8 @@ describe('File Manager', () => {
   });
 
   it('saves as the file when the renderer returns the editor text', async () => {
-    const fileChangeListener: (
-      currentFile: string,
-      recents: string[]
-    ) => void = sinon.fake();
+    const fileChangeListener: (currentFile: string, recents: string[]) => void =
+      sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
@@ -268,10 +264,8 @@ describe('File Manager', () => {
   });
 
   it('saves a new file when the renderer says to save with no file loaded', async () => {
-    const fileChangeListener: (
-      currentFile: string,
-      recents: string[]
-    ) => void = sinon.fake();
+    const fileChangeListener: (currentFile: string, recents: string[]) => void =
+      sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
@@ -291,10 +285,8 @@ describe('File Manager', () => {
   });
 
   it('saves the current file when the renderer says to save with a file loaded', async () => {
-    const fileChangeListener: (
-      currentFile: string,
-      recents: string[]
-    ) => void = sinon.fake();
+    const fileChangeListener: (currentFile: string, recents: string[]) => void =
+      sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
     files.openFile.returns(
       Promise.resolve({
@@ -325,10 +317,8 @@ describe('File Manager', () => {
   });
 
   it('updates the current file when the platform returns a new file path', async () => {
-    const fileChangeListener: (
-      currentFile: string,
-      recents: string[]
-    ) => void = sinon.fake();
+    const fileChangeListener: (currentFile: string, recents: string[]) => void =
+      sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
     files.openFile.returns(
       Promise.resolve({
@@ -377,10 +367,8 @@ describe('File Manager', () => {
         data: 'This water',
       })
     );
-    const fileChangeListener: (
-      currentFile: string,
-      recents: string[]
-    ) => void = sinon.fake();
+    const fileChangeListener: (currentFile: string, recents: string[]) => void =
+      sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
 
     manager.register();
@@ -410,10 +398,8 @@ describe('File Manager', () => {
         data: 'This water',
       })
     );
-    const fileChangeListener: (
-      currentFile: string,
-      recents: string[]
-    ) => void = sinon.fake();
+    const fileChangeListener: (currentFile: string, recents: string[]) => void =
+      sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
 
     manager.register();
@@ -443,10 +429,8 @@ describe('File Manager', () => {
         data: 'This water',
       })
     );
-    const fileChangeListener: (
-      currentFile: string,
-      recents: string[]
-    ) => void = sinon.fake();
+    const fileChangeListener: (currentFile: string, recents: string[]) => void =
+      sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
 
     manager.register();

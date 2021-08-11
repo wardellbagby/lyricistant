@@ -41,7 +41,7 @@ const rootStyles: Styles = {
       animationIterationCount: 'infinite',
       animationName: '$loading',
       animationTimingFunction: 'ease-in-out',
-      animationDirection: 'alternate'
+      animationDirection: 'alternate',
     },
   },
 };

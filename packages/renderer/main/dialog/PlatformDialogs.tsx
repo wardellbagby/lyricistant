@@ -13,8 +13,8 @@ import {
 } from '@material-ui/core';
 import { useCallback, useState } from 'react';
 import * as React from 'react';
-import { platformDelegate } from "@lyricistant/renderer/globals";
-import { useChannel } from "@lyricistant/renderer/platform/useChannel";
+import { platformDelegate } from '@lyricistant/renderer/globals';
+import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 
 export function PlatformDialog() {
   const [dialogData, setDialogData] = useState<DialogData>(null);

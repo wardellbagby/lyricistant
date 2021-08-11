@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
-import { useChannel } from "@lyricistant/renderer/platform/useChannel";
+import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 
 const preferences = new BehaviorSubject<PreferencesData>(null);
 
