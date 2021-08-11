@@ -5,6 +5,7 @@ import {
   PreferencesData,
   RhymeSource,
   ColorScheme,
+  Font,
 } from '@lyricistant/common/preferences/PreferencesData';
 import {
   SystemTheme,
@@ -12,7 +13,7 @@ import {
 } from '@lyricistant/common/theme/SystemTheme';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
-import { StubbedInstance, stubInterface } from 'ts-sinon';
+import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
 
 use(sinonChai);
 
@@ -63,7 +64,7 @@ describe('Preference Manager', () => {
     ).to.have.been.calledWith('prefs-updated');
     expect(
       rendererDelegate.addRendererListenerSetListener
-    ).to.have.been.calledWith('dark-mode-toggled');
+    ).to.have.been.calledWith('theme-updated');
   });
 
   it('sends prefs when the renderer registers for updates', () => {
@@ -75,6 +76,7 @@ describe('Preference Manager', () => {
       textSize: 16,
       colorScheme: ColorScheme.System,
       rhymeSource: RhymeSource.Datamuse,
+      font: Font.Roboto_Mono,
     });
   });
 
@@ -83,6 +85,7 @@ describe('Preference Manager', () => {
       textSize: 22,
       colorScheme: ColorScheme.Dark,
       rhymeSource: RhymeSource.Offline,
+      font: Font.Roboto_Mono,
     };
     preferences.getPreferences.returns(prefs);
 
@@ -99,8 +102,9 @@ describe('Preference Manager', () => {
   it('saves prefs to the platform', () => {
     const prefs: PreferencesData = {
       textSize: 22,
-      theme: ColorScheme.Dark,
+      colorScheme: ColorScheme.Dark,
       rhymeSource: RhymeSource.Datamuse,
+      font: Font.Roboto_Mono,
     };
 
     manager.register();
@@ -112,27 +116,10 @@ describe('Preference Manager', () => {
       'prefs-updated',
       prefs
     );
-    expect(rendererDelegate.send).to.have.been.calledWith('close-prefs');
     expect(rendererDelegate.send).to.have.been.calledWith(
-      'dark-mode-toggled',
-      prefs.textSize,
-      true
+      'theme-updated',
+      prefs
     );
-  });
-
-  it("only sends close if prefs weren't saved", () => {
-    const prefs: PreferencesData = undefined;
-
-    manager.register();
-
-    rendererListeners.get('save-prefs')(prefs);
-
-    expect(preferences.setPreferences).to.have.not.been.called;
-    expect(rendererDelegate.send).to.have.not.been.calledWith('prefs-updated');
-    expect(rendererDelegate.send).to.have.not.been.calledWith(
-      'dark-mode-toggled'
-    );
-    expect(rendererDelegate.send).to.have.been.calledWith('close-prefs');
   });
 
   it('responds to system theme changes', () => {
@@ -140,18 +127,20 @@ describe('Preference Manager', () => {
 
     systemThemeChangeListener(SystemTheme.Light);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
-      'dark-mode-toggled',
-      16,
-      false
+    expect(rendererDelegate.send).to.have.been.calledWithMatch(
+      'theme-updated',
+      sinon.match({
+        colorScheme: ColorScheme.Light,
+      })
     );
 
     systemThemeChangeListener(SystemTheme.Dark);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
-      'dark-mode-toggled',
-      16,
-      true
+    expect(rendererDelegate.send).to.have.been.calledWithMatch(
+      'theme-updated',
+      sinon.match({
+        colorScheme: ColorScheme.Dark,
+      })
     );
   });
 });
