@@ -6,19 +6,28 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import '@fontsource/roboto/latin-300.css';
-import '@fontsource/roboto/latin-400.css';
-import '@fontsource/roboto/latin-500.css';
-import '@fontsource/roboto/latin-700.css';
 import { createTheme } from '@lyricistant/renderer/theme';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
+import {
+  Font,
+  ThemeData,
+} from '@lyricistant/common/preferences/PreferencesData';
+import { logger } from '@lyricistant/renderer/globals';
 
+const loadFont = async (themeData?: ThemeData) => {
+  switch (themeData?.font) {
+    case Font.Roboto:
+      return import('@fontsource/roboto/latin-400.css');
+    default:
+      return import('@fontsource/roboto-mono/latin-400.css');
+  }
+};
 export const Themed: FunctionComponent<
   PropsWithChildren<{
     onThemeChanged: (background: string, foreground: string) => void;
   }>
 > = ({ onThemeChanged, children }) => {
-  const [theme, setTheme] = useState(createTheme(null, true));
+  const [theme, setTheme] = useState(createTheme(null));
   useEffect(
     () =>
       onThemeChanged(
@@ -29,10 +38,13 @@ export const Themed: FunctionComponent<
   );
 
   useChannel(
-    'dark-mode-toggled',
-    (textSize, useDarkMode) => {
-      const appTheme = createTheme(textSize, useDarkMode);
+    'theme-updated',
+    (themeData) => {
+      const appTheme = createTheme(themeData);
       setTheme(appTheme);
+      loadFont(themeData).catch((reason) =>
+        logger.warn('Failed to load fonts', reason)
+      );
     },
     [setTheme]
   );

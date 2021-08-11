@@ -2,8 +2,8 @@ import {
   PlatformToRendererListener,
   RendererChannel,
 } from '@lyricistant/common/Delegates';
-import { DependencyList, useEffect } from 'react';
-import { platformDelegate } from "@lyricistant/renderer/globals";
+import { DependencyList, useEffect, useState } from 'react';
+import { platformDelegate } from '@lyricistant/renderer/globals';
 
 /**
  * Register the provided listener on the given platform channel. The listener
@@ -26,4 +26,19 @@ export const useChannel: <Channel extends RendererChannel>(
     platformDelegate.on(channel, listener);
     return () => platformDelegate.removeListener(channel, listener);
   }, deps ?? []);
+};
+
+export const useChannelData: <Channel extends RendererChannel>(
+  channel: Channel,
+  deps?: DependencyList
+) => Parameters<PlatformToRendererListener[Channel]> = (channel, deps) => {
+  const [result, setResult] = useState([]);
+  useEffect(() => {
+    const listener = (...args: unknown[]) => {
+      setResult(args);
+    };
+    platformDelegate.on(channel, listener);
+    return () => platformDelegate.removeListener(channel, listener);
+  }, deps ?? []);
+  return result as any;
 };

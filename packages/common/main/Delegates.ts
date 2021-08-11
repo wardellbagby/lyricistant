@@ -1,6 +1,9 @@
 import { DialogData } from '@lyricistant/common/dialogs/Dialog';
 import { DroppableFile } from '@lyricistant/common/files/Files';
-import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import {
+  PreferencesData,
+  ThemeData,
+} from '@lyricistant/common/preferences/PreferencesData';
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 
 /**
@@ -27,11 +30,10 @@ export interface RendererToPlatformListener {
  * Information that the platform wants to send to the renderer.
  */
 export interface PlatformToRendererListener {
-  'dark-mode-toggled': (textSize: number | null, useDarkMode: boolean) => void;
+  'theme-updated': (themeData: ThemeData) => void;
   'prefs-updated': (preferenceData: PreferencesData) => void;
   'new-file-created': () => void;
   'file-save-ended': (error: Error | null, currentFilePath: string) => void;
-  'close-prefs': () => void;
   find: () => void;
   replace: () => void;
   'is-okay-for-new-file': () => void;

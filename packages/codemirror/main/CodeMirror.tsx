@@ -9,7 +9,6 @@ import { defaultKeymap } from '@codemirror/commands';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { history, historyKeymap } from '@codemirror/history';
 import { styled, useTheme } from '@material-ui/core';
-import '@fontsource/roboto-mono/latin-400.css';
 import { searchKeymap } from '@codemirror/search';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
@@ -26,6 +25,7 @@ export interface WordReplacement {
 }
 
 export interface CodeMirrorEditorProps {
+  font: string;
   onEditorMounted: (view: EditorView) => void;
   onWordSelected?: (word: WordAtPosition) => void;
   wordReplacement?: WordReplacement;
@@ -42,7 +42,7 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     () => ({
       extensions: [
         syllableCounts(),
-        themeCompartment.of(editorTheme(appTheme)),
+        themeCompartment.of(editorTheme(appTheme, props.font)),
         history(),
         wordSelection({
           onWordSelected: props.onWordSelected,
@@ -94,9 +94,9 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
       return;
     }
     view.dispatch({
-      effects: themeCompartment.reconfigure(editorTheme(appTheme)),
+      effects: themeCompartment.reconfigure(editorTheme(appTheme, props.font)),
     });
-  }, [view, appTheme]);
+  }, [view, appTheme, props.font]);
   useEffect(() => {
     if (!view || !props.wordReplacement) {
       return;

@@ -53,6 +53,8 @@ const options: Options = {
     '@types/react-devtools',
     'react-devtools',
     'tslib',
+    '@fontsource/roboto',
+    '@fontsource/roboto-mono',
   ],
 };
 

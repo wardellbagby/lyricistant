@@ -3,13 +3,16 @@ import {
   responsiveFontSizes,
   Theme,
 } from '@material-ui/core';
+import {
+  ColorScheme,
+  ThemeData,
+} from '@lyricistant/common/preferences/PreferencesData';
 
 export const getThemePalette = (useDarkTheme: boolean) =>
   useDarkTheme ? darkThemePalette : lightThemePalette;
-export const createTheme = (
-  textSize: number | null,
-  useDarkTheme: boolean
-): Theme => {
+
+export const createTheme = (themeData?: ThemeData): Theme => {
+  const useDarkTheme = themeData?.colorScheme === ColorScheme.Dark ?? true;
   const themePalette = getThemePalette(useDarkTheme);
 
   return responsiveFontSizes(
@@ -32,9 +35,9 @@ export const createTheme = (
           secondary: themePalette.secondaryText,
         },
       },
-      typography: textSize
+      typography: themeData?.textSize
         ? {
-            fontSize: textSize,
+            fontSize: themeData.textSize,
           }
         : undefined,
     })

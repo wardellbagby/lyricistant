@@ -2,7 +2,7 @@ import { Theme } from '@material-ui/core';
 import { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 
-export const editorTheme = (appTheme: Theme): Extension =>
+export const editorTheme = (appTheme: Theme, font: string): Extension =>
   EditorView.theme(
     {
       '&.cm-editor': {
@@ -29,7 +29,7 @@ export const editorTheme = (appTheme: Theme): Extension =>
         },
       },
       '.cm-scroller': {
-        fontFamily: '"Roboto Mono"',
+        fontFamily: `"${font}"`,
         fontSize: appTheme.typography.fontSize,
       },
       '.cm-gutters': {

@@ -6,13 +6,14 @@ import {
 } from '@lyricistant/common/theme/SystemTheme';
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 import {
+  ColorScheme,
+  Font,
   PreferencesData,
   RhymeSource,
-  Theme,
 } from '@lyricistant/common/preferences/PreferencesData';
 
 export class PreferenceManager implements Manager {
-  private onThemeChangedListeners: Array<(theme: Theme) => void> = [];
+  private onThemeChangedListeners: Array<(theme: ColorScheme) => void> = [];
   private systemTheme: SystemTheme;
 
   public constructor(
@@ -37,52 +38,50 @@ export class PreferenceManager implements Manager {
       }
     );
     this.rendererDelegate.addRendererListenerSetListener(
-      'dark-mode-toggled',
+      'theme-updated',
       () => {
         this.sendThemeUpdate(this.preferencesOrDefault());
       }
     );
   }
 
-  public addThemeChangedListener = (listener: (theme: Theme) => void) => {
+  public addThemeChangedListener = (listener: (theme: ColorScheme) => void) => {
     this.onThemeChangedListeners.push(listener);
   };
 
   private onSavePrefs = (data: PreferencesData): void => {
     if (!data) {
-      this.rendererDelegate.send('close-prefs');
       return;
     }
 
     this.preferences.setPreferences(data);
     this.rendererDelegate.send('prefs-updated', data);
     this.sendThemeUpdate(data);
-    this.rendererDelegate.send('close-prefs');
   };
 
   private preferencesOrDefault = (): PreferencesData => ({
     textSize: 16,
-    theme: Theme.System,
+    colorScheme: ColorScheme.System,
     rhymeSource: RhymeSource.Datamuse,
-    ...this.preferences.getPreferences(),
+    font: Font.Roboto_Mono,
+    ...(this.preferences.getPreferences() as Partial<PreferencesData>),
   });
 
   private sendThemeUpdate = (data: PreferencesData): void => {
-    const theme = this.normalizeTheme(data.theme);
-    this.rendererDelegate.send(
-      'dark-mode-toggled',
-      data.textSize,
-      theme === undefined || theme === null || theme === Theme.Dark
-    );
-    this.onThemeChangedListeners.forEach((listener) => listener(theme));
+    const colorScheme = this.normalizeColorScheme(data.colorScheme);
+    this.rendererDelegate.send('theme-updated', {
+      ...data,
+      colorScheme,
+    });
+    this.onThemeChangedListeners.forEach((listener) => listener(colorScheme));
   };
 
-  private normalizeTheme(theme: Theme): Theme {
-    return theme === Theme.System
+  private normalizeColorScheme(theme: ColorScheme): ColorScheme {
+    return theme === ColorScheme.System
       ? this.systemThemeToTheme(this.systemTheme)
       : theme;
   }
 
-  private systemThemeToTheme = (systemTheme: SystemTheme): Theme =>
-    systemTheme === SystemTheme.Dark ? Theme.Dark : Theme.Light;
+  private systemThemeToTheme = (systemTheme: SystemTheme): ColorScheme =>
+    systemTheme === SystemTheme.Dark ? ColorScheme.Dark : ColorScheme.Light;
 }

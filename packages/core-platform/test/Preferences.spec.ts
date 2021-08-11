@@ -6,7 +6,7 @@ import { CorePreferences } from '@lyricistant/core-platform/platform/Preferences
 import {
   PreferencesData,
   RhymeSource,
-  Theme,
+  ColorScheme,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
@@ -25,7 +25,7 @@ describe('Preferences', () => {
     const expected: PreferencesData = {
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: Theme.Dark,
+      theme: ColorScheme.Dark,
     };
 
     preferences.setPreferences(expected);
@@ -39,12 +39,12 @@ describe('Preferences', () => {
     const initial: PreferencesData = {
       textSize: 24,
       rhymeSource: RhymeSource.Datamuse,
-      theme: Theme.Dark,
+      theme: ColorScheme.Dark,
     };
     const expected: PreferencesData = {
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: Theme.Dark,
+      theme: ColorScheme.Dark,
     };
 
     preferences.setPreferences(initial);

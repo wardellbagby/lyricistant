@@ -2,7 +2,7 @@ import { Manager } from '@lyricistant/common/Manager';
 import { PreferenceManager } from '@lyricistant/common/preferences/PreferenceManager';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Logger } from '@lyricistant/common/Logger';
-import { Theme } from '@lyricistant/common/preferences/PreferencesData';
+import { ColorScheme } from '@lyricistant/common/preferences/PreferencesData';
 
 export class StatusBarManager implements Manager {
   public constructor(
@@ -15,15 +15,15 @@ export class StatusBarManager implements Manager {
       let style: Style;
       let color: string;
       switch (theme) {
-        case Theme.Light:
+        case ColorScheme.Light:
           style = Style.Light;
           color = '#E0E0E0';
           break;
-        case Theme.Dark:
+        case ColorScheme.Dark:
           style = Style.Dark;
           color = '#232323';
           break;
-        case Theme.System:
+        case ColorScheme.System:
           style = Style.Default;
           color = null;
           break;

@@ -4,7 +4,7 @@ import { Preferences } from '@lyricistant/common/preferences/Preferences';
 import {
   PreferencesData,
   RhymeSource,
-  Theme,
+  ColorScheme,
 } from '@lyricistant/common/preferences/PreferencesData';
 import {
   SystemTheme,
@@ -73,7 +73,7 @@ describe('Preference Manager', () => {
 
     expect(rendererDelegate.send).to.have.been.calledWith('prefs-updated', {
       textSize: 16,
-      theme: Theme.System,
+      colorScheme: ColorScheme.System,
       rhymeSource: RhymeSource.Datamuse,
     });
   });
@@ -81,7 +81,7 @@ describe('Preference Manager', () => {
   it('sends real prefs that were loaded from the platform', () => {
     const prefs: PreferencesData = {
       textSize: 22,
-      theme: Theme.Dark,
+      colorScheme: ColorScheme.Dark,
       rhymeSource: RhymeSource.Offline,
     };
     preferences.getPreferences.returns(prefs);
@@ -99,7 +99,7 @@ describe('Preference Manager', () => {
   it('saves prefs to the platform', () => {
     const prefs: PreferencesData = {
       textSize: 22,
-      theme: Theme.Dark,
+      theme: ColorScheme.Dark,
       rhymeSource: RhymeSource.Datamuse,
     };
 

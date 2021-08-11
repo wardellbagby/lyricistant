@@ -1,6 +1,8 @@
 import {
+  Font,
   RhymeSource,
-  Theme as LyricistantTheme,
+  ColorScheme as LyricistantTheme,
+  ColorScheme,
 } from '@lyricistant/common/preferences/PreferencesData';
 import {
   Box,
@@ -137,10 +139,10 @@ export const Preferences = () => {
     });
   };
 
-  const onThemeChanged = (theme: LyricistantTheme) => {
+  const onColorSchemeChanged = (colorScheme: ColorScheme) => {
     setPreferencesData({
       ...preferencesData,
-      theme,
+      colorScheme,
     });
   };
 
@@ -151,8 +153,17 @@ export const Preferences = () => {
     });
   };
 
-  const onPreferencesSaved = () =>
+  const onFontChanged = (font: Font) => {
+    setPreferencesData({
+      ...preferencesData,
+      font,
+    });
+  };
+
+  const onPreferencesSaved = () => {
     platformDelegate.send('save-prefs', preferencesData);
+    closePreferences();
+  };
 
   const closePreferences = () => history.replace('/');
 
@@ -193,6 +204,17 @@ export const Preferences = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <SelectBox
+                    value={preferencesData.font}
+                    onChange={onFontChanged}
+                    items={[
+                      { value: Font.Roboto_Mono, label: 'Roboto Monospace' },
+                      { value: Font.Roboto, label: 'Roboto' },
+                    ]}
+                    label={'Font'}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <SelectBox
                     value={preferencesData.textSize}
                     onChange={onDetailsSizeChanged}
                     items={[
@@ -207,17 +229,17 @@ export const Preferences = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <SelectBox
-                    value={preferencesData.theme}
-                    onChange={onThemeChanged}
+                    value={preferencesData.colorScheme}
+                    onChange={onColorSchemeChanged}
                     items={[
                       { value: LyricistantTheme.Light, label: 'Light' },
                       { value: LyricistantTheme.Dark, label: 'Dark' },
                       {
                         value: LyricistantTheme.System,
-                        label: 'Follow System',
+                        label: 'Use Device Color Scheme',
                       },
                     ]}
-                    label={'Theme'}
+                    label={'Color Scheme'}
                   />
                 </Grid>
                 <Grid item xs={12}>

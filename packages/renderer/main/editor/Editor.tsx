@@ -8,13 +8,24 @@ import { EditorState, EditorStateConfig } from '@codemirror/state';
 import { openSearchPanel } from '@codemirror/search';
 import { logger, platformDelegate } from '@lyricistant/renderer/globals';
 import { useDocumentListener } from '@lyricistant/renderer/util/useEventListener';
+import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
+import { Font } from '@lyricistant/common/preferences/PreferencesData';
 import { toDroppableFile } from './to-droppable-file';
 import { useReplacedWords, useSelectedWordStore } from './SelectedWordStore';
 import { useEditorTextStore } from './EditorTextStore';
 
+const fontFamily = (font?: Font) => {
+  switch (font) {
+    case Font.Roboto:
+      return 'Roboto';
+    default:
+      return 'Roboto Mono';
+  }
+};
 export const Editor: React.FC = () => {
   const [editor, setEditor] = useState<EditorView>(null);
   const [defaultConfig, setDefaultConfig] = useState<EditorStateConfig>(null);
+  const [themeData] = useChannelData('theme-updated');
   useDocumentListener(
     'drop',
     async (event) => {
@@ -57,6 +68,7 @@ export const Editor: React.FC = () => {
   const { onEditorText } = useEditorTextStore();
   return (
     <CodeMirrorEditor
+      font={fontFamily(themeData?.font)}
       onEditorMounted={setEditor}
       onWordSelected={store.onWordSelected}
       wordReplacement={useReplacedWords()}

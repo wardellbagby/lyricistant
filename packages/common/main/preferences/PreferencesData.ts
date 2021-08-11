@@ -1,14 +1,22 @@
-export enum Theme {
+export enum ColorScheme {
   Light,
   Dark,
   System,
+}
+export enum Font {
+  Roboto_Mono,
+  Roboto,
 }
 export enum RhymeSource {
   Offline,
   Datamuse,
 }
-export interface PreferencesData {
+
+export interface ThemeData {
+  colorScheme: ColorScheme;
   textSize: number;
-  theme: Theme;
+  font: Font;
+}
+export interface PreferencesData extends ThemeData {
   rhymeSource: RhymeSource;
 }

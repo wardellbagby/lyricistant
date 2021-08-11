@@ -7,7 +7,7 @@ import { ElectronPreferences } from '@electron-app/platform/Preferences';
 import {
   PreferencesData,
   RhymeSource,
-  Theme,
+  ColorScheme,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
@@ -29,7 +29,7 @@ describe('Preferences', () => {
     const expected: PreferencesData = {
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: Theme.Dark,
+      theme: ColorScheme.Dark,
     };
     fs.existsSync.returns(true);
     fs.readFileSync.returns(JSON.stringify(expected));
@@ -68,7 +68,7 @@ describe('Preferences', () => {
     preferences.setPreferences({
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: Theme.Dark,
+      theme: ColorScheme.Dark,
     });
 
     expect(fs.writeFile).to.have.been.calledWith('user/preferences.json');
@@ -80,7 +80,7 @@ describe('Preferences', () => {
     preferences.setPreferences({
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: Theme.Dark,
+      theme: ColorScheme.Dark,
     });
     preferences.getPreferences();
 
