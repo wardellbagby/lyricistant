@@ -17,7 +17,8 @@ jest.mock('@lyricistant/renderer/globals', () => ({
     warn: (): void => undefined,
     error: (): void => undefined,
   },
-  platformDelegate: new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
+  platformDelegate:
+    new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
 }));
 
 let mockUseEditorText: jest.Mock<string>;
@@ -33,8 +34,9 @@ jest.mock('@lyricistant/renderer/download', () => ({
 
 describe('Menu component', () => {
   beforeEach(() => {
-    platformDelegate = jest.requireMock('@lyricistant/renderer/globals')
-      .platformDelegate;
+    platformDelegate = jest.requireMock(
+      '@lyricistant/renderer/globals'
+    ).platformDelegate;
     mockUseEditorText = jest.requireMock(
       '@lyricistant/renderer/editor/EditorTextStore'
     ).useEditorText;
@@ -67,6 +69,7 @@ describe('Menu component', () => {
       platformDelegate.invoke('ui-config', {
         showOpen: true,
         showDownload: false,
+        showBrowserWarning: false,
       })
     );
     const element = await waitFor(() =>
@@ -122,6 +125,7 @@ describe('Menu component', () => {
       platformDelegate.invoke('ui-config', {
         showOpen: false,
         showDownload: true,
+        showBrowserWarning: false,
       })
     );
     const element = await waitFor(() =>
@@ -146,6 +150,7 @@ describe('Menu component', () => {
       platformDelegate.invoke('ui-config', {
         showOpen: false,
         showDownload: true,
+        showBrowserWarning: false,
       })
     );
     const element = await waitFor(() =>

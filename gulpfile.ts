@@ -30,7 +30,8 @@ export const testAll = series(
   testWeb,
   testElectron,
   testCore,
-  testCorePlatform
+  testCorePlatform,
+  testRenderer
 );
 
 export const clean = () => del(path.resolve('build'));
