@@ -58,7 +58,7 @@ export class UpdateManager implements Manager {
       this.rendererDelegate.send('show-dialog', {
         tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
         title: 'Update Available',
-        message: `An update is available to ${updateInfo.releaseName}. Would you like to install it now?`,
+        message: `An update is available to ${updateInfo.version}. Would you like to install it now?`,
         buttons: ['Never', 'No', 'Yes'],
       });
     });
