@@ -94,17 +94,21 @@ In order to use React Devtools on Electron, this app includes the `react-devtool
 
 ### Updating dependencies
 
-There's a helper script at `bin/install-latest.ts` that can be used to update all dependencies in the project that start with a specific string to a specified version.
+There's a helper script at `scripts/install-latest.ts` that can be used to update all dependencies in the project that start with a specific string to a specified version.
 
 This is very useful for updating any scoped NPM dependencies that should be updated in lockstep (i.e., `@codemirror`).
 
 Example usage:
 
 ```shell
-./bin/install-latest.ts @codemirror 18.1.0
+./scripts/install-latest.ts @codemirror 18.1.0
 ```
 
+### Committing
 
+This project uses [Commitzen](https://github.com/commitizen/cz-cli) and [Commitlint](https://commitlint.js.org/#/) to enforce a single commit style. 
+
+To create a commit using an interactive wizard that follows the commit standards, run `git cz` 
 
 ## License
 

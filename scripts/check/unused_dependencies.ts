@@ -55,6 +55,10 @@ const options: Options = {
     'tslib',
     '@fontsource/roboto',
     '@fontsource/roboto-mono',
+    '@commitlint/cli',
+    '@commitlint/config-conventional',
+    'commitizen',
+    'cz-conventional-changelog',
   ],
 };
 

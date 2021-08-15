@@ -15,7 +15,7 @@
   },
   "homepage": "https://github.com/wardellbagby/lyricistant",
   "scripts": {
-    "lint": "eslint -c .eslintrc.js . && scripts/check/github_workflows.ts && scripts/check/run_configs.ts && scripts/check/unused_dependencies.ts",
+    "lint": "eslint -c .eslintrc.js . && scripts/check/github_workflows.ts && scripts/check/run_configs.ts && scripts/check/unused_dependencies.ts && commitlint --from origin/main --to HEAD --verbose",
     "lint-fix": "eslint -c .eslintrc.js . --fix && scripts/check/run_configs.ts --fix"
   },
   "engines": {
@@ -29,6 +29,8 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^3.1.1",
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
@@ -64,7 +66,9 @@
     "chai-subset": "^1.6.0",
     "change-case": "^4.1.2",
     "commander": "^8.0.0",
+    "commitizen": "^4.2.4",
     "css-loader": "^5.2.6",
+    "cz-conventional-changelog": "^3.3.0",
     "del": "^4.1.1",
     "depcheck": "^1.4.2",
     "dotenv": "^8.2.0",
@@ -157,5 +161,10 @@
     "use-debounce": "^4.0.0",
     "use-resize-observer": "^7.0.1",
     "xstate": "^4.22.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
