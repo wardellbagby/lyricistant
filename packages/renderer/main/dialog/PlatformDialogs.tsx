@@ -1,5 +1,8 @@
 import { DialogData } from '@lyricistant/common/dialogs/Dialog';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   Dialog,
@@ -12,9 +15,27 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useCallback, useState } from 'react';
+import { ExpandMore } from '@material-ui/icons';
 import * as React from 'react';
 import { platformDelegate } from '@lyricistant/renderer/globals';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
+import { makeStyles } from '@material-ui/core/styles';
+import { Markdown } from '@lyricistant/renderer/markdown/Markdown';
+
+const useDialogStyles = makeStyles({
+  dialog: {
+    overflow: 'none',
+  },
+  accordionSummary: {
+    paddingLeft: '0px',
+    paddingRight: '0px',
+  },
+  accordionMessage: {
+    overflowY: 'auto',
+    wordBreak: 'break-word',
+    maxHeight: '300px',
+  },
+});
 
 export function PlatformDialog() {
   const [dialogData, setDialogData] = useState<DialogData>(null);
@@ -27,17 +48,35 @@ export function PlatformDialog() {
   );
 
   useChannel('show-dialog', setDialogData, [setDialogData]);
+  const { accordionSummary, accordionMessage, dialog } = useDialogStyles();
 
   if (!dialogData) {
     return <div />;
   }
 
   return (
-    <Dialog open>
+    <Dialog open className={dialog}>
       <DialogTitle>{dialogData.title}</DialogTitle>
       <DialogContent>
         {dialogData.message && (
           <DialogContentText>{dialogData.message}</DialogContentText>
+        )}
+        {dialogData.collapsibleMessage && (
+          <Accordion elevation={0} square>
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              className={accordionSummary}
+            >
+              <DialogContentText>
+                {dialogData.collapsibleMessage.label}
+              </DialogContentText>
+            </AccordionSummary>
+            <AccordionDetails className={accordionMessage}>
+              <DialogContentText>
+                <Markdown text={dialogData.collapsibleMessage.message} />
+              </DialogContentText>
+            </AccordionDetails>
+          </Accordion>
         )}
         {dialogData.progress && (
           <LinearProgressWithLabel value={dialogData.progress} />

@@ -3,6 +3,10 @@ export interface DialogData {
   tag?: string;
   title: string;
   message?: string;
+  collapsibleMessage?: {
+    label: string;
+    message: string;
+  };
   buttons?: string[];
   progress?: number;
 }

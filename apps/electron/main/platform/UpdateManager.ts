@@ -4,6 +4,7 @@ import { Logger } from '@lyricistant/common/Logger';
 import { Manager } from '@lyricistant/common/Manager';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
 import { AppStore } from '@electron-app/AppStore';
+import axios from 'axios';
 
 export class UpdateManager implements Manager {
   private static readonly INSTALL_UPDATE_DIALOG_TAG =
@@ -42,7 +43,7 @@ export class UpdateManager implements Manager {
     }
     this.appUpdater.removeAllListeners();
 
-    this.appUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+    this.appUpdater.on('update-available', async (updateInfo: UpdateInfo) => {
       if (!updateInfo) {
         this.logger.warn("Couldn't update the app as update info was null");
         return;
@@ -59,6 +60,10 @@ export class UpdateManager implements Manager {
         tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
         title: 'Update Available',
         message: `An update is available to ${updateInfo.version}. Would you like to install it now?`,
+        collapsibleMessage: {
+          label: 'Changelog',
+          message: await this.getChangelog(updateInfo.releaseName),
+        },
         buttons: ['Never', 'No', 'Yes'],
       });
     });
@@ -128,5 +133,15 @@ export class UpdateManager implements Manager {
         this.appUpdater.quitAndInstall();
         break;
     }
+  };
+
+  private getChangelog = async (tag: string) => {
+    const url = `https://api.github.com/repos/wardellbagby/lyricistant/releases/tags/${tag}`;
+    const response = await axios.get<{ body: string }>(url, {
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+      },
+    });
+    return response?.data?.body ?? 'Unable to fetch changelog';
   };
 }
