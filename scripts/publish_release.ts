@@ -13,6 +13,12 @@ const requireSuccessful = <T = string | Buffer>(
     process.exit(result.status ?? 1);
   }
 };
+const updateChangelog = () => {
+  requireSuccessful(spawnSync('./node_modules/.bin/standard-changelog'), () => {
+    console.error('Failed to create changelog');
+  });
+};
+
 const versionBumpChoices = [
   { name: 'Major (x.0.0)', value: 'major' },
   { name: 'Minor (1.x.0)', value: 'minor' },
@@ -63,6 +69,7 @@ inquirer.prompt(questions).then(async (answers) => {
   }
   const commitMessage = newVersion.substr(1);
 
+  updateChangelog();
   requireSuccessful(
     spawnSync('git', ['commit', '--all', '-m', `${commitMessage}`]),
     () => {
