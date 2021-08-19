@@ -41,6 +41,7 @@ describe('Update Manager', () => {
       rendererDelegate,
       store,
       appUpdater,
+      stubInterface(),
       stubInterface()
     );
   });

@@ -45,10 +45,12 @@ import type {
   FileSystem,
   NodeFileSystem,
 } from '@electron-app/wrappers/FileSystem';
+import { AxiosHttpClient, HttpClient } from '@electron-app/wrappers/HttpClient';
 
 const registerElectronFunctionality = (component: DIContainer) => {
   component.registerSingleton<ElectronDialog>(() => dialog);
   component.registerSingleton<FileSystem, NodeFileSystem>();
+  component.registerSingleton<HttpClient, AxiosHttpClient>();
   component.registerSingleton<NativeTheme>(() => nativeTheme);
 };
 const registerPlatformFunctionality = (component: DIContainer) => {

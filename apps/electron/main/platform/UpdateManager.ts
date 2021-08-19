@@ -4,7 +4,7 @@ import { Logger } from '@lyricistant/common/Logger';
 import { Manager } from '@lyricistant/common/Manager';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
 import { AppStore } from '@electron-app/AppStore';
-import axios from 'axios';
+import { HttpClient } from '@electron-app/wrappers/HttpClient';
 
 export class UpdateManager implements Manager {
   private static readonly INSTALL_UPDATE_DIALOG_TAG =
@@ -18,6 +18,7 @@ export class UpdateManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private store: AppStore,
     private appUpdater: AppUpdater,
+    private httpClient: HttpClient,
     private logger: Logger
   ) {}
 
@@ -137,10 +138,11 @@ export class UpdateManager implements Manager {
 
   private getChangelog = async (tag: string) => {
     const url = `https://api.github.com/repos/wardellbagby/lyricistant/releases/tags/${tag}`;
-    const response = await axios.get<{ body: string }>(url, {
+    const response = await this.httpClient.get<{ body: string }>(url, {
       headers: {
         Accept: 'application/vnd.github.v3+json',
       },
+      validateStatus: null,
     });
     return response?.data?.body ?? 'Unable to fetch changelog';
   };
