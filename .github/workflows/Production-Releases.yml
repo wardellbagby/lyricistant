@@ -231,6 +231,8 @@ jobs:
       - 'buildElectronApps'
       - 'buildAndroidApp'
     steps:
+      - name: 'Create release text'
+        run: './node_modules/.bin/standard-changelog -i release.txt -r 1'
       - name: 'Download iOS app'
         uses: 'actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60'
         with:
@@ -250,9 +252,9 @@ jobs:
           path: '/tmp/artifacts'
         if: 'needs.buildAndroidApp.result == ''success'''
       - name: 'Create Github release'
-        uses: 'marvinpinto/action-automatic-releases@5bd3ab50e845612718d9a3a3c954dc99ba6868a4'
+        uses: 'softprops/action-gh-release@2d72d869af3bf23602f9593a1e3fd739b80ac1eb'
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          prerelease: false
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          body_path: 'release.txt'
           files: '/tmp/artifacts/*.*'
         if: '${{ needs.buildIOSApp.result == ''success'' || needs.buildElectronApps.result == ''success'' || needs.buildAndroidApp.result == ''success'' }}'

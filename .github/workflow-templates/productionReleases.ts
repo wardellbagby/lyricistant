@@ -12,7 +12,7 @@ import {
   downloadElectronApps,
   buildElectronApps as buildElectronAppsJob,
 } from './helpers/buildElectronApps';
-import { createGithubRelease as createGithubReleaseStep } from './helpers/createGithubRelease';
+import { createGithubReleaseAlt as createGithubReleaseStep } from './helpers/createGithubRelease';
 import { basicSetup } from './helpers/basicSetup';
 import { gulp } from './helpers/local-tasks';
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
@@ -58,6 +58,10 @@ const createGithubRelease: Job = {
   needs: [buildIOSApp, buildElectronApps, buildAndroidApp],
   steps: [
     {
+      name: 'Create release text',
+      run: './node_modules/.bin/standard-changelog -i release.txt -r 1',
+    },
+    {
       ...downloadIOSApp({ path: '/tmp/artifacts' }),
       if: "needs.buildIOSApp.result == 'success'",
     },
@@ -70,7 +74,10 @@ const createGithubRelease: Job = {
       if: "needs.buildAndroidApp.result == 'success'",
     },
     {
-      ...createGithubReleaseStep({ files: '/tmp/artifacts/*.*' }),
+      ...createGithubReleaseStep({
+        files: '/tmp/artifacts/*.*',
+        bodyPath: 'release.txt',
+      }),
       if:
         "${{ needs.buildIOSApp.result == 'success' || " +
         "needs.buildElectronApps.result == 'success' || " +
