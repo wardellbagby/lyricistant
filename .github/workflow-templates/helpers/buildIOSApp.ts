@@ -2,6 +2,8 @@ import { Job, Step } from './Workflow';
 import { basicSetup } from './basicSetup';
 import { gulp } from './local-tasks';
 import { DOWNLOAD_ARTIFACT, UPLOAD_ARTIFACT } from './versions';
+import { ifTrue } from './addIfTrue';
+import { createReleaseNotes } from './createReleaseNotes';
 
 const IOS_TAG = 'ios-app';
 
@@ -27,6 +29,10 @@ export const buildIOSApp = (options?: Options): Job => {
           NIGHTLY: nightly,
         },
       },
+      ...ifTrue<Step>(nightly, createReleaseNotes, {
+        name: 'Create iOS release notes',
+        run: './scripts/create_mobile_release_notes.ts release.txt ios fastlane/metadata/ios/en-US/release_notes.txt',
+      }),
       {
         name: 'Build iOS',
         run: `bundle exec fastlane ios release${nightly ? '' : ' deploy:true'}`,

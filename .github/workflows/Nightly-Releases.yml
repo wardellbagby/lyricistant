@@ -84,6 +84,11 @@ jobs:
         run: 'gulp bundleIOS --max-old-space-size=8192'
         env:
           NIGHTLY: true
+      - &ref_0
+        name: 'Create release text'
+        run: './node_modules/.bin/standard-changelog -i release.txt -r 1'
+      - name: 'Create iOS release notes'
+        run: './scripts/create_mobile_release_notes.ts release.txt ios fastlane/metadata/ios/en-US/release_notes.txt'
       - name: 'Build iOS'
         run: 'bundle exec fastlane ios release'
         env:
@@ -141,6 +146,9 @@ jobs:
         run: 'gulp bundleAndroid --max-old-space-size=8192'
         env:
           NIGHTLY: true
+      - *ref_0
+      - name: 'Create Android release notes'
+        run: './scripts/create_mobile_release_notes.ts release.txt android fastlane/metadata/android/en-US/changelogs/1.txt'
       - name: 'Build Android'
         run: 'bundle exec fastlane android release'
       - name: 'Upload Android app'
