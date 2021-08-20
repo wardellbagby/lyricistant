@@ -59,6 +59,7 @@ const options: Options = {
     '@commitlint/config-conventional',
     'commitizen',
     'cz-conventional-changelog',
+    'standard-changelog',
   ],
 };
 

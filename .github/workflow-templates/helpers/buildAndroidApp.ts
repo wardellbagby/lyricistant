@@ -37,7 +37,7 @@ export const buildAndroidApp = (options?: Options): Job => {
           NIGHTLY: nightly,
         },
       },
-      ...ifTrue<Step>(nightly, createReleaseNotes, {
+      ...ifTrue<Step>(!nightly, createReleaseNotes, {
         name: 'Create Android release notes',
         run: './scripts/create_mobile_release_notes.ts release.txt android fastlane/metadata/android/en-US/changelogs/1.txt',
       }),

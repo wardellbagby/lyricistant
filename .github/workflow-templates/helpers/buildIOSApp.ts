@@ -29,7 +29,7 @@ export const buildIOSApp = (options?: Options): Job => {
           NIGHTLY: nightly,
         },
       },
-      ...ifTrue<Step>(nightly, createReleaseNotes, {
+      ...ifTrue<Step>(!nightly, createReleaseNotes, {
         name: 'Create iOS release notes',
         run: './scripts/create_mobile_release_notes.ts release.txt ios fastlane/metadata/ios/en-US/release_notes.txt',
       }),
