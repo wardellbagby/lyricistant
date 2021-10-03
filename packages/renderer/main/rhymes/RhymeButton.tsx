@@ -1,5 +1,4 @@
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { isDevelopment } from '@lyricistant/common/BuildModes';
@@ -20,25 +19,17 @@ export const RhymeButton = ({
   width,
   height,
 }: RhymeButtonProps) => (
-  <Box
-    width={width}
-    height={height}
-    display={'flex'}
-    flex={'none'}
-    alignContent={'stretch'}
+  <ListItem
+    className={className}
+    button
+    key={rhyme.word ?? ''}
+    style={{ width, height }}
     onClick={onClick}
   >
-    <ListItem
-      className={className}
-      button
-      key={rhyme.word ?? ''}
-      style={{ height: '100%' }}
-    >
-      <ListItemText
-        primary={rhyme.word ?? ''}
-        primaryTypographyProps={{ align: 'center' }}
-        secondary={isDevelopment && rhyme.score}
-      />
-    </ListItem>
-  </Box>
+    <ListItemText
+      primary={rhyme.word ?? ''}
+      primaryTypographyProps={{ align: 'center' }}
+      secondary={isDevelopment && rhyme.score}
+    />
+  </ListItem>
 );

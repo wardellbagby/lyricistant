@@ -12,11 +12,9 @@ import { usePreferences } from '@lyricistant/renderer/preferences/PreferencesSto
 import { useMachine } from '@xstate/react';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
 import {
-  Button,
   IconButton,
   LinearProgress,
   Typography,
-  useMediaQuery,
   useTheme,
 } from '@material-ui/core';
 import {
@@ -31,6 +29,7 @@ import { FlexDirectionProperty } from 'csstype';
 import useResizeObserver from 'use-resize-observer';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
 import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
+import { ExpandMore } from '@material-ui/icons';
 import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles<
@@ -42,22 +41,6 @@ const useRhymeListStyles = makeStyles<
     overflow: 'hidden',
     '&:hover': {
       background: theme.palette.background.paper,
-    },
-  },
-  itemContainer: {
-    display: 'flex',
-    flex: 'none',
-    'align-content': 'stretch',
-    [theme.breakpoints.up('xs')]: {
-      width: '50%',
-      height: '50px',
-    },
-    [theme.breakpoints.up('md')]: {
-      width: '100%',
-      height: '80px',
-    },
-    [theme.breakpoints.up('lg')]: {
-      width: '50%',
     },
   },
   listContainer: {
@@ -107,22 +90,20 @@ const RhymesList = ({
   const rhymeHeight = useRhymeComponentHeight();
   const rhymeWidth = useRhymeComponentWidth();
 
-  let rhymeDimension: number;
-  if (isSmallLayout) {
-    rhymeDimension = rhymeWidth as number;
-  } else {
-    rhymeDimension = rhymeHeight;
-  }
-
   const children = useMemo(() => {
     let containerDimension;
+    let rhymeDimension: number;
+
     if (isSmallLayout) {
+      rhymeDimension = rhymeWidth as number;
       containerDimension = containerWidth;
     } else {
+      rhymeDimension = rhymeHeight;
       containerDimension = containerHeight;
     }
+
     const displayableChildrenCount = Math.floor(
-      containerDimension / rhymeDimension
+      (containerDimension - 1) / rhymeDimension
     );
     const displayableRhymes = [...rhymes];
     displayableRhymes.splice(Math.min(displayableChildrenCount, rhymes.length));
@@ -137,7 +118,14 @@ const RhymesList = ({
         onClick={() => onRhymeClicked(rhyme)}
       />
     ));
-  }, [containerWidth, containerHeight, rhymeDimension, rhymes, isSmallLayout]);
+  }, [
+    containerWidth,
+    containerHeight,
+    rhymeHeight,
+    rhymeWidth,
+    rhymes,
+    isSmallLayout,
+  ]);
 
   useEffect(() => {
     onMoreRhymes(rhymes.length > children.length);
@@ -306,22 +294,31 @@ export const Rhymes: React.FC = () => {
   );
 };
 
+const useShowAllButtonStyles = makeStyles((theme: Theme) => ({
+  button: {
+    color: theme.palette.text.disabled,
+  },
+}));
 const ShowAllButton = ({ onClick }: { onClick: () => void }) => {
+  const { button } = useShowAllButtonStyles();
   const isSmallLayout = useSmallLayout();
-  return isSmallLayout ? (
-    <IconButton onClick={onClick}>
-      <DotsVertical />
+
+  return (
+    <IconButton
+      className={button}
+      style={{ height: isSmallLayout ? '100%' : undefined }}
+      onClick={onClick}
+    >
+      {isSmallLayout ? <DotsVertical /> : <ExpandMore />}
     </IconButton>
-  ) : (
-    <Button onClick={onClick}>Show more</Button>
   );
 };
 
 const useRhymeComponentHeight = () => {
-  if (useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))) {
-    return 80;
-  } else {
+  if (useSmallLayout()) {
     return 50;
+  } else {
+    return 80;
   }
 };
 
