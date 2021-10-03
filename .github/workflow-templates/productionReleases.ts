@@ -16,7 +16,6 @@ import { createGithubReleaseAlt as createGithubReleaseStep } from './helpers/cre
 import { basicSetup } from './helpers/basicSetup';
 import { gulp } from './helpers/local-tasks';
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
-import { createReleaseNotes } from './helpers/createReleaseNotes';
 
 const tagMatches = (platform: 'ios' | 'android' | 'electron' | 'web') =>
   `\${{ contains(github.ref, '${platform}') ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -58,7 +57,10 @@ const createGithubRelease: Job = {
   if: 'always()',
   needs: [buildIOSApp, buildElectronApps, buildAndroidApp],
   steps: [
-    createReleaseNotes,
+    {
+      name: 'Create Github release notes',
+      run: 'npx standard-changelog -i CHANGELOG.md -o release.txt -r 1',
+    },
     {
       ...downloadIOSApp({ path: '/tmp/artifacts' }),
       if: "needs.buildIOSApp.result == 'success'",

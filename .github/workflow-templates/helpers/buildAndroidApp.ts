@@ -3,7 +3,6 @@ import { basicSetup } from './basicSetup';
 import { gulp } from './local-tasks';
 import { DOWNLOAD_ARTIFACT, UPLOAD_ARTIFACT } from './versions';
 import { ifTrue } from './addIfTrue';
-import { createReleaseNotes } from './createReleaseNotes';
 
 const ANDROID_TAG = 'android-app';
 
@@ -37,9 +36,9 @@ export const buildAndroidApp = (options?: Options): Job => {
           NIGHTLY: nightly,
         },
       },
-      ...ifTrue<Step>(!nightly, createReleaseNotes, {
+      ...ifTrue<Step>(!nightly, {
         name: 'Create Android release notes',
-        run: './scripts/create_mobile_release_notes.ts release.txt android fastlane/metadata/android/en-US/changelogs/1.txt',
+        run: './scripts/create_app_store_safe_changelog.ts android fastlane/metadata/android/en-US/changelogs/1.txt',
       }),
       {
         name: 'Build Android',
