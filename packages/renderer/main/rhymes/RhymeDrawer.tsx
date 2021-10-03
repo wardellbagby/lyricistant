@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     borderTopRightRadius: '16px',
   },
   rhymeContainer: {
-    overflow: 'auto',
+    overflow: 'overlay',
     width: '100%',
   },
   header: {
