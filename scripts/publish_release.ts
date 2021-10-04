@@ -85,8 +85,13 @@ inquirer.prompt(questions).then(async (answers) => {
 
   console.log('New version:' + newVersion);
   if (answers['push']) {
-    requireSuccessful(spawnSync('git', ['push', '--follow-tags']), () => {
-      console.error('Failed to push tags');
-    });
+    requireSuccessful(
+      spawnSync('git', ['push', '--follow-tags'], {
+        stdio: 'inherit',
+      }),
+      () => {
+        console.error('Failed to push tags');
+      }
+    );
   }
 });
