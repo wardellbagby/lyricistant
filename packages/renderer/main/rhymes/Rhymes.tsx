@@ -105,8 +105,10 @@ const RhymesList = ({
     const displayableChildrenCount = Math.floor(
       (containerDimension - 1) / rhymeDimension
     );
-    const displayableRhymes = [...rhymes];
-    displayableRhymes.splice(Math.min(displayableChildrenCount, rhymes.length));
+    const displayableRhymes = rhymes.slice(
+      0,
+      Math.min(displayableChildrenCount, rhymes.length)
+    );
 
     return displayableRhymes.map((rhyme) => (
       <RhymeButton

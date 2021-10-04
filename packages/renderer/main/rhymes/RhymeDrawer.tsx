@@ -1,10 +1,11 @@
-import { Drawer, Typography } from '@material-ui/core';
+import { Drawer, Theme, Typography } from '@material-ui/core';
 import React from 'react';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { makeStyles } from '@material-ui/core/styles';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
+import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme, { isSmallLayout: boolean }>((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'flex-end',
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     display: 'flex',
     alignItems: 'center',
-    maxHeight: '50%',
+    maxHeight: ({ isSmallLayout }) => (isSmallLayout ? '50%' : '70%'),
     width: '100%',
     maxWidth: '600px',
     color: theme.palette.text.primary,
@@ -70,7 +71,7 @@ export const RhymeDrawer = ({
   onRhymeClicked,
   query,
 }: RhymeDrawerProps) => {
-  const classes = useStyles();
+  const classes = useStyles({ isSmallLayout: useSmallLayout() });
 
   return (
     <Drawer
