@@ -22,6 +22,9 @@ export const basicSetup = (options?: Options): Step[] => {
     {
       name: 'Checkout the current branch',
       uses: CHECKOUT,
+      with: {
+        'fetch-depth': 0,
+      },
     } as Step,
     {
       name: 'Setup Node.js - 15.x.x',
