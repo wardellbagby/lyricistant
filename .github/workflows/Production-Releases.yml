@@ -245,6 +245,10 @@ jobs:
       - 'buildElectronApps'
       - 'buildAndroidApp'
     steps:
+      - name: 'Checkout the current branch'
+        uses: 'actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f'
+        with:
+          fetch-depth: 0
       - name: 'Create Github release notes'
         run: 'npx standard-changelog -i CHANGELOG.md -o release.txt -r 1'
       - name: 'Download iOS app'
