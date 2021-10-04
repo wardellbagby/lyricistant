@@ -26,8 +26,11 @@ const changeableFiles = [
   'apps/mobile/android/app/capacitor.build.gradle',
   'apps/mobile/ios/App/Podfile',
   '.github/workflows',
+  '.idea/runConfigurations',
+  '.vscode/launch.json',
 ];
 spawnSync('npx', ['cap', 'update', 'android']);
 spawnSync('npx', ['cap', 'update', 'ios']);
 spawnSync('./scripts/create_workflows.ts');
+spawnSync('./scripts/check/run_configs.ts', ['--fix']);
 spawnSync('git', ['add', ...changeableFiles]);
