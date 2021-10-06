@@ -1,3 +1,13 @@
+## [1.2.18](https://github.com/wardellbagby/lyricistant/compare/v1.2.17...v1.2.18) (2021-10-06)
+
+
+### Bug Fixes
+
+* **rhyme drawer:** increase the height of the rhyme drawer for large devices ([acf851a](https://github.com/wardellbagby/lyricistant/commit/acf851a6cff9ce33feb1185dae88b97c1d825f28))
+* **rhymes:** fix issue where duplicate rhymes would stick around forever ([5fd800c](https://github.com/wardellbagby/lyricistant/commit/5fd800cfc65db811bc542456bc1fe816b19eea1b))
+
+
+
 ## [1.2.17](https://github.com/wardellbagby/lyricistant/compare/v1.2.16...v1.2.17) (2021-10-04)
 
 
