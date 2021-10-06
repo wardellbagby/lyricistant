@@ -250,7 +250,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: 'Create Github release notes'
-        run: 'npx standard-changelog -i CHANGELOG.md -o release.txt -r 1'
+        run: 'npx conventional-changelog-cli -p angular -r 2 -o release.txt'
       - name: 'Download iOS app'
         uses: 'actions/download-artifact@3be87be14a055c47b01d3bd88f8fe02320a9bb60'
         with:

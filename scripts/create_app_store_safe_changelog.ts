@@ -15,7 +15,10 @@ const file = fs.readFileSync(
 
 const getReleaseNotesFromChangelog = (start = 0): [string, number] => {
   // Only generate for the latest release. Releases start with ## [version]
-  const end = Math.max(file.indexOf('## [', start + 1), file.length);
+  let end = file.indexOf('## [', start + 1);
+  if (end === -1) {
+    end = file.length;
+  }
 
   const changelog = file
     .slice(start, end)
@@ -38,9 +41,11 @@ const getReleaseNotesFromChangelog = (start = 0): [string, number] => {
       return (
         line
           // Remove references to the current app but keep the line.
-          .replace(`**${app}:**`, '')
-          // Remove the markdown and convert to a hyphen-delineated list.
+          .replace(`**${app}:** `, '')
+          // Remove the markdown for scopes and convert to a hyphen-delineated list.
           .replace(/\* \*\*(.+):\*\* (.+$)/, '- $1: $2')
+          // Replace any non-scoped markdowns and convert to hyphen-delineated list.
+          .replace(/\* /, '- ')
           // Remove the commit URLs.
           .replace(
             /\(\[.+\]\(https:\/\/github.com\/wardellbagby\/lyricistant\/commit\/.+\)\)/gm,
