@@ -49,7 +49,7 @@ export const fetchRhymes = async (word: string): Promise<Rhyme[]> => {
     asyncRhymes(word, 'near').then((rhymes) => increaseScore(rhymes, 1000)),
     asyncRhymes(word, 'sounds-like'),
   ]).then((results) =>
-    [...new Set(flatten(results))].sort(
+    distinct(flatten(results), (rhyme) => rhyme.word).sort(
       (left: Rhyme, right: Rhyme) => right.score - left.score
     )
   );
@@ -60,3 +60,18 @@ const increaseScore = (rhymes: Rhyme[], amount: number) =>
 
 const flatten: <T>(input: T[][]) => T[] = (array) =>
   array.reduce((prev, current) => prev.concat(current));
+
+const distinct: <T, R>(input: T[], by: (value: T) => R) => T[] = (
+  input,
+  by
+) => {
+  const map = new Map();
+  const results = [];
+  for (const item of input) {
+    if (!map.has(by(item))) {
+      map.set(by(item), true);
+      results.push(item);
+    }
+  }
+  return results;
+};

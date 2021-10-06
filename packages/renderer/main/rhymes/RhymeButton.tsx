@@ -22,7 +22,6 @@ export const RhymeButton = ({
   <ListItem
     className={className}
     button
-    key={rhyme.word ?? ''}
     style={{ width, height }}
     onClick={onClick}
   >
