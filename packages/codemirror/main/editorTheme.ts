@@ -8,8 +8,6 @@ export const editorTheme = (appTheme: Theme, font: string): Extension =>
       '&.cm-editor': {
         backgroundColor: appTheme.palette.background.default,
         caretColor: appTheme.palette.text.primary,
-      },
-      '&.cm-wrap': {
         height: '100%',
       },
       '&.cm-scroller': {
