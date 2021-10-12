@@ -12,16 +12,21 @@ export const cleanBuildDirectory = async () =>
   del(path.resolve(__dirname, '..', 'build'));
 
 export const jest = async (directory: string) => {
-  runCLI({ _: [], $0: 'jest', rootDir: directory }, [directory]).then(
-    ({ results }) => {
-      if (results.numFailedTests > 0) {
-        throw new Error('Jest reported test failures.');
-      }
-      if (results.numTotalTests === 0) {
-        throw new Error('Jest - No tests ran!');
-      }
-    }
-  );
+  const { results } = await runCLI({ _: [], $0: 'jest', rootDir: directory }, [
+    directory,
+  ]);
+
+  if (results.numTotalTests === 0) {
+    throw new Error('Jest - No tests ran!');
+  }
+
+  if (results.wasInterrupted) {
+    throw new Error('Jest - Interrupted before finish!');
+  }
+
+  if (!results.success) {
+    throw new Error('Jest reported test failures.');
+  }
 };
 
 export const spawn = (
