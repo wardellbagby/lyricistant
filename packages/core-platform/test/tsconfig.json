@@ -1,5 +1,5 @@
 {
-  "include": ["*.spec.ts"],
+  "include": ["*.spec.ts", "../main/*.ts"],
   "compilerOptions": {
     "types": ["jest"]
   },

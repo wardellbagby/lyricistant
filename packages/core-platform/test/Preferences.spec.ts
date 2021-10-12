@@ -4,9 +4,10 @@ import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
 import { CorePreferences } from '@lyricistant/core-platform/platform/Preferences';
 import {
+  ColorScheme,
+  Font,
   PreferencesData,
   RhymeSource,
-  ColorScheme,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 
@@ -25,7 +26,8 @@ describe('Preferences', () => {
     const expected: PreferencesData = {
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: ColorScheme.Dark,
+      colorScheme: ColorScheme.Dark,
+      font: Font.Roboto,
     };
 
     preferences.setPreferences(expected);
@@ -39,12 +41,14 @@ describe('Preferences', () => {
     const initial: PreferencesData = {
       textSize: 24,
       rhymeSource: RhymeSource.Datamuse,
-      theme: ColorScheme.Dark,
+      colorScheme: ColorScheme.Dark,
+      font: Font.Roboto,
     };
     const expected: PreferencesData = {
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: ColorScheme.Dark,
+      colorScheme: ColorScheme.Dark,
+      font: Font.Roboto,
     };
 
     preferences.setPreferences(initial);

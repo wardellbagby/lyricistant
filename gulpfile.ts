@@ -1,6 +1,4 @@
-import path from 'path';
 import { parallel, series } from 'gulp';
-import del from 'del';
 import { buildWeb } from './apps/web/web.gulp';
 import { buildElectron } from './apps/electron/electron.gulp';
 import { testWeb } from './apps/web/test/test.gulp';
@@ -9,6 +7,7 @@ import { testCodemirror } from './packages/codemirror/test/test.gulp';
 import { testRenderer } from './packages/renderer/test/test.gulp';
 import { testCommon } from './packages/common/test/test.gulp';
 import { testCorePlatform } from './packages/core-platform/test/test.gulp';
+import { cleanBuildDirectory } from './tooling/common-tasks.gulp';
 
 export * from './apps/web/web.gulp';
 export * from './apps/web/test/test.gulp';
@@ -34,5 +33,5 @@ export const testAll = series(
   testRenderer
 );
 
-export const clean = () => del(path.resolve('build'));
+export const clean = cleanBuildDirectory;
 export const check = parallel(buildAll, testAll);

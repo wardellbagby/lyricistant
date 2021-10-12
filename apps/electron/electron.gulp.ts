@@ -130,17 +130,23 @@ const startElectronApp = (forceWait: boolean) => async () => {
 
 const runElectronServer = async () => {
   const config = await createRendererWebpackConfig('development');
-  return new Promise<unknown>((_, reject) => {
-    new WebpackDevServer(webpack(config), {
+  const serverConfig: WebpackDevServer.Configuration = {
+    static: getOutputDirectory('development'),
+    hot: true,
+    devMiddleware: {
       publicPath: '/',
-      contentBase: getOutputDirectory('development'),
-      hot: true,
-      injectHot: true,
-    }).listen(9080, 'localhost', (error) => {
-      if (error) {
-        reject();
+    },
+  };
+  return new Promise<unknown>((_, reject) => {
+    new WebpackDevServer(serverConfig, webpack(config)).listen(
+      9080,
+      'localhost',
+      (error) => {
+        if (error) {
+          reject();
+        }
       }
-    });
+    );
   });
 };
 
@@ -156,6 +162,7 @@ const bundleElectron = (mode: Mode) => {
         }
         if (stats?.hasErrors()) {
           reject(stats.toString());
+          return;
         }
         console.log(stats?.toString());
         resolve(undefined);
@@ -177,6 +184,7 @@ const runElectronBuilder = (...args: Parameters<typeof buildElectronApp>) => {
 
 const coreTasks = (mode: Mode) =>
   series(
+    cleanBuildDirectory,
     cleanDistFiles(mode),
     copyElectronHtmlFile(mode),
     generatePronunciations
@@ -197,18 +205,15 @@ export const startDebugElectron = series(
   )
 );
 export const buildElectron = series(
-  cleanBuildDirectory,
   coreTasks('production'),
   bundleElectron('production')
 );
 
 export const buildTestElectron = series(
-  cleanBuildDirectory,
   coreTasks('test'),
   bundleElectron('test')
 );
 export const buildAllElectronApps = series(
-  cleanBuildDirectory,
   coreTasks('production'),
   bundleElectron('production'),
   runElectronBuilder('production', false)

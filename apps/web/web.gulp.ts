@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import * as util from 'util';
 import { merge } from 'webpack-merge';
 import WebpackDevServer from 'webpack-dev-server';
 import { series } from 'gulp';
@@ -71,12 +70,15 @@ const copyResources = (mode: Mode) => {
 const runWebServer = async () => {
   const config = await createWebpackConfig('development');
 
-  const server = new WebpackDevServer(webpack(config), {
-    port: 8080,
-    hot: true,
-    contentBase: config.output.path,
-  });
-  return util.promisify(server.listen.bind(server, { port: 8080 }))();
+  const server = new WebpackDevServer(
+    {
+      port: 8080,
+      hot: true,
+      static: config.output.path,
+    },
+    webpack(config)
+  );
+  return server.start();
 };
 
 const bundleWeb = (mode: Mode) => {
