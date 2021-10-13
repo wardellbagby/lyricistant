@@ -1,4 +1,9 @@
-Bug Fixes
+source "https://rubygems.org"
 
-- rhyme drawer: increase the height of the rhyme drawer for large devices 
-- rhymes: fix issue where duplicate rhymes would stick around forever
+gem "fastlane"
+gem "dotenv"
+gem "json"
+gem "pry"
+
+plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
+eval_gemfile(plugins_path) if File.exist?(plugins_path)
