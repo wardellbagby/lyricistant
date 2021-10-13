@@ -1,6 +1,7 @@
 import { Manager } from '@lyricistant/common/Manager';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
+  SystemPalette,
   SystemTheme,
   SystemThemeProvider,
 } from '@lyricistant/common/theme/SystemTheme';
@@ -13,8 +14,11 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 
 export class PreferenceManager implements Manager {
-  private onThemeChangedListeners: Array<(theme: ColorScheme) => void> = [];
+  private onThemeChangedListeners: Array<
+    (theme: ColorScheme, systemPalette: SystemPalette) => void
+  > = [];
   private systemTheme: SystemTheme;
+  private systemPalette: SystemPalette;
 
   public constructor(
     private rendererDelegate: RendererDelegate,
@@ -24,8 +28,10 @@ export class PreferenceManager implements Manager {
 
   public register(): void {
     this.rendererDelegate.on('save-prefs', this.onSavePrefs);
-    this.systemThemeProvider.onChange((systemTheme: SystemTheme) => {
+    this.systemThemeProvider.onChange((systemTheme: SystemTheme, palette) => {
       this.systemTheme = systemTheme;
+      this.systemPalette = palette;
+
       this.sendThemeUpdate(this.preferencesOrDefault());
     });
     this.rendererDelegate.addRendererListenerSetListener(
@@ -45,7 +51,9 @@ export class PreferenceManager implements Manager {
     );
   }
 
-  public addThemeChangedListener = (listener: (theme: ColorScheme) => void) => {
+  public addThemeChangedListener = (
+    listener: (theme: ColorScheme, systemPalette: SystemPalette) => void
+  ) => {
     this.onThemeChangedListeners.push(listener);
   };
 
@@ -69,11 +77,17 @@ export class PreferenceManager implements Manager {
 
   private sendThemeUpdate = (data: PreferencesData): void => {
     const colorScheme = this.normalizeColorScheme(data.colorScheme);
+    const systemPalette =
+      data.colorScheme === ColorScheme.System ? this.systemPalette : undefined;
     this.rendererDelegate.send('theme-updated', {
       ...data,
       colorScheme,
+      systemPalette,
     });
-    this.onThemeChangedListeners.forEach((listener) => listener(colorScheme));
+
+    this.onThemeChangedListeners.forEach((listener) =>
+      listener(colorScheme, systemPalette)
+    );
   };
 
   private normalizeColorScheme(theme: ColorScheme): ColorScheme {

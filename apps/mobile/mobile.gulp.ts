@@ -1,8 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import util from 'util';
 import { merge } from 'webpack-merge';
-import { series, parallel } from 'gulp';
+import { parallel, series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import webpack, { Configuration } from 'webpack';
@@ -60,12 +59,15 @@ const bundleMobile = async () => {
 const runWebServer = async () => {
   const config = await createWebpackConfig('development');
 
-  const server = new WebpackDevServer(webpack(config), {
-    port: 8080,
-    hot: true,
-    contentBase: config.output.path,
-  });
-  return util.promisify(server.listen.bind(server, { port: 8080 }))();
+  const server = new WebpackDevServer(
+    {
+      port: 8080,
+      hot: true,
+      static: config.output.path,
+    },
+    webpack(config)
+  );
+  return server.start();
 };
 
 const cap =

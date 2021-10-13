@@ -11,21 +11,21 @@ export class StatusBarManager implements Manager {
   ) {}
 
   public register() {
-    this.preferenceManager.addThemeChangedListener((theme) => {
+    this.preferenceManager.addThemeChangedListener((theme, systemPalette) => {
       let style: Style;
       let color: string;
       switch (theme) {
         case ColorScheme.Light:
           style = Style.Light;
-          color = '#E0E0E0';
+          color = systemPalette?.surface ?? '#E0E0E0';
           break;
         case ColorScheme.Dark:
           style = Style.Dark;
-          color = '#232323';
+          color = systemPalette?.surface ?? '#232323';
           break;
         case ColorScheme.System:
           style = Style.Default;
-          color = null;
+          color = systemPalette?.surface;
           break;
       }
       StatusBar.setStyle({ style })

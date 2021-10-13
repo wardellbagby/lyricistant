@@ -14,6 +14,7 @@
             android:name="com.wardellbagby.lyricistant.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:exported="true"
             android:launchMode="singleTask">
 
             <intent-filter>

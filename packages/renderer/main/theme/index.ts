@@ -7,13 +7,17 @@ import {
   ColorScheme,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { Palette } from '@lyricistant/common/theme/SystemTheme';
 
-export const getThemePalette = (useDarkTheme: boolean) =>
+export const getThemePalette = (useDarkTheme: boolean): Palette =>
   useDarkTheme ? darkThemePalette : lightThemePalette;
 
 export const createTheme = (themeData?: ThemeData): Theme => {
   const useDarkTheme = themeData?.colorScheme === ColorScheme.Dark ?? true;
-  const themePalette = getThemePalette(useDarkTheme);
+  const themePalette: Palette = {
+    ...getThemePalette(useDarkTheme),
+    ...themeData?.systemPalette,
+  };
 
   return responsiveFontSizes(
     createMuiTheme({

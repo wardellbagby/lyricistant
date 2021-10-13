@@ -9,7 +9,10 @@
 	"ios": {
 		"path": "apps/mobile/ios"
 	},
-	"server": false,
+	"server": {
+		"url": "http://172.20.3.135:8080",
+		"cleartext": true
+	},
 	"plugins": {
 		"Keyboard": {
 			"resize": "native"

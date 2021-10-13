@@ -6,8 +6,10 @@ import {
   RhymeSource,
   ColorScheme,
   Font,
+  ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
 import {
+  SystemPalette,
   SystemTheme,
   SystemThemeProvider,
 } from '@lyricistant/common/theme/SystemTheme';
@@ -25,7 +27,10 @@ describe('Preference Manager', () => {
 
   const rendererListeners: Map<string, (...args: any[]) => void> = new Map();
   const rendererListenersSetListeners: Map<string, () => void> = new Map();
-  let systemThemeChangeListener: (systemTheme: SystemTheme) => void;
+  let systemThemeChangeListener: (
+    systemTheme: SystemTheme,
+    systemPalette?: SystemPalette
+  ) => void;
 
   beforeEach(() => {
     rendererDelegate = stubInterface();
@@ -106,6 +111,7 @@ describe('Preference Manager', () => {
       rhymeSource: RhymeSource.Datamuse,
       font: Font.Roboto_Mono,
     };
+    const theme: ThemeData = { ...prefs, systemPalette: undefined };
 
     manager.register();
 
@@ -118,7 +124,7 @@ describe('Preference Manager', () => {
     );
     expect(rendererDelegate.send).to.have.been.calledWith(
       'theme-updated',
-      prefs
+      theme
     );
   });
 
@@ -140,6 +146,30 @@ describe('Preference Manager', () => {
       'theme-updated',
       sinon.match({
         colorScheme: ColorScheme.Dark,
+      })
+    );
+  });
+
+  it('responds to system theme changes with palettes', () => {
+    manager.register();
+
+    systemThemeChangeListener(SystemTheme.Light, { primary: '#121212' });
+
+    expect(rendererDelegate.send).to.have.been.calledWithMatch(
+      'theme-updated',
+      sinon.match({
+        colorScheme: ColorScheme.Light,
+        systemPalette: { primary: '#121212' },
+      })
+    );
+
+    systemThemeChangeListener(SystemTheme.Dark, { surface: '#434343' });
+
+    expect(rendererDelegate.send).to.have.been.calledWithMatch(
+      'theme-updated',
+      sinon.match({
+        colorScheme: ColorScheme.Dark,
+        systemPalette: { surface: '#434343' },
       })
     );
   });

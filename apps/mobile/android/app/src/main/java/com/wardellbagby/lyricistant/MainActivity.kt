@@ -1,9 +1,11 @@
 package com.wardellbagby.lyricistant
 
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.webkit.JavascriptInterface
 import com.getcapacitor.BridgeActivity
+import com.getcapacitor.JSObject
 import com.wardellbagby.lyricistant.plugins.FilesPlugin
 
 class MainActivity : BridgeActivity() {
@@ -24,7 +26,13 @@ class MainActivity : BridgeActivity() {
 
   private fun updateWebViewNativeTheme() {
     val isDarkTheme = if (isDarkThemeEnabled()) "true" else "false";
-    bridge.eval("window.onNativeThemeChanged({DARK})".replace("{DARK}", isDarkTheme), null)
+
+    bridge.eval(
+      "window.onNativeThemeChanged({DARK}, {PALETTE})"
+        .replace("{DARK}", isDarkTheme)
+        .replace("{PALETTE}", getSystemPalette()),
+      null
+    )
   }
 
   private fun isDarkThemeEnabled() = when (resources.configuration.uiMode and
@@ -33,8 +41,34 @@ class MainActivity : BridgeActivity() {
     else -> true
   }
 
+  private fun getSystemPalette(): String {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+      return "{}"
+    }
+
+    val palette = if (isDarkThemeEnabled()) {
+      mapOf(
+        "primary" to getColor(android.R.color.system_accent1_500).toHex(),
+        "background" to getColor(android.R.color.system_neutral1_900).toHex(),
+        "surface" to getColor(android.R.color.system_neutral2_800).toHex()
+      )
+    } else {
+      mapOf(
+        "primary" to getColor(android.R.color.system_accent1_500).toHex(),
+        "background" to getColor(android.R.color.system_neutral1_100).toHex(),
+        "surface" to getColor(android.R.color.system_neutral1_200).toHex()
+      )
+    }
+      return JSObject.wrap(palette)!!.toString()
+  }
+
   private inner class NativeThemeProvider {
     @JavascriptInterface
     fun isDarkTheme() = isDarkThemeEnabled()
+
+    @JavascriptInterface
+    fun getPalette() = getSystemPalette()
   }
+
+  private fun Int.toHex() = "#${Integer.toHexString(this).substring(2)}"
 }

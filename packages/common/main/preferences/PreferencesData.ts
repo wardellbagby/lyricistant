@@ -1,3 +1,5 @@
+import { SystemPalette } from '@lyricistant/common/theme/SystemTheme';
+
 export enum ColorScheme {
   Light,
   Dark,
@@ -16,7 +18,8 @@ export interface ThemeData {
   colorScheme: ColorScheme;
   textSize: number;
   font: Font;
+  systemPalette?: SystemPalette;
 }
-export interface PreferencesData extends ThemeData {
+export interface PreferencesData extends Omit<ThemeData, 'systemPalette'> {
   rhymeSource: RhymeSource;
 }
