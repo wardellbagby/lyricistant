@@ -52,6 +52,12 @@ const questions: inquirer.QuestionCollection = [
   },
 ];
 
+console.log('Running pre-push checks...');
+requireSuccessful(spawnSync('git', ['push', '--dry-run']), () => {
+  console.error('Lint failures');
+});
+console.log('Pre-push checks are successful!');
+
 inquirer.prompt(questions).then(async (answers) => {
   const versionBumpType: string = answers['version'];
   const appUpdateTypes: string[] = answers['apps'];

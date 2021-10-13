@@ -1,3 +1,12 @@
+## [1.2.22](https://github.com/wardellbagby/lyricistant/compare/v1.2.21+android...v1.2.22) (2021-10-13)
+
+
+### Bug Fixes
+
+* **electron:** stop warning about failure to download updates when update doesn't support electron ([89f16bc](https://github.com/wardellbagby/lyricistant/commit/89f16bcd288e5791b16805ce6ce285f5166927bc))
+
+
+
 ## [1.2.21](https://github.com/wardellbagby/lyricistant/compare/v1.2.20+android...v1.2.21) (2021-10-13)
 
 
