@@ -1,3 +1,12 @@
+## [1.2.21](https://github.com/wardellbagby/lyricistant/compare/v1.2.20+android...v1.2.21) (2021-10-13)
+
+
+### Reverts
+
+* fix accidental change to gemfile ([cc607ab](https://github.com/wardellbagby/lyricistant/commit/cc607ab295eb357f7e7400a30feef15989aaa1c1))
+
+
+
 ## [1.2.20](https://github.com/wardellbagby/lyricistant/compare/v1.2.19+web.android...v1.2.20) (2021-10-13)
 
 
