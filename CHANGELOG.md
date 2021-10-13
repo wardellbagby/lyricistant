@@ -1,3 +1,13 @@
+## [1.2.19](https://github.com/wardellbagby/lyricistant/compare/v1.2.18...v1.2.19) (2021-10-13)
+
+
+### Features
+
+* **android:** support material you theme colors ([97d00bc](https://github.com/wardellbagby/lyricistant/commit/97d00bc813870a857158e6ccf505b22aae697511))
+* **web:** add Android and iOS to the download dialog ([83ef198](https://github.com/wardellbagby/lyricistant/commit/83ef198378864b52aae0f50ed7cf635aecc71689))
+
+
+
 ## [1.2.18](https://github.com/wardellbagby/lyricistant/compare/v1.2.17...v1.2.18) (2021-10-06)
 
 
