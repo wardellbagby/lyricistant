@@ -6,7 +6,7 @@ import path from 'path';
 const app = process.argv[2] ?? process.exit(1);
 const output = process.argv[3] ?? process.exit(1);
 
-const appScopes = ['android', 'electron', 'web', 'ios'];
+const appScopes = ['android', 'electron', 'web', 'ios', 'all'];
 
 const file = fs.readFileSync(
   path.resolve(__dirname, '../CHANGELOG.md'),
@@ -33,9 +33,11 @@ const getReleaseNotesFromChangelog = (start = 0): [string, number] => {
         return '\n' + line.substring(3).trim() + '\n';
       }
       // Remove any lines that reference other apps.
-      for (const scope of appScopes) {
-        if (app !== scope && line.includes(scope)) {
-          return null;
+      if (app !== 'all') {
+        for (const scope of appScopes) {
+          if (scope !== 'all' && app !== scope && line.includes(scope)) {
+            return null;
+          }
         }
       }
       return (

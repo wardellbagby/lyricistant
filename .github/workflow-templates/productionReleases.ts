@@ -67,7 +67,7 @@ const createGithubRelease: Job = {
     } as Step,
     {
       name: 'Create Github release notes',
-      run: 'npx conventional-changelog-cli -p angular -r 2 -o release.txt',
+      run: './scripts/create_app_store_safe_changelog.ts all release.txt',
     },
     {
       ...downloadIOSApp({ path: '/tmp/artifacts' }),
