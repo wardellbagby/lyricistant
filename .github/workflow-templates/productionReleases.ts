@@ -1,22 +1,21 @@
-import { Job, Step, Workflow } from './helpers/Workflow';
+import { Job, Workflow } from './helpers/Workflow';
 import { test } from './helpers/test';
 import {
   buildIOSApp as buildIOSAppJob,
   downloadIOSApp,
 } from './helpers/buildIOSApp';
 import {
-  downloadAndroidApp,
   buildAndroidApp as buildAndroidAppJob,
+  downloadAndroidApp,
 } from './helpers/buildAndroidApp';
 import {
-  downloadElectronApps,
   buildElectronApps as buildElectronAppsJob,
+  downloadElectronApps,
 } from './helpers/buildElectronApps';
 import { createGithubReleaseAlt as createGithubReleaseStep } from './helpers/createGithubRelease';
 import { basicSetup } from './helpers/basicSetup';
 import { gulp } from './helpers/local-tasks';
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
-import { CHECKOUT } from './helpers/versions';
 
 const tagMatches = (platform: 'ios' | 'android' | 'electron' | 'web') =>
   `\${{ contains(github.ref, '${platform}') ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -58,13 +57,7 @@ const createGithubRelease: Job = {
   if: 'always()',
   needs: [buildIOSApp, buildElectronApps, buildAndroidApp],
   steps: [
-    {
-      name: 'Checkout the current branch',
-      uses: CHECKOUT,
-      with: {
-        'fetch-depth': 0,
-      },
-    } as Step,
+    ...basicSetup({ forMobileBuilds: false, forTests: false }),
     {
       name: 'Create Github release notes',
       run: './scripts/create_app_store_safe_changelog.ts all release.txt',
