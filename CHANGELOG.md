@@ -1,3 +1,12 @@
+## [1.2.23](https://github.com/wardellbagby/lyricistant/compare/v1.2.22+electron...v1.2.23) (2021-10-13)
+
+
+### Bug Fixes
+
+* **electron:** update electron-updater to 4.6.1, which fixse the tag download bug ([437f1ef](https://github.com/wardellbagby/lyricistant/commit/437f1efba5f3682478f6101cb3353691d795530f))
+
+
+
 ## [1.2.22](https://github.com/wardellbagby/lyricistant/compare/v1.2.21+android...v1.2.22) (2021-10-13)
 
 
