@@ -28,12 +28,15 @@ Its features include:
   - [Windows](https://lyricistant.app/#download)
   - [Linux](https://lyricistant.app/#download)
   - [And your computer browser!](https://lyricistant.app)
-  - _Android / iOS coming soon!_
+  - [Android](https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant)
+  - [iOS](https://apps.apple.com/om/app/lyricistant/id1561506174)
 
 ## How can I use it?
 
-#### [Check it out in your browser now!](https://lyricistant.app)  
-#### [Download it to your computer!](https://lyricistant.app/#download)
+#### [Browse it in your browser!](https://lyricistant.app)  
+#### [Check it out on your Mac, Windows, or Linux computer!](https://lyricistant.app/#download)
+#### [Install it on your iPhone or iPad!](https://apps.apple.com/om/app/lyricistant/id1561506174)
+#### [Activate it on your Android device!](https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant)
 
 ## What's up with the name?
 
