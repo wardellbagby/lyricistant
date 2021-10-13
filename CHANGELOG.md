@@ -1,3 +1,7 @@
+## [1.2.20](https://github.com/wardellbagby/lyricistant/compare/v1.2.19+web.android...v1.2.20) (2021-10-13)
+
+
+
 ## [1.2.19](https://github.com/wardellbagby/lyricistant/compare/v1.2.18...v1.2.19) (2021-10-13)
 
 
