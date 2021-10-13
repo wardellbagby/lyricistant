@@ -4,8 +4,9 @@ export const latestReleaseUrl =
   'https://github.com/wardellbagby/lyricistant/releases/latest/download/';
 
 export interface Release {
-  platform: 'Mac' | 'Windows' | 'Ubuntu' | 'Linux';
-  asset: string;
+  platform: 'Mac' | 'Windows' | 'Linux' | 'Android' | 'iOS';
+  asset?: string;
+  url?: string;
   arch?: string;
 }
 
@@ -14,6 +15,14 @@ export const supportedReleases: Release[] = [
   {
     platform: 'Windows',
     asset: 'lyricistant-win.exe',
+  },
+  {
+    platform: 'iOS',
+    url: 'https://apps.apple.com/om/app/lyricistant/id1561506174',
+  },
+  {
+    platform: 'Android',
+    url: 'https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant',
   },
   {
     platform: 'Linux',

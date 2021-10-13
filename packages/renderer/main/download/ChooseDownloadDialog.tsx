@@ -1,13 +1,6 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogTitle,
-  Grid,
-  Typography,
-} from '@material-ui/core';
+import { Box, Button, Dialog, DialogTitle, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Apple, Linux, MicrosoftWindows, Ubuntu } from 'mdi-material-ui';
+import { Apple, AppleIos, Linux, MicrosoftWindows } from 'mdi-material-ui';
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -16,37 +9,50 @@ import {
   supportedReleases,
 } from '@lyricistant/renderer/download';
 import { logger } from '@lyricistant/renderer/globals';
+import { Android } from '@material-ui/icons';
 
 const useStyles = (release: Release) =>
   makeStyles(() => ({
     root: {
       background: releaseColor(release),
       color: releaseTextColor(release),
+      textTransform: 'none',
     },
   }))();
 
 const releaseColor = ({ platform }: Release) => {
   switch (platform) {
     case 'Linux':
-      return '#98ff98';
+      return '#0099cc';
+    case 'Android':
+      return '#3DDC84';
     case 'Mac':
-      return '#A3AAAE';
-    case 'Ubuntu':
-      return '#E95420';
+    case 'iOS':
+      return '#555555';
     case 'Windows':
       return '#00A4EF';
   }
 };
 
-const releaseTextColor = ({ platform }: Release) => {
+const downloadLabel = ({ platform, arch }: Release) => {
   switch (platform) {
     case 'Linux':
-      return '#000000';
+      return `${platform} - ${arch}`;
+    case 'iOS':
+      return 'iPhone / iPad';
+    default:
+      return platform;
+  }
+};
+
+const releaseTextColor = ({ platform }: Release) => {
+  switch (platform) {
     case 'Mac':
-      return '#000000';
-    case 'Ubuntu':
+    case 'iOS':
       return '#FFFFFF';
     case 'Windows':
+    case 'Linux':
+    case 'Android':
       return '#000000';
   }
 };
@@ -65,7 +71,7 @@ const DownloadButton = (props: { release: Release; onClick: () => void }) => {
         size={'large'}
         onClick={onClick}
       >
-        {release.arch ?? 'Download'}
+        {downloadLabel(release)}
       </Button>
     </Box>
   );
@@ -101,32 +107,21 @@ export const ChooseDownloadDialog = () => {
         Download Lyricistant
       </DialogTitle>
       <Box paddingLeft={'16px'} paddingRight={'16px'} paddingBottom={'32px'}>
-        <Grid container spacing={4} alignItems={'center'} justify={'center'}>
-          {[...releases.keys()].map((platform) => (
-            <Grid
-              container
-              item
-              alignItems={'center'}
-              justify={'center'}
-              key={platform}
-            >
-              <Grid item xs={12}>
-                <Typography align={'center'} variant={'h6'}>
-                  {platform}
-                </Typography>
+        <Grid container spacing={1} alignItems={'center'} justify={'center'}>
+          {[...releases.keys()].map((platform) =>
+            releases.get(platform).map((release) => (
+              <Grid key={release.asset} item xs={6}>
+                <DownloadButton
+                  release={release}
+                  onClick={() => {
+                    handleReleaseClicked(
+                      release.url ?? latestReleaseUrl + release.asset
+                    );
+                  }}
+                />
               </Grid>
-              {releases.get(platform).map((release, index, archs) => (
-                <Grid key={release.asset} item xs={archs.length === 1 ? 8 : 6}>
-                  <DownloadButton
-                    release={release}
-                    onClick={() => {
-                      handleReleaseClicked(latestReleaseUrl + release.asset);
-                    }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          ))}
+            ))
+          )}
         </Grid>
       </Box>
       <Button size={'large'} variant={'contained'} fullWidth onClick={onClose}>
@@ -143,9 +138,11 @@ const ReleaseIcon = (props: { release: Release }) => {
       return <Linux />;
     case 'Mac':
       return <Apple />;
-    case 'Ubuntu':
-      return <Ubuntu />;
     case 'Windows':
       return <MicrosoftWindows />;
+    case 'Android':
+      return <Android />;
+    case 'iOS':
+      return <AppleIos />;
   }
 };
