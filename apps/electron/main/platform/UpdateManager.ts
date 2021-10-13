@@ -44,60 +44,78 @@ export class UpdateManager implements Manager {
     }
     this.appUpdater.removeAllListeners();
 
-    this.appUpdater.on('update-available', async (updateInfo: UpdateInfo) => {
-      if (!updateInfo) {
-        this.logger.warn("Couldn't update the app as update info was null");
-        return;
-      }
-      const ignoredVersions = this.store.get('ignoredVersions', []);
-      if (ignoredVersions.includes(updateInfo.version)) {
-        this.logger.info(
-          `Ignoring update to ${updateInfo.version} since user requested not to update to it.`
-        );
-        return;
-      }
-      this.updateInfo = updateInfo;
-      this.rendererDelegate.send('show-dialog', {
-        tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
-        title: 'Update Available',
-        message: `An update is available to ${updateInfo.version}. Would you like to install it now?`,
-        collapsibleMessage: {
-          label: 'Changelog',
-          message: await this.getChangelog(updateInfo.releaseName),
-        },
-        buttons: ['Never', 'No', 'Yes'],
-      });
+    this.appUpdater.on('update-available', this.onUpdateAvailable);
+    this.appUpdater.on('download-progress', this.onDownloadProgress);
+    this.appUpdater.on('error', this.onUpdaterError);
+    this.appUpdater.on('update-downloaded', this.onUpdateDownloaded);
+
+    this.appUpdater
+      .checkForUpdates()
+      .catch((reason) =>
+        this.logger.warn('Failed to check for updates', reason)
+      );
+  };
+
+  private onUpdateAvailable = async (updateInfo: UpdateInfo) => {
+    if (!updateInfo) {
+      this.logger.warn("Couldn't update the app as update info was null");
+      return;
+    }
+    const ignoredVersions = this.store.get('ignoredVersions', []);
+    if (ignoredVersions.includes(updateInfo.version)) {
+      this.logger.info(
+        `Ignoring update to ${updateInfo.version} since user requested not to update to it.`
+      );
+      return;
+    }
+    this.updateInfo = updateInfo;
+    this.rendererDelegate.send('show-dialog', {
+      tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      title: 'Update Available',
+      message: `An update is available to ${updateInfo.version}. Would you like to install it now?`,
+      collapsibleMessage: {
+        label: 'Changelog',
+        message: await this.getChangelog(updateInfo.releaseName),
+      },
+      buttons: ['Never', 'No', 'Yes'],
     });
-    this.appUpdater.on('download-progress', ({ transferred, total }) => {
-      const percent = transferred / total;
-      this.rendererDelegate.send('show-dialog', {
-        title: 'Downloading Update',
-        progress: percent * 100,
-      });
-    });
-    this.appUpdater.on('error', (error) => {
-      this.logger.warn('An error occurred with the auto updater.', error);
+  };
+
+  private onUpdaterError = (error: any) => {
+    this.logger.warn('An error occurred with the auto updater.', error);
+    // If updateInfo doesn't exist, we never prompted the user that an update was available so don't show anything.
+    if (this.updateInfo) {
       this.rendererDelegate.send('show-dialog', {
         title: 'Error Downloading',
         message:
           'An error occurred while downloading the update. Please try again later.',
         buttons: ['OK'],
       });
+    }
+  };
+
+  private onDownloadProgress = ({
+    transferred,
+    total,
+  }: {
+    transferred: number;
+    total: number;
+  }) => {
+    const percent = transferred / total;
+    this.rendererDelegate.send('show-dialog', {
+      title: 'Downloading Update',
+      progress: percent * 100,
     });
-    this.appUpdater.on('update-downloaded', () => {
-      this.rendererDelegate.send('show-dialog', {
-        tag: UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG,
-        title: 'Update Downloaded',
-        message:
-          'A new update for Lyricistant has been downloaded. It will be installed when the app restarts. Would you like to restart now?',
-        buttons: ['Later', 'Restart'],
-      });
+  };
+
+  private onUpdateDownloaded = () => {
+    this.rendererDelegate.send('show-dialog', {
+      tag: UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG,
+      title: 'Update Downloaded',
+      message:
+        'A new update for Lyricistant has been downloaded. It will be installed when the app restarts. Would you like to restart now?',
+      buttons: ['Later', 'Restart'],
     });
-    this.appUpdater
-      .checkForUpdates()
-      .catch((reason) =>
-        this.logger.warn('Failed to check for updates', reason)
-      );
   };
 
   private onDialogButtonClicked = (dialogTag: string, buttonLabel: string) => {
