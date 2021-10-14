@@ -7,6 +7,7 @@ import { nightlyReleases } from '../.github/workflow-templates/nightlyReleases';
 import { Job, Workflow } from '../.github/workflow-templates/helpers/Workflow';
 import { continuousIntegration } from '../.github/workflow-templates/continuousIntegration';
 import { productionReleases } from '../.github/workflow-templates/productionReleases';
+import { generatePronunciations } from '../.github/workflow-templates/generatePronunciations';
 
 const fromEntries = <T>(entries: Array<[keyof T, T[keyof T]]>): T => {
   const newObject = Object.create(null);
@@ -62,7 +63,12 @@ const writeWorkflow = (workflow: Workflow) => {
     yaml.dump(workflow, { forceQuotes: true, noRefs: true })
   );
 };
-const templates = [continuousIntegration, nightlyReleases, productionReleases];
+const templates = [
+  continuousIntegration,
+  nightlyReleases,
+  productionReleases,
+  generatePronunciations,
+];
 
 const createWorkflows = () => {
   templates.forEach(writeWorkflow);

@@ -1,8 +1,13 @@
 import * as versions from './versions';
 
-interface BranchesOrTags {
+interface BranchesTagsOrPaths {
   branches?: string[];
   tags?: string[];
+  paths?: string[];
+}
+
+interface Schedule {
+  cron: string;
 }
 export interface Job {
   name: string;
@@ -22,8 +27,10 @@ export interface Step {
 export interface Workflow {
   name: string;
   on: {
-    push?: BranchesOrTags;
-    pull_request?: BranchesOrTags;
+    push?: BranchesTagsOrPaths;
+    pull_request?: BranchesTagsOrPaths;
+    schedule?: Schedule[];
+    workflow_dispatch?: Record<string, never>;
   };
   jobs: Record<string, Job>;
 }

@@ -16,7 +16,6 @@ import {
 } from '@tooling/common-tasks.gulp';
 import { capitalCase } from 'change-case';
 import del from 'del';
-import { generatePronunciations } from '@tooling/pronunciations.gulp';
 import { buildElectronApp } from './build_apps';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
@@ -183,12 +182,7 @@ const runElectronBuilder = (...args: Parameters<typeof buildElectronApp>) => {
 };
 
 const coreTasks = (mode: Mode) =>
-  series(
-    cleanBuildDirectory,
-    cleanDistFiles(mode),
-    copyElectronHtmlFile(mode),
-    generatePronunciations
-  );
+  series(cleanBuildDirectory, cleanDistFiles(mode), copyElectronHtmlFile(mode));
 
 export const startElectron = series(
   coreTasks('development'),

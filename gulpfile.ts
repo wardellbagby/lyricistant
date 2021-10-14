@@ -18,7 +18,6 @@ export * from './packages/common/test/test.gulp';
 export * from './packages/codemirror/test/test.gulp';
 export * from './packages/core-platform/test/test.gulp';
 export * from './packages/renderer/test/test.gulp';
-export * from './tooling/pronunciations.gulp';
 
 export const buildAll = parallel(buildWeb, buildElectron);
 

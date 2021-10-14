@@ -13,7 +13,6 @@ import {
 import { Configuration, webpack } from 'webpack';
 import { capitalCase } from 'change-case';
 import del from 'del';
-import { generatePronunciations } from '@tooling/pronunciations.gulp';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
 
@@ -103,20 +102,17 @@ const bundleWeb = (mode: Mode) => {
 export const startWeb = series(
   clean('development'),
   copyResources('development'),
-  generatePronunciations,
   runWebServer
 );
 export const buildWeb = series(
   cleanBuildDirectory,
   clean('production'),
   copyResources('production'),
-  generatePronunciations,
   bundleWeb('production')
 );
 export const buildTestWeb = series(
   cleanBuildDirectory,
   clean('test'),
   copyResources('test'),
-  generatePronunciations,
   bundleWeb('test')
 );
