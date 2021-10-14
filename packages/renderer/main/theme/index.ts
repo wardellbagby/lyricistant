@@ -9,34 +9,41 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 import { Palette } from '@lyricistant/common/theme/SystemTheme';
 
-export const getThemePalette = (useDarkTheme: boolean): Palette =>
-  useDarkTheme ? darkThemePalette : lightThemePalette;
+export const getThemePalette = (
+  themeData?: ThemeData
+): { palette: Palette; isDark: boolean } => {
+  const useDarkTheme = !themeData || themeData.colorScheme === ColorScheme.Dark;
+
+  return {
+    palette: {
+      ...(useDarkTheme ? darkThemePalette : lightThemePalette),
+      ...themeData?.systemPalette,
+    },
+    isDark: useDarkTheme,
+  };
+};
 
 export const createTheme = (themeData?: ThemeData): Theme => {
-  const useDarkTheme = themeData?.colorScheme === ColorScheme.Dark ?? true;
-  const themePalette: Palette = {
-    ...getThemePalette(useDarkTheme),
-    ...themeData?.systemPalette,
-  };
+  const { palette, isDark } = getThemePalette(themeData);
 
   return responsiveFontSizes(
     createMuiTheme({
       palette: {
-        type: useDarkTheme ? 'dark' : 'light',
+        type: isDark ? 'dark' : 'light',
         action: {
-          hover: themePalette.primary,
+          hover: palette.primary,
           hoverOpacity: 0,
         },
         primary: {
-          main: themePalette.primary,
+          main: palette.primary,
         },
         background: {
-          default: themePalette.background,
-          paper: themePalette.surface,
+          default: palette.background,
+          paper: palette.surface,
         },
         text: {
-          primary: themePalette.primaryText,
-          secondary: themePalette.secondaryText,
+          primary: palette.primaryText,
+          secondary: palette.secondaryText,
         },
       },
       typography: themeData?.textSize
@@ -48,7 +55,7 @@ export const createTheme = (themeData?: ThemeData): Theme => {
   );
 };
 
-const lightThemePalette = {
+const lightThemePalette: Palette = {
   primary: '#0388d1',
   background: '#fafafa',
   surface: '#E0E0E0',
@@ -56,7 +63,7 @@ const lightThemePalette = {
   secondaryText: '#424242',
 };
 
-const darkThemePalette = {
+const darkThemePalette: Palette = {
   primary: '#2ab6f6',
   background: '#141414',
   surface: '#232323',

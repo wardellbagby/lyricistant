@@ -36,10 +36,14 @@ const container: HTMLElement = document.getElementById('app');
 ReactDOM.render(
   <PlatformEventsReadyHandler>
     <Themed
-      onThemeChanged={(background: string, foreground: string) => {
-        document.body.style.backgroundColor = background;
-        document.body.style.color = foreground;
-        onThemeUpdated(background);
+      onThemeChanged={(palette) => {
+        document.body.style.backgroundColor = palette.background;
+        document.body.style.color = palette.primaryText;
+        onThemeUpdated(palette);
+      }}
+      onThemeReady={() => {
+        onPageLoaded();
+        container.style.opacity = '100%';
       }}
     >
       <SnackbarProvider
@@ -61,9 +65,5 @@ ReactDOM.render(
       </SnackbarProvider>
     </Themed>
   </PlatformEventsReadyHandler>,
-  container,
-  () => {
-    onPageLoaded();
-    container.style.opacity = '100%';
-  }
+  container
 );

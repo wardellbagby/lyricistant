@@ -2,25 +2,24 @@ import { getThemePalette } from '@lyricistant/renderer/theme';
 import jss, { Styles } from 'jss';
 import camelCase from 'jss-plugin-camel-case';
 import nested from 'jss-plugin-nested';
+import { Palette } from '@lyricistant/common/theme/SystemTheme';
 import feather from './lyricistant_feather.svg';
 
 jss.use(camelCase(), nested());
 
-const theme = getThemePalette(true);
-
 const rootStyles: Styles = {
   '@keyframes loading': {
     '0%': {
-      fill: theme.primary,
+      fill: 'var(--primary)',
     },
     '100%': {
-      fill: theme.surface,
+      fill: 'var(--surface)',
     },
   },
   overlay: {
     opacity: 1,
-    backgroundColor: theme.background,
-    color: theme.primaryText,
+    backgroundColor: 'var(--background)',
+    color: 'var(--text)',
     transition: 'opacity 500ms linear, background-color 500ms;',
     height: '100%',
     width: '100%',
@@ -50,6 +49,8 @@ const {
   classes: { overlay },
 } = jss.createStyleSheet(rootStyles).attach();
 
+onThemeUpdated(getThemePalette().palette);
+
 let container = document.getElementById('preload-overlay');
 
 if (!container) {
@@ -73,8 +74,9 @@ export const onPageLoaded = () => {
   }, 500);
 };
 
-export const onThemeUpdated = (background: string) => {
-  if (container) {
-    container.style.backgroundColor = background;
-  }
-};
+export function onThemeUpdated(palette: Palette) {
+  document.body.style.setProperty('--primary', palette.primary);
+  document.body.style.setProperty('--background', palette.background);
+  document.body.style.setProperty('--surface', palette.surface);
+  document.body.style.setProperty('--text', palette.primaryText);
+}

@@ -8,6 +8,7 @@ import {
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 import {
   ColorScheme,
+  DisplayableColorScheme,
   Font,
   PreferencesData,
   RhymeSource,
@@ -90,12 +91,14 @@ export class PreferenceManager implements Manager {
     );
   };
 
-  private normalizeColorScheme(theme: ColorScheme): ColorScheme {
+  private normalizeColorScheme(theme: ColorScheme): DisplayableColorScheme {
     return theme === ColorScheme.System
       ? this.systemThemeToTheme(this.systemTheme)
       : theme;
   }
 
-  private systemThemeToTheme = (systemTheme: SystemTheme): ColorScheme =>
+  private systemThemeToTheme = (
+    systemTheme: SystemTheme
+  ): DisplayableColorScheme =>
     systemTheme === SystemTheme.Dark ? ColorScheme.Dark : ColorScheme.Light;
 }

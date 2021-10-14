@@ -6,13 +6,14 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { createTheme } from '@lyricistant/renderer/theme';
+import { createTheme, getThemePalette } from '@lyricistant/renderer/theme';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import {
   Font,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { logger } from '@lyricistant/renderer/globals';
+import { Palette } from '@lyricistant/common/theme/SystemTheme';
 
 const loadFont = async (themeData?: ThemeData) => {
   switch (themeData?.font) {
@@ -24,30 +25,35 @@ const loadFont = async (themeData?: ThemeData) => {
 };
 export const Themed: FunctionComponent<
   PropsWithChildren<{
-    onThemeChanged: (background: string, foreground: string) => void;
+    onThemeChanged: (palette: Palette) => void;
+    onThemeReady: () => void;
   }>
-> = ({ onThemeChanged, children }) => {
-  const [theme, setTheme] = useState(createTheme(null));
-  useEffect(
-    () =>
-      onThemeChanged(
-        theme.palette.background.default,
-        theme.palette.getContrastText(theme.palette.background.default)
-      ),
-    [theme, onThemeChanged]
-  );
+> = ({ onThemeChanged, onThemeReady, children }) => {
+  const [theme, setTheme] = useState(createTheme());
+  const [palette, setPalette] = useState<Palette | null>(null);
 
   useChannel(
     'theme-updated',
     (themeData) => {
       const appTheme = createTheme(themeData);
       setTheme(appTheme);
-      loadFont(themeData).catch((reason) =>
-        logger.warn('Failed to load fonts', reason)
-      );
+      setPalette(getThemePalette(themeData).palette);
+
+      loadFont(themeData)
+        .then(onThemeReady)
+        .catch((reason) => {
+          onThemeReady();
+          logger.warn('Failed to load fonts', reason);
+        });
     },
     [setTheme]
   );
+
+  useEffect(() => {
+    if (palette) {
+      onThemeChanged(palette);
+    }
+  }, [theme, onThemeChanged]);
 
   return (
     <CssBaseline>

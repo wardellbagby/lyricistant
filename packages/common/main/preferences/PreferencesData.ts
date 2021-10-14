@@ -13,13 +13,17 @@ export enum RhymeSource {
   Offline,
   Datamuse,
 }
+export type DisplayableColorScheme = ColorScheme.Light | ColorScheme.Dark;
 
 export interface ThemeData {
-  colorScheme: ColorScheme;
+  colorScheme: DisplayableColorScheme;
   textSize: number;
   font: Font;
   systemPalette?: SystemPalette;
 }
-export interface PreferencesData extends Omit<ThemeData, 'systemPalette'> {
+export interface PreferencesData {
+  colorScheme: ColorScheme;
+  textSize: number;
+  font: Font;
   rhymeSource: RhymeSource;
 }
