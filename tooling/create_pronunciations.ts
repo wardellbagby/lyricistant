@@ -1,15 +1,19 @@
 #!/usr/bin/env -S node -r ./register-ts-node
 
-import { writeFileSync } from 'fs';
+import fs, { writeFileSync } from 'fs';
+import path from 'path';
 import axios from 'axios';
-import popularWords from './popular.json';
+import popularWordsJson from './popular.json';
+
+const popularWords: string[] = popularWordsJson as string[];
 
 interface Output {
   [word: string]: { pr: string; p?: number };
 }
+
 const output: Output = {};
 
-const loadPronunciations = async () => {
+const loadCmuPronunciations = async () => {
   const cmuDictUrl =
     'https://raw.githubusercontent.com/cmusphinx/cmudict/master/cmudict.dict';
   const response = await axios.get(cmuDictUrl);
@@ -17,14 +21,33 @@ const loadPronunciations = async () => {
   return data
     .split('\n')
     .map((line) => [
-      line.slice(0, line.indexOf(' ')),
+      line.slice(0, line.indexOf(' ')).trim().toLowerCase(),
       line.slice(line.indexOf(' ') + 1),
     ]);
 };
 
-const writePronunciations = async (pronunciations: string[][]) => {
+const loadAdditionalPronunciations = async () => {
+  const data = await fs.promises.readFile(
+    path.resolve(__dirname, 'additional_pronounciations.dict'),
+    'utf8'
+  );
+
+  return data
+    .split('\n')
+    .filter((line) => !line.startsWith('#'))
+    .map((line) => line.replace('\t', ' '))
+    .map((line) => [
+      line.slice(0, line.indexOf(' ')).trim().toLowerCase(),
+      line.slice(line.indexOf(' ') + 1),
+    ]);
+};
+
+const writePronunciations = async (
+  pronunciations: string[][],
+  indexedPopularWords: Record<string, number>
+) => {
   for (const [word, pronunciation] of pronunciations) {
-    let popularity = popularWords.indexOf(word);
+    let popularity = indexedPopularWords[getBaseWord(word)];
     if (popularity < 0) {
       popularity = undefined;
     }
@@ -39,8 +62,36 @@ const writePronunciations = async (pronunciations: string[][]) => {
   );
 };
 
+const getBaseWord = (word: string) => {
+  const index = word.indexOf('(');
+  return index < 0 ? word : word.slice(0, index).trim();
+};
+
 const start = async () => {
-  await writePronunciations(await loadPronunciations());
+  console.log('Starting...');
+
+  const pronunciations = await loadCmuPronunciations();
+  console.log('Loaded CMU pronunciations');
+
+  pronunciations.push(...(await loadAdditionalPronunciations()));
+  console.log('Loaded extra pronunciations');
+
+  pronunciations.sort((left, right) => left[0].localeCompare(right[0]));
+
+  const indexedPopularWords = await createIndexedPopularWords();
+  console.log('Created popular words');
+
+  await writePronunciations(pronunciations, indexedPopularWords);
+  console.log('Finished!');
+};
+
+const createIndexedPopularWords = async () => {
+  const ret: Record<string, number> = Object.create(null);
+  Object.keys(popularWords).forEach((key) => {
+    const index = Number.parseInt(key, 10);
+    ret[popularWords[index]] = index;
+  });
+  return ret;
 };
 
 start().catch((reason) => {

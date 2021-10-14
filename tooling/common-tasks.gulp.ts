@@ -44,7 +44,7 @@ export const spawn = (
   console.log(`Running command: ${childProcess.spawnargs.join(' ')}`);
 
   childProcess.on('exit', (code) => {
-    console.log('Process exited with code ' + code.toString());
+    console.log('Process exited with code ' + code?.toString());
   });
 
   return childProcess;
