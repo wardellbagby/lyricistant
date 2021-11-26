@@ -1,21 +1,21 @@
 import type { RendererDelegate } from '@lyricistant/common/Delegates';
 import type { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
-import type { FileManager } from '@lyricistant/common/files/FileManager';
 import type { Files } from '@lyricistant/common/files/Files';
 import type { RecentFiles } from '@lyricistant/common/files/RecentFiles';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
-import { UnsavedDataManager } from '@lyricistant/common/files/UnsavedDataManager';
 import type { Logger } from '@lyricistant/common/Logger';
-import { LogManager } from '@lyricistant/common/logging/LogManager';
 import type { Managers } from '@lyricistant/common/Managers';
 import type { PreferenceManager } from '@lyricistant/common/preferences/PreferenceManager';
 import type { Preferences } from '@lyricistant/common/preferences/Preferences';
 import type { SystemThemeProvider } from '@lyricistant/common/theme/SystemTheme';
+import {
+  createBaseComponent,
+  createBaseManagers,
+} from '@lyricistant/core-platform/AppComponent';
 import type {
   TitleFormatter,
   UiConfigProvider,
 } from '@lyricistant/common/ui/UiConfig';
-import type { UiConfigManager } from '@lyricistant/common/ui/UiConfigManager';
 import { DIContainer } from '@wessberg/di';
 import {
   BrowserWindow,
@@ -46,6 +46,8 @@ import type {
   NodeFileSystem,
 } from '@electron-app/wrappers/FileSystem';
 import { AxiosHttpClient, HttpClient } from '@electron-app/wrappers/HttpClient';
+import { Buffers } from '@lyricistant/common/files/Buffers';
+import { ElectronBuffers } from '@electron-app/platform/Buffers';
 
 const registerElectronFunctionality = (component: DIContainer) => {
   component.registerSingleton<ElectronDialog>(() => dialog);
@@ -65,33 +67,27 @@ const registerPlatformFunctionality = (component: DIContainer) => {
     ElectronSystemThemeProvider
   >();
   component.registerSingleton<TemporaryFiles, ElectronTemporaryFiles>();
+  component.registerSingleton<Buffers, ElectronBuffers>();
   component.registerSingleton<UiConfigProvider>(() => provideUiConfig);
   component.registerSingleton<TitleFormatter>(() => formatTitle);
   component.registerSingleton<AppUpdater>(() => autoUpdater);
 };
 
 const registerManagers = (component: DIContainer) => {
-  component.registerSingleton<FileManager>();
-  component.registerSingleton<UnsavedDataManager>();
   component.registerSingleton<PreferenceManager>();
-  component.registerSingleton<UiConfigManager>();
   component.registerSingleton<QuitManager>();
-  component.registerSingleton<LogManager>();
   component.registerSingleton<UpdateManager>();
 
   component.registerTransient<Managers>(() => [
-    () => component.get<FileManager>(),
-    () => component.get<UnsavedDataManager>(),
+    ...createBaseManagers(component),
     () => component.get<PreferenceManager>(),
-    () => component.get<UiConfigManager>(),
     () => component.get<QuitManager>(),
-    () => component.get<LogManager>(),
     () => component.get<UpdateManager>(),
   ]);
 };
 
 const createComponent = (): DIContainer => {
-  const component = new DIContainer();
+  const component = createBaseComponent();
   component.registerTransient<RendererDelegate>(
     () => new ElectronRendererDelegate(ipcMain, component.get<BrowserWindow>())
   );

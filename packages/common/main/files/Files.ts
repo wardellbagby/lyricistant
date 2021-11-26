@@ -37,7 +37,7 @@ export const SUPPORTED_EXTENSIONS = ['.txt', LYRICS_EXTENSION];
 export interface PlatformFile {
   metadata: FileMetadata;
   data: ArrayBuffer;
-  type: string;
+  type?: string;
 }
 
 export interface Files {

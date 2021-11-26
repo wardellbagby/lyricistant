@@ -23,8 +23,6 @@ type DeepPartial<T> = {
 };
 
 const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
-const decode = (buffer: ArrayBuffer): string =>
-  new TextDecoder().decode(buffer);
 
 describe('Files', () => {
   const fs = stubInterface<FileSystem>();

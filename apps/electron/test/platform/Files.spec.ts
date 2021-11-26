@@ -5,12 +5,15 @@ import sinon, { stubInterface } from 'ts-sinon';
 import sinonChai from 'sinon-chai';
 import { BrowserWindow, Dialog } from 'electron';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { FileData } from '@lyricistant/common/files/Files';
+import { Files, PlatformFile } from '@lyricistant/common/files/Files';
 import chaiAsPromised from 'chai-as-promised';
-import { Files } from '@lyricistant/common/files/Files';
+import chaiSubset from 'chai-subset';
 
 use(sinonChai);
 use(chaiAsPromised);
+use(chaiSubset);
+
+const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
 
 describe('Files', () => {
   const dialogs = stubInterface<Dialog>();
@@ -24,15 +27,16 @@ describe('Files', () => {
   });
 
   it('shows a dialog to choose a file', async () => {
-    const expected: FileData = {
-      path: 'mycoollyrics.txt',
-      data: 'Here are lyrics!',
+    const expected: PlatformFile = {
+      metadata: { path: 'mycoollyrics.txt' },
+      data: encode('Here are lyrics!'),
+      type: '',
     };
     dialogs.showOpenDialog.resolves({
       canceled: false,
-      filePaths: [expected.path],
+      filePaths: [expected.metadata.path],
     });
-    fs.readFile.resolves(expected.lyrics);
+    fs.readFile.resolves(Buffer.from(expected.data));
     fs.isText.returns(true);
 
     const actual = await files.openFile();
@@ -43,7 +47,8 @@ describe('Files', () => {
       sinon.match({
         properties: ['openFile'],
         filters: [
-          { extensions: ['txt'], name: 'Lyrics' },
+          { extensions: ['lyrics'], name: 'Lyrics' },
+          { extensions: ['txt'], name: 'Text files' },
           { extensions: ['*'], name: 'All Files' },
         ],
       })
@@ -52,65 +57,19 @@ describe('Files', () => {
   });
 
   it('loads a droppable file', async () => {
-    const expected: FileData = {
-      path: 'mycoollyrics.txt',
-      data: 'Here are lyrics!',
+    const expected: PlatformFile = {
+      metadata: { path: 'mycoollyrics.txt' },
+      data: encode('Here are lyrics!'),
     };
     fs.isText.returns(true);
 
     const actual = await files.openFile({
-      path: expected.path,
-      data: new TextEncoder().encode(expected.lyrics).buffer,
+      path: expected.metadata.path,
+      data: expected.data,
       type: 'text/plain',
     });
 
-    expect(expected).to.deep.equal(actual);
-    expect(dialogs.showOpenDialog).to.have.not.been.called;
-    expect(fs.readFile).to.have.not.been.called;
-  });
-
-  it('throws an error if an invalid file is chosen', async () => {
-    const expected: FileData = {
-      path: 'mycoollyrics.txt',
-      data: 'Here are lyrics!',
-    };
-    dialogs.showOpenDialog.resolves({
-      canceled: false,
-      filePaths: [expected.path],
-    });
-    fs.readFile.resolves(expected.lyrics);
-    fs.isText.returns(false);
-
-    await expect(files.openFile()).to.eventually.be.rejected;
-
-    expect(dialogs.showOpenDialog).to.have.been.calledWith(
-      window,
-      sinon.match({
-        properties: ['openFile'],
-        filters: [
-          { extensions: ['txt'], name: 'Lyrics' },
-          { extensions: ['*'], name: 'All Files' },
-        ],
-      })
-    );
-    expect(fs.readFile).to.have.been.calledWith(expected.path);
-  });
-
-  it('throws an error if an invalid file is dropped', async () => {
-    const expected: FileData = {
-      path: 'mycoollyrics.txt',
-      data: 'Here are lyrics!',
-    };
-    fs.isText.returns(false);
-
-    await expect(
-      files.openFile({
-        path: expected.path,
-        data: new TextEncoder().encode(expected.lyrics).buffer,
-        type: 'text/plain',
-      })
-    ).to.eventually.be.rejected;
-
+    expect(actual).to.containSubset(expected);
     expect(dialogs.showOpenDialog).to.have.not.been.called;
     expect(fs.readFile).to.have.not.been.called;
   });
@@ -123,52 +82,42 @@ describe('Files', () => {
     });
     fs.writeFile.resolves();
 
-    const actual = await files.saveFile('oh wow!');
+    const actual = await files.saveFile(encode('oh wow!'));
 
     expect(expected).to.deep.equal(actual);
     expect(dialogs.showSaveDialog).to.have.been.calledWith(window, {
-      filters: [{ name: 'Text Files', extensions: ['txt'] }],
+      filters: [{ name: 'Lyrics', extensions: ['lyrics'] }],
     });
-    expect(fs.writeFile).to.have.been.calledWith(expected.path, 'oh wow!');
+    expect(fs.writeFile).to.have.been.calledWith(
+      expected.path,
+      encode('oh wow!')
+    );
   });
 
   it('saves the file when saving a file with a file path', async () => {
     const expected = { path: 'mycoollyrics.txt' };
     fs.writeFile.resolves();
 
-    const actual = await files.saveFile('oh wow!', 'mycoollyrics.txt');
+    const actual = await files.saveFile(encode('oh wow!'), 'mycoollyrics.txt');
 
     expect(expected).to.deep.equal(actual);
     expect(dialogs.showSaveDialog).to.have.not.been.called;
-    expect(fs.writeFile).to.have.been.calledWith('mycoollyrics.txt', 'oh wow!');
+    expect(fs.writeFile).to.have.been.calledWith(
+      'mycoollyrics.txt',
+      encode('oh wow!')
+    );
   });
 
   it('reads files when given a valid text file', async () => {
-    const expected = {
-      path: 'moarlife.txt',
-      data: 'moar tests',
+    const expected: PlatformFile = {
+      metadata: { path: 'moarlife.txt' },
+      data: encode('moar tests'),
     };
-    fs.readFile.resolves(expected.data);
-    fs.isText.returns(true);
+    fs.readFile.resolves(Buffer.from(expected.data));
 
-    const actual = await files.readFile(expected.path);
+    const actual = await files.readFile(expected.metadata.path);
 
-    expect(expected).to.deep.equal(actual);
+    expect(actual).to.containSubset(expected);
     expect(fs.readFile).to.have.been.called;
-    expect(fs.isText).to.have.been.called;
-  });
-
-  it('throws files when trying to read an invalid text file', async () => {
-    const expected = {
-      filePath: 'moarlife.txt',
-      data: 'moar tests',
-    };
-    fs.readFile.resolves(expected.data);
-    fs.isText.returns(false);
-
-    await expect(files.readFile(expected.filePath)).to.eventually.be.rejected;
-
-    expect(fs.readFile).to.have.been.called;
-    expect(fs.isText).to.have.been.called;
   });
 });

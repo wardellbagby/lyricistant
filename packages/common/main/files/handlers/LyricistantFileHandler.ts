@@ -25,7 +25,7 @@ export class LyricistantFileHandler implements FileHandler {
   public canHandle = (file: PlatformFile) =>
     file.type === 'application/zip' ||
     file.metadata.path.endsWith(LYRICS_EXTENSION) ||
-    file.metadata.name.endsWith(LYRICS_EXTENSION);
+    file.metadata?.name?.endsWith(LYRICS_EXTENSION);
 
   public load = async (file: PlatformFile): Promise<FileData> => {
     const archive: LyricsArchive = new JSZip();

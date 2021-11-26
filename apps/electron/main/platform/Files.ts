@@ -1,35 +1,35 @@
 import {
   DroppableFile,
-  FileData,
   FileMetadata,
   Files as IFiles,
+  LYRICS_EXTENSION,
+  PlatformFile,
 } from '@lyricistant/common/files/Files';
 import { BrowserWindow, Dialog as ElectronDialog } from 'electron';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 
+const DOTLESS_LYRICS_EXTENSIONS = LYRICS_EXTENSION.substring(1);
 export class ElectronFiles implements IFiles {
   public constructor(
     private dialog: ElectronDialog,
     private fs: FileSystem,
     private window: BrowserWindow
   ) {}
-  public openFile = async (file?: DroppableFile): Promise<FileData> => {
+  public openFile = async (file?: DroppableFile): Promise<PlatformFile> => {
     if (file) {
-      const data = await Buffer.from(file.data);
-      if (this.fs.isText(file.path, data)) {
-        return {
-          path: file.path,
-          data: data.toString('utf8'),
-        };
-      }
-      throw Error(`Cannot open "${file.path}; not a text file."`);
+      return {
+        metadata: { path: file.path },
+        data: file.data,
+        type: file.type,
+      };
     }
 
     const result = await this.dialog.showOpenDialog(this.window, {
       title: 'Choose Lyrics',
       properties: ['openFile'],
       filters: [
-        { extensions: ['txt'], name: 'Lyrics' },
+        { extensions: [DOTLESS_LYRICS_EXTENSIONS], name: 'Lyrics' },
+        { extensions: ['txt'], name: 'Text files' },
         { extensions: ['*'], name: 'All Files' },
       ],
     });
@@ -41,7 +41,7 @@ export class ElectronFiles implements IFiles {
   };
 
   public saveFile = async (
-    data: string,
+    data: ArrayBuffer,
     path?: string
   ): Promise<FileMetadata> => {
     if (path) {
@@ -49,7 +49,7 @@ export class ElectronFiles implements IFiles {
       return { path };
     } else {
       const result = await this.dialog.showSaveDialog(this.window, {
-        filters: [{ name: 'Text Files', extensions: ['txt'] }],
+        filters: [{ name: 'Lyrics', extensions: [DOTLESS_LYRICS_EXTENSIONS] }],
       });
 
       if (result.filePath) {
@@ -59,14 +59,12 @@ export class ElectronFiles implements IFiles {
     }
   };
 
-  public readFile = async (path: string): Promise<FileData> => {
+  public readFile = async (path: string): Promise<PlatformFile> => {
     const data = await this.fs.readFile(path);
-    if (this.fs.isText(path, data)) {
-      return {
-        path,
-        data: data.toString('utf8'),
-      };
-    }
-    throw Error(`Cannot open "${path}; not a text file."`);
+    return {
+      metadata: { path },
+      data,
+      type: '',
+    };
   };
 }
