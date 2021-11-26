@@ -133,6 +133,14 @@ export class FileManager implements Manager {
             this.recentFiles.getRecentFiles()
           )
         );
+      } else {
+        this.rendererDelegate.send(
+          'file-opened',
+          new Error(),
+          undefined,
+          undefined,
+          true
+        );
       }
     } catch (e) {
       this.rendererDelegate.send('file-opened', e, undefined, undefined, true);

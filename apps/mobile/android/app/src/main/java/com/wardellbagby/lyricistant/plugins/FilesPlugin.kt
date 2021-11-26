@@ -14,13 +14,14 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 
 @CapacitorPlugin(name = "Files")
+@OptIn(ExperimentalUnsignedTypes::class)
 class FilesPlugin : Plugin() {
   @PluginMethod
   fun openFile(call: PluginCall) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
       addCategory(Intent.CATEGORY_OPENABLE)
-      type = "text/plain"
-      putExtra(Intent.EXTRA_TITLE, "Lyrics.txt")
+      type = "*/*"
+      putExtra(Intent.EXTRA_TITLE, "Lyrics.lyrics")
     }
 
     startActivityForResult(call, intent, "openFileResult")
@@ -35,8 +36,8 @@ class FilesPlugin : Plugin() {
     } else {
       val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
         addCategory(Intent.CATEGORY_OPENABLE)
-        type = "text/plain"
-        putExtra(Intent.EXTRA_TITLE, "Lyrics.txt")
+        type = "*/*"
+        putExtra(Intent.EXTRA_TITLE, "Lyrics.lyrics")
       }
 
       startActivityForResult(call, intent, "saveFileResult")
@@ -59,7 +60,8 @@ class FilesPlugin : Plugin() {
 
     runCatching {
       uri.persist()
-      call.resolve(FileData(uri.toString(), uri.displayName, uri.read()))
+      val data = uri.read()
+      call.resolve(PlatformFile(uri.toString(), uri.displayName, data))
     }
   }
 
@@ -84,7 +86,11 @@ class FilesPlugin : Plugin() {
     runCatching {
       uri.run {
         persist()
-        write(getString("data") ?: kotlin.error("Received no data to write?"))
+        val data = getArray("data")?.toList<Int>()?.map {
+          it.toUByte()
+        }?.toUByteArray() ?: kotlin.error("Received no data to write?")
+
+        write(data)
         displayName
       }
     }
@@ -103,7 +109,8 @@ class FilesPlugin : Plugin() {
       if (!it.moveToFirst()) {
         null
       } else {
-        it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+        val displayNameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        it.getString(displayNameIndex)
       }
     }
 
@@ -115,37 +122,40 @@ class FilesPlugin : Plugin() {
     }
   }
 
-  private fun Uri.write(data: String) {
+  private fun Uri.write(data: UByteArray) {
     context.contentResolver.run {
-      openOutputStream(this@write)?.bufferedWriter()?.use {
-        it.write(data)
+      openOutputStream(this@write)?.use {
+        it.write(data.asByteArray())
       }
     }
   }
 
-  private fun Uri.read(): String {
+  private fun Uri.read(): UByteArray {
     return context.contentResolver.run {
-      openInputStream(this@read)?.bufferedReader()?.use {
-        it.readText()
+      openInputStream(this@read)?.use {
+        it.readBytes().asUByteArray()
       } ?: error("Failed to read from Uri: ${this@read}")
     }
   }
 
   @Suppress("FunctionName")
   private fun FileMetadata(
-    filePath: String?,
+    path: String?,
     name: String?
   ) = JSObject().apply {
-    put("path", filePath)
+    put("path", path)
     put("name", name)
   }
 
   @Suppress("FunctionName")
-  private fun FileData(
-    filePath: String?,
+  private fun PlatformFile(
+    path: String?,
     name: String?,
-    data: String
-  ) = FileMetadata(filePath, name).apply {
-    put("data", data)
+    data: UByteArray
+  ): JSObject {
+    val dataArray = data.map { it.toShort() }.toShortArray()
+    return FileMetadata(path, name).apply {
+      put("data", JSObject.wrap(dataArray))
+    }
   }
 }

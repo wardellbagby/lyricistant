@@ -3,6 +3,7 @@ import UIKit
 import MobileCoreServices
 import UniformTypeIdentifiers
 import Foundation
+import JavaScriptCore
 
 @objc(FilesPlugin)
 public class FilesPlugin: CAPPlugin, UIDocumentPickerDelegate,UINavigationControllerDelegate {
@@ -12,7 +13,7 @@ public class FilesPlugin: CAPPlugin, UIDocumentPickerDelegate,UINavigationContro
         guard let viewController = self.bridge?.viewController else { return }
         let types = UTType.types(tag: "txt",
                                  tagClass: UTTagClass.filenameExtension,
-                                 conformingTo: nil);
+                                 conformingTo: nil) + [UTType.LyricsFileFormat]
         
         DispatchQueue.main.async {
             let documentPickerController = UIDocumentPickerViewController(
@@ -26,10 +27,13 @@ public class FilesPlugin: CAPPlugin, UIDocumentPickerDelegate,UINavigationContro
     }
     
     @objc func saveFile(_ call: CAPPluginCall) {
-        guard let data = (call.getString("data") ?? "").data(using: .utf8) else {
+        guard let array = call.getArray("data")?.map({ value in
+            (value as! NSNumber).uint8Value
+        }) else {
             call.reject("Couldn't convert data to UTF")
             return
         }
+        let data = Data(bytes: array, count: array.count)
         guard let path = call.getString("path") else {
             showSaveFilePicker(call, data);
             return;
@@ -49,7 +53,7 @@ public class FilesPlugin: CAPPlugin, UIDocumentPickerDelegate,UINavigationContro
         let fileManager = FileManager.default
         
         do {
-            let path = fileManager.temporaryDirectory.appendingPathComponent("Lyrics.txt")
+            let path = fileManager.temporaryDirectory.appendingPathComponent("Lyrics.lyrics")
             try data.write(to: path)
             
             DispatchQueue.main.async {
@@ -72,7 +76,7 @@ private func FileMetadata(_ path: URL) -> [String: Any] {
     return ["path": path.absoluteString, "name": path.lastPathComponent];
 }
 
-private func FileData(_ path: URL, _ data: String) -> [String: Any] {
+private func PlatformFile(_ path: URL, _ data: [UInt8]) -> [String: Any] {
     return FileMetadata(path).merging(["data": data]) { (current, _) in current }
 }
 
@@ -88,9 +92,8 @@ private class OpenFileDelegate : NSObject, UIDocumentPickerDelegate {
             return
         }
         do {
-            if let text = String(data: try Data(contentsOf: filePath), encoding: .utf8) {
-                call.resolve(FileData(filePath, text));
-            }
+            let data = [UInt8](try Data(contentsOf: filePath))
+            call.resolve(PlatformFile(filePath, data));
         } catch {
             call.reject("Unable to read the selected file");
         }
@@ -118,4 +121,8 @@ private class SaveFileDelegate : NSObject, UIDocumentPickerDelegate {
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         self.call.resolve();
     }
+}
+
+extension UTType {
+    static let LyricsFileFormat = UTType(exportedAs: "com.wardellbagby.lyrics")
 }

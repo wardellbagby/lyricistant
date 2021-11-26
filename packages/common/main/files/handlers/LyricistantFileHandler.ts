@@ -5,6 +5,7 @@ import {
 } from '@lyricistant/common/files/Files';
 import JSZip from 'jszip';
 import { FileHandler } from '@lyricistant/common/files/handlers/FileHandler';
+import { isEqual } from 'lodash-es';
 
 type LyricsArchive = typeof JSZip;
 /**
@@ -24,6 +25,11 @@ interface VersioningData {
 export class LyricistantFileHandler implements FileHandler {
   public canHandle = (file: PlatformFile) =>
     file.type === 'application/zip' ||
+    // ZIP file magic number header.
+    isEqual(
+      new Uint8Array(file.data).subarray(0, 4),
+      Uint8Array.from([80, 75, 3, 4])
+    ) ||
     file.metadata.path.endsWith(LYRICS_EXTENSION) ||
     file.metadata?.name?.endsWith(LYRICS_EXTENSION);
 

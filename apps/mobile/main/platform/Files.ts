@@ -1,32 +1,33 @@
 import { registerPlugin } from '@capacitor/core';
-import {
-  FileData,
-  FileMetadata,
-  Files as IFiles,
-} from '@lyricistant/common/files/Files';
+import { FileMetadata, Files } from '@lyricistant/common/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
 
 interface MobileFilesPlugin {
-  openFile: () => Promise<FileData | null>;
-  saveFile: (call: { data: string; path?: string }) => Promise<FileMetadata>;
+  openFile: () => Promise<{ path: string; name?: string; data: number[] }>;
+  saveFile: (call: { data: number[]; path?: string }) => Promise<FileMetadata>;
 }
 
 const mobileFilesPlugin = registerPlugin<MobileFilesPlugin>('Files');
 
-export class MobileFiles implements IFiles {
+export class MobileFiles implements Files {
   public constructor(private logger: Logger) {}
 
   public openFile = async () => {
     const result = await mobileFilesPlugin.openFile();
     if (result) {
-      return result;
+      const { data, path, name } = result;
+      return { metadata: { path, name }, data: new Uint8Array(data) };
     } else {
       this.logger.debug('File open cancelled.');
     }
   };
 
   public saveFile = async (
-    data: string,
+    data: ArrayBuffer,
     path?: string
-  ): Promise<FileMetadata> => mobileFilesPlugin.saveFile({ data, path });
+  ): Promise<FileMetadata> =>
+    mobileFilesPlugin.saveFile({
+      data: Array.from(new Uint8Array(data)),
+      path,
+    });
 }

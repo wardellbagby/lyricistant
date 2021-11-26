@@ -5,7 +5,10 @@ import { Buffers } from '@lyricistant/common/files/Buffers';
 export class TextFileHandler implements FileHandler {
   public constructor(private buffers: Buffers) {}
 
-  public canHandle = (): boolean => true;
+  public canHandle = (file: PlatformFile): boolean =>
+    file?.type === 'text/plain' ||
+    file.metadata.name?.endsWith('txt') ||
+    file.metadata.path.endsWith('txt');
 
   public create = async (file: FileData): Promise<ArrayBuffer> =>
     this.buffers.stringToBuffer(file.lyrics);
