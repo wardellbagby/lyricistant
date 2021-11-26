@@ -17,5 +17,14 @@ module.exports = class CustomTestEnvironment extends Environment {
     if (typeof this.global.Worker === 'undefined') {
       this.global.Worker = Worker;
     }
+    if (typeof this.global.Blob.prototype.arrayBuffer === 'undefined') {
+      // JSDom doesn't have ArrayBuffer so recreate it here.
+      this.global.Blob.prototype.arrayBuffer = function () {
+        return new Uint8Array(
+          // eslint-disable-next-line no-underscore-dangle
+          this[Object.getOwnPropertySymbols(this)[0]]._buffer
+        );
+      };
+    }
   }
 };

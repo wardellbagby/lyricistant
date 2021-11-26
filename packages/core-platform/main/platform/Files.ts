@@ -1,8 +1,12 @@
 import {
   DroppableFile,
-  FileData,
   FileMetadata,
   Files as IFiles,
+  LYRICS_EXTENSION,
+  LYRICS_MIME_TYPE,
+  PlatformFile,
+  SUPPORTED_EXTENSIONS,
+  SUPPORTED_MIME_TYPES,
 } from '@lyricistant/common/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystemHandle, FileWithHandle } from 'browser-fs-access';
@@ -20,22 +24,22 @@ export class CoreFiles implements IFiles {
 
   public constructor(private fs: FileSystem, private logger: Logger) {}
 
-  public openFile = async (file?: DroppableFile): Promise<FileData> => {
+  public openFile = async (file?: DroppableFile): Promise<PlatformFile> => {
     if (file) {
-      if (file.type !== 'text/plain') {
-        throw Error('Selected file is not a text file.');
-      }
       return {
-        path: file.path,
-        data: new TextDecoder().decode(file.data),
+        metadata: {
+          path: file.path,
+        },
+        type: file.type,
+        data: file.data,
       };
     }
 
     let result: FileWithHandle;
     try {
       result = await this.fs.openFile({
-        mimeTypes: ['text/plain'],
-        extensions: ['.txt'],
+        mimeTypes: SUPPORTED_MIME_TYPES,
+        extensions: SUPPORTED_EXTENSIONS,
         multiple: false,
       });
     } catch (e) {
@@ -53,9 +57,9 @@ export class CoreFiles implements IFiles {
       const handleId = this.generateFileHandleId();
       this.fileHandles.set(handleId, result.handle);
       return {
-        path: handleId,
-        name: result.name,
-        data: await readAsText(result),
+        metadata: { path: handleId, name: result.name },
+        data: await result.arrayBuffer(),
+        type: result.type,
       };
     } else {
       this.logger.debug('File open cancelled.');
@@ -63,19 +67,19 @@ export class CoreFiles implements IFiles {
   };
 
   public saveFile = async (
-    data: string,
+    data: ArrayBuffer,
     fileHandleId?: string
   ): Promise<FileMetadata> => {
-    const defaultFilename = 'Lyrics.txt';
+    const defaultFilename = `Lyrics${LYRICS_EXTENSION}`;
     const fileHandle = this.fileHandles.get(fileHandleId);
     try {
       const result = await this.fs.saveFile(
         new Blob([data], {
-          type: 'text/plain',
+          type: LYRICS_MIME_TYPE,
         }),
         {
           fileName: defaultFilename,
-          extensions: ['.txt'],
+          extensions: [LYRICS_EXTENSION],
         },
         fileHandle
       );
@@ -93,24 +97,10 @@ export class CoreFiles implements IFiles {
       }
     }
   };
+
   private generateFileHandleId(): string {
     const id = `${Date.now()}+${this.counter}`;
     this.counter += 1;
     return id;
   }
 }
-
-const readAsText = async (blob: Blob): Promise<string> => {
-  if (blob.type !== 'text/plain') {
-    throw Error(`Selected file of type "${blob.type}" is not a text file.`);
-  }
-  if (Blob.prototype.text || blob.text) {
-    return await blob.text();
-  }
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => reject('Failed to load file');
-    reader.readAsText(blob, 'utf-8');
-  });
-};

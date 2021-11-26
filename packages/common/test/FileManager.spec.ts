@@ -8,8 +8,14 @@ import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
 import { RendererListeners } from '@testing/utilities/Listeners';
+import { FileHandler } from '@lyricistant/common/files/handlers/FileHandler';
+import { LyricistantFileHandler } from '@lyricistant/common/files/handlers/LyricistantFileHandler';
 
 use(sinonChai);
+
+const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
+const decode = (buffer: ArrayBuffer): string =>
+  new TextDecoder().decode(buffer);
 
 describe('File Manager', () => {
   let manager: FileManager;
@@ -17,15 +23,20 @@ describe('File Manager', () => {
   let files: StubbedInstance<Files>;
   let recentFiles: StubbedInstance<RecentFiles>;
   let dialogs: StubbedInstance<Dialogs>;
+  let fileHandler: StubbedInstance<FileHandler>;
+  let defaultFileHandler: StubbedInstance<LyricistantFileHandler>;
   const rendererListeners = new RendererListeners();
 
   beforeEach(() => {
     sinon.reset();
     files = stubInterface<Files>({
       openFile: Promise.resolve({
-        path: '/path/test',
-        name: 'test',
-        data: '',
+        metadata: {
+          path: '/path/test',
+          name: 'test',
+        },
+        data: encode(''),
+        type: 'text/plain',
       }),
       saveFile: Promise.resolve({ path: '/path/test2' }),
     });
@@ -36,6 +47,17 @@ describe('File Manager', () => {
     dialogs = stubInterface<Dialogs>({
       showDialog: Promise.resolve('cancelled'),
     });
+    fileHandler = stubInterface<FileHandler>({
+      canHandle: true,
+    });
+    defaultFileHandler = stubInterface<LyricistantFileHandler>({
+      canHandle: true,
+    });
+
+    fileHandler.load.callsFake(async (file) => ({ lyrics: decode(file.data) }));
+    fileHandler.create.callsFake(async (file) => encode(file.lyrics));
+    defaultFileHandler.create.callsFake(async (file) => encode(file.lyrics));
+
     rendererDelegate = stubInterface();
     rendererDelegate.on.callsFake(function (channel, listener) {
       rendererListeners.set(channel, listener);
@@ -47,6 +69,8 @@ describe('File Manager', () => {
       files,
       recentFiles,
       dialogs,
+      [() => fileHandler, () => defaultFileHandler],
+      defaultFileHandler,
       stubInterface()
     );
   });
@@ -146,7 +170,7 @@ describe('File Manager', () => {
     await rendererListeners.invoke('prompt-save-file-for-open', {
       path: 'whitetuxedo.txt',
       type: 'text/plain',
-      data: new TextEncoder().encode('This water'),
+      data: encode('This water'),
     });
 
     expect(dialogs.showDialog).to.have.been.called;
@@ -185,9 +209,12 @@ describe('File Manager', () => {
     dialogs.showDialog.returns(Promise.resolve('yes'));
     files.openFile.callsFake((file) =>
       Promise.resolve({
-        path: file.path,
-        name: file.path,
-        data: new TextDecoder().decode(file.data),
+        metadata: {
+          path: file.path,
+          name: file.path,
+        },
+        data: file.data,
+        type: 'thisyearforchristmas/ijustwantapologies',
       })
     );
     manager.register();
@@ -195,7 +222,7 @@ describe('File Manager', () => {
     await rendererListeners.invoke('prompt-save-file-for-open', {
       path: 'whitetuxedo.txt',
       type: 'text/plain',
-      data: new TextEncoder().encode('This water'),
+      data: encode('This water'),
     });
 
     expect(dialogs.showDialog).to.have.been.called;
@@ -233,7 +260,9 @@ describe('File Manager', () => {
 
     await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
 
-    expect(files.saveFile).to.have.been.calledWith('Reeboks on; just do it!');
+    expect(files.saveFile).to.have.been.calledWith(
+      encode('Reeboks on; just do it!')
+    );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       '/path/test2',
@@ -253,7 +282,9 @@ describe('File Manager', () => {
 
     await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
 
-    expect(files.saveFile).to.have.been.calledWith('Reeboks on; just do it!');
+    expect(files.saveFile).to.have.been.calledWith(
+      encode('Reeboks on; just do it!')
+    );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       '/path/test2',
@@ -274,7 +305,9 @@ describe('File Manager', () => {
       'Blessings, blessings.'
     );
 
-    expect(files.saveFile).to.have.been.calledWith('Blessings, blessings.');
+    expect(files.saveFile).to.have.been.calledWith(
+      encode('Blessings, blessings.')
+    );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       '/path/test2',
@@ -290,9 +323,9 @@ describe('File Manager', () => {
     manager.addOnFileChangedListener(fileChangeListener);
     files.openFile.returns(
       Promise.resolve({
-        name: 'whitetuxedo.txt',
-        path: '/Desktop/whitetuxedo.txt',
-        data: 'This water',
+        metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
+        data: encode('This water'),
+        type: '',
       })
     );
     manager.register();
@@ -304,7 +337,7 @@ describe('File Manager', () => {
     );
 
     expect(files.saveFile).to.have.been.calledWith(
-      'Blessings, blessings.',
+      encode('Blessings, blessings.'),
       '/Desktop/whitetuxedo.txt'
     );
     expect(fileChangeListener).to.have.been.called;
@@ -322,9 +355,9 @@ describe('File Manager', () => {
     manager.addOnFileChangedListener(fileChangeListener);
     files.openFile.returns(
       Promise.resolve({
-        name: 'whitetuxedo.txt',
-        path: '/Desktop/whitetuxedo.txt',
-        data: 'This water',
+        metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
+        data: encode('This water'),
+        type: '',
       })
     );
     files.saveFile.returns(
@@ -346,7 +379,7 @@ describe('File Manager', () => {
     );
 
     expect(files.saveFile).to.have.been.calledWith(
-      'Blessings, blessings.',
+      encode('Blessings, blessings.'),
       '/Desktop/whitetuxedo2.txt'
     );
     expect(fileChangeListener).to.have.been.called.callCount(3);
@@ -362,9 +395,9 @@ describe('File Manager', () => {
   it('updates the renderer when a file is opened by the platform', async () => {
     files.openFile.returns(
       Promise.resolve({
-        name: 'whitetuxedo.txt',
-        path: '/Desktop/whitetuxedo.txt',
-        data: 'This water',
+        metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
+        data: encode('This water'),
+        type: '',
       })
     );
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
@@ -393,9 +426,9 @@ describe('File Manager', () => {
   it('updates the renderer when a file is opened by the platform directly', async () => {
     files.readFile.returns(
       Promise.resolve({
-        name: 'whitetuxedo.txt',
-        path: '/Desktop/whitetuxedo.txt',
-        data: 'This water',
+        metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
+        data: encode('This water'),
+        type: '',
       })
     );
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
@@ -424,9 +457,9 @@ describe('File Manager', () => {
   it('updates the renderer when a file is opened by the renderer', async () => {
     files.openFile.returns(
       Promise.resolve({
-        name: 'whitetuxedo.txt',
-        path: '/Desktop/whitetuxedo.txt',
-        data: 'This water',
+        metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
+        data: encode('This water'),
+        type: '',
       })
     );
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
@@ -438,7 +471,7 @@ describe('File Manager', () => {
     await rendererListeners.invoke('open-file-attempt', {
       path: 'whitetuxedo.txt',
       type: 'text/plain',
-      data: new TextEncoder().encode('This water'),
+      data: encode('This water'),
     });
 
     expect(rendererDelegate.send).to.have.been.calledWith(
@@ -454,5 +487,33 @@ describe('File Manager', () => {
       '3',
     ]);
     expect(fileChangeListener).to.have.been.called;
+  });
+
+  it('saves opened files with the same file handler that opened them', async () => {
+    fileHandler.canHandle.callsFake((file) => file.type === 'mytype');
+    defaultFileHandler.canHandle.returns(false);
+    files.openFile.returns(
+      Promise.resolve({
+        metadata: { name: 'anewdress.txt', path: '121' },
+        data: encode('Double headed monster with a mind of its own.'),
+        type: 'mytype',
+      })
+    );
+
+    manager.register();
+    await rendererListeners.invoke('open-file-attempt');
+
+    expect(rendererDelegate.send).to.have.been.calledWith(
+      'file-opened',
+      undefined,
+      'anewdress.txt',
+      'Double headed monster with a mind of its own.'
+    );
+
+    await rendererListeners.invoke('save-file-attempt', 'Cherry Red Chariot');
+
+    expect(fileHandler.create).to.have.been.calledWith({
+      lyrics: 'Cherry Red Chariot',
+    });
   });
 });

@@ -34,6 +34,12 @@ import {
   CoreFileSystem,
 } from '@lyricistant/core-platform/wrappers/FileSystem';
 import type { CoreRendererDelegate } from '@lyricistant/core-platform/Delegates';
+import { LyricistantFileHandler } from '@lyricistant/common/files/handlers/LyricistantFileHandler';
+import { TextFileHandler } from '@lyricistant/common/files/handlers/TextFileHandler';
+import {
+  FileHandler,
+  FileHandlers,
+} from '@lyricistant/common/files/handlers/FileHandler';
 
 const createComponent = (): DIContainer => {
   const component = new DIContainer();
@@ -57,6 +63,14 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<UnsavedDataManager>();
   component.registerSingleton<LogManager>();
   component.registerSingleton<UnloadManager>();
+
+  component.registerSingleton<LyricistantFileHandler>();
+  component.registerSingleton<TextFileHandler>();
+
+  component.registerSingleton<FileHandlers>(() => [
+    () => component.get<LyricistantFileHandler>(),
+    () => component.get<TextFileHandler>(),
+  ]);
 
   component.registerSingleton<Managers>(() => [
     () => component.get<FileManager>(),

@@ -1,7 +1,9 @@
-export interface FileData extends FileMetadata {
+export interface FileData {
   /** The data contained with this file. **/
-  data: string;
+  lyrics: string;
 }
+
+export type LyricistantFile = FileData & FileMetadata;
 
 export interface FileMetadata {
   /**
@@ -27,8 +29,19 @@ export interface DroppableFile {
   data: ArrayBuffer;
 }
 
+export const LYRICS_MIME_TYPE = 'application/zip';
+export const LYRICS_EXTENSION = '.lyrics';
+export const SUPPORTED_MIME_TYPES = ['text/plain', LYRICS_MIME_TYPE];
+export const SUPPORTED_EXTENSIONS = ['.txt', LYRICS_EXTENSION];
+
+export interface PlatformFile {
+  metadata: FileMetadata;
+  data: ArrayBuffer;
+  type: string;
+}
+
 export interface Files {
-  openFile: (file?: DroppableFile) => Promise<FileData | void>;
-  saveFile: (data: string, path?: string) => Promise<FileMetadata>;
-  readFile?: (filePath: string) => Promise<FileData>;
+  openFile: (file?: DroppableFile) => Promise<PlatformFile>;
+  saveFile: (data: ArrayBuffer, path?: string) => Promise<FileMetadata>;
+  readFile?: (filePath: string) => Promise<PlatformFile>;
 }

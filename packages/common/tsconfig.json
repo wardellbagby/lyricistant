@@ -1,8 +1,8 @@
 {
   "include": ["main/**/*"],
   "compilerOptions": {
-    "lib": ["dom", "es6"],
-    "types": ["node"],
+    "lib": ["es6"],
+    "types": [],
     "composite": true
   },
   "references": [],

@@ -32,7 +32,7 @@ describe('Files', () => {
       canceled: false,
       filePaths: [expected.path],
     });
-    fs.readFile.resolves(expected.data);
+    fs.readFile.resolves(expected.lyrics);
     fs.isText.returns(true);
 
     const actual = await files.openFile();
@@ -60,7 +60,7 @@ describe('Files', () => {
 
     const actual = await files.openFile({
       path: expected.path,
-      data: new TextEncoder().encode(expected.data).buffer,
+      data: new TextEncoder().encode(expected.lyrics).buffer,
       type: 'text/plain',
     });
 
@@ -78,7 +78,7 @@ describe('Files', () => {
       canceled: false,
       filePaths: [expected.path],
     });
-    fs.readFile.resolves(expected.data);
+    fs.readFile.resolves(expected.lyrics);
     fs.isText.returns(false);
 
     await expect(files.openFile()).to.eventually.be.rejected;
@@ -106,7 +106,7 @@ describe('Files', () => {
     await expect(
       files.openFile({
         path: expected.path,
-        data: new TextEncoder().encode(expected.data).buffer,
+        data: new TextEncoder().encode(expected.lyrics).buffer,
         type: 'text/plain',
       })
     ).to.eventually.be.rejected;
