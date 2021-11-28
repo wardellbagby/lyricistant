@@ -1,4 +1,5 @@
 import {
+  ExtensionData,
   FileData,
   LYRICS_EXTENSION,
   PlatformFile,
@@ -15,6 +16,7 @@ type LyricsArchive = typeof JSZip;
 
 const LYRICISTANT_FILE_VERSION = 1;
 const LYRICS_V1_FILE = 'lyrics.txt';
+const EXTENSIONS_FOLDER = 'extensions';
 const VERSION_FILE = 'version.json';
 
 interface VersioningData {
@@ -55,12 +57,20 @@ export class LyricistantFileHandler implements FileHandler {
   public create = async (file: FileData): Promise<ArrayBuffer> => {
     const archive: LyricsArchive = new JSZip();
 
-    return archive
+    archive
       .file(LYRICS_V1_FILE, file.lyrics)
-      .file('version.json', JSON.stringify(this.createVersion()))
-      .generateAsync({
-        type: 'arraybuffer',
+      .file('version.json', JSON.stringify(this.createVersion()));
+
+    const extensions = archive.folder('extensions');
+    Object.keys(file.extensions)
+      .filter((value) => value !== 'lyrics')
+      .forEach((key: keyof ExtensionData) => {
+        extensions.file(`${key}.dat`, file.extensions?.[key]);
       });
+
+    return archive.generateAsync({
+      type: 'arraybuffer',
+    });
   };
 
   private readVersion = async (
@@ -74,6 +84,22 @@ export class LyricistantFileHandler implements FileHandler {
   });
 }
 
-const loadV1 = async (archive: LyricsArchive): Promise<FileData> => ({
-  lyrics: (await archive.file(LYRICS_V1_FILE).async('string')) ?? '',
-});
+const loadV1 = async (archive: LyricsArchive): Promise<FileData> => {
+  const fileData: FileData = {
+    lyrics: (await archive.file(LYRICS_V1_FILE).async('string')) ?? '',
+  };
+
+  const extensions: ExtensionData = {};
+  const extensionDataFiles = archive.folder('extensions').filter(() => true);
+  for (const file of extensionDataFiles) {
+    const name = file.name
+      .replace(`${EXTENSIONS_FOLDER}/`, '')
+      .replace('.dat', '');
+    extensions[name] = await file.async('string');
+  }
+
+  return {
+    extensions,
+    ...fileData,
+  };
+};

@@ -44,8 +44,9 @@ export class ElectronFiles implements IFiles {
     data: ArrayBuffer,
     path?: string
   ): Promise<FileMetadata> => {
+    const buffer = Buffer.from(data);
     if (path) {
-      await this.fs.writeFile(path, data);
+      await this.fs.writeFile(path, buffer);
       return { path };
     } else {
       const result = await this.dialog.showSaveDialog(this.window, {
@@ -53,7 +54,7 @@ export class ElectronFiles implements IFiles {
       });
 
       if (result.filePath) {
-        await this.fs.writeFile(result.filePath, data);
+        await this.fs.writeFile(result.filePath, buffer);
         return { path: result.filePath };
       }
     }

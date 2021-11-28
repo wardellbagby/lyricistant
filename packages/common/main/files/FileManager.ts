@@ -4,6 +4,7 @@ import { Logger } from '@lyricistant/common/Logger';
 import { Manager } from '@lyricistant/common/Manager';
 import {
   DroppableFile,
+  ExtensionData,
   Files,
   PlatformFile,
 } from '@lyricistant/common/files/Files';
@@ -13,6 +14,7 @@ import {
   FileHandlers,
 } from '@lyricistant/common/files/handlers/FileHandler';
 import { LyricistantFileHandler } from '@lyricistant/common/files/handlers/LyricistantFileHandler';
+import { FileDataExtensions } from '@lyricistant/common/files/extensions/FileDataExtension';
 
 export class FileManager implements Manager {
   private currentFilePath: string | null = null;
@@ -29,6 +31,7 @@ export class FileManager implements Manager {
     private dialogs: Dialogs,
     private fileHandlers: FileHandlers,
     private defaultFileHandler: LyricistantFileHandler,
+    private fileDataExtensions: FileDataExtensions,
     private logger: Logger
   ) {}
 
@@ -64,26 +67,7 @@ export class FileManager implements Manager {
   public openFile = async (filePath?: string) => {
     if (filePath && this.files.readFile) {
       const platformFile = await this.files.readFile(filePath);
-
-      const { handler, fileData } = await this.createFileData(platformFile);
-
-      this.currentFilePath = platformFile?.metadata?.path;
-      this.currentFileHandler = handler;
-      this.rendererDelegate.send(
-        'file-opened',
-        undefined,
-        platformFile.metadata.name ?? platformFile.metadata.path,
-        fileData?.lyrics ?? '',
-        true
-      );
-      this.addRecentFile(filePath);
-      const updatedRecentFiles = this.recentFiles.getRecentFiles();
-      this.fileChangedListeners.forEach((listener) =>
-        listener(
-          platformFile.metadata.name ?? platformFile.metadata.path,
-          updatedRecentFiles
-        )
-      );
+      await this.openFileActual(platformFile);
     } else {
       await this.onOpenFile();
     }
@@ -113,35 +97,7 @@ export class FileManager implements Manager {
   private onOpenFile = async (file?: DroppableFile) => {
     try {
       const platformFile = await this.files.openFile(file);
-
-      const { handler, fileData } = await this.createFileData(platformFile);
-
-      if (fileData) {
-        this.currentFilePath = platformFile.metadata.path;
-        this.currentFileHandler = handler;
-        this.rendererDelegate.send(
-          'file-opened',
-          undefined,
-          platformFile.metadata.name ?? platformFile.metadata.path,
-          fileData.lyrics,
-          true
-        );
-        this.addRecentFile(this.currentFilePath);
-        this.fileChangedListeners.forEach((listener) =>
-          listener(
-            platformFile.metadata.name ?? platformFile.metadata.path,
-            this.recentFiles.getRecentFiles()
-          )
-        );
-      } else {
-        this.rendererDelegate.send(
-          'file-opened',
-          new Error(),
-          undefined,
-          undefined,
-          true
-        );
-      }
+      await this.openFileActual(platformFile);
     } catch (e) {
       this.rendererDelegate.send('file-opened', e, undefined, undefined, true);
       return;
@@ -154,9 +110,23 @@ export class FileManager implements Manager {
 
   private saveFileActual = async (lyrics: string, path: string) => {
     this.logger.debug('Saving file with lyrics', { path, lyrics });
-    const saveFileData = await this.currentFileHandler.create({ lyrics });
 
-    const newFileMetadata = await this.files.saveFile(saveFileData, path);
+    this.fileDataExtensions.forEach((extension) =>
+      extension.onBeforeSerialization?.(lyrics)
+    );
+    const extensions = this.fileDataExtensions.reduce(
+      (data: Partial<ExtensionData>, extension) => {
+        data[extension.key] = JSON.stringify(extension.serialize());
+        return data;
+      },
+      {}
+    );
+    const serializedFileData = await this.currentFileHandler.create({
+      extensions,
+      lyrics,
+    });
+
+    const newFileMetadata = await this.files.saveFile(serializedFileData, path);
     if (newFileMetadata) {
       const fileTitle = newFileMetadata.name ?? newFileMetadata.path;
       this.currentFilePath = newFileMetadata.path;
@@ -177,10 +147,41 @@ export class FileManager implements Manager {
     }
   };
 
+  private openFileActual = async (platformFile: PlatformFile) => {
+    const { handler, fileData } = await this.createFileData(platformFile);
+
+    this.currentFilePath = platformFile?.metadata?.path;
+    this.currentFileHandler = handler;
+    this.fileDataExtensions.forEach((extension) => {
+      const data = fileData.extensions?.[extension.key];
+      if (data?.length > 0) {
+        extension.deserialize(JSON.parse(fileData.extensions?.[extension.key]));
+      } else {
+        extension.deserialize(null);
+      }
+    });
+    this.rendererDelegate.send(
+      'file-opened',
+      undefined,
+      platformFile.metadata.name ?? platformFile.metadata.path,
+      fileData?.lyrics ?? '',
+      true
+    );
+    this.addRecentFile(this.currentFilePath);
+    const updatedRecentFiles = this.recentFiles.getRecentFiles();
+    this.fileChangedListeners.forEach((listener) =>
+      listener(
+        platformFile.metadata.name ?? platformFile.metadata.path,
+        updatedRecentFiles
+      )
+    );
+  };
+
   private onOkayForNewFile = () => {
     this.currentFilePath = null;
     this.currentFileHandler = this.defaultFileHandler;
     this.rendererDelegate.send('new-file-created');
+    this.fileDataExtensions.forEach((extension) => extension.deserialize(null));
     this.fileChangedListeners.forEach((listener) =>
       listener(null, this.recentFiles.getRecentFiles())
     );

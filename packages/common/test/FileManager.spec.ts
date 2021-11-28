@@ -10,6 +10,7 @@ import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
 import { RendererListeners } from '@testing/utilities/Listeners';
 import { FileHandler } from '@lyricistant/common/files/handlers/FileHandler';
 import { LyricistantFileHandler } from '@lyricistant/common/files/handlers/LyricistantFileHandler';
+import { FileDataExtension } from '@lyricistant/common/files/extensions/FileDataExtension';
 
 use(sinonChai);
 
@@ -17,6 +18,9 @@ const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
 const decode = (buffer: ArrayBuffer): string =>
   new TextDecoder().decode(buffer);
 
+type Writable<T> = {
+  -readonly [P in keyof T]: T[P];
+};
 describe('File Manager', () => {
   let manager: FileManager;
   let rendererDelegate: StubbedInstance<RendererDelegate>;
@@ -26,6 +30,10 @@ describe('File Manager', () => {
   let fileHandler: StubbedInstance<FileHandler>;
   let defaultFileHandler: StubbedInstance<LyricistantFileHandler>;
   const rendererListeners = new RendererListeners();
+  const mockExtension: Writable<FileDataExtension> =
+    stubInterface<FileDataExtension>({
+      serialize: { version: 1, data: 'world' },
+    });
 
   beforeEach(() => {
     sinon.reset();
@@ -57,6 +65,7 @@ describe('File Manager', () => {
     fileHandler.load.callsFake(async (file) => ({ lyrics: decode(file.data) }));
     fileHandler.create.callsFake(async (file) => encode(file.lyrics));
     defaultFileHandler.create.callsFake(async (file) => encode(file.lyrics));
+    mockExtension.key = 'hello';
 
     rendererDelegate = stubInterface();
     rendererDelegate.on.callsFake(function (channel, listener) {
@@ -71,6 +80,7 @@ describe('File Manager', () => {
       dialogs,
       [() => fileHandler, () => defaultFileHandler],
       defaultFileHandler,
+      [mockExtension],
       stubInterface()
     );
   });
@@ -446,7 +456,7 @@ describe('File Manager', () => {
       'This water'
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
-      'whitetuxedo.txt',
+      '/Desktop/whitetuxedo.txt',
       '1',
       '2',
       '3',
@@ -512,8 +522,14 @@ describe('File Manager', () => {
 
     await rendererListeners.invoke('save-file-attempt', 'Cherry Red Chariot');
 
+    expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
+      'Cherry Red Chariot'
+    );
     expect(fileHandler.create).to.have.been.calledWith({
       lyrics: 'Cherry Red Chariot',
+      extensions: {
+        hello: JSON.stringify(mockExtension.serialize()),
+      },
     });
   });
 });

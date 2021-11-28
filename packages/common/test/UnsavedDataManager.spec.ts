@@ -2,6 +2,7 @@ import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileManager } from '@lyricistant/common/files/FileManager';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { UnsavedDataManager } from '@lyricistant/common/files/UnsavedDataManager';
+import { FileHistory } from '@lyricistant/common/history/FileHistory';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
@@ -14,6 +15,7 @@ describe('Unsaved Data Manager', () => {
   let rendererDelegate: StubbedInstance<RendererDelegate>;
   let fileManager: StubbedInstance<FileManager>;
   let temporaryFiles: StubbedInstance<TemporaryFiles>;
+  let fileHistory: StubbedInstance<FileHistory>;
   const rendererListeners = new RendererListeners();
   let fileChangedListener: (...args: any[]) => void;
   let initialFileLoadedListener: (...args: any[]) => void;
@@ -21,7 +23,10 @@ describe('Unsaved Data Manager', () => {
   beforeEach(() => {
     sinon.reset();
     temporaryFiles = stubInterface<TemporaryFiles>({
-      get: Promise.resolve('Unsaved data'),
+      get: Promise.resolve('{}'),
+    });
+    fileHistory = stubInterface<FileHistory>({
+      getParsedHistory: 'Unsaved data',
     });
     fileManager = stubInterface<FileManager>();
     fileManager.addOnFileChangedListener.callsFake((listener) => {
@@ -40,6 +45,7 @@ describe('Unsaved Data Manager', () => {
       rendererDelegate,
       fileManager,
       temporaryFiles,
+      fileHistory,
       stubInterface()
     );
   });

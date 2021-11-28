@@ -4,6 +4,7 @@ import { Manager, withDialogSupport } from '@lyricistant/common/Manager';
 import { YES_NO_BUTTONS } from '@lyricistant/common/dialogs/Dialog';
 import { FileManager } from '@lyricistant/common/files/FileManager';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
+import { FileHistory } from '@lyricistant/common/history/FileHistory';
 
 export class UnsavedDataManager implements Manager {
   private static readonly RECOVER_UNSAVED_LYRICS_TAG =
@@ -13,6 +14,7 @@ export class UnsavedDataManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private fileManager: FileManager,
     private temporaryFiles: TemporaryFiles,
+    private fileHistory: FileHistory,
     private logger: Logger
   ) {
     withDialogSupport(
@@ -52,11 +54,14 @@ export class UnsavedDataManager implements Manager {
   private onDialogClicked = async (tag: string, buttonLabel: string) => {
     if (tag === UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG) {
       if (buttonLabel === 'Yes') {
+        this.fileHistory.deserialize(
+          JSON.parse(await this.temporaryFiles.get())
+        );
         this.rendererDelegate.send(
           'file-opened',
           undefined,
           undefined,
-          await this.temporaryFiles.get(),
+          this.fileHistory.getParsedHistory(),
           false
         );
       }
@@ -67,14 +72,11 @@ export class UnsavedDataManager implements Manager {
   private saveFile = () => {
     const onEditorText = async (text: string) => {
       this.rendererDelegate.removeListener('editor-text', onEditorText);
+      this.fileHistory.add(text);
 
-      if (text.length > 0) {
-        this.logger.verbose('Saving current data to temporary file.');
-        await this.temporaryFiles.set(text);
-      } else {
-        this.logger.verbose('No current data to temp save. Skipping.');
-        await this.temporaryFiles.delete();
-      }
+      await this.temporaryFiles.set(
+        JSON.stringify(this.fileHistory.serialize())
+      );
       setTimeout(this.saveFile, 30000);
     };
 

@@ -1,6 +1,11 @@
+export interface ExtensionData extends Record<string, string> {
+  history?: string;
+}
+
 export interface FileData {
   /** The data contained with this file. **/
   lyrics: string;
+  extensions?: Partial<ExtensionData>;
 }
 
 export type LyricistantFile = FileData & FileMetadata;

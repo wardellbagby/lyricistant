@@ -90,7 +90,7 @@ describe('Files', () => {
     });
     expect(fs.writeFile).to.have.been.calledWith(
       expected.path,
-      encode('oh wow!')
+      Buffer.from(encode('oh wow!'))
     );
   });
 
@@ -104,7 +104,7 @@ describe('Files', () => {
     expect(dialogs.showSaveDialog).to.have.not.been.called;
     expect(fs.writeFile).to.have.been.calledWith(
       'mycoollyrics.txt',
-      encode('oh wow!')
+      Buffer.from(encode('oh wow!'))
     );
   });
 
