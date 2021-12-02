@@ -34,6 +34,7 @@ export class UnsavedDataManager implements Manager {
     if (this.temporaryFiles.exists()) {
       this.logger.verbose('Unsaved data found.');
       this.rendererDelegate.send('show-dialog', {
+        type: 'alert',
         tag: UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
         title: 'Recover unsaved lyrics',
         message: 'Unsaved lyrics found. Would you like to recover them?',

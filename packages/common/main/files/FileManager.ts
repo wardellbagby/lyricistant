@@ -16,6 +16,9 @@ import {
 import { LyricistantFileHandler } from '@lyricistant/common/files/handlers/LyricistantFileHandler';
 import { FileDataExtensions } from '@lyricistant/common/files/extensions/FileDataExtension';
 
+const SAVE_FILE_DIALOG_TAG = 'save-file';
+const OPEN_FILE_DIALOG_TAG = 'open-file';
+
 export class FileManager implements Manager {
   private currentFilePath: string | null = null;
   private currentFileHandler: FileHandler = this.defaultFileHandler;
@@ -65,15 +68,35 @@ export class FileManager implements Manager {
   };
 
   public openFile = async (filePath?: string) => {
-    if (filePath && this.files.readFile) {
-      const platformFile = await this.files.readFile(filePath);
-      await this.openFileActual(platformFile);
-    } else {
-      await this.onOpenFile();
+    this.rendererDelegate.send('show-dialog', {
+      tag: OPEN_FILE_DIALOG_TAG,
+      type: 'fullscreen',
+      message: 'Opening file',
+      progress: 'indeterminate',
+    });
+
+    try {
+      if (filePath && this.files.readFile) {
+        const platformFile = await this.files.readFile(filePath);
+        await this.openFileActual(platformFile);
+      } else {
+        await this.onOpenFile();
+      }
+    } catch (e) {
+      this.logger.error('Error opening file.', e);
+      this.rendererDelegate.send('file-opened', e, undefined, undefined, true);
+    } finally {
+      this.rendererDelegate.send('close-dialog', OPEN_FILE_DIALOG_TAG);
     }
   };
 
   public saveFile = (forceSaveAs: boolean) => {
+    this.rendererDelegate.send('show-dialog', {
+      tag: SAVE_FILE_DIALOG_TAG,
+      type: 'fullscreen',
+      message: 'Saving file',
+      progress: 'indeterminate',
+    });
     const onEditorText = async (text: string) => {
       this.rendererDelegate.removeListener('editor-text', onEditorText);
 
@@ -95,55 +118,79 @@ export class FileManager implements Manager {
   };
 
   private onOpenFile = async (file?: DroppableFile) => {
+    this.rendererDelegate.send('show-dialog', {
+      tag: OPEN_FILE_DIALOG_TAG,
+      type: 'fullscreen',
+      message: 'Opening file',
+      progress: 'indeterminate',
+    });
+
     try {
       const platformFile = await this.files.openFile(file);
       await this.openFileActual(platformFile);
     } catch (e) {
+      this.logger.error('Error opening file.', e);
       this.rendererDelegate.send('file-opened', e, undefined, undefined, true);
-      return;
+    } finally {
+      this.rendererDelegate.send('close-dialog', OPEN_FILE_DIALOG_TAG);
     }
   };
 
   private onSaveFile = async (text: string) => {
+    this.rendererDelegate.send('show-dialog', {
+      tag: SAVE_FILE_DIALOG_TAG,
+      type: 'fullscreen',
+      message: 'Saving file',
+      progress: 'indeterminate',
+    });
     await this.saveFileActual(text, this.currentFilePath);
   };
 
   private saveFileActual = async (lyrics: string, path: string) => {
-    this.logger.debug('Saving file with lyrics', { path, lyrics });
+    try {
+      this.logger.debug('Saving file with lyrics', { path, lyrics });
 
-    this.fileDataExtensions.forEach((extension) =>
-      extension.onBeforeSerialization?.(lyrics)
-    );
-    const extensions = this.fileDataExtensions.reduce(
-      (data: Partial<ExtensionData>, extension) => {
-        data[extension.key] = JSON.stringify(extension.serialize());
-        return data;
-      },
-      {}
-    );
-    const serializedFileData = await this.currentFileHandler.create({
-      extensions,
-      lyrics,
-    });
-
-    const newFileMetadata = await this.files.saveFile(serializedFileData, path);
-    if (newFileMetadata) {
-      const fileTitle = newFileMetadata.name ?? newFileMetadata.path;
-      this.currentFilePath = newFileMetadata.path;
-      this.rendererDelegate.send(
-        'file-opened',
-        undefined,
-        fileTitle,
+      this.fileDataExtensions.forEach((extension) =>
+        extension.onBeforeSerialization?.(lyrics)
+      );
+      const extensions = this.fileDataExtensions.reduce(
+        (data: Partial<ExtensionData>, extension) => {
+          data[extension.key] = JSON.stringify(extension.serialize());
+          return data;
+        },
+        {}
+      );
+      const serializedFileData = await this.currentFileHandler.create({
+        extensions,
         lyrics,
-        true
+      });
+
+      const newFileMetadata = await this.files.saveFile(
+        serializedFileData,
+        path
       );
-      this.addRecentFile(newFileMetadata.path);
-      this.fileChangedListeners.forEach((listener) =>
-        listener(fileTitle, this.recentFiles.getRecentFiles())
-      );
-      this.rendererDelegate.send('file-save-ended', null, fileTitle);
-    } else {
-      this.rendererDelegate.send('file-save-ended', null, null);
+      if (newFileMetadata) {
+        const fileTitle = newFileMetadata.name ?? newFileMetadata.path;
+        this.currentFilePath = newFileMetadata.path;
+        this.rendererDelegate.send(
+          'file-opened',
+          undefined,
+          fileTitle,
+          lyrics,
+          true
+        );
+        this.addRecentFile(newFileMetadata.path);
+        this.fileChangedListeners.forEach((listener) =>
+          listener(fileTitle, this.recentFiles.getRecentFiles())
+        );
+        this.rendererDelegate.send('file-save-ended', null, fileTitle);
+      } else {
+        this.rendererDelegate.send('file-save-ended', null, null);
+      }
+    } catch (e) {
+      this.logger.error('Error saving file', e);
+    } finally {
+      this.rendererDelegate.send('close-dialog', SAVE_FILE_DIALOG_TAG);
     }
   };
 

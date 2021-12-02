@@ -1,10 +1,15 @@
-import { DialogData } from '@lyricistant/common/dialogs/Dialog';
+import {
+  AlertDialogData,
+  DialogData,
+  FullscreenDialogData,
+} from '@lyricistant/common/dialogs/Dialog';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,15 +19,15 @@ import {
   LinearProgressProps,
   Typography,
 } from '@material-ui/core';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import * as React from 'react';
 import { platformDelegate } from '@lyricistant/renderer/globals';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, alpha } from '@material-ui/core/styles';
 import { Markdown } from '@lyricistant/renderer/markdown/Markdown';
 
-const useDialogStyles = makeStyles({
+const useAlertDialogStyles = makeStyles({
   dialog: {
     overflow: 'none',
   },
@@ -37,8 +42,25 @@ const useDialogStyles = makeStyles({
   },
 });
 
+const useFullscreenDialogStyles = makeStyles((theme) => ({
+  dialog: {
+    overflow: 'none',
+  },
+  paper: {
+    backgroundColor: alpha(theme.palette.background.paper, 0.5),
+  },
+  content: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    gap: '24px',
+  },
+}));
+
 export function PlatformDialog() {
   const [dialogData, setDialogData] = useState<DialogData>(null);
+  const [closeDialogTag, setCloseDialogTag] = useState<string>(null);
   const onButtonClick = useCallback(
     (label) => {
       setDialogData(null);
@@ -47,13 +69,70 @@ export function PlatformDialog() {
     [dialogData]
   );
 
-  useChannel('show-dialog', setDialogData, [setDialogData]);
-  const { accordionSummary, accordionMessage, dialog } = useDialogStyles();
+  useChannel('show-dialog', setDialogData);
+  useChannel('close-dialog', setCloseDialogTag);
+
+  useEffect(() => {
+    if (closeDialogTag && closeDialogTag === dialogData?.tag) {
+      setDialogData(null);
+      setCloseDialogTag(null);
+    }
+  }, [closeDialogTag, dialogData]);
 
   if (!dialogData) {
     return <div />;
   }
 
+  if (dialogData.type === 'alert') {
+    return (
+      <AlertDialog dialogData={dialogData} onButtonClick={onButtonClick} />
+    );
+  } else if (dialogData.type === 'fullscreen') {
+    return <FullscreenDialog dialogData={dialogData} />;
+  }
+}
+
+const FullscreenDialog = ({
+  dialogData,
+}: {
+  dialogData: FullscreenDialogData;
+}) => {
+  const { dialog, content, paper } = useFullscreenDialogStyles();
+  return (
+    <Dialog
+      open
+      fullScreen
+      className={dialog}
+      PaperProps={{ className: paper }}
+    >
+      <DialogContent className={content}>
+        {dialogData.message && (
+          <DialogContentText variant={'h5'}>
+            {dialogData.message}
+          </DialogContentText>
+        )}
+        {dialogData.progress &&
+          (dialogData.progress === 'indeterminate' ? (
+            <CircularProgress
+              size={'min(25vmin, 200px)'}
+              variant={'indeterminate'}
+            />
+          ) : (
+            <LinearProgressWithLabel value={dialogData.progress} />
+          ))}
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const AlertDialog = ({
+  dialogData,
+  onButtonClick,
+}: {
+  dialogData: AlertDialogData;
+  onButtonClick: (label: string) => void;
+}) => {
+  const { accordionSummary, accordionMessage, dialog } = useAlertDialogStyles();
   return (
     <Dialog open className={dialog}>
       <DialogTitle>{dialogData.title}</DialogTitle>
@@ -98,7 +177,7 @@ export function PlatformDialog() {
       )}
     </Dialog>
   );
-}
+};
 
 const LinearProgressWithLabel = (
   props: LinearProgressProps & { value: number }

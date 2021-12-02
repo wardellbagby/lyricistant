@@ -71,6 +71,7 @@ export class UpdateManager implements Manager {
     this.updateInfo = updateInfo;
     this.rendererDelegate.send('show-dialog', {
       tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      type: 'alert',
       title: 'Update Available',
       message: `An update is available to ${updateInfo.version}. Would you like to install it now?`,
       collapsibleMessage: {
@@ -86,6 +87,8 @@ export class UpdateManager implements Manager {
     // If updateInfo doesn't exist, we never prompted the user that an update was available so don't show anything.
     if (this.updateInfo) {
       this.rendererDelegate.send('show-dialog', {
+        tag: 'auto-update-error',
+        type: 'alert',
         title: 'Error Downloading',
         message:
           'An error occurred while downloading the update. Please try again later.',
@@ -103,6 +106,8 @@ export class UpdateManager implements Manager {
   }) => {
     const percent = transferred / total;
     this.rendererDelegate.send('show-dialog', {
+      tag: 'auto-update-download-progress',
+      type: 'alert',
       title: 'Downloading Update',
       progress: percent * 100,
     });
@@ -111,6 +116,7 @@ export class UpdateManager implements Manager {
   private onUpdateDownloaded = () => {
     this.rendererDelegate.send('show-dialog', {
       tag: UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG,
+      type: 'alert',
       title: 'Update Downloaded',
       message:
         'A new update for Lyricistant has been downloaded. It will be installed when the app restarts. Would you like to restart now?',

@@ -1,6 +1,16 @@
 export const YES_NO_BUTTONS = ['No', 'Yes'];
-export interface DialogData {
-  tag?: string;
+export type DialogData = {
+  tag: string;
+} & (FullscreenDialogData | AlertDialogData);
+
+export interface FullscreenDialogData {
+  type: 'fullscreen';
+  message: string;
+  progress?: number | 'indeterminate';
+}
+
+export interface AlertDialogData {
+  type: 'alert';
   title: string;
   message?: string;
   collapsibleMessage?: {

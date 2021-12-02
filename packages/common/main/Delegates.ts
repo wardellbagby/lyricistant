@@ -53,6 +53,7 @@ export interface PlatformToRendererListener {
   'app-title-changed': (title: string) => void;
   'open-about': () => void;
   'show-dialog': (dialog: DialogData) => void;
+  'close-dialog': (tag?: string) => void;
 }
 
 export type RendererChannel = Extract<keyof PlatformToRendererListener, string>;
