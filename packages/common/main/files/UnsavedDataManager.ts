@@ -31,7 +31,7 @@ export class UnsavedDataManager implements Manager {
 
   private checkForUnsavedData = async () => {
     this.logger.verbose('Checking for unsaved data...');
-    if (this.temporaryFiles.exists()) {
+    if (await this.temporaryFiles.exists()) {
       this.logger.verbose('Unsaved data found.');
       this.rendererDelegate.send('show-dialog', {
         type: 'alert',

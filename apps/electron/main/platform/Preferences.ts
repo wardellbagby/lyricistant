@@ -14,7 +14,7 @@ export class ElectronPreferences implements IPreferences {
     );
   }
 
-  public getPreferences = (): PreferencesData | undefined => {
+  public getPreferences = async (): Promise<PreferencesData | void> => {
     if (
       !this.cachedPreferences &&
       this.fs.existsSync(this.preferencesFilePath)
@@ -25,7 +25,8 @@ export class ElectronPreferences implements IPreferences {
     }
     return this.cachedPreferences;
   };
-  public setPreferences = (data: PreferencesData) => {
+
+  public setPreferences = async (data: PreferencesData) => {
     this.cachedPreferences = data;
     this.fs
       .writeFile(this.preferencesFilePath, JSON.stringify(data))

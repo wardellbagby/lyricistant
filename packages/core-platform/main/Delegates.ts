@@ -61,7 +61,7 @@ export class CoreRendererDelegate implements RendererDelegate {
   }
 }
 
-class ListenerManager {
+export class ListenerManager {
   private listeners: Map<string, Array<(...args: any[]) => void>> = new Map();
 
   public addListener(

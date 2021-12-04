@@ -1,14 +1,9 @@
 {
-  "include": ["main/**/*"],
+  "include": ["main/**/*.ts"],
   "compilerOptions": {
-    "lib": ["dom", "es6"],
-    "types": ["../../packages/renderer-window"],
+    "lib": ["es6"],
     "composite": true
   },
-  "references": [
-    { "path": "../../packages/common" },
-    { "path": "../../packages/core-platform" },
-    { "path": "../../packages/renderer/" }
-  ],
+  "references": [{ "path": "./packages/renderer" }],
   "extends": "../../tsconfig.json"
 }

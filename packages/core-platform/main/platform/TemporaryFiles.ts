@@ -6,13 +6,13 @@ export class CoreTemporaryFiles implements TemporaryFiles {
     localStorage.setItem(this.temporaryFileKey, JSON.stringify(data));
   };
   public get = async () => {
-    if (!this.exists()) {
+    if (!(await this.exists())) {
       return '';
     }
     return JSON.parse(localStorage.getItem(this.temporaryFileKey));
   };
 
-  public exists = () => !!localStorage.getItem(this.temporaryFileKey);
+  public exists = async () => !!localStorage.getItem(this.temporaryFileKey);
   public delete = (): void => {
     localStorage.removeItem(this.temporaryFileKey);
   };

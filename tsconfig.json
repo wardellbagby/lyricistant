@@ -35,7 +35,10 @@
         "packages/rhyme-generator/main/index.ts"
       ],
       "@tooling/*": ["tooling/*"],
-      "@testing/utilities/*": ["packages/testing/utilities/*"]
+      "@testing/utilities/*": ["packages/testing/utilities/*"],
+      "@web-renderer/*": ["apps/web/packages/renderer/*"],
+      "@web-platform/*": ["apps/web/packages/platform/*"],
+      "@web-common/*": ["apps/web/packages/common/*"]
     }
   }
 }

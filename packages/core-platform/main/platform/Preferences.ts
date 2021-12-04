@@ -3,7 +3,7 @@ import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData
 
 export class CorePreferences implements IPreferences {
   private readonly prefsKey = 'lyricistant_preferences';
-  public setPreferences: (data: PreferencesData) => void = (data) =>
+  public setPreferences = async (data: PreferencesData) =>
     localStorage.setItem(this.prefsKey, JSON.stringify(data));
   public getPreferences = () => {
     const savedPrefs = localStorage.getItem(this.prefsKey);

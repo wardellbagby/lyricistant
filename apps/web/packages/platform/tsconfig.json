@@ -1,0 +1,13 @@
+{
+  "include": ["**/*.ts"],
+  "compilerOptions": {
+    "lib": ["es6", "WebWorker"],
+    "composite": true
+  },
+  "references": [
+    { "path": "../../../../packages/common/" },
+    { "path": "../../../../packages/core-platform/" },
+    { "path": "../../packages/common" }
+  ],
+  "extends": "../../../../tsconfig.json"
+}

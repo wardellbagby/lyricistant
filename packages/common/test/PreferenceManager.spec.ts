@@ -72,10 +72,10 @@ describe('Preference Manager', () => {
     ).to.have.been.calledWith('theme-updated');
   });
 
-  it('sends prefs when the renderer registers for updates', () => {
+  it('sends prefs when the renderer registers for updates', async () => {
     manager.register();
 
-    rendererListenersSetListeners.get('prefs-updated')();
+    await rendererListenersSetListeners.get('prefs-updated')();
 
     expect(rendererDelegate.send).to.have.been.calledWith('prefs-updated', {
       textSize: 16,
@@ -85,18 +85,18 @@ describe('Preference Manager', () => {
     });
   });
 
-  it('sends real prefs that were loaded from the platform', () => {
+  it('sends real prefs that were loaded from the platform', async () => {
     const prefs: PreferencesData = {
       textSize: 22,
       colorScheme: ColorScheme.Dark,
       rhymeSource: RhymeSource.Offline,
       font: Font.Roboto_Mono,
     };
-    preferences.getPreferences.returns(prefs);
+    preferences.getPreferences.resolves(prefs);
 
     manager.register();
 
-    rendererListenersSetListeners.get('prefs-updated')();
+    await rendererListenersSetListeners.get('prefs-updated')();
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'prefs-updated',
@@ -128,10 +128,10 @@ describe('Preference Manager', () => {
     );
   });
 
-  it('responds to system theme changes', () => {
+  it('responds to system theme changes', async () => {
     manager.register();
 
-    systemThemeChangeListener(SystemTheme.Light);
+    await systemThemeChangeListener(SystemTheme.Light);
 
     expect(rendererDelegate.send).to.have.been.calledWithMatch(
       'theme-updated',
@@ -140,7 +140,7 @@ describe('Preference Manager', () => {
       })
     );
 
-    systemThemeChangeListener(SystemTheme.Dark);
+    await systemThemeChangeListener(SystemTheme.Dark);
 
     expect(rendererDelegate.send).to.have.been.calledWithMatch(
       'theme-updated',
@@ -150,10 +150,10 @@ describe('Preference Manager', () => {
     );
   });
 
-  it('responds to system theme changes with palettes', () => {
+  it('responds to system theme changes with palettes', async () => {
     manager.register();
 
-    systemThemeChangeListener(SystemTheme.Light, { primary: '#121212' });
+    await systemThemeChangeListener(SystemTheme.Light, { primary: '#121212' });
 
     expect(rendererDelegate.send).to.have.been.calledWithMatch(
       'theme-updated',
@@ -163,7 +163,7 @@ describe('Preference Manager', () => {
       })
     );
 
-    systemThemeChangeListener(SystemTheme.Dark, { surface: '#434343' });
+    await systemThemeChangeListener(SystemTheme.Dark, { surface: '#434343' });
 
     expect(rendererDelegate.send).to.have.been.calledWithMatch(
       'theme-updated',

@@ -29,25 +29,27 @@ export class PreferenceManager implements Manager {
 
   public register(): void {
     this.rendererDelegate.on('save-prefs', this.onSavePrefs);
-    this.systemThemeProvider.onChange((systemTheme: SystemTheme, palette) => {
-      this.systemTheme = systemTheme;
-      this.systemPalette = palette;
+    this.systemThemeProvider.onChange(
+      async (systemTheme: SystemTheme, palette) => {
+        this.systemTheme = systemTheme;
+        this.systemPalette = palette;
 
-      this.sendThemeUpdate(this.preferencesOrDefault());
-    });
+        this.sendThemeUpdate(await this.preferencesOrDefault());
+      }
+    );
     this.rendererDelegate.addRendererListenerSetListener(
       'prefs-updated',
-      () => {
+      async () => {
         this.rendererDelegate.send(
           'prefs-updated',
-          this.preferencesOrDefault()
+          await this.preferencesOrDefault()
         );
       }
     );
     this.rendererDelegate.addRendererListenerSetListener(
       'theme-updated',
-      () => {
-        this.sendThemeUpdate(this.preferencesOrDefault());
+      async () => {
+        this.sendThemeUpdate(await this.preferencesOrDefault());
       }
     );
   }
@@ -68,12 +70,12 @@ export class PreferenceManager implements Manager {
     this.sendThemeUpdate(data);
   };
 
-  private preferencesOrDefault = (): PreferencesData => ({
+  private preferencesOrDefault = async (): Promise<PreferencesData> => ({
     textSize: 16,
     colorScheme: ColorScheme.System,
     rhymeSource: RhymeSource.Datamuse,
     font: Font.Roboto_Mono,
-    ...(this.preferences.getPreferences() as Partial<PreferencesData>),
+    ...((await this.preferences.getPreferences()) as Partial<PreferencesData>),
   });
 
   private sendThemeUpdate = (data: PreferencesData): void => {

@@ -67,11 +67,13 @@ if (!container) {
 }
 
 export const onPageLoaded = () => {
-  container.style.opacity = '0';
-  setTimeout(() => {
-    container.remove();
-    container = null;
-  }, 500);
+  if (container) {
+    container.style.opacity = '0';
+    setTimeout(() => {
+      container?.remove();
+      container = null;
+    }, 500);
+  }
 };
 
 export function onThemeUpdated(palette: Palette) {

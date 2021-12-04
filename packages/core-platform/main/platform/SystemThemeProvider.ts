@@ -12,8 +12,8 @@ export class CoreSystemThemeProvider implements ISystemThemeProvider {
 export const setColorSchemeListener = (
   listener: (theme: SystemTheme) => void
 ) => {
-  if (window.matchMedia) {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  if (self.matchMedia) {
+    if (self.matchMedia('(prefers-color-scheme: dark)').matches) {
       listener(SystemTheme.Dark);
     } else {
       listener(SystemTheme.Light);

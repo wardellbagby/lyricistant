@@ -1,0 +1,9 @@
+{
+  "include": ["*.ts"],
+  "compilerOptions": {
+    "lib": ["es6"],
+    "composite": true
+  },
+  "references": [{ "path": "../../../../packages/common/" }],
+  "extends": "../../../../tsconfig.json"
+}
