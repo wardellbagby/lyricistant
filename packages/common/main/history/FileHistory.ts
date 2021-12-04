@@ -2,14 +2,20 @@ import {
   FileDataExtension,
   VersionedExtensionData,
 } from '@lyricistant/common/files/extensions/FileDataExtension';
-import { diff_match_patch, patch_obj } from 'diff-match-patch';
+import { diff_match_patch, patch_obj as Patch } from 'diff-match-patch';
+import { DateTime } from 'luxon';
 
 const CURRENT_VERSION = 1;
+
+interface HistoryData {
+  time: string;
+  patches: Patch[];
+}
 
 export class FileHistory implements FileDataExtension<'history'> {
   public key: 'history' = 'history';
 
-  private delta: patch_obj[] = [];
+  private delta: HistoryData[] = [];
   private lastKnownLyrics = '';
   private readonly differ = new diff_match_patch();
 
@@ -35,7 +41,10 @@ export class FileHistory implements FileDataExtension<'history'> {
 
   public add = (lyrics: string) => {
     const newPatches = this.differ.patch_make(this.lastKnownLyrics, lyrics);
-    this.delta.push(...newPatches);
+    this.delta.push({
+      patches: newPatches,
+      time: DateTime.local().toJSON(),
+    });
     this.lastKnownLyrics = lyrics;
   };
 
@@ -44,7 +53,13 @@ export class FileHistory implements FileDataExtension<'history'> {
       return this.lastKnownLyrics;
     }
 
-    this.lastKnownLyrics = this.differ.patch_apply(this.delta, '')[0];
+    this.delta.forEach((patch) => {
+      this.lastKnownLyrics = this.differ.patch_apply(
+        patch.patches,
+        this.lastKnownLyrics
+      )[0];
+    });
+
     return this.lastKnownLyrics;
   };
 

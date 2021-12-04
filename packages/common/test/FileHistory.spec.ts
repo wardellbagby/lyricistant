@@ -26,4 +26,21 @@ describe('File History', () => {
 
     expect(fileHistory.getParsedHistory()).to.equal(expected);
   });
+
+  it('works with more realistic changes', async () => {
+    const expected = "It's all our world!\nThe old wondrous whirl.";
+
+    fileHistory.add('Hello world!');
+    fileHistory.add('Hello there world!');
+    fileHistory.add('Hello there my world!');
+    fileHistory.add('Hello there my world!\nOooh');
+    fileHistory.add('Hello there my world!\nThe new shining pearl.');
+    fileHistory.add("It's all your world!\nThe new shining pearl.");
+    fileHistory.add("It's all your world!\nThe new wonderful whirl.");
+    fileHistory.add(expected);
+
+    fileHistory.deserialize(fileHistory.serialize());
+
+    expect(fileHistory.getParsedHistory()).to.equal(expected);
+  });
 });
