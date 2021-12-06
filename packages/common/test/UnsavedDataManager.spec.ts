@@ -61,7 +61,8 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('prompts if unsaved data is found', async () => {
-    temporaryFiles.exists.returns(true);
+    temporaryFiles.exists.resolves(true);
+    fileHistory.isNonEmptyHistory.returns(true);
 
     manager.register();
     await initialFileLoadedListener();
@@ -76,7 +77,18 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('does not prompt if unsaved data is not found', async () => {
-    temporaryFiles.exists.returns(false);
+    temporaryFiles.exists.resolves(false);
+    fileHistory.isNonEmptyHistory.returns(false);
+
+    manager.register();
+    await initialFileLoadedListener();
+
+    expect(rendererDelegate.send).to.have.not.been.called;
+  });
+
+  it('does not prompt if unsaved data is found but is not valid', async () => {
+    temporaryFiles.ebxists.resolves(true);
+    fileHistory.isNonEmptyHistory.returns(false);
 
     manager.register();
     await initialFileLoadedListener();
@@ -85,7 +97,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('loads the unsaved data if user selects to', async () => {
-    temporaryFiles.exists.returns(true);
+    temporaryFiles.exists.resolves(true);
 
     manager.register();
     await initialFileLoadedListener();
@@ -105,7 +117,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('does not load the unsaved data if user selects to', async () => {
-    temporaryFiles.exists.returns(true);
+    temporaryFiles.exists.resolves(true);
 
     manager.register();
     await initialFileLoadedListener();
@@ -125,7 +137,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('deletes the unsaved data on file change', async () => {
-    temporaryFiles.exists.returns(false);
+    temporaryFiles.exists.resolves(false);
 
     manager.register();
     await initialFileLoadedListener();
@@ -135,7 +147,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('deletes the unsaved data on file change after user did not load unsaved data', async () => {
-    temporaryFiles.exists.returns(true);
+    temporaryFiles.exists.resolves(true);
 
     manager.register();
     await initialFileLoadedListener();
