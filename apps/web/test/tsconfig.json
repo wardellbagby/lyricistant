@@ -1,7 +1,8 @@
 {
   "include": ["*.spec.ts"],
   "compilerOptions": {
-    "types": ["mocha"]
+    "types": ["mocha", "node"],
+    "lib": ["dom"]
   },
   "extends": "../tsconfig.json"
 }
