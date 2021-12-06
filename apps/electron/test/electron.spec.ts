@@ -2,14 +2,14 @@ import path from 'path';
 import os from 'os';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { Application, SpectronClient } from 'spectron';
 import del from 'del';
+import { _electron as electron, ElectronApplication, Page } from 'playwright';
 
 use(chaiAsPromised);
 
 describe('Electron launch', () => {
-  let app: Application;
-  let client: SpectronClient;
+  let app: ElectronApplication;
+  let window: Page;
   let tempDir: string;
 
   beforeEach(async () => {
@@ -17,54 +17,44 @@ describe('Electron launch', () => {
     await del(tempDir, {
       force: true,
     });
-    app = new Application({
-      path: require.resolve('electron/cli'),
+    app = await electron.launch({
       args: [
         path.resolve('apps/electron/dist/test/main.js'),
         '--no-sandbox',
         '--disable-gpu',
         '--enable-logging',
       ],
-      chromeDriverArgs: [`user-data-dir=${tempDir}`],
     });
 
-    await app.start();
-    await app.client.waitUntilWindowLoaded();
-    client = app.client;
-    await client.waitUntil(async () => {
-      const elements = await client.$$('#app > *');
-      return elements.length > 0;
-    });
+    window = await app.firstWindow();
+    await window.waitForLoadState('networkidle');
+    const elements = await window.$$('#app > *');
+    expect(elements).to.not.be.empty;
   });
 
-  afterEach(async () => {
-    if (app) {
-      app.mainProcess.exit(0);
-    }
-  });
-
-  it('shows an initial window', () =>
-    expect(client.getWindowCount()).to.eventually.equal(1));
+  it('shows a single window', () => expect(app.windows().length).to.equal(1));
 
   it('has a title of untitled', () =>
-    expect(app.browserWindow.getTitle()).to.eventually.equal('Untitled'));
+    expect(window.title()).to.eventually.equal('Untitled'));
 
   it('shows the basic components', async () => {
     const components = [
-      await client.react$('Editor'),
-      await client.react$('Menu'),
-      await client.react$('Rhymes'),
+      await window.$('_react=Editor'),
+      await window.$('_react=Menu'),
+      await window.$('_react=Rhymes'),
     ];
 
     for (const component of components) {
-      await expect(component.waitForDisplayed()).to.eventually.be.true;
+      await expect(component.isVisible()).to.eventually.be.true;
     }
   });
 
   it('allows you to type in the editor', async () => {
-    const editorTextArea = await client.$('.cm-content');
-    await client.elementSendKeys(editorTextArea.elementId, 'Hello World!');
+    const editorTextArea = await window.$('.cm-content');
+    await editorTextArea.type('Hello World!');
 
-    await expect(editorTextArea.getText()).to.eventually.equal('Hello World!');
+    await expect(editorTextArea.textContent()).to.eventually.equal(
+      'Hello World!'
+    );
   });
 });
