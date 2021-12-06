@@ -20,7 +20,7 @@ export class WebTemporaryFiles implements TemporaryFiles {
 
   public exists = async () => {
     const storage = await renderer.getLocalStorage();
-    return !!storage.getItem(this.temporaryFileKey);
+    return !!(await storage.getItem(this.temporaryFileKey));
   };
   public delete = (): void => {
     renderer

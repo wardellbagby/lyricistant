@@ -1,5 +1,6 @@
 import {
   FileDataExtension,
+  onVersion,
   VersionedExtensionData,
 } from '@lyricistant/common/files/extensions/FileDataExtension';
 import { diff_match_patch, patch_obj as Patch } from 'diff-match-patch';
@@ -32,12 +33,25 @@ export class FileHistory implements FileDataExtension<'history'> {
     extensionData: VersionedExtensionData<string> | null
   ): void => {
     this.lastKnownLyrics = '';
-    if (extensionData && extensionData.version === 1) {
-      this.loadV1(extensionData.data);
-    } else {
-      this.delta = [];
-    }
+    onVersion(extensionData, {
+      1: () => (this.delta = this.loadV1(extensionData.data)),
+      invalid: () => (this.delta = []),
+    });
   };
+
+  public isNonEmptyHistory = (
+    extensionData: VersionedExtensionData<string> | null
+  ): boolean =>
+    onVersion(extensionData, {
+      1: () => {
+        const history = this.loadV1(extensionData.data);
+
+        return (
+          history.length > 0 && history.some((data) => data.patches.length > 0)
+        );
+      },
+      invalid: () => false,
+    });
 
   public add = (lyrics: string) => {
     const newPatches = this.differ.patch_make(this.lastKnownLyrics, lyrics);
@@ -63,11 +77,11 @@ export class FileHistory implements FileDataExtension<'history'> {
     return this.lastKnownLyrics;
   };
 
-  private loadV1 = (data: string) => {
+  private loadV1 = (data: string): HistoryData[] => {
     if (data.trim().length === 0) {
-      this.delta = [];
+      return [];
     } else {
-      this.delta = JSON.parse(data);
+      return JSON.parse(data);
     }
   };
 }
