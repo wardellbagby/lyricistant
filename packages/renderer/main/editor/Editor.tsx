@@ -1,5 +1,5 @@
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { CodeMirrorEditor } from '@lyricistant/codemirror/CodeMirror';
 import { EditorView } from '@codemirror/view';
@@ -7,7 +7,6 @@ import { redo, undo, undoDepth } from '@codemirror/history';
 import { EditorState, EditorStateConfig } from '@codemirror/state';
 import { openSearchPanel } from '@codemirror/search';
 import { logger, platformDelegate } from '@lyricistant/renderer/globals';
-import { useDocumentListener } from '@lyricistant/renderer/util/useEventListener';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { Font } from '@lyricistant/common/preferences/PreferencesData';
 import { toDroppableFile } from './to-droppable-file';
@@ -26,34 +25,17 @@ export const Editor: React.FC = () => {
   const [editor, setEditor] = useState<EditorView>(null);
   const [defaultConfig, setDefaultConfig] = useState<EditorStateConfig>(null);
   const [themeData] = useChannelData('theme-updated');
-  useDocumentListener(
-    'drop',
-    async (event) => {
-      if (!editor) {
+  const onFileDropped = useCallback(
+    async (item: DataTransferItem) => {
+      logger.debug('Attempted to drop a file.');
+      const file = await toDroppableFile(item);
+
+      if (undoDepth(editor.state) > 0) {
+        platformDelegate.send('prompt-save-file-for-open', file);
         return;
       }
-      event.preventDefault();
-      event.stopPropagation();
 
-      if (event.dataTransfer?.files?.length > 0) {
-        logger.debug('Attempted to drop a file.');
-        const file = await toDroppableFile(event.dataTransfer.files.item(0));
-
-        if (undoDepth(editor.state) > 0) {
-          platformDelegate.send('prompt-save-file-for-open', file);
-          return;
-        }
-
-        platformDelegate.send('open-file-attempt', file);
-      }
-    },
-    [editor]
-  );
-  useDocumentListener(
-    'dragover',
-    (event) => {
-      event.preventDefault();
-      return true;
+      platformDelegate.send('open-file-attempt', file);
     },
     [editor]
   );
@@ -74,6 +56,7 @@ export const Editor: React.FC = () => {
       wordReplacement={useReplacedWords()}
       onDefaultConfigReady={setDefaultConfig}
       onTextChanged={onEditorText}
+      onFileDropped={onFileDropped}
     />
   );
 };

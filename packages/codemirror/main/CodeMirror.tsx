@@ -31,6 +31,7 @@ export interface CodeMirrorEditorProps {
   wordReplacement?: WordReplacement;
   onDefaultConfigReady?: (state: EditorStateConfig) => void;
   onTextChanged?: (text: string) => void;
+  onFileDropped?: (item: DataTransferItem) => void;
 }
 
 export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
@@ -54,10 +55,19 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
         }),
         EditorView.lineWrapping,
         placeholder('Type out some lyrics...'),
+        EditorView.domEventHandlers({
+          drop: (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            if (event.dataTransfer?.files?.length > 0) {
+              props.onFileDropped(event.dataTransfer.items[0]);
+            }
+          },
+        }),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
       ],
     }),
-    [appTheme, props.onTextChanged]
+    [appTheme, props.onTextChanged, props.onFileDropped]
   );
   useEffect(() => {
     if (defaultConfig) {
