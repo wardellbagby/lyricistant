@@ -1,3 +1,5 @@
+import { FileSystemHandle } from 'browser-fs-access';
+
 export interface ExtensionData extends Record<string, string> {
   history?: string;
 }
@@ -32,6 +34,7 @@ export interface DroppableFile {
   path: string;
   type: string;
   data: ArrayBuffer;
+  handle?: FileSystemHandle;
 }
 
 export const LYRICS_MIME_TYPE = 'application/zip';

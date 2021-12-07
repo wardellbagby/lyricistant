@@ -13,13 +13,17 @@ export const receive = (channel: string, args: any[]) => {
 
 const getFileSystem: () => BufferFileSystem = () =>
   proxy({
-    saveFile: async (buffer) => {
-      const handle = await fileSave(new Blob([buffer]), {
-        fileName: 'MyLyrics.txt',
-        extensions: ['.lyrics'],
-      });
+    saveFile: async (buffer, path, handle) => {
+      const result = await fileSave(
+        new Blob([buffer]),
+        {
+          fileName: path ?? 'MyLyrics.lyrics',
+          extensions: ['.lyrics'],
+        },
+        handle
+      );
       return {
-        path: handle.name,
+        path: result.name,
       };
     },
     openFile: async () => {
@@ -28,6 +32,7 @@ const getFileSystem: () => BufferFileSystem = () =>
       return {
         path: result.name,
         data: transfer(data, [data]),
+        handle: result.handle,
       };
     },
   });
