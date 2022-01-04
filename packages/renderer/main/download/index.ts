@@ -1,5 +1,3 @@
-import { logger } from '@lyricistant/renderer/globals';
-
 export const latestReleaseUrl =
   'https://github.com/wardellbagby/lyricistant/releases/latest/download/';
 

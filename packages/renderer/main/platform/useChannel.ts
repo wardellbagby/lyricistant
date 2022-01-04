@@ -3,7 +3,6 @@ import {
   RendererChannel,
 } from '@lyricistant/common/Delegates';
 import { DependencyList, useEffect, useState } from 'react';
-import { platformDelegate } from '@lyricistant/renderer/globals';
 
 /**
  * Register the provided listener on the given platform channel. The listener

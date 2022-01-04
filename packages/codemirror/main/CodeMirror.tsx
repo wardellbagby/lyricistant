@@ -31,7 +31,7 @@ export interface CodeMirrorEditorProps {
   wordReplacement?: WordReplacement;
   onDefaultConfigReady?: (state: EditorStateConfig) => void;
   onTextChanged?: (text: string) => void;
-  onFileDropped?: (item: DataTransferItem) => void;
+  onFileDropped?: (view: EditorView, item: DataTransferItem | File) => void;
 }
 
 export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
@@ -56,11 +56,17 @@ export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
         EditorView.lineWrapping,
         placeholder('Type out some lyrics...'),
         EditorView.domEventHandlers({
-          drop: (event) => {
+          drop: (event, editorView) => {
             event.stopPropagation();
             event.preventDefault();
-            if (event.dataTransfer?.files?.length > 0) {
-              props.onFileDropped(event.dataTransfer.items[0]);
+            if (
+              event.dataTransfer?.items?.length > 0 ||
+              event.dataTransfer?.files?.length > 0
+            ) {
+              props.onFileDropped(
+                editorView,
+                event.dataTransfer?.items?.[0] || event.dataTransfer?.files?.[0]
+              );
             }
           },
         }),

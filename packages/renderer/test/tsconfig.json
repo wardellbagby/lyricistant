@@ -2,7 +2,7 @@
   "include": ["**/*"],
   "exclude": ["**/*.gulp.ts"],
   "compilerOptions": {
-    "types": ["jest", "node", "../../third-party-types"]
+    "types": ["mocha", "node", "../../third-party-types", "../../renderer-window"]
   },
   "references": [
     { "path": "../" },

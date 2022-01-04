@@ -8,7 +8,6 @@ import {
   Release,
   supportedReleases,
 } from '@lyricistant/renderer/download';
-import { logger } from '@lyricistant/renderer/globals';
 import { Android } from '@material-ui/icons';
 
 const useStyles = (release: Release) =>

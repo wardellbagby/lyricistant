@@ -22,7 +22,6 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { ExpandMore } from '@material-ui/icons';
 import * as React from 'react';
-import { platformDelegate } from '@lyricistant/renderer/globals';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import { makeStyles, alpha } from '@material-ui/core/styles';
 import { Markdown } from '@lyricistant/renderer/markdown/Markdown';

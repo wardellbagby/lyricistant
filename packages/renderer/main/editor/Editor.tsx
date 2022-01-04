@@ -6,7 +6,6 @@ import { EditorView } from '@codemirror/view';
 import { redo, undo, undoDepth } from '@codemirror/history';
 import { EditorState, EditorStateConfig } from '@codemirror/state';
 import { openSearchPanel } from '@codemirror/search';
-import { logger, platformDelegate } from '@lyricistant/renderer/globals';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { Font } from '@lyricistant/common/preferences/PreferencesData';
 import { toDroppableFile } from './to-droppable-file';
@@ -26,18 +25,26 @@ export const Editor: React.FC = () => {
   const [defaultConfig, setDefaultConfig] = useState<EditorStateConfig>(null);
   const [themeData] = useChannelData('theme-updated');
   const onFileDropped = useCallback(
-    async (item: DataTransferItem) => {
-      logger.debug('Attempted to drop a file.');
-      const file = await toDroppableFile(item);
-
-      if (undoDepth(editor.state) > 0) {
-        platformDelegate.send('prompt-save-file-for-open', file);
+    (view: EditorView, item: DataTransferItem | File) => {
+      if (!view) {
+        logger.debug("Attempted to drop a file but editor wasn't set");
         return;
       }
+      logger.debug('Attempted to drop a file.');
+      toDroppableFile(item)
+        .then((file) => {
+          if (undoDepth(view.state) > 0) {
+            platformDelegate.send('prompt-save-file-for-open', file);
+            return;
+          }
 
-      platformDelegate.send('open-file-attempt', file);
+          platformDelegate.send('open-file-attempt', file);
+        })
+        .catch((reason) => {
+          logger.error(reason);
+        });
     },
-    [editor]
+    []
   );
 
   useEffect(handleEditorEvents(editor, defaultConfig), [editor, defaultConfig]);

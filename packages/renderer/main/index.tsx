@@ -9,7 +9,6 @@ import { AppRouter } from '@lyricistant/renderer/app/AppRouter';
 import { DesktopOnly } from '@lyricistant/renderer/app/DesktopOnly';
 import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEventsReadyHandler';
 import { Themed } from '@lyricistant/renderer/theme/Themed';
-import { logger } from '@lyricistant/renderer/globals';
 import { AppError } from '@lyricistant/renderer/app/AppError';
 
 window.onerror = (message, url, line, col, error) => {

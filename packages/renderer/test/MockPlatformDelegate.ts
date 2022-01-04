@@ -4,10 +4,13 @@ import {
   RendererChannel,
 } from '@lyricistant/common/Delegates';
 import { PlatformListeners } from '@testing/utilities/Listeners';
+import { stub } from 'sinon';
 
 export class MockPlatformDelegate implements PlatformDelegate {
-  public send: () => void = jest.fn();
+  public send: () => void = stub();
+
   private listeners = new PlatformListeners();
+
   public on = <Channel extends RendererChannel>(
     channel: Channel,
     listener: PlatformToRendererListener[Channel]

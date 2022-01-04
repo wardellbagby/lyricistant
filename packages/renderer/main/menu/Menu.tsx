@@ -19,7 +19,6 @@ import { useDebouncedCallback } from 'use-debounce';
 import { useHistory } from 'react-router-dom';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { downloadApp } from '@lyricistant/renderer/download';
-import { platformDelegate } from '@lyricistant/renderer/globals';
 import { useEditorText } from '@lyricistant/renderer/editor/EditorTextStore';
 
 const useIconStyles = makeStyles((theme: Theme) => ({

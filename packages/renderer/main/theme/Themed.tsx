@@ -12,7 +12,6 @@ import {
   Font,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
-import { logger } from '@lyricistant/renderer/globals';
 import { Palette } from '@lyricistant/common/theme/SystemTheme';
 
 const loadFont = async (themeData?: ThemeData) => {

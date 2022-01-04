@@ -20,7 +20,6 @@ import {
   APP_AUTHOR,
   APP_HOMEPAGE,
   APP_VERSION,
-  platformDelegate,
 } from '@lyricistant/renderer/globals';
 import appIcon from './app_icon.png';
 

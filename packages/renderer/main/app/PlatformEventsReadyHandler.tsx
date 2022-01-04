@@ -1,5 +1,4 @@
 import React, { ReactNode, useEffect } from 'react';
-import { platformDelegate } from '@lyricistant/renderer/globals';
 
 /**
  * Handles telling the platform when the renderer is ready to receive events.

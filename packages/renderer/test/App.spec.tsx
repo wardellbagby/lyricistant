@@ -1,41 +1,36 @@
 import React from 'react';
-import notistack from 'notistack';
-import '@testing-library/jest-dom/extend-expect';
 import { App } from '@lyricistant/renderer/app/App';
-import { render, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
+import { restore } from 'sinon';
+import { configure, screen } from '@testing-library/dom';
+import { expect, use } from 'chai';
+import sinonChai from 'sinon-chai';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
+import { MockLogger } from './MockLogger';
+import { snackbarWrappedRender as render } from './Wrappers';
 
-let platformDelegate: MockPlatformDelegate;
-
-jest.mock('@lyricistant/renderer/globals', () => ({
-  logger: {
-    debug: (): void => undefined,
-    verbose: (): void => undefined,
-    info: (): void => undefined,
-    warn: (): void => undefined,
-    error: (): void => undefined,
-  },
-  platformDelegate:
-    new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
-}));
-jest.mock('notistack', () => ({
-  useSnackbar: jest.fn(),
-}));
-jest.mock('@lyricistant/renderer/rhymes/Rhymes', () => ({
-  Rhymes: jest.fn(() => null),
-}));
-const enqueueSnackbar = jest.fn();
-jest
-  .spyOn(notistack, 'useSnackbar')
-  .mockImplementation(() => ({ enqueueSnackbar, closeSnackbar: jest.fn() }));
+use(sinonChai);
 
 describe('App component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    platformDelegate = jest.requireMock(
-      '@lyricistant/renderer/globals'
-    ).platformDelegate;
+  let platformDelegate: MockPlatformDelegate;
+
+  beforeEach(async () => {
+    configure({
+      getElementError: (message) => {
+        const error = new Error(message);
+        error.name = 'TestingLibraryElementError';
+        return error;
+      },
+    });
+    platformDelegate = new MockPlatformDelegate();
+
+    window.platformDelegate = platformDelegate;
+    window.logger = new MockLogger();
+  });
+
+  afterEach(() => {
     platformDelegate.clear();
+    restore();
   });
 
   it('updates the document title when the app title changes', async () => {
@@ -47,7 +42,7 @@ describe('App component', () => {
 
     await waitFor(() => document.title);
 
-    expect(document.title).toEqual('All I Need');
+    expect(document.title).to.equal('All I Need');
   });
 
   it('shows an error when files fail to open', async () => {
@@ -63,10 +58,6 @@ describe('App component', () => {
       )
     );
 
-    await waitFor(() => enqueueSnackbar.mock.calls.length > 0);
-
-    expect(enqueueSnackbar).toBeCalledWith("Couldn't open bad-file.bin", {
-      variant: 'error',
-    });
+    expect(screen.getByText("Couldn't open bad-file.bin")).to.exist;
   });
 });

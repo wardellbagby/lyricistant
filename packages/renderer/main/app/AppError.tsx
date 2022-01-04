@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 import React, { useCallback, useEffect } from 'react';
 import Link from '@material-ui/core/Link';
-import { logger } from '@lyricistant/renderer/globals';
 import { useEditorText } from '@lyricistant/renderer/editor/EditorTextStore';
 
 interface AppErrorProps {

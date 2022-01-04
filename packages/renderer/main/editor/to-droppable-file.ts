@@ -1,13 +1,16 @@
 import { DroppableFile } from '@lyricistant/common/files/Files';
 import { FileSystemHandle } from 'browser-fs-access';
 
+type FSApiDataTransferItem = DataTransferItem & {
+  getAsFileSystemHandle?: () => Promise<FileSystemHandle>;
+};
+type FileWithPath = File & { path?: string };
 export const toDroppableFile = async (
-  data: DataTransferItem & {
-    getAsFileSystemHandle?: () => Promise<FileSystemHandle>;
-  }
+  data: FSApiDataTransferItem | File
 ): Promise<DroppableFile> => {
-  const file: File & { path?: string } = data.getAsFile();
-  const handle = await data.getAsFileSystemHandle?.();
+  const file: FileWithPath = data instanceof File ? data : data.getAsFile();
+  const handle =
+    data instanceof File ? undefined : await data.getAsFileSystemHandle?.();
   return {
     path: file.path ?? file.name,
     type: file.type,

@@ -50,11 +50,18 @@ module.exports = {
       },
     },
     {
+      files: 'test.gulp.ts',
+      rules: {
+        'id-blacklist': 'off',
+      },
+    },
+    {
       files: ['**/test/**/*'],
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-unused-expressions': 'off',
         '@typescript-eslint/no-var-requires': 'off',
+        'no-console': 'off',
       },
     },
     {

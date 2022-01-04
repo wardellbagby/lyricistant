@@ -29,7 +29,13 @@ const devtool = (mode: Mode): Configuration['devtool'] => {
   return 'source-map';
 };
 
-export default (mode: Mode): Configuration => ({
+export default (
+  mode: Mode,
+  tsLoaderOptions: Record<string, any> = {
+    projectReferences: true,
+    transpileOnly: false,
+  }
+): Configuration => ({
   mode: webpackMode(mode),
   devtool: devtool(mode),
   resolve: {
@@ -43,7 +49,7 @@ export default (mode: Mode): Configuration => ({
         exclude: [/node_modules/],
         loader: 'ts-loader',
         options: {
-          projectReferences: true,
+          ...tsLoaderOptions,
           compiler: 'ttypescript',
         },
       },
@@ -67,6 +73,8 @@ export default (mode: Mode): Configuration => ({
         mode === 'test' ? 'ui-testing' : ''
       ),
       'process.env.APP_VERSION': JSON.stringify(getAppVersion()),
+      'process.env.APP_HOMEPAGE': JSON.stringify(packageInfo.homepage),
+      'process.env.APP_AUTHOR': JSON.stringify(packageInfo.author.name),
     }),
   ],
 });

@@ -29,7 +29,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { platformDelegate } from '@lyricistant/renderer/globals';
 import { usePreferences } from './PreferencesStore';
 
 const DialogTransition = React.forwardRef<unknown, SlideProps>(

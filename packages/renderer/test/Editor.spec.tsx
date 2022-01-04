@@ -1,199 +1,130 @@
-import React, { DependencyList, useEffect } from 'react';
-import '@testing-library/jest-dom/extend-expect';
-import { render, waitFor } from '@testing-library/react';
+import React, { useMemo } from 'react';
+import { waitFor } from '@testing-library/react';
+import { configure, fireEvent, screen } from '@testing-library/dom';
+import { fake, replace, restore, SinonSpy, spy, stub } from 'sinon';
+import { expect, use } from 'chai';
+import sinonChai from 'sinon-chai';
 import { Editor } from '@lyricistant/renderer/editor/Editor';
-import type { EditorView } from '@codemirror/view';
+import { DroppableFile } from '@lyricistant/common/files/Files';
+import { EditorView } from '@codemirror/view';
+import { Text } from '@codemirror/state';
+import {
+  CodeMirrorEditorProps,
+  WordReplacement,
+} from '@lyricistant/codemirror/CodeMirror';
+import { snackbarWrappedRender as render } from './Wrappers';
+import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 
-let platformDelegate: MockPlatformDelegate;
+use(sinonChai);
 
-type NestedPartial<T> = {
-  [P in keyof T]?: NestedPartial<T[P]>;
-};
-
-jest.mock('@lyricistant/renderer/globals', () => ({
-  logger: {
-    debug: (): void => undefined,
-    verbose: (): void => undefined,
-    info: (): void => undefined,
-    warn: (): void => undefined,
-    error: (): void => undefined,
-  },
-  platformDelegate:
-    new (require('./MockPlatformDelegate').MockPlatformDelegate)(),
-}));
-jest.mock('@lyricistant/renderer/util/useEventListener');
-jest.mock('react-beforeunload');
-jest.mock('@codemirror/history', () => ({
-  undoDepth: jest.fn(),
-  redo: jest.fn(),
-  undo: jest.fn(),
-}));
-jest.mock('@codemirror/search', () => ({
-  openSearchPanel: jest.fn(),
-}));
-jest.mock('notistack', () => ({
-  useSnackbar: jest.fn(),
-}));
-jest.mock('@lyricistant/codemirror/CodeMirror', () => ({
-  CodeMirrorEditor: jest.fn(),
-}));
-jest.mock('@lyricistant/renderer/editor/to-droppable-file');
-jest.mock('@lyricistant/renderer/editor/SelectedWordStore', () => ({
-  useSelectedWordStore: jest.fn(),
-  useReplacedWords: jest.fn(),
-}));
-
-const droppedFile = {
+const droppedFile: DroppableFile = {
   path: 'filename.txt',
   type: 'text/plain',
-  data: 'Oh wow!',
+  data: new TextEncoder().encode('Oh wow!').buffer,
 };
-let editor: NestedPartial<EditorView>;
-const enqueueSnackbar = jest.fn();
-const createEditorState = jest.fn();
-const onWordSelected = jest.fn();
 
-describe('Editor component', () => {
-  beforeEach(() => {
-    platformDelegate = jest.requireMock(
-      '@lyricistant/renderer/globals'
-    ).platformDelegate;
-    jest.useFakeTimers('modern');
-    platformDelegate.clear();
-    require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor.mockImplementation(
-      ({ onEditorMounted, onDefaultConfigReady }: any): null => {
-        useEffect(() => {
-          editor = {
-            state: { doc: 'Hello' },
-            setState: jest.fn(),
-            dispatch: jest.fn(),
-          };
-          onEditorMounted(editor);
-        }, [onEditorMounted]);
-        useEffect(() => {
-          onDefaultConfigReady({});
-        }, [onDefaultConfigReady]);
-        return null;
+describe('Editor component', function () {
+  let platformDelegate: MockPlatformDelegate;
+  let setState: SinonSpy;
+  let dispatch: SinonSpy;
+
+  beforeEach(async () => {
+    configure({
+      getElementError: (message) => {
+        const error = new Error(message);
+        error.name = 'TestingLibraryElementError';
+        return error;
+      },
+    });
+    const CodeMirrorEditor =
+      require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor;
+    replace(
+      require('@lyricistant/codemirror/CodeMirror'),
+      'CodeMirrorEditor',
+      (props: CodeMirrorEditorProps) => {
+        const onEditorMounted = props.onEditorMounted;
+        const newProps = useMemo(
+          () => ({
+            ...props,
+            onEditorMounted: (view: EditorView) => {
+              setState = spy(view, 'setState');
+              dispatch = spy(view, 'dispatch');
+              onEditorMounted(view);
+            },
+          }),
+          [props.onEditorMounted]
+        );
+        return CodeMirrorEditor(newProps);
       }
     );
-    require('@lyricistant/renderer/editor/to-droppable-file').toDroppableFile.mockImplementation(
-      () => droppedFile
-    );
-    require('notistack').useSnackbar.mockImplementation(() => ({
-      enqueueSnackbar,
-    }));
-    require('@codemirror/state').EditorState.create = createEditorState;
-    require('@lyricistant/renderer/editor/SelectedWordStore').useSelectedWordStore.mockImplementation(
-      () => ({
-        onWordSelected,
-      })
-    );
+    fake(require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor);
+    platformDelegate = new MockPlatformDelegate();
+
+    window.platformDelegate = platformDelegate;
+    window.logger = new MockLogger();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    platformDelegate.clear();
+    restore();
   });
 
   it('tells the platform when user drops a file', async () => {
-    const useDocumentListener: jest.Mock<
-      void,
-      [string, (event: NestedPartial<DragEvent>) => void, DependencyList]
-    > = require('@lyricistant/renderer/util/useEventListener').useDocumentListener;
-    const undoDepth: jest.Mock<number, []> =
-      require('@codemirror/history').undoDepth;
-
-    useDocumentListener.mockImplementation((eventName, listener) => {
-      useEffect(() => {
-        if (eventName !== 'drop') {
-          return;
-        }
-        listener({
-          preventDefault: (): void => undefined,
-          stopPropagation: (): void => undefined,
-          dataTransfer: {
-            files: {
-              length: 1,
-              item: (): null => null,
-            },
-          },
-        });
-      }, [eventName, listener]);
-    });
-    undoDepth.mockImplementation(() => 0);
+    stub(require('@codemirror/history'), 'undoDepth').returns(0);
 
     render(<Editor />);
 
-    await waitFor(() => {
-      expect(platformDelegate.send).toHaveBeenCalledWith(
+    const element = await screen.findByRole('textbox');
+
+    const oldDragEvent = window.DragEvent;
+    window.DragEvent = undefined;
+
+    fireEvent.drop(element, {
+      dataTransfer: {
+        files: [
+          new File(['Oh wow!'], 'filename.txt', {
+            type: 'text/plain',
+          }),
+        ],
+      },
+    });
+    window.DragEvent = oldDragEvent;
+
+    await waitFor(() =>
+      expect(platformDelegate.send).to.have.been.calledWithMatch(
         'open-file-attempt',
         droppedFile
-      );
-    });
+      )
+    );
   });
 
   it('tells the platform when user drops a file when editor has history', async () => {
-    const useDocumentListener: jest.Mock<
-      void,
-      [string, (event: NestedPartial<DragEvent>) => void, DependencyList]
-    > = require('@lyricistant/renderer/util/useEventListener').useDocumentListener;
-    const undoDepth: jest.Mock<number, []> =
-      require('@codemirror/history').undoDepth;
-
-    useDocumentListener.mockImplementation((eventName, listener) => {
-      useEffect(() => {
-        if (eventName !== 'drop') {
-          return;
-        }
-        listener({
-          preventDefault: (): void => undefined,
-          stopPropagation: (): void => undefined,
-          dataTransfer: {
-            files: {
-              length: 1,
-              item: (): null => null,
-            },
-          },
-        });
-      }, [eventName, listener]);
-    });
-    undoDepth.mockImplementation(() => 1);
+    stub(require('@codemirror/history'), 'undoDepth').returns(1);
 
     render(<Editor />);
 
+    const element = await screen.findByRole('textbox');
+
+    const oldDragEvent = window.DragEvent;
+    window.DragEvent = undefined;
+
+    fireEvent.drop(element, {
+      dataTransfer: {
+        files: [
+          new File(['Oh wow!'], 'filename.txt', {
+            type: 'text/plain',
+          }),
+        ],
+      },
+    });
+    window.DragEvent = oldDragEvent;
+
     await waitFor(() => {
-      expect(platformDelegate.send).toHaveBeenCalledWith(
+      expect(platformDelegate.send).to.have.been.calledWithMatch(
         'prompt-save-file-for-open',
         droppedFile
       );
-    });
-  });
-
-  it('supports dragover events', async () => {
-    const useDocumentListener: jest.Mock<
-      void,
-      [string, (event: NestedPartial<DragEvent>) => boolean, DependencyList]
-    > = require('@lyricistant/renderer/util/useEventListener').useDocumentListener;
-    const undoDepth: jest.Mock<number, []> =
-      require('@codemirror/history').undoDepth;
-
-    let result: boolean = null;
-    useDocumentListener.mockImplementation((eventName, listener) => {
-      useEffect(() => {
-        if (eventName !== 'dragover') {
-          return;
-        }
-        result = listener({
-          preventDefault: (): void => undefined,
-        });
-      }, [eventName, listener]);
-    });
-    undoDepth.mockImplementation(() => 0);
-
-    render(<Editor />);
-
-    await waitFor(() => {
-      expect(result).toEqual(true);
     });
   });
 
@@ -201,72 +132,64 @@ describe('Editor component', () => {
     render(<Editor />);
 
     await waitFor(() =>
-      platformDelegate.invoke('file-save-ended', new Error(''), 'apath.txt')
+      platformDelegate.invoke('file-save-ended', undefined, 'apath.txt')
     );
 
     await waitFor(() => {
-      expect(enqueueSnackbar).toHaveBeenCalledWith('apath.txt saved', {
-        variant: 'success',
-      });
-      expect(editor.setState).toHaveBeenCalled();
+      expect(screen.getByText('apath.txt saved')).to.exist;
+      expect(setState).to.have.been.called;
     });
   });
 
   it('handles the platform trying to create a new file', async () => {
-    const undoDepth: jest.Mock<number, []> =
-      require('@codemirror/history').undoDepth;
-    undoDepth.mockReturnValue(0);
+    stub(require('@codemirror/history'), 'undoDepth').returns(0);
 
     render(<Editor />);
 
     await waitFor(() => platformDelegate.invoke('is-okay-for-new-file'));
 
     await waitFor(() => {
-      expect(platformDelegate.send).toHaveBeenCalledWith('okay-for-new-file');
+      expect(platformDelegate.send).to.have.been.calledWith(
+        'okay-for-new-file'
+      );
     });
   });
 
   it('handles the platform trying to create a new file when user has made edits', async () => {
-    const undoDepth: jest.Mock<number, []> =
-      require('@codemirror/history').undoDepth;
-    undoDepth.mockReturnValue(1);
+    stub(require('@codemirror/history'), 'undoDepth').returns(1);
 
     render(<Editor />);
 
     await waitFor(() => platformDelegate.invoke('is-okay-for-new-file'));
 
     await waitFor(() => {
-      expect(platformDelegate.send).toHaveBeenCalledWith(
+      expect(platformDelegate.send).to.have.been.calledWith(
         'prompt-save-file-for-new'
       );
     });
   });
 
   it('handles the platform trying to quit', async () => {
-    const undoDepth: jest.Mock<number, []> =
-      require('@codemirror/history').undoDepth;
-    undoDepth.mockReturnValue(0);
+    stub(require('@codemirror/history'), 'undoDepth').returns(0);
 
     render(<Editor />);
 
     await waitFor(() => platformDelegate.invoke('is-okay-for-quit-file'));
 
     await waitFor(() => {
-      expect(platformDelegate.send).toHaveBeenCalledWith('okay-for-quit');
+      expect(platformDelegate.send).to.have.been.calledWith('okay-for-quit');
     });
   });
 
   it('handles the platform trying to quit when user has made edits', async () => {
-    const undoDepth: jest.Mock<number, []> =
-      require('@codemirror/history').undoDepth;
-    undoDepth.mockReturnValue(1);
+    stub(require('@codemirror/history'), 'undoDepth').returns(1);
 
     render(<Editor />);
 
     await waitFor(() => platformDelegate.invoke('is-okay-for-quit-file'));
 
     await waitFor(() => {
-      expect(platformDelegate.send).toHaveBeenCalledWith(
+      expect(platformDelegate.send).to.have.been.calledWith(
         'prompt-save-file-for-quit'
       );
     });
@@ -277,33 +200,24 @@ describe('Editor component', () => {
 
     await waitFor(() => platformDelegate.invoke('new-file-created'));
 
-    await waitFor(() => expect(editor.setState).toHaveBeenCalled());
+    await waitFor(() => expect(setState).to.have.been.called);
   });
 
   it('handles the platform having opened a file', async () => {
-    createEditorState.mockImplementation((config: any) => ({
-      doc: config.doc,
-    }));
-
     render(<Editor />);
 
     await waitFor(() =>
       platformDelegate.invoke('file-opened', null, 'afile.txt', 'Oh wow!', true)
     );
 
-    await waitFor(() =>
-      expect(editor.setState).toHaveBeenCalledWith({
-        doc: 'Oh wow!',
-      })
-    );
+    expect(setState).to.have.been.calledWithMatch({
+      doc: Text.of(['Oh wow!']),
+    });
   });
 
   it('handles the platform having opened a file but does not clear history', async () => {
-    createEditorState.mockImplementation((config: any) => ({
-      doc: config.doc,
-    }));
-
     render(<Editor />);
+    dispatch({ changes: { from: 0, to: 0, insert: 'Hello' } });
 
     await waitFor(() =>
       platformDelegate.invoke(
@@ -315,126 +229,129 @@ describe('Editor component', () => {
       )
     );
 
-    await waitFor(() =>
-      expect(editor.dispatch).toHaveBeenCalledWith({
-        changes: {
-          from: 0,
-          to: 5,
-          insert: 'Oh wow!',
-        },
-      })
-    );
+    expect(dispatch).to.have.been.calledWithMatch({
+      changes: {
+        from: 0,
+        to: 5,
+        insert: 'Oh wow!',
+      },
+    });
   });
 
   it('handles the platform asking for the editor text', async () => {
     render(<Editor />);
+    dispatch({ changes: { from: 0, to: 0, insert: 'Hello' } });
 
     await waitFor(() => platformDelegate.invoke('request-editor-text'));
 
     await waitFor(() =>
-      expect(platformDelegate.send).toHaveBeenCalledWith('editor-text', 'Hello')
+      expect(platformDelegate.send).to.have.been.calledWith(
+        'editor-text',
+        'Hello'
+      )
     );
   });
 
   it('handles the platform trying to undo', async () => {
-    const undo = require('@codemirror/history').undo;
+    const undo = spy(require('@codemirror/history'), 'undo');
+
     render(<Editor />);
 
     await waitFor(() => platformDelegate.invoke('undo'));
 
-    await waitFor(() => expect(undo).toHaveBeenCalled());
+    await waitFor(() => expect(undo).to.have.been.called);
   });
 
   it('handles the platform trying to redo', async () => {
-    const redo = require('@codemirror/history').redo;
+    const redo = spy(require('@codemirror/history'), 'redo');
+
     render(<Editor />);
 
     await waitFor(() => platformDelegate.invoke('redo'));
 
-    await waitFor(() => expect(redo).toHaveBeenCalled());
+    await waitFor(() => expect(redo).to.have.been.called);
   });
 
   it('handles the platform trying to perform a search', async () => {
-    const openSearchPanel = require('@codemirror/search').openSearchPanel;
+    const openSearchPanel = spy(
+      require('@codemirror/search'),
+      'openSearchPanel'
+    );
+
     render(<Editor />);
 
     await waitFor(() => platformDelegate.invoke('find'));
 
-    await waitFor(() => expect(openSearchPanel).toHaveBeenCalled());
+    await waitFor(() => expect(openSearchPanel).to.have.been.called);
   });
 
   it('handles the platform trying to perform a replace', async () => {
-    const openSearchPanel = require('@codemirror/search').openSearchPanel;
+    const openSearchPanel = spy(
+      require('@codemirror/search'),
+      'openSearchPanel'
+    );
+
     render(<Editor />);
 
     await waitFor(() => platformDelegate.invoke('replace'));
 
-    await waitFor(() => expect(openSearchPanel).toHaveBeenCalled());
-  });
-
-  it('prompts the user before the window is unloaded', async () => {
-    let result: string = null;
-    require('react-beforeunload').useBeforeunload.mockImplementation(
-      (listener: () => string) => {
-        useEffect(() => {
-          result = listener();
-        }, [listener]);
-      }
-    );
-    require('@codemirror/history').undoDepth.mockReturnValue(1);
-    render(<Editor />);
-
-    await waitFor(() => expect(result).toBeTruthy());
-  });
-
-  it('does not prompt the user before the window is unloaded when there are no changes', async () => {
-    let result: string = null;
-    require('react-beforeunload').useBeforeunload.mockImplementation(
-      (listener: () => string) => {
-        useEffect(() => {
-          result = listener();
-        }, [listener]);
-      }
-    );
-    require('@codemirror/history').undoDepth.mockReturnValue(0);
-    render(<Editor />);
-
-    await waitFor(() => expect(result).toBeUndefined());
+    await waitFor(() => expect(openSearchPanel).to.have.been.called);
   });
 
   it('passes the selected word store into codemirror', async () => {
-    const CodeMirrorEditor =
-      require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor;
+    const CodeMirrorEditor = spy(
+      require('@lyricistant/codemirror/CodeMirror'),
+      'CodeMirrorEditor'
+    );
+    const onWordSelected = stub();
+    stub(
+      require('@lyricistant/renderer/editor/SelectedWordStore'),
+      'useSelectedWordStore'
+    ).returns({
+      onWordSelected,
+    });
+    stub(
+      require('@lyricistant/renderer/editor/SelectedWordStore'),
+      'useSelectedWords'
+    );
+    stub(
+      require('@lyricistant/renderer/editor/SelectedWordStore'),
+      'useReplacedWords'
+    );
 
     render(<Editor />);
 
-    await waitFor(() =>
-      expect(CodeMirrorEditor).toHaveBeenCalledWith(
-        expect.objectContaining({
-          onWordSelected,
-        }),
-        {}
-      )
-    );
+    await waitFor(() => {
+      expect(CodeMirrorEditor).to.have.been.calledWithMatch({
+        onWordSelected,
+      });
+    });
   });
 
   it('passes the replaced word into codemirror', async () => {
-    const CodeMirrorEditor =
-      require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor;
-    const wordReplacement = 'hello';
-    require('@lyricistant/renderer/editor/SelectedWordStore').useReplacedWords.mockReturnValue(
-      wordReplacement
+    const CodeMirrorEditor = spy(
+      require('@lyricistant/codemirror/CodeMirror'),
+      'CodeMirrorEditor'
     );
+    const wordReplacement: WordReplacement = {
+      originalWord: {
+        from: 0,
+        to: 5,
+        word: 'hello',
+      },
+      newWord: 'world',
+    };
+    stub(
+      require('@lyricistant/renderer/editor/SelectedWordStore'),
+      'useReplacedWords'
+    ).returns(wordReplacement);
 
     render(<Editor />);
 
     await waitFor(() =>
-      expect(CodeMirrorEditor).toHaveBeenCalledWith(
-        expect.objectContaining({
-          wordReplacement,
-        }),
-        {}
-      )
+      expect(CodeMirrorEditor).to.have.been.calledWithMatch({
+        wordReplacement,
+      })
     );
   });
 });
