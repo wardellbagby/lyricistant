@@ -149,24 +149,28 @@ const runElectronServer = async () => {
   });
 };
 
+const webpackAsync = async (config: Configuration) =>
+  new Promise<void>((resolve, reject) => {
+    webpack(config, (error, stats) => {
+      if (error) {
+        reject(error);
+      }
+      if (stats?.hasErrors()) {
+        reject(stats.toString());
+        return;
+      }
+      console.log(stats?.toString());
+      resolve(undefined);
+    });
+  });
 const bundleElectron = (mode: Mode) => {
   const curried = async () => {
     const main = await createMainWebpackConfig(mode, false);
     const preload = await createPreloadWebpackConfig(mode);
     const renderer = await createRendererWebpackConfig(mode);
-    return new Promise<unknown>((resolve, reject) => {
-      webpack([main, preload, renderer], (error, stats) => {
-        if (error) {
-          reject(error);
-        }
-        if (stats?.hasErrors()) {
-          reject(stats.toString());
-          return;
-        }
-        console.log(stats?.toString());
-        resolve(undefined);
-      });
-    });
+    const configs = [main, preload, renderer];
+
+    await Promise.all(configs.map(webpackAsync));
   };
   curried.displayName = `bundle${capitalCase(mode)}Electron`;
   return curried;

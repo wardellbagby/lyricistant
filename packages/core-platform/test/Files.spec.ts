@@ -62,7 +62,7 @@ describe('Files', () => {
     };
 
     const actual = await files.openFile({
-      path: expected.metadata.path,
+      metadata: { path: expected.metadata.path },
       data: expected.data,
       type: 'text/plain',
     });
