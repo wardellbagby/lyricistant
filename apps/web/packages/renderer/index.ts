@@ -27,13 +27,24 @@ const getFileSystem: () => BufferFileSystem = () =>
       };
     },
     openFile: async () => {
-      const result = await fileOpen({ extensions: ['.lyrics', '.txt'] });
-      const data = await result.arrayBuffer();
-      return {
-        path: result.name,
-        data: transfer(data, [data]),
-        handle: result.handle,
-      };
+      try {
+        const result = await fileOpen({ extensions: ['.lyrics', '.txt'] });
+        const data = await result.arrayBuffer();
+        return {
+          path: result.name,
+          data: transfer(data, [data]),
+          handle: result.handle,
+        };
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'AbortError') {
+          logger.verbose(
+            'Swallowing exception since user closed the open file picker',
+            e
+          );
+        } else {
+          throw e;
+        }
+      }
     },
   });
 

@@ -17,9 +17,12 @@ export class WebFiles implements Files {
       this.handles.set(file.metadata.path, file.extras.handle);
       return file;
     }
-    const { path, data, handle } = await (
-      await renderer.getFileSystem()
-    ).openFile();
+    const fs = await renderer.getFileSystem();
+    const result = await fs.openFile();
+    if (!result) {
+      return undefined;
+    }
+    const { path, data, handle } = result;
     this.handles.set(path, handle);
     return {
       data,
