@@ -93,7 +93,8 @@ describe('File Manager', () => {
     recentFiles.getRecentFiles.returns(['1', '2', '3', '/path/test']);
     manager.register();
 
-    await manager.openFile();
+    await manager.onOpenFile();
+    await rendererListeners.invoke('is-file-modified', false);
 
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       '/path/test',
@@ -118,7 +119,8 @@ describe('File Manager', () => {
     ]);
     manager.register();
 
-    await manager.openFile();
+    await manager.onOpenFile();
+    await rendererListeners.invoke('is-file-modified', false);
 
     expect(recentFiles.setRecentFiles).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -141,7 +143,8 @@ describe('File Manager', () => {
 
     manager.register();
 
-    await manager.openFile();
+    await manager.onOpenFile();
+    await rendererListeners.invoke('is-file-modified', false);
 
     expect(recentFiles.setRecentFiles).to.have.not.been.called;
   });
@@ -152,7 +155,7 @@ describe('File Manager', () => {
     manager.onNewFile();
 
     expect(rendererDelegate.send).to.have.been.calledWith(
-      'is-okay-for-new-file'
+      'check-file-modified'
     );
   });
 
@@ -162,35 +165,38 @@ describe('File Manager', () => {
     await rendererListeners.invoke('new-file-attempt');
 
     expect(rendererDelegate.send).to.have.been.calledWith(
-      'is-okay-for-new-file'
+      'check-file-modified'
     );
   });
 
-  it('shows a dialog when the renderer says new file is not okay', async () => {
+  it('shows a prompt when creating a new file and the renderer says current file has modifications', async () => {
     manager.register();
 
-    await rendererListeners.invoke('prompt-save-file-for-new');
+    manager.onNewFile();
+
+    await rendererListeners.invoke('is-file-modified', true);
 
     expect(dialogs.showDialog).to.have.been.called;
   });
 
-  it('shows a dialog when the renderer says open file is not okay', async () => {
+  it('shows a prompt when opening a file and the renderer says current file has modifications', async () => {
     manager.register();
 
-    await rendererListeners.invoke('prompt-save-file-for-open', {
-      path: 'whitetuxedo.txt',
-      type: 'text/plain',
-      data: encode('This water'),
-    });
+    await rendererListeners.invoke('ready-for-events');
+
+    await manager.onOpenFile();
+
+    await rendererListeners.invoke('is-file-modified', true);
 
     expect(dialogs.showDialog).to.have.been.called;
   });
 
   it('creates a new file when prompt dialog says yes was chosen', async () => {
     dialogs.showDialog.returns(Promise.resolve('yes'));
-    manager.register();
 
-    await rendererListeners.invoke('prompt-save-file-for-new');
+    manager.register();
+    await manager.onNewFile();
+    await rendererListeners.invoke('is-file-modified', true);
 
     expect(dialogs.showDialog).to.have.been.called;
     expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
@@ -198,18 +204,22 @@ describe('File Manager', () => {
 
   it("does nothing when prompt dialog doesn't say yes was chosen", async () => {
     dialogs.showDialog.returns(Promise.resolve('no'));
-    manager.register();
 
-    await rendererListeners.invoke('prompt-save-file-for-new');
+    manager.register();
+    await manager.onNewFile();
+    await rendererListeners.invoke('is-file-modified', true);
 
     expect(dialogs.showDialog).to.have.been.called;
-    expect(rendererDelegate.send).to.have.not.been.called;
+    expect(files.openFile).to.not.have.been.called;
+    expect(rendererDelegate.send).to.have.not.been.calledWithMatch(
+      'file-opened'
+    );
   });
 
   it('creates a new file when the renderer says new file is okay', async () => {
     manager.register();
-
-    await rendererListeners.invoke('okay-for-new-file');
+    await manager.onNewFile();
+    await rendererListeners.invoke('is-file-modified', false);
 
     expect(dialogs.showDialog).to.have.not.been.called;
     expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
@@ -217,23 +227,18 @@ describe('File Manager', () => {
 
   it('opens the file when prompt dialog says yes was chosen', async () => {
     dialogs.showDialog.returns(Promise.resolve('yes'));
-    files.openFile.callsFake((file) =>
-      Promise.resolve({
-        metadata: {
-          path: file.path,
-          name: file.path,
-        },
-        data: file.data,
-        type: 'thisyearforchristmas/ijustwantapologies',
-      })
-    );
-    manager.register();
+    files.openFile.callsFake((file) => Promise.resolve(file));
 
-    await rendererListeners.invoke('prompt-save-file-for-open', {
-      path: 'whitetuxedo.txt',
+    manager.register();
+    await rendererListeners.invoke('ready-for-events');
+    await manager.onOpenFile({
+      metadata: {
+        path: 'whitetuxedo.txt',
+      },
       type: 'text/plain',
       data: encode('This water'),
     });
+    await rendererListeners.invoke('is-file-modified', true);
 
     expect(dialogs.showDialog).to.have.been.called;
     expect(rendererDelegate.send).to.have.been.calledWith(
@@ -253,7 +258,7 @@ describe('File Manager', () => {
   it('asks for renderer text when platform requests a file save', async () => {
     manager.register();
 
-    manager.saveFile(false);
+    manager.onSaveFile(false);
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'request-editor-text'
@@ -266,7 +271,7 @@ describe('File Manager', () => {
     manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
-    manager.saveFile(false);
+    manager.onSaveFile(false);
 
     await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
 
@@ -288,7 +293,7 @@ describe('File Manager', () => {
     manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
-    manager.saveFile(true);
+    manager.onSaveFile(true);
 
     await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
 
@@ -340,7 +345,8 @@ describe('File Manager', () => {
     );
     manager.register();
 
-    await manager.openFile();
+    await manager.onOpenFile();
+    await rendererListeners.invoke('is-file-modified', false);
     await rendererListeners.invoke(
       'save-file-attempt',
       'Blessings, blessings.'
@@ -378,7 +384,8 @@ describe('File Manager', () => {
     );
     manager.register();
 
-    await manager.openFile();
+    await manager.onOpenFile();
+    await rendererListeners.invoke('is-file-modified', false);
     await rendererListeners.invoke(
       'save-file-attempt',
       'Blessings, blessings.'
@@ -416,7 +423,8 @@ describe('File Manager', () => {
 
     manager.register();
 
-    await manager.openFile();
+    await manager.onOpenFile();
+    await rendererListeners.invoke('is-file-modified', false);
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
@@ -434,26 +442,27 @@ describe('File Manager', () => {
   });
 
   it('updates the renderer when a file is opened by the platform directly', async () => {
-    files.readFile.returns(
-      Promise.resolve({
-        metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
-        data: encode('This water'),
-        type: '',
-      })
-    );
+    files.openFile.returnsArg(0);
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
       sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
 
     manager.register();
 
-    await manager.openFile('whitetuxedo.txt');
+    await rendererListeners.invoke('ready-for-events');
+    await manager.onOpenFile({
+      metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
+      data: encode('This water'),
+      type: '',
+    });
+    await rendererListeners.invoke('is-file-modified', false);
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
       'whitetuxedo.txt',
-      'This water'
+      'This water',
+      true
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       '/Desktop/whitetuxedo.txt',
@@ -465,24 +474,20 @@ describe('File Manager', () => {
   });
 
   it('updates the renderer when a file is opened by the renderer', async () => {
-    files.openFile.returns(
-      Promise.resolve({
-        metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
-        data: encode('This water'),
-        type: '',
-      })
-    );
+    files.openFile.returnsArg(0);
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
       sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
 
     manager.register();
 
+    await rendererListeners.invoke('ready-for-events');
     await rendererListeners.invoke('open-file-attempt', {
-      path: 'whitetuxedo.txt',
-      type: 'text/plain',
+      metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
       data: encode('This water'),
+      type: '',
     });
+    await rendererListeners.invoke('is-file-modified', false);
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
@@ -512,6 +517,7 @@ describe('File Manager', () => {
 
     manager.register();
     await rendererListeners.invoke('open-file-attempt');
+    await rendererListeners.invoke('is-file-modified', false);
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',

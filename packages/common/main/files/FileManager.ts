@@ -3,7 +3,6 @@ import { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
 import { Logger } from '@lyricistant/common/Logger';
 import { Manager } from '@lyricistant/common/Manager';
 import {
-  DroppableFile,
   ExtensionData,
   Files,
   PlatformFile,
@@ -20,12 +19,15 @@ const SAVE_FILE_DIALOG_TAG = 'save-file';
 const OPEN_FILE_DIALOG_TAG = 'open-file';
 
 export class FileManager implements Manager {
+  public initialFile: PlatformFile | null = null;
+
   private currentFilePath: string | null = null;
   private currentFileHandler: FileHandler = this.defaultFileHandler;
   private fileChangedListeners: Array<
     (currentFilename: string | null, recentFiles: string[]) => void
   > = [];
   private initialFileLoadedListener: () => void = undefined;
+  private isRendererReady = false;
 
   public constructor(
     private rendererDelegate: RendererDelegate,
@@ -42,15 +44,7 @@ export class FileManager implements Manager {
     this.rendererDelegate.on('ready-for-events', this.onRendererReady);
     this.rendererDelegate.on('new-file-attempt', this.onNewFile);
     this.rendererDelegate.on('open-file-attempt', this.onOpenFile);
-    this.rendererDelegate.on('save-file-attempt', this.onSaveFile);
-
-    this.rendererDelegate.on('prompt-save-file-for-new', this.onPromptSaveFile);
-    this.rendererDelegate.on(
-      'prompt-save-file-for-open',
-      this.onPromptSaveFileForOpen
-    );
-
-    this.rendererDelegate.on('okay-for-new-file', this.onOkayForNewFile);
+    this.rendererDelegate.on('save-file-attempt', this.onRendererSaveFile);
   }
 
   public addOnFileChangedListener = (
@@ -64,33 +58,43 @@ export class FileManager implements Manager {
   };
 
   public onNewFile = () => {
-    this.rendererDelegate.send('is-okay-for-new-file');
-  };
-
-  public openFile = async (filePath?: string) => {
-    this.rendererDelegate.send('show-dialog', {
-      tag: OPEN_FILE_DIALOG_TAG,
-      type: 'fullscreen',
-      message: 'Opening file',
-      progress: 'indeterminate',
-    });
-
-    try {
-      if (filePath && this.files.readFile) {
-        const platformFile = await this.files.readFile(filePath);
-        await this.openFileActual(platformFile);
+    const isFileModified = async (modified: boolean) => {
+      this.rendererDelegate.removeListener('is-file-modified', isFileModified);
+      if (modified) {
+        await this.onPromptSaveFileForNew();
       } else {
-        await this.onOpenFile();
+        this.createNewFile();
       }
-    } catch (e) {
-      this.logger.error('Error opening file.', e);
-      this.rendererDelegate.send('file-opened', e, undefined, undefined, true);
-    } finally {
-      this.rendererDelegate.send('close-dialog', OPEN_FILE_DIALOG_TAG);
-    }
+    };
+
+    this.rendererDelegate.on('is-file-modified', isFileModified);
+    this.rendererDelegate.send('check-file-modified');
   };
 
-  public saveFile = (forceSaveAs: boolean) => {
+  public onOpenFile = async (file?: PlatformFile) => {
+    if (!this.isRendererReady && file) {
+      this.logger.verbose(
+        'Received a file before renderer ready; delaying open',
+        file.metadata
+      );
+      this.initialFile = file;
+      return;
+    }
+
+    const isFileModified = async (modified: boolean) => {
+      this.rendererDelegate.removeListener('is-file-modified', isFileModified);
+      if (modified) {
+        await this.onPromptSaveFileForOpen(file);
+      } else {
+        await this.openFile(file);
+      }
+    };
+
+    this.rendererDelegate.on('is-file-modified', isFileModified);
+    this.rendererDelegate.send('check-file-modified');
+  };
+
+  public onSaveFile = (forceSaveAs: boolean) => {
     this.rendererDelegate.send('show-dialog', {
       tag: SAVE_FILE_DIALOG_TAG,
       type: 'fullscreen',
@@ -112,12 +116,7 @@ export class FileManager implements Manager {
     this.rendererDelegate.send('request-editor-text');
   };
 
-  private onRendererReady = () => {
-    this.onOkayForNewFile();
-    this.initialFileLoadedListener?.();
-  };
-
-  private onOpenFile = async (file?: DroppableFile) => {
+  private openFile = async (file?: PlatformFile) => {
     this.rendererDelegate.send('show-dialog', {
       tag: OPEN_FILE_DIALOG_TAG,
       type: 'fullscreen',
@@ -126,8 +125,12 @@ export class FileManager implements Manager {
     });
 
     try {
+      // We still pass this to the Files in-case they have state they want to set based on the PlatformFile, or if they
+      // need to make any platform-specific changes before we open it.
       const platformFile = await this.files.openFile(file);
-      await this.openFileActual(platformFile);
+      if (platformFile) {
+        await this.openFileActual(platformFile);
+      }
     } catch (e) {
       this.logger.error('Error opening file.', e);
       this.rendererDelegate.send('file-opened', e, undefined, undefined, true);
@@ -136,7 +139,23 @@ export class FileManager implements Manager {
     }
   };
 
-  private onSaveFile = async (text: string) => {
+  private onRendererReady = async () => {
+    this.isRendererReady = true;
+    this.createNewFile();
+
+    if (this.initialFile) {
+      this.logger.verbose(
+        'Renderer ready; opening delayed file',
+        this.initialFile.metadata
+      );
+      await this.onOpenFile(this.initialFile);
+      this.initialFile = null;
+    }
+
+    this.initialFileLoadedListener?.();
+  };
+
+  private onRendererSaveFile = async (text: string) => {
     this.rendererDelegate.send('show-dialog', {
       tag: SAVE_FILE_DIALOG_TAG,
       type: 'fullscreen',
@@ -224,7 +243,7 @@ export class FileManager implements Manager {
     );
   };
 
-  private onOkayForNewFile = () => {
+  private createNewFile = () => {
     this.currentFilePath = null;
     this.currentFileHandler = this.defaultFileHandler;
     this.rendererDelegate.send('new-file-created');
@@ -234,27 +253,27 @@ export class FileManager implements Manager {
     );
   };
 
-  private onPromptSaveFile = async () => {
+  private onPromptSaveFileForNew = async () => {
     const result = await this.dialogs.showDialog(
       "Your changes haven't been saved. Are you sure you want to create a new file?"
     );
 
     if (result === 'yes') {
-      this.onOkayForNewFile();
+      this.createNewFile();
     } else {
       this.logger.debug('User selected to not create a new file.');
     }
   };
 
-  private onPromptSaveFileForOpen = async (file: DroppableFile) => {
+  private onPromptSaveFileForOpen = async (file?: PlatformFile) => {
     const result = await this.dialogs.showDialog(
-      "Your changes haven't been saved. Are you sure you want to open this file?"
+      "Your changes haven't been saved. Are you sure you want to open a different file?"
     );
 
     if (result === 'yes') {
-      await this.onOpenFile(file);
+      await this.openFile(file);
     } else {
-      this.logger.debug('User selected to not open file', file.path);
+      this.logger.debug('User selected to not open file', file?.metadata);
     }
   };
 

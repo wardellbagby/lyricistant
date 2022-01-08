@@ -10,8 +10,6 @@ export interface FileData {
   extensions?: Partial<ExtensionData>;
 }
 
-export type LyricistantFile = FileData & FileMetadata;
-
 export interface FileMetadata {
   /**
    * A unique way of identifying a file, dependent on the platform in question. For instance, against a Desktop
@@ -26,17 +24,6 @@ export interface FileMetadata {
   name?: string;
 }
 
-/**
- * A wrapper around the DOM's File object that drops any DOM type requirements and includes a path for platforms that
- * support DOM Files that have paths (i.e., Electron).
- */
-export interface DroppableFile {
-  path: string;
-  type: string;
-  data: ArrayBuffer;
-  handle?: FileSystemHandle;
-}
-
 export const LYRICS_MIME_TYPE = 'application/zip';
 export const LYRICS_EXTENSION = '.lyrics';
 export const SUPPORTED_MIME_TYPES = ['text/plain', LYRICS_MIME_TYPE];
@@ -46,10 +33,13 @@ export interface PlatformFile {
   metadata: FileMetadata;
   data: ArrayBuffer;
   type?: string;
+  extras?: {
+    handle?: FileSystemHandle;
+  };
 }
 
 export interface Files {
-  openFile: (file?: DroppableFile) => Promise<PlatformFile>;
+  openFile: (file?: PlatformFile) => Promise<PlatformFile>;
   saveFile: (data: ArrayBuffer, path?: string) => Promise<FileMetadata>;
   readFile?: (filePath: string) => Promise<PlatformFile>;
 }

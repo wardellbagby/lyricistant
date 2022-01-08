@@ -1,5 +1,4 @@
 import {
-  DroppableFile,
   FileMetadata,
   Files as IFiles,
   LYRICS_EXTENSION,
@@ -24,15 +23,9 @@ export class CoreFiles implements IFiles {
 
   public constructor(private fs: FileSystem, private logger: Logger) {}
 
-  public openFile = async (file?: DroppableFile): Promise<PlatformFile> => {
+  public openFile = async (file?: PlatformFile): Promise<PlatformFile> => {
     if (file) {
-      return {
-        metadata: {
-          path: file.path,
-        },
-        type: file.type,
-        data: file.data,
-      };
+      return file;
     }
 
     let result: FileWithHandle;

@@ -5,7 +5,7 @@ import { fake, replace, restore, SinonSpy, spy, stub } from 'sinon';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import { Editor } from '@lyricistant/renderer/editor/Editor';
-import { DroppableFile } from '@lyricistant/common/files/Files';
+import { PlatformFile } from '@lyricistant/common/files/Files';
 import { EditorView } from '@codemirror/view';
 import { Text } from '@codemirror/state';
 import {
@@ -18,8 +18,8 @@ import { MockPlatformDelegate } from './MockPlatformDelegate';
 
 use(sinonChai);
 
-const droppedFile: DroppableFile = {
-  path: 'filename.txt',
+const droppedFile: PlatformFile = {
+  metadata: { path: 'filename.txt' },
   type: 'text/plain',
   data: new TextEncoder().encode('Oh wow!').buffer,
 };
@@ -71,8 +71,6 @@ describe('Editor component', function () {
   });
 
   it('tells the platform when user drops a file', async () => {
-    stub(require('@codemirror/history'), 'undoDepth').returns(0);
-
     render(<Editor />);
 
     const element = await screen.findByRole('textbox');
@@ -99,35 +97,6 @@ describe('Editor component', function () {
     );
   });
 
-  it('tells the platform when user drops a file when editor has history', async () => {
-    stub(require('@codemirror/history'), 'undoDepth').returns(1);
-
-    render(<Editor />);
-
-    const element = await screen.findByRole('textbox');
-
-    const oldDragEvent = window.DragEvent;
-    window.DragEvent = undefined;
-
-    fireEvent.drop(element, {
-      dataTransfer: {
-        files: [
-          new File(['Oh wow!'], 'filename.txt', {
-            type: 'text/plain',
-          }),
-        ],
-      },
-    });
-    window.DragEvent = oldDragEvent;
-
-    await waitFor(() => {
-      expect(platformDelegate.send).to.have.been.calledWithMatch(
-        'prompt-save-file-for-open',
-        droppedFile
-      );
-    });
-  });
-
   it('handles files being saved', async () => {
     render(<Editor />);
 
@@ -141,56 +110,32 @@ describe('Editor component', function () {
     });
   });
 
-  it('handles the platform trying to create a new file', async () => {
+  it("handles the platform checking if file is modified when it isn't", async () => {
     stub(require('@codemirror/history'), 'undoDepth').returns(0);
 
     render(<Editor />);
 
-    await waitFor(() => platformDelegate.invoke('is-okay-for-new-file'));
+    await waitFor(() => platformDelegate.invoke('check-file-modified'));
 
     await waitFor(() => {
       expect(platformDelegate.send).to.have.been.calledWith(
-        'okay-for-new-file'
+        'is-file-modified',
+        false
       );
     });
   });
 
-  it('handles the platform trying to create a new file when user has made edits', async () => {
+  it('handles the platform checking if file is modified when user has made edits', async () => {
     stub(require('@codemirror/history'), 'undoDepth').returns(1);
 
     render(<Editor />);
 
-    await waitFor(() => platformDelegate.invoke('is-okay-for-new-file'));
+    await waitFor(() => platformDelegate.invoke('check-file-modified'));
 
     await waitFor(() => {
       expect(platformDelegate.send).to.have.been.calledWith(
-        'prompt-save-file-for-new'
-      );
-    });
-  });
-
-  it('handles the platform trying to quit', async () => {
-    stub(require('@codemirror/history'), 'undoDepth').returns(0);
-
-    render(<Editor />);
-
-    await waitFor(() => platformDelegate.invoke('is-okay-for-quit-file'));
-
-    await waitFor(() => {
-      expect(platformDelegate.send).to.have.been.calledWith('okay-for-quit');
-    });
-  });
-
-  it('handles the platform trying to quit when user has made edits', async () => {
-    stub(require('@codemirror/history'), 'undoDepth').returns(1);
-
-    render(<Editor />);
-
-    await waitFor(() => platformDelegate.invoke('is-okay-for-quit-file'));
-
-    await waitFor(() => {
-      expect(platformDelegate.send).to.have.been.calledWith(
-        'prompt-save-file-for-quit'
+        'is-file-modified',
+        true
       );
     });
   });

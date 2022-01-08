@@ -1,5 +1,4 @@
 import {
-  DroppableFile,
   FileMetadata,
   Files as IFiles,
   LYRICS_EXTENSION,
@@ -15,13 +14,9 @@ export class ElectronFiles implements IFiles {
     private fs: FileSystem,
     private window: BrowserWindow
   ) {}
-  public openFile = async (file?: DroppableFile): Promise<PlatformFile> => {
+  public openFile = async (file?: PlatformFile): Promise<PlatformFile> => {
     if (file) {
-      return {
-        metadata: { path: file.path },
-        data: file.data,
-        type: file.type,
-      };
+      return file;
     }
 
     const result = await this.dialog.showOpenDialog(this.window, {

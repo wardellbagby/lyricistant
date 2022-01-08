@@ -14,14 +14,16 @@ import log from 'electron-log';
 const logger = log;
 const newRendererListenerListeners = new Map<string, Array<() => void>>();
 
+interface WrappedListener {
+  (...args: any[]): void;
+  originalListener?: (...args: any[]) => void;
+}
+
 export class ElectronRendererDelegate implements RendererDelegate {
   private ipcMain: IpcMain;
   private window: BrowserWindow;
 
-  private listeners = new Map<
-    string,
-    (event: GlobalEvent, ...args: any[]) => void
-  >();
+  private listeners = new Set<WrappedListener>();
 
   public constructor(ipcMain: IpcMain, window: BrowserWindow) {
     this.ipcMain = ipcMain;
@@ -45,11 +47,16 @@ export class ElectronRendererDelegate implements RendererDelegate {
 
   public on(channel: string, listener: (...args: any[]) => void): this {
     logger.info('Registering renderer listener', channel);
-    const listenerWithEvent = (_: GlobalEvent, ...args: any[]) => {
+    const listenerWithEvent: WrappedListener = (
+      _: GlobalEvent,
+      ...args: any[]
+    ) => {
       listener(...args);
     };
 
-    this.listeners.set(listener.toString(), listenerWithEvent);
+    listenerWithEvent.originalListener = listener;
+
+    this.listeners.add(listenerWithEvent);
 
     this.ipcMain.on(channel, listenerWithEvent);
     return this;
@@ -69,10 +76,20 @@ export class ElectronRendererDelegate implements RendererDelegate {
     listener: (...args: any[]) => void
   ): this {
     logger.info('Removing renderer listener', channel);
-    this.ipcMain.removeListener(
-      channel,
-      this.listeners.get(listener.toString())
-    );
+    let wrappedListener: typeof listener;
+
+    this.listeners.forEach((wrapped) => {
+      if (wrapped.originalListener === listener) {
+        wrappedListener = wrapped;
+      }
+    });
+
+    if (!wrappedListener) {
+      throw new Error("Can't remove listener that was never registered!");
+    }
+
+    this.listeners.delete(wrappedListener);
+    this.ipcMain.removeListener(channel, wrappedListener);
     return this;
   }
 }

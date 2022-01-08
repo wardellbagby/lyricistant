@@ -63,11 +63,7 @@ describe('Files', () => {
     };
     fs.isText.returns(true);
 
-    const actual = await files.openFile({
-      path: expected.metadata.path,
-      data: expected.data,
-      type: 'text/plain',
-    });
+    const actual = await files.openFile(expected);
 
     expect(actual).to.containSubset(expected);
     expect(dialogs.showOpenDialog).to.have.not.been.called;

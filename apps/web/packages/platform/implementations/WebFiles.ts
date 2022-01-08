@@ -1,5 +1,4 @@
 import {
-  DroppableFile,
   FileMetadata,
   Files,
   PlatformFile,
@@ -13,16 +12,10 @@ export class WebFiles implements Files {
     string,
     FileSystemHandle
   >();
-  public openFile = async (file?: DroppableFile): Promise<PlatformFile> => {
+  public openFile = async (file?: PlatformFile): Promise<PlatformFile> => {
     if (file) {
-      this.handles.set(file.path, file.handle);
-      return {
-        data: file.data,
-        type: file.type,
-        metadata: {
-          path: file.path,
-        },
-      };
+      this.handles.set(file.metadata.path, file.extras.handle);
+      return file;
     }
     const { path, data, handle } = await (
       await renderer.getFileSystem()

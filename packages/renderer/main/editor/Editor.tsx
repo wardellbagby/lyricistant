@@ -8,7 +8,7 @@ import { EditorState, EditorStateConfig } from '@codemirror/state';
 import { openSearchPanel } from '@codemirror/search';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { Font } from '@lyricistant/common/preferences/PreferencesData';
-import { toDroppableFile } from './to-droppable-file';
+import { toPlatformFile } from './to-platform-file';
 import { useReplacedWords, useSelectedWordStore } from './SelectedWordStore';
 import { useEditorTextStore } from './EditorTextStore';
 
@@ -31,15 +31,8 @@ export const Editor: React.FC = () => {
         return;
       }
       logger.debug('Attempted to drop a file.');
-      toDroppableFile(item)
-        .then((file) => {
-          if (undoDepth(view.state) > 0) {
-            platformDelegate.send('prompt-save-file-for-open', file);
-            return;
-          }
-
-          platformDelegate.send('open-file-attempt', file);
-        })
+      toPlatformFile(item)
+        .then((file) => platformDelegate.send('open-file-attempt', file))
         .catch((reason) => {
           logger.error(reason);
         });
@@ -78,6 +71,11 @@ function handleEditorEvents(
       return;
     }
 
+    const onCheckFileModified = () => {
+      platformDelegate.send('is-file-modified', undoDepth(editor.state) > 0);
+    };
+    platformDelegate.on('check-file-modified', onCheckFileModified);
+
     const onFileSaveEnded = (error: any, path: string) => {
       // Resets the undo stack.
       editor.setState(
@@ -92,24 +90,6 @@ function handleEditorEvents(
       }
     };
     platformDelegate.on('file-save-ended', onFileSaveEnded);
-
-    const onNewFileAttempt = () => {
-      if (undoDepth(editor.state) === 0) {
-        platformDelegate.send('okay-for-new-file');
-      } else {
-        platformDelegate.send('prompt-save-file-for-new');
-      }
-    };
-    platformDelegate.on('is-okay-for-new-file', onNewFileAttempt);
-
-    const onQuitAttempt = () => {
-      if (undoDepth(editor.state) === 0) {
-        platformDelegate.send('okay-for-quit');
-      } else {
-        platformDelegate.send('prompt-save-file-for-quit');
-      }
-    };
-    platformDelegate.on('is-okay-for-quit-file', onQuitAttempt);
 
     const onNewFileCreated = () => {
       editor.setState(EditorState.create(defaultConfig));
@@ -161,9 +141,11 @@ function handleEditorEvents(
     platformDelegate.on('replace', onReplace);
 
     return () => {
+      platformDelegate.removeListener(
+        'check-file-modified',
+        onCheckFileModified
+      );
       platformDelegate.removeListener('file-save-ended', onFileSaveEnded);
-      platformDelegate.removeListener('is-okay-for-new-file', onNewFileAttempt);
-      platformDelegate.removeListener('is-okay-for-quit-file', onQuitAttempt);
       platformDelegate.removeListener('new-file-created', onNewFileCreated);
       platformDelegate.removeListener('file-opened', onFileOpened);
       platformDelegate.removeListener('request-editor-text', onTextRequested);

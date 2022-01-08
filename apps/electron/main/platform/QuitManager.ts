@@ -17,13 +17,20 @@ export class QuitManager implements Manager {
     private window: BrowserWindow
   ) {}
 
-  public register(): void {
-    this.rendererDelegate.on('okay-for-quit', this.onOkayForQuit);
-    this.rendererDelegate.on('prompt-save-file-for-quit', this.onPromptQuit);
-  }
+  public register = (): void => undefined;
 
   public attemptQuit() {
-    this.rendererDelegate.send('is-okay-for-quit-file');
+    const isFileModified = async (modified: boolean) => {
+      this.rendererDelegate.removeListener('is-file-modified', isFileModified);
+      if (modified) {
+        await this.onPromptQuit();
+      } else {
+        this.onOkayForQuit();
+      }
+    };
+
+    this.rendererDelegate.on('is-file-modified', isFileModified);
+    this.rendererDelegate.send('check-file-modified');
     this.forceQuitTimeout = setTimeout(() => {
       this.logger.error(
         'Force-closing app because renderer never responded and user attempted quit!'

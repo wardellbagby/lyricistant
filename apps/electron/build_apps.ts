@@ -36,6 +36,12 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
         main: 'main.js',
       },
       afterSign: require.resolve('./notarize-mac-app.js'),
+      fileAssociations: {
+        ext: 'lyrics',
+        name: 'Lyricistant File',
+        role: 'Editor',
+        rank: 'Owner',
+      },
       files: [
         'package.json',
         '!**/node_modules${/*}',
@@ -84,6 +90,9 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
             arch: ['x64', 'ia32'],
           },
         ],
+      },
+      nsis: {
+        perMachine: true,
       },
       extends: null,
     },

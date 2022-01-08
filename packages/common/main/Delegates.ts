@@ -1,10 +1,10 @@
 import { DialogData } from '@lyricistant/common/dialogs/Dialog';
-import { DroppableFile } from '@lyricistant/common/files/Files';
 import {
   PreferencesData,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
+import { PlatformFile } from '@lyricistant/common/files/Files';
 
 /**
  * Information that the renderer wants to send to the platform.
@@ -12,14 +12,10 @@ import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 export interface RendererToPlatformListener {
   'ready-for-events': () => void;
   'editor-text': (text: string) => void;
-  'prompt-save-file-for-new': () => void;
-  'prompt-save-file-for-quit': () => void;
-  'prompt-save-file-for-open': (file: DroppableFile) => void;
-  'okay-for-new-file': () => void;
-  'okay-for-quit': () => void;
+  'is-file-modified': (modified: boolean) => void;
   'save-prefs': (data?: PreferencesData) => void;
   'new-file-attempt': () => void;
-  'open-file-attempt': (file?: DroppableFile) => void;
+  'open-file-attempt': (file?: PlatformFile) => void;
   'save-file-attempt': (data: string) => void;
   'request-ui-config': () => void;
   'save-logs': () => void;
@@ -36,7 +32,7 @@ export interface PlatformToRendererListener {
   'file-save-ended': (error: Error | null, currentFilePath: string) => void;
   find: () => void;
   replace: () => void;
-  'is-okay-for-new-file': () => void;
+  'check-file-modified': () => void;
   'file-opened': (
     error: Error,
     fileName: string,
@@ -45,7 +41,6 @@ export interface PlatformToRendererListener {
   ) => void;
   'file-save-started': (filePath: string) => void;
   'request-editor-text': () => void;
-  'is-okay-for-quit-file': () => void;
   undo: () => void;
   redo: () => void;
   'open-prefs': () => void;

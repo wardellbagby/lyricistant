@@ -1,7 +1,6 @@
 import { platform } from 'os';
 import * as path from 'path';
-import { format as formatUrl } from 'url';
-import { URL } from 'url';
+import { format as formatUrl, URL } from 'url';
 import { isDevelopment, isUiTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileManager } from '@lyricistant/common/files/FileManager';
@@ -15,11 +14,13 @@ import { createAppMenu } from '@electron-app/app-menu';
 import { QuitManager } from '@electron-app/platform/QuitManager';
 import { createAppComponent } from '@electron-app/AppComponent';
 import { Manager } from '@lyricistant/common/Manager';
+import { Files } from '@lyricistant/common/files/Files';
 
 export let mainWindow: BrowserWindow;
 let appComponent: DIContainer;
 let rendererDelegate: RendererDelegate;
 let logger: Logger;
+let initialFilePath = app.isPackaged ? process.argv[1] : undefined;
 
 if (isDevelopment || isUiTest) {
   debug({
@@ -72,10 +73,13 @@ const setMenu = (recentFiles?: string[]): void => {
       },
       onNewClicked: newMenuItemHandler,
       onOpenClicked: async () => {
-        await appComponent.get<FileManager>().openFile();
+        await appComponent.get<FileManager>().onOpenFile();
       },
       onOpenRecentClicked: async (filePath) => {
-        await appComponent.get<FileManager>().openFile(filePath);
+        await appComponent
+          .get<Files>()
+          .readFile(filePath)
+          .then(appComponent.get<FileManager>().onOpenFile);
       },
       onPreferencesClicked: preferencesHandler,
       onAboutClicked: () => rendererDelegate.send('open-about'),
@@ -85,10 +89,10 @@ const setMenu = (recentFiles?: string[]): void => {
         rendererDelegate.send('replace');
       },
       onSaveAsClicked: () => {
-        appComponent.get<FileManager>().saveFile(true);
+        appComponent.get<FileManager>().onSaveFile(true);
       },
       onSaveClicked: () => {
-        appComponent.get<FileManager>().saveFile(false);
+        appComponent.get<FileManager>().onSaveFile(false);
       },
       onUndoClicked: undoHandler,
     },
@@ -100,12 +104,24 @@ const setMenu = (recentFiles?: string[]): void => {
   Menu.setApplicationMenu(mainMenu);
 };
 
-const registerListeners = () => {
-  appComponent
-    .get<FileManager>()
-    .addOnFileChangedListener((_: undefined, recentFiles: string[]) => {
+const onAppComponentCreated = () => {
+  const fileManager = appComponent.get<FileManager>();
+
+  fileManager.addOnFileChangedListener(
+    (_: undefined, recentFiles: string[]) => {
       setMenu(recentFiles);
-    });
+    }
+  );
+
+  if (initialFilePath) {
+    appComponent
+      .get<Files>()
+      .readFile(initialFilePath)
+      .then(appComponent.get<FileManager>().onOpenFile)
+      .catch((reason) =>
+        logger.error('Failed to open initial file', initialFilePath, reason)
+      );
+  }
 };
 
 const createWindow = (): void => {
@@ -121,15 +137,20 @@ const createWindow = (): void => {
       contextIsolation: false,
       enableRemoteModule: isUiTest,
       preload: path.resolve(__dirname, 'preload.js'),
+      disableBlinkFeatures: 'FileSystemAccess',
     },
   });
   appComponent = createAppComponent(mainWindow);
   logger = appComponent.get<Logger>();
   rendererDelegate = createRendererDelegate(mainWindow);
-  appComponent
-    .get<Managers>()
-    .forEach((manager: () => Manager) => manager().register());
-  registerListeners();
+
+  appComponent.get<Managers>().forEach((getManager: () => Manager) => {
+    const manager = getManager();
+    logger.verbose(`Registering ${manager.constructor.name}`);
+    manager.register();
+  });
+
+  onAppComponentCreated();
 
   logger.info('Platform information', {
     appPlatform: 'Electron',
@@ -177,6 +198,21 @@ const createWindow = (): void => {
   setMenu();
 };
 
+// TODO Can't open multiple files via double click and file saving isn't working.
+app.on('open-file', (event, filePath) => {
+  event.preventDefault();
+  if (appComponent) {
+    appComponent
+      .get<Files>()
+      .readFile(filePath)
+      .then(appComponent.get<FileManager>().onOpenFile)
+      .catch((reason) =>
+        logger.error('Failed to open initial file', initialFilePath, reason)
+      );
+  } else {
+    initialFilePath = filePath;
+  }
+});
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
