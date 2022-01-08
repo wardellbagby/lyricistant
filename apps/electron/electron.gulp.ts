@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
+import kill from 'tree-kill';
 import { Configuration, DefinePlugin, webpack } from 'webpack';
 import { merge } from 'webpack-merge';
 import WebpackDevServer from 'webpack-dev-server';
@@ -105,27 +106,34 @@ const copyElectronHtmlFile = (mode: Mode) => {
 const bundleMainAndPreload = async () => {
   const main = await createMainWebpackConfig('development', true);
   const preload = await createPreloadWebpackConfig('development');
-  return new Promise<unknown>((resolve, reject) => {
-    webpack([main, preload], (error, stats) => {
+
+  let currentApp: ChildProcess = null;
+  const compiler = webpack([main, preload]);
+  return new Promise<unknown>(() => {
+    compiler.watch({}, (error, stats) => {
       if (error) {
-        reject(error);
-      }
-      if (stats.hasErrors()) {
-        reject(stats.toString());
+        console.error(error);
       }
       console.log(stats.toString());
-      resolve(undefined);
+
+      if (currentApp) {
+        kill(currentApp.pid, 'SIGKILL', (killError) => {
+          if (killError) {
+            throw error;
+          }
+        });
+      }
+      currentApp = startElectronApp(false)();
     });
   });
 };
 
-const startElectronApp = (forceWait: boolean) => async () => {
+const startElectronApp = (forceWait: boolean) => () =>
   spawn(require.resolve('electron/cli'), [
     path.resolve(getOutputDirectory('development'), 'main.js'),
     '--remote-debugging-port=9229',
     `--inspect${forceWait ? '-brk' : ''}=9228`,
   ]);
-};
 
 const runElectronServer = async () => {
   const config = await createRendererWebpackConfig('development');
