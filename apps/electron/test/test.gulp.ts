@@ -1,13 +1,7 @@
-import { series, src } from 'gulp';
-import mocha from 'gulp-mocha';
+import { series } from 'gulp';
+import { mocha } from '@tooling/common-tasks.gulp';
 import { buildTestElectron } from '../electron.gulp';
 
-const testElectronMocha = () =>
-  src(['apps/electron/test/**/*.spec.ts']).pipe(
-    mocha({
-      // @ts-ignore Types don't have require yet.
-      require: ['./register-ts-node'],
-    })
-  );
+const testElectronMocha = () => mocha('apps/electron/test/**/*.spec.ts');
 
 export const testElectron = series(buildTestElectron, testElectronMocha);

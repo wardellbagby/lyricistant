@@ -1,3 +1,3 @@
-import { jest } from '@tooling/common-tasks.gulp';
+import { mocha } from '@tooling/common-tasks.gulp';
 
-export const testCodemirror = async () => jest(__dirname);
+export const testCodemirror = () => mocha('packages/codemirror/test/*.spec.ts');

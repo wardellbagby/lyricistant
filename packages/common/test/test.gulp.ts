@@ -1,10 +1,3 @@
-import { src } from 'gulp';
-import mocha from 'gulp-mocha';
+import { mocha } from '@tooling/common-tasks.gulp';
 
-export const testCommon = () =>
-  src([`${__dirname}/**/*.spec.ts`]).pipe(
-    mocha({
-      // @ts-ignore Types don't have require yet.
-      require: ['./register-ts-node'],
-    })
-  );
+export const testCommon = () => mocha(`${__dirname}/**/*.spec.ts`);

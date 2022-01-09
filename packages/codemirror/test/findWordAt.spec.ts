@@ -1,5 +1,6 @@
 import { findWordAt } from '@lyricistant/codemirror/wordSelection';
 import { Text } from '@codemirror/text';
+import { expect } from 'chai';
 import { EditorSelection } from '@codemirror/state';
 
 describe('Word Selection', () => {
@@ -10,7 +11,7 @@ describe('Word Selection', () => {
       word: 'Hello',
     };
     const actual = findWordAt(Text.of(['Hello']), EditorSelection.cursor(0));
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words at the beginning of the document at the end of the word', () => {
@@ -20,7 +21,7 @@ describe('Word Selection', () => {
       word: 'Hello',
     };
     const actual = findWordAt(Text.of(['Hello']), EditorSelection.cursor(5));
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words at the beginning of the document in the middle of the word', () => {
@@ -30,7 +31,7 @@ describe('Word Selection', () => {
       word: 'Hello',
     };
     const actual = findWordAt(Text.of(['Hello']), EditorSelection.cursor(3));
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words at the beginning of a line', () => {
@@ -43,7 +44,7 @@ describe('Word Selection', () => {
       Text.of(['', 'Hello']),
       EditorSelection.cursor(1)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words at the beginning of a line at the end of the word', () => {
@@ -56,7 +57,7 @@ describe('Word Selection', () => {
       Text.of(['', 'Hello']),
       EditorSelection.cursor(6)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words at the beginning of a line in the middle of the word', () => {
@@ -69,7 +70,7 @@ describe('Word Selection', () => {
       Text.of(['', 'Hello']),
       EditorSelection.cursor(4)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words prepended with spaces', () => {
@@ -82,7 +83,7 @@ describe('Word Selection', () => {
       Text.of(['', '  Hello']),
       EditorSelection.cursor(3)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words prepended with spaces at the end of the word', () => {
@@ -95,7 +96,7 @@ describe('Word Selection', () => {
       Text.of(['', '  Hello']),
       EditorSelection.cursor(8)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds hyphenated words', () => {
@@ -108,7 +109,7 @@ describe('Word Selection', () => {
       Text.of(['I do-nut wanna.']),
       EditorSelection.cursor(2)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds hyphenated words in the middle of the word', () => {
@@ -121,7 +122,7 @@ describe('Word Selection', () => {
       Text.of(['I do-nut wanna.']),
       EditorSelection.cursor(5)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds contractions', () => {
@@ -134,7 +135,7 @@ describe('Word Selection', () => {
       Text.of(["I don't wanna."]),
       EditorSelection.cursor(3)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds contracts in the middle of the word', () => {
@@ -147,7 +148,7 @@ describe('Word Selection', () => {
       Text.of(["I don't wanna."]),
       EditorSelection.cursor(5)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words in a complicated document', () => {
@@ -166,7 +167,7 @@ describe('Word Selection', () => {
       ]),
       EditorSelection.cursor(50)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 
   it('finds words from selections', () => {
@@ -185,6 +186,6 @@ describe('Word Selection', () => {
       ]),
       EditorSelection.range(43, 52)
     );
-    expect(expected).toStrictEqual(actual);
+    expect(expected).to.deep.equal(actual);
   });
 });
