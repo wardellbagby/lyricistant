@@ -28,7 +28,7 @@ export const editorTheme = (appTheme: Theme, font: string): Extension =>
       },
       '.cm-scroller': {
         fontFamily: `"${font}"`,
-        fontSize: appTheme.typography.fontSize,
+        fontSize: `${appTheme.typography.fontSize}px`,
       },
       '.cm-gutters': {
         width: '60px',
