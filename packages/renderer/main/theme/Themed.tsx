@@ -52,7 +52,7 @@ export const Themed: FunctionComponent<
     if (palette) {
       onThemeChanged(palette);
     }
-  }, [theme, onThemeChanged]);
+  }, [palette, onThemeChanged]);
 
   return (
     <CssBaseline>
