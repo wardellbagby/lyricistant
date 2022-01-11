@@ -37,6 +37,7 @@ export default (
   }
 ): Configuration => ({
   mode: webpackMode(mode),
+  cache: mode === 'development',
   devtool: devtool(mode),
   resolve: {
     plugins: [new TsconfigPathsPlugin()],
