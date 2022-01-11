@@ -10,7 +10,7 @@
     { "path": "../../packages/common" },
     { "path": "../../packages/core-platform" },
     { "path": "../../packages/renderer/" },
-    { "path": "./packages/delegates/" },
+    { "path": "./packages/delegates/" }
   ],
   "extends": "../../tsconfig.json"
 }

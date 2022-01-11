@@ -7,7 +7,7 @@ import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { MockLogger } from './MockLogger';
-import { snackbarWrappedRender as render } from './Wrappers';
+import { render } from './Wrappers';
 
 use(sinonChai);
 

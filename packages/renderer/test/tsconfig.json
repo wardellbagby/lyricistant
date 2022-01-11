@@ -2,12 +2,13 @@
   "include": ["**/*"],
   "exclude": ["**/*.gulp.ts"],
   "compilerOptions": {
-    "types": ["mocha", "node", "../../third-party-types", "../../renderer-window"]
+    "types": [
+      "mocha",
+      "node",
+      "../../third-party-types",
+      "../../renderer-window"
+    ]
   },
-  "references": [
-    { "path": "../" },
-    { "path": "../codemirror" },
-    { "path": "../../testing" }
-  ],
+  "references": [{ "path": "../" }],
   "extends": "../tsconfig.json"
 }

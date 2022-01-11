@@ -1,20 +1,23 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { SnackbarProvider } from 'notistack';
 import { render as realRender, RenderOptions } from '@testing-library/react';
+import { Themed } from '@lyricistant/renderer/theme/Themed';
 
-const SnackbarWrapper = ({ children }: PropsWithChildren<unknown>) => (
-  <SnackbarProvider
-    maxSnack={3}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'right',
-    }}
-  >
-    {children}
-  </SnackbarProvider>
+const DefaultWrapper = ({ children }: PropsWithChildren<unknown>) => (
+  <Themed onThemeChanged={() => undefined} onThemeReady={() => undefined}>
+    <SnackbarProvider
+      maxSnack={3}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+    >
+      {children}
+    </SnackbarProvider>
+  </Themed>
 );
 
-export const snackbarWrappedRender = (
+export const render = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'queries'>
-) => realRender(ui, { ...options, wrapper: SnackbarWrapper });
+) => realRender(ui, { ...options, wrapper: DefaultWrapper });

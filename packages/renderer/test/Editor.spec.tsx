@@ -12,7 +12,7 @@ import {
   CodeMirrorEditorProps,
   WordReplacement,
 } from '@lyricistant/codemirror/CodeMirror';
-import { snackbarWrappedRender as render } from './Wrappers';
+import { render as render } from './Wrappers';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 

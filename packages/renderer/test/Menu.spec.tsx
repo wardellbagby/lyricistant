@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu } from '@lyricistant/renderer/menu/Menu';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { expect, use } from 'chai';
 import { configure } from '@testing-library/dom';
@@ -10,6 +10,7 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory, History } from 'history';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
+import { render } from './Wrappers';
 
 use(sinonChai);
 
