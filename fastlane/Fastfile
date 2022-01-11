@@ -63,11 +63,12 @@ platform :android do
     )
     copy_artifacts(
       target_path: "apps/mobile/dist/android/",
-      artifacts: ["apps/mobile/android/app/build/outputs/apk/release/app-release.apk"],
+      # Says its unsigned, but it isn't; Gradle names it that because signing configs are created after evaluation.
+      artifacts: ["apps/mobile/android/app/build/outputs/apk/release/app-release-unsigned.apk"],
       fail_on_missing: true
     )
     Dir.chdir("..") do
-      File.rename("apps/mobile/dist/android/app-release.apk", "apps/mobile/dist/android/lyricistant.apk")
+      File.rename("apps/mobile/dist/android/app-release-unsigned.apk", "apps/mobile/dist/android/lyricistant.apk")
     end
     if options[:deploy]
         upload_to_play_store(

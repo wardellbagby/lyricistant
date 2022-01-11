@@ -1,11 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   defaultConfig {
@@ -23,10 +18,6 @@ android {
   }
   signingConfigs {
     release {
-      keyAlias keystoreProperties['keyAlias']
-      keyPassword keystoreProperties['keyPassword']
-      storeFile file(keystoreProperties['storeFile'])
-      storePassword keystoreProperties['storePassword']
     }
   }
   buildTypes {
@@ -69,4 +60,17 @@ try {
   logger.
       warn(
           "google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
+
+afterEvaluate { project ->
+    def propsFile = rootProject.file('keystore.properties')
+
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        android.signingConfigs['release'].storeFile = file(props['storeFile'])
+        android.signingConfigs['release'].storePassword = props['storePassword']
+        android.signingConfigs['release'].keyAlias = props['keyAlias']
+        android.signingConfigs['release'].keyPassword = props['keyPassword']
+    }
 }
