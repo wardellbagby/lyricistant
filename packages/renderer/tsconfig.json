@@ -2,6 +2,7 @@
   "include": ["main/**/*"],
   "exclude": ["main/**/webpack.config.ts"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["dom", "es6"],
     "types": ["webpack-env", "../renderer-window"],
     "composite": true

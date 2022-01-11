@@ -1,6 +1,7 @@
 {
   "include": ["main/**/*", "main/**/*.json"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["es6", "WebWorker"],
     "types": ["webpack-env"],
     "composite": true

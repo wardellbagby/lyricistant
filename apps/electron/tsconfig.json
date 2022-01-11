@@ -1,6 +1,7 @@
 {
   "include": ["main/**/*"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["es6"],
     "types": ["node"],
     "composite": true
@@ -9,7 +10,7 @@
     { "path": "../../packages/common" },
     { "path": "../../packages/core-platform" },
     { "path": "../../packages/renderer/" },
-    { "path": "./packages/delegates/" }
+    { "path": "./packages/delegates/" },
   ],
   "extends": "../../tsconfig.json"
 }

@@ -1,6 +1,7 @@
 {
   "include": ["main/**/*"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["dom", "es6"],
     "composite": true,
     "types": ["../third-party-types"]

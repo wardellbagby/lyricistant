@@ -1,7 +1,9 @@
 {
   "include": ["**/*.ts"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["es6", "WebWorker"],
+    "types": [],
     "composite": true
   },
   "references": [

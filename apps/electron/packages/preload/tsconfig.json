@@ -1,7 +1,9 @@
 {
   "include": ["*.ts"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["dom", "es6"],
+    "composite": true,
     "types": ["../../../../packages/renderer-window", "node", "electron"]
   },
   "references": [{ "path": "../delegates" }],

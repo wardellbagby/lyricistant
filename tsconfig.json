@@ -1,5 +1,5 @@
 {
-  "files": [],
+  "include": ["**/*.ts"],
   "compilerOptions": {
     "target": "es2015",
     "module": "esnext",
@@ -15,7 +15,6 @@
     "downlevelIteration": true,
     "lib": ["es2015"],
     "baseUrl": "./",
-    "outDir": "build",
     "rootDir": "./",
     "importHelpers": true,
     "plugins": [

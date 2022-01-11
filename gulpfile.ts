@@ -1,4 +1,5 @@
 import { parallel, series } from 'gulp';
+import { cleanBuildDirectory } from '@tooling/common-tasks.gulp';
 import { buildWeb } from './apps/web/web.gulp';
 import { buildElectron } from './apps/electron/electron.gulp';
 import { testWeb } from './apps/web/test/test.gulp';
@@ -7,7 +8,6 @@ import { testCodemirror } from './packages/codemirror/test/test.gulp';
 import { testRenderer } from './packages/renderer/test/test.gulp';
 import { testCommon } from './packages/common/test/test.gulp';
 import { testCorePlatform } from './packages/core-platform/test/test.gulp';
-import { cleanBuildDirectory } from './tooling/common-tasks.gulp';
 
 export * from './apps/web/web.gulp';
 export * from './apps/web/test/test.gulp';

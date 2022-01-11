@@ -1,6 +1,7 @@
 {
   "include": ["main/**/*.ts"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["es6"],
     "composite": true
   },

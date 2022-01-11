@@ -1,6 +1,7 @@
 {
   "include": ["*.ts"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["dom", "es6"],
     "types": ["node"],
     "composite": true
