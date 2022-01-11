@@ -5,6 +5,11 @@ import {
   ColorScheme,
 } from '@lyricistant/common/preferences/PreferencesData';
 import {
+  AppBar,
+  Dialog,
+  SlideProps,
+  Theme,
+  Toolbar,
   Box,
   Button,
   Container,
@@ -16,17 +21,15 @@ import {
   Paper,
   Select,
   Slide,
-} from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import Dialog from '@material-ui/core/Dialog';
-import IconButton from '@material-ui/core/IconButton';
-import { SlideProps } from '@material-ui/core/Slide';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { Info } from '@material-ui/icons';
-import CloseIcon from '@material-ui/icons/Close';
-import SaveIcon from '@material-ui/icons/Save';
+  Typography,
+  IconButton,
+} from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
+import {
+  Info,
+  Close as CloseIcon,
+  Save as SaveIcon,
+} from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { usePreferences } from './PreferencesStore';
@@ -180,15 +183,24 @@ export const Preferences = () => {
       TransitionComponent={DialogTransition}
       PaperProps={{ className: classes.dialogPaper }}
     >
-      <AppBar color={'primary'} position="sticky">
+      <AppBar color={'primary'} position="sticky" enableColorOnDark>
         <Toolbar>
-          <IconButton color={'inherit'} edge="start" onClick={closePreferences}>
+          <IconButton
+            color={'inherit'}
+            edge="start"
+            onClick={closePreferences}
+            size="large"
+          >
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Preferences
           </Typography>
-          <IconButton color={'inherit'} onClick={onPreferencesSaved}>
+          <IconButton
+            color={'inherit'}
+            onClick={onPreferencesSaved}
+            size="large"
+          >
             <SaveIcon />
           </IconButton>
         </Toolbar>

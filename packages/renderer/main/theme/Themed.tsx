@@ -1,5 +1,9 @@
-import { CssBaseline } from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/core/styles';
+import {
+  CssBaseline,
+  StyledEngineProvider,
+  Theme,
+  ThemeProvider,
+} from '@mui/material';
 import React, {
   FunctionComponent,
   PropsWithChildren,
@@ -13,6 +17,12 @@ import {
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { Palette } from '@lyricistant/common/theme/SystemTheme';
+
+declare module '@mui/styles/defaultTheme' {
+  // Needed so that makeStyles has the right typings for theme.
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 const loadFont = async (themeData?: ThemeData) => {
   switch (themeData?.font) {
@@ -56,7 +66,9 @@ export const Themed: FunctionComponent<
 
   return (
     <CssBaseline>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </StyledEngineProvider>
     </CssBaseline>
   );
 };

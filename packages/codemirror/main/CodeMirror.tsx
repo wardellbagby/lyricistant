@@ -8,7 +8,7 @@ import {
 import { defaultKeymap } from '@codemirror/commands';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { history, historyKeymap } from '@codemirror/history';
-import { styled, useTheme } from '@material-ui/core';
+import { styled, useTheme } from '@mui/material';
 import { searchKeymap } from '@codemirror/search';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';

@@ -2,7 +2,7 @@ import {
   createTheme as createMuiTheme,
   responsiveFontSizes,
   Theme,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   ColorScheme,
   ThemeData,
@@ -29,7 +29,7 @@ export const createTheme = (themeData?: ThemeData): Theme => {
   return responsiveFontSizes(
     createMuiTheme({
       palette: {
-        type: isDark ? 'dark' : 'light',
+        mode: isDark ? 'dark' : 'light',
         action: {
           hover: palette.primary,
           hoverOpacity: 0,
@@ -44,6 +44,11 @@ export const createTheme = (themeData?: ThemeData): Theme => {
         text: {
           primary: palette.primaryText,
           secondary: palette.secondaryText,
+        },
+      },
+      components: {
+        MuiPaper: {
+          styleOverrides: { root: { backgroundImage: 'unset' } },
         },
       },
       typography: themeData?.textSize

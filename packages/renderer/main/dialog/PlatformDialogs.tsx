@@ -7,6 +7,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  alpha,
   Box,
   Button,
   CircularProgress,
@@ -18,12 +19,12 @@ import {
   LinearProgress,
   LinearProgressProps,
   Typography,
-} from '@material-ui/core';
-import { useCallback, useEffect, useState } from 'react';
-import { ExpandMore } from '@material-ui/icons';
+} from '@mui/material';
 import * as React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { ExpandMore } from '@mui/icons-material';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
-import { makeStyles, alpha } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { Markdown } from '@lyricistant/renderer/markdown/Markdown';
 
 const useAlertDialogStyles = makeStyles({

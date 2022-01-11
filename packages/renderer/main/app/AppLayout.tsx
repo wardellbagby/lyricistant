@@ -1,5 +1,5 @@
-import { Box, Theme } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import React, { ReactNode, useEffect } from 'react';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 

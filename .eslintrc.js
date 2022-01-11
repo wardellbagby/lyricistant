@@ -169,7 +169,6 @@ module.exports = {
         allow: [
           '@lyricistant/common/**/*',
           'rxjs/*',
-          '@material-ui/**/*',
           '**/images/**',
           '@testing-library/jest-dom/*',
           '@fontsource/**/*',

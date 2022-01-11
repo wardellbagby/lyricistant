@@ -1,10 +1,10 @@
 import {
   Box,
   Button,
+  Dialog,
   DialogContent,
   Grid,
   Link,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -12,8 +12,8 @@ import {
   TableContainer,
   TableRow,
   Typography,
-} from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -64,7 +64,7 @@ export const AboutDialog = () => {
           container
           spacing={1}
           direction="column"
-          justify="center"
+          justifyContent="center"
           alignItems="center"
         >
           <Grid item xs={12}>

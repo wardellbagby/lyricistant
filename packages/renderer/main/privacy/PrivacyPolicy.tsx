@@ -1,9 +1,9 @@
 import {
+  Dialog,
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
+} from '@mui/material';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 

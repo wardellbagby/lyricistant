@@ -1,5 +1,5 @@
-import { Box, Button, Dialog, DialogTitle, Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, Button, Dialog, DialogTitle, Grid } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { Apple, AppleIos, Linux, MicrosoftWindows } from 'mdi-material-ui';
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -8,7 +8,7 @@ import {
   Release,
   supportedReleases,
 } from '@lyricistant/renderer/download';
-import { Android } from '@material-ui/icons';
+import { Android } from '@mui/icons-material';
 
 const useStyles = (release: Release) =>
   makeStyles(() => ({
@@ -106,7 +106,12 @@ export const ChooseDownloadDialog = () => {
         Download Lyricistant
       </DialogTitle>
       <Box paddingLeft={'16px'} paddingRight={'16px'} paddingBottom={'32px'}>
-        <Grid container spacing={1} alignItems={'center'} justify={'center'}>
+        <Grid
+          container
+          spacing={1}
+          alignItems={'center'}
+          justifyContent={'center'}
+        >
           {[...releases.keys()].map((platform) =>
             releases.get(platform).map((release) => (
               <Grid key={release.asset} item xs={6}>

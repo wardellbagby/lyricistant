@@ -1,5 +1,12 @@
-import Box from '@material-ui/core/Box';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import {
+  Box,
+  IconButton,
+  LinearProgress,
+  Theme,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import React, {
   ReactNode,
   useEffect,
@@ -12,12 +19,6 @@ import { usePreferences } from '@lyricistant/renderer/preferences/PreferencesSto
 import { useMachine } from '@xstate/react';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
 import {
-  IconButton,
-  LinearProgress,
-  Typography,
-  useTheme,
-} from '@material-ui/core';
-import {
   useSelectedWordPosition,
   useSelectedWords,
   useSelectedWordStore,
@@ -29,7 +30,7 @@ import { FlexDirectionProperty } from 'csstype';
 import useResizeObserver from 'use-resize-observer';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
 import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
-import { ExpandMore } from '@material-ui/icons';
+import { ExpandMore } from '@mui/icons-material';
 import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles<
@@ -194,7 +195,7 @@ const HelperText = ({ text }: { text: string }) => {
       p={'16px'}
       display={'flex'}
       flexWrap={'wrap-reverse'}
-      gridGap={'12px'}
+      gap={'12px'}
       alignItems={'center'}
       justifyContent={'center'}
       flexDirection={'column'}
@@ -310,6 +311,7 @@ const ShowAllButton = ({ onClick }: { onClick: () => void }) => {
       className={button}
       style={{ height: isSmallLayout ? '100%' : undefined }}
       onClick={onClick}
+      size="large"
     >
       {isSmallLayout ? <DotsVertical /> : <ExpandMore />}
     </IconButton>

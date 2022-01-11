@@ -1,4 +1,4 @@
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 
@@ -102,6 +102,6 @@ export const editorTheme = (appTheme: Theme, font: string): Extension =>
       },
     },
     {
-      dark: appTheme.palette.type === 'dark',
+      dark: appTheme.palette.mode === 'dark',
     }
   );

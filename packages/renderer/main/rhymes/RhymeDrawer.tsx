@@ -1,7 +1,7 @@
-import { Drawer, Theme, Typography } from '@material-ui/core';
+import { Drawer, Theme, Typography } from '@mui/material';
 import React from 'react';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 
@@ -29,6 +29,7 @@ const useStyles = makeStyles<Theme, { isSmallLayout: boolean }>((theme) => ({
   rhymeContainer: {
     overflow: 'overlay',
     width: '100%',
+    background: theme.palette.background.paper,
   },
   header: {
     width: '100%',

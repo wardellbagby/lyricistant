@@ -5,11 +5,11 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
+  Link,
   TextareaAutosize,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
-import Link from '@material-ui/core/Link';
 import { useEditorText } from '@lyricistant/renderer/editor/EditorTextStore';
 
 interface AppErrorProps {
@@ -49,7 +49,7 @@ export function AppError({ error }: AppErrorProps) {
           >
             <TextareaAutosize
               wrap={'soft'}
-              rowsMax={6}
+              maxRows={6}
               readOnly
               defaultValue={error.stack}
             />

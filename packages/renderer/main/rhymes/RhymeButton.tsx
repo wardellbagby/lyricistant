@@ -1,6 +1,5 @@
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import { ListItem, ListItemText } from '@mui/material';
 import { isDevelopment } from '@lyricistant/common/BuildModes';
 import React from 'react';
 

@@ -1,14 +1,20 @@
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
-import { Box, ButtonBase, Paper, Theme } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import {
+  Box,
+  ButtonBase,
+  Paper,
+  Theme,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
   AddCircle,
   FolderOpen,
   GetApp,
   Save,
   Settings,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React, {
   FunctionComponent,
   useCallback,
@@ -70,7 +76,7 @@ const MenuIcon: FunctionComponent<{
 export const Menu: React.FC = () => {
   const theme = useTheme();
   const classes = useMenuStyles({ isSmallLayout: useSmallLayout() });
-  const useHorizontal = useMediaQuery(theme.breakpoints.down('sm'));
+  const useHorizontal = useMediaQuery(theme.breakpoints.down('md'));
   const [uiConfig, setUiConfig] = useState<UiConfig>(null);
   const editorText = useEditorText();
   const history = useHistory();
