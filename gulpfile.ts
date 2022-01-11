@@ -1,5 +1,8 @@
+import { promisify } from 'util';
+import path from 'path';
 import { parallel, series } from 'gulp';
-import { cleanBuildDirectory } from '@tooling/common-tasks.gulp';
+import { glob } from 'glob';
+import del from 'del';
 import { buildWeb } from './apps/web/web.gulp';
 import { buildElectron } from './apps/electron/electron.gulp';
 import { testWeb } from './apps/web/test/test.gulp';
@@ -32,5 +35,14 @@ export const testAll = series(
   testRenderer
 );
 
-export const clean = cleanBuildDirectory;
+export const clean = async () => {
+  const tsConfigs = await promisify(glob)('!(node_modules)/*/tsconfig.json');
+
+  tsConfigs
+    .map((tsConfig) => path.resolve(path.dirname(tsConfig), 'build'))
+    .forEach((buildDir) => {
+      console.log(`Cleaning ${buildDir}`);
+      del.sync(buildDir);
+    });
+};
 export const check = parallel(buildAll, testAll);
