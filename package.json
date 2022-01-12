@@ -31,7 +31,7 @@
     "@capacitor/cli": "^3.3.4",
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0",
-    "@svgr/webpack": "^5.5.0",
+    "@svgr/webpack": "^6.2.0",
     "@testing-library/dom": "^8.11.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
