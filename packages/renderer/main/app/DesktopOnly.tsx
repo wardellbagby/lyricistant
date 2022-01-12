@@ -56,7 +56,9 @@ export function DesktopOnly({
   useChannel('ui-config', setUiConfig);
   const [isAcknowledged, setAcknowledged] = useState(false);
   const showWarning =
-    uiConfig?.showBrowserWarning && isUnsupportedBrowser && !isAcknowledged;
+    uiConfig?.showBrowserWarning === true &&
+    isUnsupportedBrowser &&
+    !isAcknowledged;
   return (
     <>
       <WarningDialog
