@@ -63,7 +63,11 @@ export const generateRhymes = (input: string): Rhyme[] => {
 
   const results = generatedRhymes
     .sort((a, b) => b.score - a.score)
-    .slice(0, MAX_RHYMES_COUNT);
+    .slice(0, MAX_RHYMES_COUNT)
+    .filter(
+      (left, index) =>
+        index === generatedRhymes.findIndex((right) => left.word === right.word)
+    );
 
   cache.set(input, results);
   if (cache.size > MAX_CACHE_COUNT) {

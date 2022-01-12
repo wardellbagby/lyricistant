@@ -31,7 +31,15 @@ const fetchRhymes = async (input: string, rhymeSource: RhymeSource) => {
       results = await offlineRhymes(input);
       break;
     case RhymeSource.Datamuse:
-      results = await datamuseRhymes(input);
+      try {
+        results = await datamuseRhymes(input);
+      } catch (e) {
+        logger.warn(
+          'Failed to fetch Datamuse rhymes; falling back to offline',
+          e
+        );
+        results = await offlineRhymes(input);
+      }
       break;
   }
 
