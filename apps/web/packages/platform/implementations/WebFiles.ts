@@ -35,11 +35,12 @@ export class WebFiles implements Files {
 
   public saveFile = async (
     data: ArrayBuffer,
+    defaultFileName: string,
     path?: string
   ): Promise<FileMetadata> => {
     const { path: savedPath } = await (
       await renderer.getFileSystem()
-    ).saveFile(transfer(data, [data]), path, this.handles.get(path));
+    ).saveFile(transfer(data, [data]), defaultFileName, this.handles.get(path));
     return {
       path: savedPath,
     };

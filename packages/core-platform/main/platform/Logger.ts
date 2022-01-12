@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import { Logger } from '@lyricistant/common/Logger';
-import { fileSave } from 'browser-fs-access';
 import { DateTime } from 'luxon';
 import { Subject } from 'rxjs';
 import { bufferCount, map } from 'rxjs/operators';
@@ -32,13 +31,11 @@ export class CoreLogger implements Logger {
     logMessages.next(['info', message, args]);
   }
 
-  public async save() {
+  public async getPrintedLogs() {
     logMessages.complete();
-    await fileSave(new Blob(getLogs()), {
-      fileName: 'logs',
-      extensions: ['txt'],
-    });
+    const logs = getLogs();
     logMessages = new Subject();
+    return logs;
   }
 }
 

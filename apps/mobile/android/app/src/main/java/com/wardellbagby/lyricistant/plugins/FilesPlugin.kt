@@ -37,7 +37,7 @@ class FilesPlugin : Plugin() {
       val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
         addCategory(Intent.CATEGORY_OPENABLE)
         type = "*/*"
-        putExtra(Intent.EXTRA_TITLE, "Lyrics.lyrics")
+        putExtra(Intent.EXTRA_TITLE, call.getString("defaultFileName"))
       }
 
       startActivityForResult(call, intent, "saveFileResult")

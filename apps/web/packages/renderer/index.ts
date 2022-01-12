@@ -13,12 +13,11 @@ export const receive = (channel: string, args: any[]) => {
 
 const getFileSystem: () => BufferFileSystem = () =>
   proxy({
-    saveFile: async (buffer, path, handle) => {
+    saveFile: async (buffer, defaultFileName: string, handle) => {
       const result = await fileSave(
         new Blob([buffer]),
         {
-          fileName: path ?? 'MyLyrics.lyrics',
-          extensions: ['.lyrics'],
+          fileName: defaultFileName,
         },
         handle
       );

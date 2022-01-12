@@ -40,6 +40,10 @@ export interface PlatformFile {
 
 export interface Files {
   openFile: (file?: PlatformFile) => Promise<PlatformFile>;
-  saveFile: (data: ArrayBuffer, path?: string) => Promise<FileMetadata>;
+  saveFile: (
+    data: ArrayBuffer,
+    defaultFileName: string,
+    path?: string
+  ) => Promise<FileMetadata>;
   readFile?: (filePath: string) => Promise<PlatformFile>;
 }

@@ -4,7 +4,11 @@ import { Logger } from '@lyricistant/common/Logger';
 
 interface MobileFilesPlugin {
   openFile: () => Promise<{ path: string; name?: string; data: number[] }>;
-  saveFile: (call: { data: number[]; path?: string }) => Promise<FileMetadata>;
+  saveFile: (call: {
+    data: number[];
+    defaultFileName: string;
+    path?: string;
+  }) => Promise<FileMetadata>;
 }
 
 const mobileFilesPlugin = registerPlugin<MobileFilesPlugin>('Files');
@@ -24,10 +28,12 @@ export class MobileFiles implements Files {
 
   public saveFile = async (
     data: ArrayBuffer,
+    defaultFileName: string,
     path?: string
   ): Promise<FileMetadata> =>
     mobileFilesPlugin.saveFile({
       data: Array.from(new Uint8Array(data)),
+      defaultFileName,
       path,
     });
 }

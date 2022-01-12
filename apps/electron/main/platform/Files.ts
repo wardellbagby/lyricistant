@@ -37,6 +37,7 @@ export class ElectronFiles implements IFiles {
 
   public saveFile = async (
     data: ArrayBuffer,
+    defaultFileName: string,
     path?: string
   ): Promise<FileMetadata> => {
     const buffer = Buffer.from(data);
@@ -45,6 +46,7 @@ export class ElectronFiles implements IFiles {
       return { path };
     } else {
       const result = await this.dialog.showSaveDialog(this.window, {
+        defaultPath: defaultFileName,
         filters: [{ name: 'Lyrics', extensions: [DOTLESS_LYRICS_EXTENSIONS] }],
       });
 

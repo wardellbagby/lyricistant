@@ -186,6 +186,7 @@ export class FileManager implements Manager {
 
       const newFileMetadata = await this.files.saveFile(
         serializedFileData,
+        `Lyrics.${this.currentFileHandler.extension}`,
         path
       );
       if (newFileMetadata) {

@@ -25,6 +25,8 @@ interface VersioningData {
 }
 
 export class LyricistantFileHandler implements FileHandler {
+  public extension = 'lyrics';
+
   public canHandle = (file: PlatformFile) =>
     file.type === 'application/zip' ||
     // ZIP file magic number header.

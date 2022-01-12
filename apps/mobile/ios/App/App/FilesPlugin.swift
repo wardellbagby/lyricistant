@@ -53,7 +53,7 @@ public class FilesPlugin: CAPPlugin, UIDocumentPickerDelegate,UINavigationContro
         let fileManager = FileManager.default
         
         do {
-            let path = fileManager.temporaryDirectory.appendingPathComponent("Lyrics.lyrics")
+            let path = fileManager.temporaryDirectory.appendingPathComponent(call.getString("defaultFileName")!)
             try data.write(to: path)
             
             DispatchQueue.main.async {

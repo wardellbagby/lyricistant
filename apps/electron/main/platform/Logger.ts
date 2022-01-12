@@ -26,6 +26,16 @@ export class ElectronLogger implements Logger {
     log.warn(message, ...args);
   }
 
+  public async getPrintedLogs() {
+    const messages: string[] = [];
+    log.transports.file.readAllLogs().forEach(({ lines }) => {
+      messages.push(...lines);
+    });
+    messages.sort();
+
+    return messages;
+  }
+
   public async save() {
     const result = await dialog.showSaveDialog(this.window, {
       defaultPath: 'logs',

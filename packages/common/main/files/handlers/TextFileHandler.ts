@@ -3,6 +3,8 @@ import { FileData, PlatformFile } from '@lyricistant/common/files/Files';
 import { Buffers } from '@lyricistant/common/files/Buffers';
 
 export class TextFileHandler implements FileHandler {
+  public extension = 'txt';
+
   public constructor(private buffers: Buffers) {}
 
   public canHandle = (file: PlatformFile): boolean =>
