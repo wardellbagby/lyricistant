@@ -74,7 +74,7 @@ export class PreferenceManager implements Manager {
     textSize: 16,
     colorScheme: ColorScheme.System,
     rhymeSource: RhymeSource.Datamuse,
-    font: Font.Roboto_Mono,
+    font: Font.Roboto,
     ...((await this.preferences.getPreferences()) as Partial<PreferencesData>),
   });
 
