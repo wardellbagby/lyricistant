@@ -78,10 +78,11 @@ describe('Files', () => {
     });
     fs.writeFile.resolves();
 
-    const actual = await files.saveFile(encode('oh wow!'));
+    const actual = await files.saveFile(encode('oh wow!'), 'defaultname.txt');
 
     expect(expected).to.deep.equal(actual);
     expect(dialogs.showSaveDialog).to.have.been.calledWith(window, {
+      defaultPath: 'defaultname.txt',
       filters: [{ name: 'Lyrics', extensions: ['lyrics'] }],
     });
     expect(fs.writeFile).to.have.been.calledWith(
@@ -94,7 +95,11 @@ describe('Files', () => {
     const expected = { path: 'mycoollyrics.txt' };
     fs.writeFile.resolves();
 
-    const actual = await files.saveFile(encode('oh wow!'), 'mycoollyrics.txt');
+    const actual = await files.saveFile(
+      encode('oh wow!'),
+      'lyrics.txt',
+      'mycoollyrics.txt'
+    );
 
     expect(expected).to.deep.equal(actual);
     expect(dialogs.showSaveDialog).to.have.not.been.called;

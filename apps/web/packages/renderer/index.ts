@@ -48,6 +48,7 @@ const getFileSystem: () => BufferFileSystem = () =>
   });
 
 const getLocalStorage: () => Storage = () => proxy(localStorage);
+const getSessionStorage: () => Storage = () => proxy(sessionStorage);
 const showConfirmDialog = (message?: string) => confirm(message);
 
 expose(
@@ -55,6 +56,7 @@ expose(
     receive,
     getFileSystem,
     getLocalStorage,
+    getSessionStorage,
     showConfirmDialog,
   },
   mainProcessWorker

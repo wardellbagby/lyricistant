@@ -38,6 +38,7 @@ class WebPlatformDelegate implements PlatformDelegate {
     channel: Channel,
     ...args: Parameters<RendererToPlatformListener[Channel]>
   ): void {
+    logger.info('Sending data to platform', { channel, args });
     platform.receive(channel, args);
   }
 }

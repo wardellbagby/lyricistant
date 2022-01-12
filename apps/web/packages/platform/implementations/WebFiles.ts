@@ -4,7 +4,6 @@ import {
   PlatformFile,
 } from '@lyricistant/common/files/Files';
 import { renderer } from '@web-platform/renderer';
-import { transfer } from 'comlink';
 import { FileSystemHandle } from 'browser-fs-access';
 
 export class WebFiles implements Files {
@@ -40,7 +39,7 @@ export class WebFiles implements Files {
   ): Promise<FileMetadata> => {
     const { path: savedPath } = await (
       await renderer.getFileSystem()
-    ).saveFile(transfer(data, [data]), defaultFileName, this.handles.get(path));
+    ).saveFile(data, defaultFileName, this.handles.get(path));
     return {
       path: savedPath,
     };

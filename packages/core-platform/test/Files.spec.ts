@@ -81,7 +81,7 @@ describe('Files', () => {
       requestPermission: undefined,
     });
 
-    const actual = await files.saveFile(encode('oh wow!'));
+    const actual = await files.saveFile(encode('oh wow!'), 'MyLyrics.lyrics');
 
     expect(actual).to.deep.include(expected);
     expect(fs.saveFile).to.have.been.calledWith(
@@ -89,8 +89,7 @@ describe('Files', () => {
         type: LYRICS_MIME_TYPE,
       }),
       {
-        fileName: 'Lyrics.lyrics',
-        extensions: ['.lyrics'],
+        fileName: 'MyLyrics.lyrics',
       }
     );
   });
@@ -126,6 +125,7 @@ describe('Files', () => {
 
     const actual = await files.saveFile(
       encode('oh wow!'),
+      'defaultfilename.lyrics',
       openFileResult.metadata.path
     );
 
@@ -135,8 +135,7 @@ describe('Files', () => {
         type: LYRICS_MIME_TYPE,
       }),
       {
-        fileName: 'Lyrics.lyrics',
-        extensions: ['.lyrics'],
+        fileName: 'defaultfilename.lyrics',
       },
       handle
     );

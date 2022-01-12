@@ -6,11 +6,14 @@ import {
   RendererToPlatformListener,
 } from '@lyricistant/common/Delegates';
 import { ListenerManager } from '@lyricistant/core-platform/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
 import { renderer } from './renderer';
 
 export class WebRendererDelegate implements RendererDelegate {
   private listeners: ListenerManager = new ListenerManager();
   private rendererListenerSetListeners = new Map<string, Array<() => void>>();
+
+  public constructor(private logger: Logger) {}
 
   public receive = (channel: string, args: any[]) => {
     this.listeners
@@ -38,6 +41,7 @@ export class WebRendererDelegate implements RendererDelegate {
     channel: Channel,
     ...args: Parameters<PlatformToRendererListener[Channel]>
   ): void {
+    this.logger.info('Sending data to renderer', { channel, args });
     renderer.receive(channel, args);
   }
 

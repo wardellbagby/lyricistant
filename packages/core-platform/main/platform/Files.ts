@@ -1,7 +1,6 @@
 import {
   FileMetadata,
   Files as IFiles,
-  LYRICS_EXTENSION,
   LYRICS_MIME_TYPE,
   PlatformFile,
   SUPPORTED_EXTENSIONS,
@@ -61,9 +60,9 @@ export class CoreFiles implements IFiles {
 
   public saveFile = async (
     data: ArrayBuffer,
+    defaultFilename: string,
     fileHandleId?: string
   ): Promise<FileMetadata> => {
-    const defaultFilename = `Lyrics${LYRICS_EXTENSION}`;
     const fileHandle = this.fileHandles.get(fileHandleId);
     try {
       const result = await this.fs.saveFile(
@@ -72,7 +71,6 @@ export class CoreFiles implements IFiles {
         }),
         {
           fileName: defaultFilename,
-          extensions: [LYRICS_EXTENSION],
         },
         fileHandle
       );

@@ -62,8 +62,10 @@ describe('File Manager', () => {
       canHandle: true,
     });
 
+    fileHandler.extension = 'wow';
     fileHandler.load.callsFake(async (file) => ({ lyrics: decode(file.data) }));
     fileHandler.create.callsFake(async (file) => encode(file.lyrics));
+    defaultFileHandler.extension = 'yup';
     defaultFileHandler.create.callsFake(async (file) => encode(file.lyrics));
     mockExtension.key = 'hello';
 
@@ -276,7 +278,8 @@ describe('File Manager', () => {
     await rendererListeners.invoke('editor-text', 'Reeboks on; just do it!');
 
     expect(files.saveFile).to.have.been.calledWith(
-      encode('Reeboks on; just do it!')
+      encode('Reeboks on; just do it!'),
+      'Lyrics.yup'
     );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -354,6 +357,7 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith(
       encode('Blessings, blessings.'),
+      'Lyrics.wow',
       '/Desktop/whitetuxedo.txt'
     );
     expect(fileChangeListener).to.have.been.called;
@@ -397,6 +401,7 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith(
       encode('Blessings, blessings.'),
+      'Lyrics.wow',
       '/Desktop/whitetuxedo2.txt'
     );
     expect(fileChangeListener).to.have.been.called.callCount(3);

@@ -10,6 +10,7 @@ export class UnloadManager implements Manager {
   public register = () => {
     addEventListener('unload', () => {
       this.logger.info('User is leaving page. Deleting unsaved lyrics.');
+      this.logger.flush?.();
       this.temporaryFiles.delete();
     });
   };

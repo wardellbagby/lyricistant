@@ -16,6 +16,8 @@ import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { WebTemporaryFiles } from '@web-platform/implementations/WebTemporaryFiles';
 import { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
 import { WebDialogs } from '@web-platform/implementations/WebDialogs';
+import { Logger } from '@lyricistant/common/Logger';
+import { WebLogger } from '@web-platform/implementations/WebLogger';
 import { WebRendererDelegate } from './RendererDelegate';
 
 const createComponent = (): DIContainer => {
@@ -23,6 +25,7 @@ const createComponent = (): DIContainer => {
 
   component.registerSingleton<RendererDelegate, WebRendererDelegate>();
   component.registerSingleton<UnloadManager>();
+  component.registerSingleton<Logger, WebLogger>();
   component.registerSingleton<Preferences, WebPreferences>();
   component.registerSingleton<RecentFiles, WebRecentFiles>();
   component.registerSingleton<TemporaryFiles, WebTemporaryFiles>();
