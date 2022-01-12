@@ -156,7 +156,7 @@ const useLoadingIndicatorStyles = makeStyles<Theme, { display: boolean }>(
       visibility: ({ display }) => (display ? 'visible' : 'hidden'),
     },
     progressBarColor: {
-      backgroundColor: theme.palette.text.secondary,
+      backgroundColor: theme.palette.action.disabled,
     },
     progressBarBackground: {
       backgroundColor: theme.palette.background.default,
