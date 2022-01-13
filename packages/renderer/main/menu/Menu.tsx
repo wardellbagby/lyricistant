@@ -1,26 +1,35 @@
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 import {
   Box,
-  ButtonBase,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu as MuiMenu,
+  MenuItem,
+  MenuList,
   Paper,
+  SxProps,
   Theme,
-  useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import {
   AddCircle,
   FolderOpen,
-  History,
   GetApp,
+  History,
+  MoreVert,
   Save,
   Settings,
+  SvgIconComponent,
 } from '@mui/icons-material';
 import React, {
   FunctionComponent,
   useCallback,
   useEffect,
+  useMemo,
   useState,
+  MouseEvent,
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory } from 'react-router-dom';
@@ -28,60 +37,136 @@ import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { downloadApp } from '@lyricistant/renderer/download';
 import { useEditorText } from '@lyricistant/renderer/editor/EditorTextStore';
 
-const useIconStyles = makeStyles((theme: Theme) => ({
-  root: {
-    width: 56,
-    height: 56,
-    color: theme.palette.action.active,
-    flexShrink: 0,
-    display: 'inline-flex',
-  },
-  icon: {
-    width: 24,
-    height: 24,
-  },
-}));
-
 const useMenuStyles = makeStyles<Theme, { isSmallLayout: boolean }>(
   (theme: Theme) => ({
     menu: {
       backgroundColor: theme.palette.background.paper,
-      height: (props) => (props.isSmallLayout ? 'fit-content' : '100%'),
-      width: (props) => (props.isSmallLayout ? '100%' : 'fit-content'),
+      height: (props) => (props.isSmallLayout ? '56px' : '100%'),
+      width: (props) => (props.isSmallLayout ? '100%' : '56px'),
     },
   })
 );
 
 const MenuIcon: FunctionComponent<{
-  onClick?: () => void;
+  onClick: (event: MouseEvent) => void;
   ariaLabel: string;
-}> = ({ onClick, ariaLabel, children }) => {
-  const classes = useIconStyles();
+  debounce?: boolean;
+  sx?: SxProps;
+}> = ({ onClick, ariaLabel, debounce, sx, children }) => {
   const [debouncedClick] = useDebouncedCallback(onClick, 200);
 
   return (
-    <ButtonBase
-      className={classes.root}
-      onClick={debouncedClick}
+    <Box
+      padding={'8px'}
       aria-label={ariaLabel}
+      role={'button'}
+      sx={sx}
+      onClick={debounce ? debouncedClick : onClick}
     >
-      <Box display="flex" alignItems="center" justifyContent="center">
-        {React.Children.map(children, (child: React.ReactElement) =>
-          React.cloneElement(child, { className: classes.icon })
-        )}
-      </Box>
-    </ButtonBase>
+      <IconButton>{children}</IconButton>
+    </Box>
+  );
+};
+
+interface OverflowItem {
+  icon: SvgIconComponent;
+  label: string;
+  onClick: () => void;
+}
+interface AppBarProps {
+  direction: 'horizontal' | 'vertical';
+  leading: OverflowItem[];
+  trailing: OverflowItem[];
+}
+
+const toMenuIcon = (item: OverflowItem) => (
+  <MenuIcon onClick={item.onClick} ariaLabel={item.label}>
+    <item.icon />
+  </MenuIcon>
+);
+
+const MenuBar = (props: AppBarProps) => {
+  const isHorizontal = props.direction === 'horizontal';
+  const [anchor, setAnchor] = useState<Element>(null);
+  const onMenuClicked = (event: MouseEvent) => setAnchor(event.currentTarget);
+
+  const shouldTrim = useMemo(
+    () => props.leading.length > 3 && isHorizontal,
+    [props.leading, isHorizontal]
+  );
+
+  const leading = useMemo(() => {
+    if (shouldTrim) {
+      return props.leading.slice(0, 3);
+    }
+    return props.leading;
+  }, [props.leading, shouldTrim]);
+
+  const trailing = useMemo(() => {
+    if (shouldTrim) {
+      return [...props.leading.slice(3), ...props.trailing];
+    }
+    return props.trailing;
+  }, [props.leading, props.trailing, shouldTrim]);
+
+  useEffect(() => setAnchor(null), [isHorizontal]);
+
+  return (
+    <Box
+      display={'flex'}
+      height={isHorizontal ? 'auto' : '100%'}
+      width={isHorizontal ? '100%' : 'auto'}
+      flexDirection={isHorizontal ? 'row' : 'column'}
+    >
+      {leading.map(toMenuIcon)}
+      <Box flexGrow={'1'} />
+      <MenuIcon
+        sx={{ display: isHorizontal ? undefined : 'none' }}
+        ariaLabel={'Overflow'}
+        onClick={(event) => {
+          onMenuClicked(event);
+        }}
+        debounce={false}
+      >
+        <MoreVert />
+      </MenuIcon>
+      <MuiMenu
+        anchorEl={anchor}
+        open={!!anchor}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={() => setAnchor(null)}
+      >
+        <MenuList disablePadding>
+          {trailing.map((item) => (
+            <MenuItem onClick={item.onClick}>
+              <ListItemIcon>
+                <item.icon />
+              </ListItemIcon>
+              <ListItemText>{item.label}</ListItemText>
+            </MenuItem>
+          ))}
+        </MenuList>
+      </MuiMenu>
+      {isHorizontal ? null : trailing.map(toMenuIcon)}
+    </Box>
   );
 };
 
 export const Menu: React.FC = () => {
   const theme = useTheme();
   const classes = useMenuStyles({ isSmallLayout: useSmallLayout() });
-  const useHorizontal = useMediaQuery(theme.breakpoints.down('md'));
   const [uiConfig, setUiConfig] = useState<UiConfig>(null);
   const editorText = useEditorText();
   const history = useHistory();
   const isSmallLayout = useSmallLayout();
+  const direction = isSmallLayout ? 'horizontal' : 'vertical';
 
   const onNewClicked = () => platformDelegate.send('new-file-attempt');
   const onOpenClicked = () => platformDelegate.send('open-file-attempt');
@@ -97,6 +182,50 @@ export const Menu: React.FC = () => {
     }
   };
   const onFileHistoryClicked = () => history.replace('/file-history');
+
+  const leadingIcons = useMemo(
+    () =>
+      [
+        {
+          label: 'New File',
+          icon: AddCircle,
+          onClick: onNewClicked,
+        },
+        uiConfig?.showOpen && {
+          label: 'Open File',
+          icon: FolderOpen,
+          onClick: onOpenClicked,
+        },
+        {
+          label: 'Save File',
+          icon: Save,
+          onClick: onSaveClicked,
+        },
+        uiConfig?.showOpen && {
+          label: 'View file history',
+          icon: History,
+          onClick: onFileHistoryClicked,
+        },
+      ].filter((node) => node),
+    [uiConfig]
+  );
+  const trailingIcons = useMemo(
+    () =>
+      [
+        uiConfig?.showDownload && {
+          label: 'Download Lyricistant',
+          icon: GetApp,
+          onClick: onDownloadClicked,
+        },
+        {
+          label: 'Open Preferences',
+          icon: Settings,
+          onClick: onSettingsClicked,
+        },
+      ].filter((value) => !!value),
+    [uiConfig]
+  );
+
   useEffect(() => {
     const onConfigChange = (config: UiConfig) => {
       setUiConfig(config);
@@ -117,38 +246,11 @@ export const Menu: React.FC = () => {
       boxShadow={1}
     >
       <Paper square className={classes.menu} color={theme.palette.primary.main}>
-        <Box
-          display={'flex'}
-          height={isSmallLayout ? 'auto' : '100%'}
-          width={isSmallLayout ? '100%' : 'auto'}
-          flexDirection={useHorizontal ? 'row' : 'column'}
-        >
-          <MenuIcon ariaLabel={'New'} onClick={onNewClicked}>
-            <AddCircle />
-          </MenuIcon>
-          {uiConfig?.showOpen && (
-            <MenuIcon ariaLabel={'Open'} onClick={onOpenClicked}>
-              <FolderOpen />
-            </MenuIcon>
-          )}
-          <MenuIcon ariaLabel={'Save'} onClick={onSaveClicked}>
-            <Save />
-          </MenuIcon>
-          {uiConfig?.showOpen && (
-            <MenuIcon ariaLabel={'File History'} onClick={onFileHistoryClicked}>
-              <History />
-            </MenuIcon>
-          )}
-          <Box flexGrow={'1'} />
-          {uiConfig?.showDownload && (
-            <MenuIcon ariaLabel={'Download App'} onClick={onDownloadClicked}>
-              <GetApp />
-            </MenuIcon>
-          )}
-          <MenuIcon ariaLabel={'Open Preferences'} onClick={onSettingsClicked}>
-            <Settings />
-          </MenuIcon>
-        </Box>
+        <MenuBar
+          direction={direction}
+          leading={leadingIcons}
+          trailing={trailingIcons}
+        />
       </Paper>
     </Box>
   );

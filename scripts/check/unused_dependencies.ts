@@ -62,6 +62,7 @@ const options: Options = {
     'karma-mocha',
     'karma-chrome-launcher',
     'karma-spec-reporter',
+    'karma-viewport',
     '@types/karma-mocha',
     '@types/karma-webpack',
   ],

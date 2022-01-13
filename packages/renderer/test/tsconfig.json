@@ -6,8 +6,10 @@
       "mocha",
       "node",
       "../../third-party-types",
-      "../../renderer-window"
-    ]
+      "../../renderer-window",
+      "karma-viewport"
+    ],
+    "composite": true
   },
   "references": [{ "path": "../" }],
   "extends": "../tsconfig.json"

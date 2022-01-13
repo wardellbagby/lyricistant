@@ -18,6 +18,7 @@ describe('Menu component', () => {
   let platformDelegate: MockPlatformDelegate;
 
   beforeEach(async () => {
+    viewport.set(1200, 1200);
     configure({
       getElementError: (message) => {
         const error = new Error(message);
@@ -39,7 +40,7 @@ describe('Menu component', () => {
   it('tells the platform when user attempts to make a new file', async () => {
     render(<Menu />);
 
-    const element = screen.getByRole('button', { name: 'New' });
+    const element = screen.getByRole('button', { name: 'New File' });
     userEvent.click(element);
 
     await waitFor(() =>
@@ -58,7 +59,7 @@ describe('Menu component', () => {
       })
     );
     const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Open' })
+      screen.getByRole('button', { name: 'Open File' })
     );
     userEvent.click(element);
 
@@ -75,7 +76,7 @@ describe('Menu component', () => {
 
     render(<Menu />);
     const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Save' })
+      screen.getByRole('button', { name: 'Save File' })
     );
     userEvent.click(element);
 
@@ -125,7 +126,7 @@ describe('Menu component', () => {
     );
 
     const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Download App' })
+      screen.getByRole('button', { name: 'Download Lyricistant' })
     );
     userEvent.click(element);
 
@@ -154,7 +155,7 @@ describe('Menu component', () => {
     );
 
     const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Download App' })
+      screen.getByRole('button', { name: 'Download Lyricistant' })
     );
     userEvent.click(element);
 

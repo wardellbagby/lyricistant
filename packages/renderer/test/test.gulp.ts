@@ -10,13 +10,14 @@ export const testRenderer = async () => {
 
   const rawConfig: ConfigOptions = {
     basePath: __dirname,
-    frameworks: ['mocha', 'webpack'],
+    frameworks: ['mocha', 'webpack', 'viewport'],
     files: [{ pattern: '**/*.spec.tsx', watched: false }],
     plugins: [
       'karma-webpack',
       'karma-mocha',
       'karma-chrome-launcher',
       'karma-spec-reporter',
+      'karma-viewport',
     ],
     preprocessors: {
       '**/*.spec.tsx': ['webpack'],
