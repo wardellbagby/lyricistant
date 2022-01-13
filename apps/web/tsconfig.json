@@ -2,7 +2,8 @@
   "include": ["main/**/*.ts"],
   "compilerOptions": {
     "outDir": "build",
-    "lib": ["es6"],
+    "lib": ["es6", "dom"],
+    "types": ["../../packages/renderer-window", "webpack-env"],
     "composite": true
   },
   "references": [{ "path": "./packages/renderer" }],
