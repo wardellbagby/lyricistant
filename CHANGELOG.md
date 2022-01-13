@@ -1,3 +1,12 @@
+## [1.3.4](https://github.com/wardellbagby/lyricistant/compare/v1.3.3...v1.3.4) (2022-01-13)
+
+
+### Bug Fixes
+
+* fix save dialog not showing ([58ca30c](https://github.com/wardellbagby/lyricistant/commit/58ca30c2aace2da7f6e5845838a924ee6ba88bec))
+
+
+
 ## [1.3.3](https://github.com/wardellbagby/lyricistant/compare/v1.3.2...v1.3.3) (2022-01-13)
 
 
