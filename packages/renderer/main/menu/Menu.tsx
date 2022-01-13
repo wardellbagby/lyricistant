@@ -207,7 +207,7 @@ export const Menu: React.FC = () => {
           onClick: onFileHistoryClicked,
         },
       ].filter((node) => node),
-    [uiConfig]
+    [uiConfig, onSaveClicked]
   );
   const trailingIcons = useMemo(
     () =>
