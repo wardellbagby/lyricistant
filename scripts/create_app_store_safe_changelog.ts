@@ -71,7 +71,23 @@ const getReleaseNotesFromChangelog = (start = 0): [string, number] => {
     .join('\n')
     .trim();
 
-  return [changelog, end];
+  return [trimToMaxLength(changelog), end];
+};
+
+const trimToMaxLength = (value: string) => {
+  if (value.length <= 500) {
+    return value;
+  }
+
+  let length = value.length;
+  let result = value;
+  const replacedEnd = '\n- And more!';
+  while (length > 500 + replacedEnd.length) {
+    const lines = result.split('\n');
+    result = lines.slice(0, lines.length - 1).join('\n');
+    length = result.length;
+  }
+  return result + replacedEnd;
 };
 
 const findValidReleaseNotes = () => {
