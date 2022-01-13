@@ -25,7 +25,11 @@ const getReleaseNotesFromChangelog = (start = 0): [string, number] => {
     .split('\n')
     .map((line) => {
       // Remove line that adds the version and a link to it.
-      if (line.startsWith('## ') || line.trim().length === 0) {
+      if (
+        line.startsWith('# ') ||
+        line.startsWith('## ') ||
+        line.trim().length === 0
+      ) {
         return null;
       }
       // Section headers start with this; remove the markdown but keep the title
@@ -82,7 +86,8 @@ const trimToMaxLength = (value: string) => {
   let length = value.length;
   let result = value;
   const replacedEnd = '\n- And more!';
-  while (length > 500 + replacedEnd.length) {
+  // Play Store limit is actually 500 but pad to be safer.
+  while (length + replacedEnd.length > 470) {
     const lines = result.split('\n');
     result = lines.slice(0, lines.length - 1).join('\n');
     length = result.length;
