@@ -133,7 +133,7 @@ export class FileManager implements Manager {
       }
     } catch (e) {
       this.logger.error('Error opening file.', e);
-      this.rendererDelegate.send('file-opened', e, undefined, undefined, true);
+      this.rendererDelegate.send('file-opened', e, undefined, true);
     } finally {
       this.rendererDelegate.send('close-dialog', OPEN_FILE_DIALOG_TAG);
     }
@@ -192,13 +192,7 @@ export class FileManager implements Manager {
       if (newFileMetadata) {
         const fileTitle = newFileMetadata.name ?? newFileMetadata.path;
         this.currentFilePath = newFileMetadata.path;
-        this.rendererDelegate.send(
-          'file-opened',
-          undefined,
-          fileTitle,
-          lyrics,
-          true
-        );
+        this.rendererDelegate.send('file-opened', undefined, lyrics, true);
         this.addRecentFile(newFileMetadata.path);
         this.fileChangedListeners.forEach((listener) =>
           listener(fileTitle, this.recentFiles.getRecentFiles())
@@ -230,7 +224,6 @@ export class FileManager implements Manager {
     this.rendererDelegate.send(
       'file-opened',
       undefined,
-      platformFile.metadata.name ?? platformFile.metadata.path,
       fileData?.lyrics ?? '',
       true
     );

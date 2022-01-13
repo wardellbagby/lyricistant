@@ -152,7 +152,7 @@ describe('Editor component', function () {
     render(<Editor />);
 
     await waitFor(() =>
-      platformDelegate.invoke('file-opened', null, 'afile.txt', 'Oh wow!', true)
+      platformDelegate.invoke('file-opened', null, 'Oh wow!', true)
     );
 
     expect(setState).to.have.been.calledWithMatch({
@@ -165,13 +165,7 @@ describe('Editor component', function () {
     dispatch({ changes: { from: 0, to: 0, insert: 'Hello' } });
 
     await waitFor(() =>
-      platformDelegate.invoke(
-        'file-opened',
-        null,
-        'afile.txt',
-        'Oh wow!',
-        false
-      )
+      platformDelegate.invoke('file-opened', null, 'Oh wow!', false)
     );
 
     expect(dispatch).to.have.been.calledWithMatch({

@@ -14,9 +14,9 @@ export function App() {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
 
-  useChannel('file-opened', (error, filename) => {
+  useChannel('file-opened', (error) => {
     if (error) {
-      enqueueSnackbar(`Couldn't open ${filename ?? 'selected file.'}`, {
+      enqueueSnackbar("Couldn't open selected file.", {
         variant: 'error',
       });
     }

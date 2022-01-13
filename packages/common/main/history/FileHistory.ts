@@ -5,6 +5,7 @@ import {
 } from '@lyricistant/common/files/extensions/FileDataExtension';
 import { diff_match_patch, patch_obj as Patch } from 'diff-match-patch';
 import { DateTime } from 'luxon';
+import { Logger } from '@lyricistant/common/Logger';
 
 const CURRENT_VERSION = 1;
 
@@ -13,12 +14,19 @@ interface HistoryData {
   patches: Patch[];
 }
 
+export interface ParsedHistoryData {
+  time: string;
+  text: string;
+}
+
 export class FileHistory implements FileDataExtension<'history'> {
   public key: 'history' = 'history';
 
   private delta: HistoryData[] = [];
   private lastKnownLyrics = '';
   private readonly differ = new diff_match_patch();
+
+  public constructor(private logger: Logger) {}
 
   public onBeforeSerialization = (lyrics: string) => {
     this.add(lyrics);
@@ -54,12 +62,35 @@ export class FileHistory implements FileDataExtension<'history'> {
     });
 
   public add = (lyrics: string) => {
+    if (lyrics === this.lastKnownLyrics) {
+      return;
+    }
+
+    this.logger.verbose('Adding file history', {
+      new: lyrics,
+      old: this.lastKnownLyrics,
+    });
+
     const newPatches = this.differ.patch_make(this.lastKnownLyrics, lyrics);
     this.delta.push({
       patches: newPatches,
-      time: DateTime.local().toJSON(),
+      time: DateTime.local().toISO(),
     });
     this.lastKnownLyrics = lyrics;
+  };
+
+  public getIncrementalParsedHistory = (): ParsedHistoryData[] => {
+    let last = '';
+
+    return this.delta.map((patch) => {
+      last = this.differ.patch_apply(patch.patches, last)[0];
+      return {
+        time: DateTime.fromISO(patch.time).toLocaleString(
+          DateTime.DATETIME_MED_WITH_SECONDS
+        ),
+        text: last,
+      };
+    });
   };
 
   public getParsedHistory = (): string => {
@@ -67,12 +98,9 @@ export class FileHistory implements FileDataExtension<'history'> {
       return this.lastKnownLyrics;
     }
 
-    this.delta.forEach((patch) => {
-      this.lastKnownLyrics = this.differ.patch_apply(
-        patch.patches,
-        this.lastKnownLyrics
-      )[0];
-    });
+    const incrementalHistory = this.getIncrementalParsedHistory();
+    this.lastKnownLyrics =
+      incrementalHistory[incrementalHistory.length - 1]?.text;
 
     return this.lastKnownLyrics;
   };

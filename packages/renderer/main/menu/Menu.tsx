@@ -11,6 +11,7 @@ import { makeStyles } from '@mui/styles';
 import {
   AddCircle,
   FolderOpen,
+  History,
   GetApp,
   Save,
   Settings,
@@ -95,6 +96,7 @@ export const Menu: React.FC = () => {
       history.replace('/download');
     }
   };
+  const onFileHistoryClicked = () => history.replace('/file-history');
   useEffect(() => {
     const onConfigChange = (config: UiConfig) => {
       setUiConfig(config);
@@ -132,6 +134,11 @@ export const Menu: React.FC = () => {
           <MenuIcon ariaLabel={'Save'} onClick={onSaveClicked}>
             <Save />
           </MenuIcon>
+          {uiConfig?.showOpen && (
+            <MenuIcon ariaLabel={'File History'} onClick={onFileHistoryClicked}>
+              <History />
+            </MenuIcon>
+          )}
           <Box flexGrow={'1'} />
           {uiConfig?.showDownload && (
             <MenuIcon ariaLabel={'Download App'} onClick={onDownloadClicked}>

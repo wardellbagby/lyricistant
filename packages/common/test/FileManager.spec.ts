@@ -246,7 +246,6 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'whitetuxedo.txt',
       'This water'
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -434,7 +433,6 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'whitetuxedo.txt',
       'This water'
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -465,7 +463,6 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'whitetuxedo.txt',
       'This water',
       true
     );
@@ -497,7 +494,6 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'whitetuxedo.txt',
       'This water'
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -527,7 +523,6 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'anewdress.txt',
       'Double headed monster with a mind of its own.'
     );
 

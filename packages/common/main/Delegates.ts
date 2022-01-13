@@ -5,6 +5,7 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 import { PlatformFile } from '@lyricistant/common/files/Files';
+import { ParsedHistoryData } from '@lyricistant/common/history/FileHistory';
 
 /**
  * Information that the renderer wants to send to the platform.
@@ -20,6 +21,7 @@ export interface RendererToPlatformListener {
   'request-ui-config': () => void;
   'save-logs': () => void;
   'dialog-button-clicked': (dialogTag: string, buttonLabel: string) => void;
+  'apply-file-history': (history: ParsedHistoryData) => void;
 }
 
 /**
@@ -33,12 +35,7 @@ export interface PlatformToRendererListener {
   find: () => void;
   replace: () => void;
   'check-file-modified': () => void;
-  'file-opened': (
-    error: Error,
-    fileName: string,
-    data: string,
-    clearHistory: boolean
-  ) => void;
+  'file-opened': (error: Error, data: string, clearHistory: boolean) => void;
   'file-save-started': (filePath: string) => void;
   'request-editor-text': () => void;
   undo: () => void;
@@ -49,6 +46,7 @@ export interface PlatformToRendererListener {
   'open-about': () => void;
   'show-dialog': (dialog: DialogData) => void;
   'close-dialog': (tag?: string) => void;
+  'file-history': (history: ParsedHistoryData[]) => void;
 }
 
 export type RendererChannel = Extract<keyof PlatformToRendererListener, string>;

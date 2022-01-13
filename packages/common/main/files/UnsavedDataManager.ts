@@ -68,7 +68,6 @@ export class UnsavedDataManager implements Manager {
         this.rendererDelegate.send(
           'file-opened',
           undefined,
-          undefined,
           this.fileHistory.getParsedHistory(),
           false
         );

@@ -98,7 +98,6 @@ function handleEditorEvents(
 
     const onFileOpened = (
       error: Error,
-      fileName: string,
       fileContents: string,
       clearHistory: boolean
     ) => {

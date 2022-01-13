@@ -110,7 +110,6 @@ describe('Unsaved Data Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      undefined,
       'Unsaved data',
       false
     );
@@ -129,7 +128,6 @@ describe('Unsaved Data Manager', () => {
 
     expect(rendererDelegate.send).to.have.not.been.calledWith(
       'file-opened',
-      undefined,
       undefined,
       'Unsaved data',
       false

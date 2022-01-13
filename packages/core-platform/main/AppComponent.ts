@@ -39,6 +39,7 @@ import { Buffers } from '@lyricistant/common/files/Buffers';
 import { FileHandlers } from '@lyricistant/common/files/handlers/FileHandler';
 import { FileHistory } from '@lyricistant/common/history/FileHistory';
 import { FileDataExtensions } from '@lyricistant/common/files/extensions/FileDataExtension';
+import { FileHistoryManager } from '@lyricistant/common/history/FileHistoryManager';
 
 export const createBaseManagers = (component: DIContainer) => [
   () => component.get<FileManager>(),
@@ -46,6 +47,7 @@ export const createBaseManagers = (component: DIContainer) => [
   () => component.get<UiConfigManager>(),
   () => component.get<UnsavedDataManager>(),
   () => component.get<LogManager>(),
+  () => component.get<FileHistoryManager>(),
 ];
 export const createBaseComponent = (): DIContainer => {
   const component = new DIContainer();
@@ -69,6 +71,7 @@ export const createBaseComponent = (): DIContainer => {
   component.registerSingleton<UiConfigManager>();
   component.registerSingleton<UnsavedDataManager>();
   component.registerSingleton<LogManager>();
+  component.registerSingleton<FileHistoryManager>();
 
   component.registerSingleton<LyricistantFileHandler>();
   component.registerSingleton<TextFileHandler>();

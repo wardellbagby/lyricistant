@@ -52,12 +52,11 @@ describe('App component', () => {
       platformDelegate.invoke(
         'file-opened',
         new Error('oh no!'),
-        'bad-file.bin',
         undefined,
         false
       )
     );
 
-    expect(screen.getByText("Couldn't open bad-file.bin")).to.exist;
+    expect(screen.getByText("Couldn't open selected file.")).to.exist;
   });
 });

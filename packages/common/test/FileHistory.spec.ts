@@ -1,6 +1,6 @@
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
-import sinon from 'ts-sinon';
+import sinon, { stubInterface } from 'ts-sinon';
 import { FileHistory } from '@lyricistant/common/history/FileHistory';
 
 use(sinonChai);
@@ -11,7 +11,7 @@ describe('File History', () => {
   beforeEach(() => {
     sinon.reset();
 
-    fileHistory = new FileHistory();
+    fileHistory = new FileHistory(stubInterface());
   });
 
   it('always keeps the history in sync with changes', async () => {
@@ -37,6 +37,7 @@ describe('File History', () => {
     fileHistory.add('Hello there my world!\nThe new shining pearl.');
     fileHistory.add("It's all your world!\nThe new shining pearl.");
     fileHistory.add("It's all your world!\nThe new wonderful whirl.");
+    fileHistory.add('Actually, I like this lyric.');
     fileHistory.add(expected);
 
     fileHistory.deserialize(fileHistory.serialize());
