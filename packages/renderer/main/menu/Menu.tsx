@@ -123,9 +123,7 @@ const MenuBar = (props: AppBarProps) => {
       <MenuIcon
         sx={{ display: isHorizontal ? undefined : 'none' }}
         ariaLabel={'Overflow'}
-        onClick={(event) => {
-          onMenuClicked(event);
-        }}
+        onClick={onMenuClicked}
         debounce={false}
       >
         <MoreVert />
@@ -145,7 +143,12 @@ const MenuBar = (props: AppBarProps) => {
       >
         <MenuList disablePadding>
           {trailing.map((item) => (
-            <MenuItem onClick={item.onClick}>
+            <MenuItem
+              onClick={() => {
+                setAnchor(null);
+                item.onClick();
+              }}
+            >
               <ListItemIcon>
                 <item.icon />
               </ListItemIcon>
