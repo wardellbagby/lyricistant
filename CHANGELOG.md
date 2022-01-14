@@ -1,3 +1,18 @@
+## [1.3.8](https://github.com/wardellbagby/lyricistant/compare/v1.3.7...v1.3.8) (2022-01-14)
+
+
+### Bug Fixes
+
+* improve layout for larger text sizes ([ad45898](https://github.com/wardellbagby/lyricistant/commit/ad45898960aa84cfdfbd4237599b1812b91c6003))
+* **ios:** remove overflow menu outline ([883b320](https://github.com/wardellbagby/lyricistant/commit/883b320c629ab51cf8a46dbaaeb8b1545fdbf48f))
+
+
+### Features
+
+* add more supported display sizes ([b6f002c](https://github.com/wardellbagby/lyricistant/commit/b6f002c3239d6cdfa73443fb7bdda9d752ccaace))
+
+
+
 ## [1.3.7](https://github.com/wardellbagby/lyricistant/compare/v1.3.6...v1.3.7) (2022-01-14)
 
 
