@@ -6,7 +6,6 @@ import {
   ListItemText,
   Menu as MuiMenu,
   MenuItem,
-  MenuList,
   Paper,
   SxProps,
   Theme,
@@ -25,11 +24,11 @@ import {
 } from '@mui/icons-material';
 import React, {
   FunctionComponent,
+  MouseEvent,
   useCallback,
   useEffect,
   useMemo,
   useState,
-  MouseEvent,
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory } from 'react-router-dom';
@@ -73,6 +72,7 @@ interface OverflowItem {
   label: string;
   onClick: () => void;
 }
+
 interface AppBarProps {
   direction: 'horizontal' | 'vertical';
   leading: OverflowItem[];
@@ -141,21 +141,19 @@ const MenuBar = (props: AppBarProps) => {
         }}
         onClose={() => setAnchor(null)}
       >
-        <MenuList disablePadding>
-          {trailing.map((item) => (
-            <MenuItem
-              onClick={() => {
-                setAnchor(null);
-                item.onClick();
-              }}
-            >
-              <ListItemIcon>
-                <item.icon />
-              </ListItemIcon>
-              <ListItemText>{item.label}</ListItemText>
-            </MenuItem>
-          ))}
-        </MenuList>
+        {trailing.map((item) => (
+          <MenuItem
+            onClick={() => {
+              setAnchor(null);
+              item.onClick();
+            }}
+          >
+            <ListItemIcon>
+              <item.icon />
+            </ListItemIcon>
+            <ListItemText>{item.label}</ListItemText>
+          </MenuItem>
+        ))}
       </MuiMenu>
       {isHorizontal ? null : trailing.map(toMenuIcon)}
     </Box>
