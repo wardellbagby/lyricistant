@@ -7,6 +7,7 @@ export interface FullscreenDialogData {
   type: 'fullscreen';
   message: string;
   progress?: number | 'indeterminate';
+  cancelable?: boolean;
 }
 
 export interface AlertDialogData {

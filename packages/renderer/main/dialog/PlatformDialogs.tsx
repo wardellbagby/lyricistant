@@ -54,7 +54,7 @@ const useFullscreenDialogStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
-    gap: '24px',
+    gap: '48px',
   },
 }));
 
@@ -88,14 +88,21 @@ export function PlatformDialog() {
       <AlertDialog dialogData={dialogData} onButtonClick={onButtonClick} />
     );
   } else if (dialogData.type === 'fullscreen') {
-    return <FullscreenDialog dialogData={dialogData} />;
+    return (
+      <FullscreenDialog
+        dialogData={dialogData}
+        onCancel={() => setDialogData(null)}
+      />
+    );
   }
 }
 
 const FullscreenDialog = ({
   dialogData,
+  onCancel,
 }: {
   dialogData: FullscreenDialogData;
+  onCancel: () => void;
 }) => {
   const { dialog, content, paper } = useFullscreenDialogStyles();
   return (
@@ -114,12 +121,17 @@ const FullscreenDialog = ({
         {dialogData.progress &&
           (dialogData.progress === 'indeterminate' ? (
             <CircularProgress
-              size={'min(25vmin, 200px)'}
+              size={'min(20vmin, 200px)'}
               variant={'indeterminate'}
             />
           ) : (
             <LinearProgressWithLabel value={dialogData.progress} />
           ))}
+        {dialogData.cancelable && (
+          <Button variant={'outlined'} onClick={onCancel}>
+            Cancel
+          </Button>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -100,6 +100,7 @@ export class FileManager implements Manager {
       type: 'fullscreen',
       message: 'Saving file',
       progress: 'indeterminate',
+      cancelable: true,
     });
     const onEditorText = async (text: string) => {
       this.rendererDelegate.removeListener('editor-text', onEditorText);
@@ -122,6 +123,7 @@ export class FileManager implements Manager {
       type: 'fullscreen',
       message: 'Opening file',
       progress: 'indeterminate',
+      cancelable: true,
     });
 
     try {
@@ -161,6 +163,7 @@ export class FileManager implements Manager {
       type: 'fullscreen',
       message: 'Saving file',
       progress: 'indeterminate',
+      cancelable: true,
     });
     await this.saveFileActual(text, this.currentFilePath);
   };
