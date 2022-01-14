@@ -118,13 +118,7 @@ export class FileManager implements Manager {
   };
 
   private openFile = async (file?: PlatformFile) => {
-    this.rendererDelegate.send('show-dialog', {
-      tag: OPEN_FILE_DIALOG_TAG,
-      type: 'fullscreen',
-      message: 'Opening file',
-      progress: 'indeterminate',
-      cancelable: true,
-    });
+    this.showLoadingDialog('open', true);
 
     try {
       // We still pass this to the Files in-case they have state they want to set based on the PlatformFile, or if they
@@ -158,13 +152,7 @@ export class FileManager implements Manager {
   };
 
   private onRendererSaveFile = async (text: string) => {
-    this.rendererDelegate.send('show-dialog', {
-      tag: SAVE_FILE_DIALOG_TAG,
-      type: 'fullscreen',
-      message: 'Saving file',
-      progress: 'indeterminate',
-      cancelable: true,
-    });
+    this.showLoadingDialog('save');
     await this.saveFileActual(text, this.currentFilePath);
   };
 
@@ -187,12 +175,14 @@ export class FileManager implements Manager {
         lyrics,
       });
 
+      this.showLoadingDialog('save', true);
       const newFileMetadata = await this.files.saveFile(
         serializedFileData,
         `Lyrics.${this.currentFileHandler.extension}`,
         path
       );
       if (newFileMetadata) {
+        this.showLoadingDialog('save');
         const fileTitle = newFileMetadata.name ?? newFileMetadata.path;
         this.currentFilePath = newFileMetadata.path;
         this.rendererDelegate.send('file-opened', undefined, lyrics, true);
@@ -212,6 +202,7 @@ export class FileManager implements Manager {
   };
 
   private openFileActual = async (platformFile: PlatformFile) => {
+    this.showLoadingDialog('open');
     const { handler, fileData } = await this.createFileData(platformFile);
 
     this.currentFilePath = platformFile?.metadata?.path;
@@ -291,5 +282,15 @@ export class FileManager implements Manager {
       handler,
       fileData: await handler?.load(file),
     };
+  };
+
+  private showLoadingDialog = (type: 'open' | 'save', cancelable = false) => {
+    this.rendererDelegate.send('show-dialog', {
+      tag: type === 'open' ? OPEN_FILE_DIALOG_TAG : SAVE_FILE_DIALOG_TAG,
+      type: 'fullscreen',
+      message: `${type === 'open' ? 'Opening' : 'Saving'} file`,
+      progress: 'indeterminate',
+      cancelable,
+    });
   };
 }
