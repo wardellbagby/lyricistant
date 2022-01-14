@@ -1,3 +1,14 @@
+## [1.3.5](https://github.com/wardellbagby/lyricistant/compare/v1.3.4...v1.3.5) (2022-01-14)
+
+
+### Bug Fixes
+
+* hide overflow menu on item click ([4c00afc](https://github.com/wardellbagby/lyricistant/commit/4c00afc823acc7b9a19a12b63c3b3504ebd8eb79))
+* show cancel button on dialog when opening & saving files ([d2ec041](https://github.com/wardellbagby/lyricistant/commit/d2ec04125b563593d3d8f1dbaf1c8991f7ec6892))
+* use legacy non-worker Web flow for non-Chrome and non-Firefox ([4c91e71](https://github.com/wardellbagby/lyricistant/commit/4c91e715744e9554207c4427c7638e70a50419f4))
+
+
+
 ## [1.3.4](https://github.com/wardellbagby/lyricistant/compare/v1.3.3...v1.3.4) (2022-01-13)
 
 
