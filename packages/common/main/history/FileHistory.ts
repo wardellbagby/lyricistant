@@ -101,7 +101,7 @@ export class FileHistory implements FileDataExtension<'history'> {
 
     const incrementalHistory = this.getIncrementalParsedHistory();
     this.lastKnownLyrics =
-      incrementalHistory[incrementalHistory.length - 1]?.text;
+      incrementalHistory[incrementalHistory.length - 1]?.text ?? '';
 
     return this.lastKnownLyrics;
   };
