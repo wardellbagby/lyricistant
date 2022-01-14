@@ -1,33 +1,33 @@
 import {
-  Font,
-  RhymeSource,
   ColorScheme as LyricistantTheme,
   ColorScheme,
+  Font,
+  RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
 import {
   AppBar,
-  Dialog,
-  SlideProps,
-  Theme,
-  Toolbar,
   Box,
   Button,
   Container,
+  Dialog,
   Divider,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Slide,
+  SlideProps,
+  Theme,
+  Toolbar,
   Typography,
-  IconButton,
 } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
 import {
-  Info,
   Close as CloseIcon,
+  Info,
   Save as SaveIcon,
 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
@@ -90,12 +90,14 @@ interface LabeledValue<T> {
   label: string;
   value: T;
 }
+
 interface SelectBoxProps<T> {
   value: T;
   onChange: (value: T) => void;
   items: Array<LabeledValue<T>>;
   label: string;
 }
+
 const SelectBox = <T extends string | number>({
   value,
   onChange,
@@ -229,11 +231,12 @@ export const Preferences = () => {
                     value={preferencesData.textSize}
                     onChange={onDetailsSizeChanged}
                     items={[
-                      { value: 8, label: 'Tiny' },
-                      { value: 12, label: 'Small' },
-                      { value: 16, label: 'Default' },
-                      { value: 24, label: 'Large' },
-                      { value: 28, label: 'Huge' },
+                      { value: 8, label: '8' },
+                      { value: 12, label: '12' },
+                      { value: 16, label: '16 (Default)' },
+                      { value: 20, label: '20' },
+                      { value: 24, label: '24' },
+                      { value: 28, label: '28' },
                     ]}
                     label={'Text Size'}
                   />
