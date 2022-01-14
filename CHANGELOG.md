@@ -1,3 +1,13 @@
+## [1.3.7](https://github.com/wardellbagby/lyricistant/compare/v1.3.6...v1.3.7) (2022-01-14)
+
+
+### Bug Fixes
+
+* save dialog not showing on fresh launch due to empty file history ([b57215f](https://github.com/wardellbagby/lyricistant/commit/b57215f94be1c5d7e17afee099f897cc703d875f))
+* stop file history duplicating text on serialization round-trips ([78be7c8](https://github.com/wardellbagby/lyricistant/commit/78be7c81beeffdb9585c19299e5bf0a27a1cb396))
+
+
+
 ## [1.3.6](https://github.com/wardellbagby/lyricistant/compare/v1.3.5...v1.3.6) (2022-01-14)
 
 
