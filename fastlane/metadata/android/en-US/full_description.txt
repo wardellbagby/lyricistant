@@ -7,7 +7,7 @@ Its features include:
 Showing the amount of syllables per line.
 Contextually displaying rhymes as you type or select words.
 Easily saving and reopening lyrics that you've made.
-Drag and Drop support for quickly reopening lyrics.
+Showing you the history of your file.
 Both a light and dark theme that it can automatically switch between.
 Total offline support.
 

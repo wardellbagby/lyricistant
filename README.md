@@ -19,15 +19,16 @@ Its features include:
 - Showing the amount of syllables per line.
 - Contextually displaying rhymes as you type or select words.
 - Easily saving and reopening lyrics that you've made.
+- Showing you the history of your file.
 - Drag and Drop support for quickly reopening lyrics.
 - _[Desktop Only]_ Remembering your recently opened lyrics to help you continue where you left off.
 - Both a light and dark theme that it can automatically switch between.
-- Automatically updating.
+- Automatically updates.
 - Available on your favorite platforms!
   - [Mac](https://lyricistant.app/#download)
   - [Windows](https://lyricistant.app/#download)
   - [Linux](https://lyricistant.app/#download)
-  - [And your computer browser!](https://lyricistant.app)
+  - [Web](https://lyricistant.app)
   - [Android](https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant)
   - [iOS](https://apps.apple.com/om/app/lyricistant/id1561506174)
 
