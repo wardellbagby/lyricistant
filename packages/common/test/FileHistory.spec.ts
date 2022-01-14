@@ -27,6 +27,18 @@ describe('File History', () => {
     expect(fileHistory.getParsedHistory()).to.equal(expected);
   });
 
+  it('always keeps the history in sync with round trips', async () => {
+    const max = 100;
+    const expected = `${max}`;
+
+    for (let index = 0; index <= max; index++) {
+      fileHistory.add(`${index}`);
+      fileHistory.deserialize(fileHistory.serialize());
+    }
+
+    expect(fileHistory.getParsedHistory()).to.equal(expected);
+  });
+
   it('works with more realistic changes', async () => {
     const expected = "It's all our world!\nThe old wondrous whirl.";
 

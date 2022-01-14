@@ -45,6 +45,7 @@ export class FileHistory implements FileDataExtension<'history'> {
       1: () => (this.delta = this.loadV1(extensionData.data)),
       invalid: () => (this.delta = []),
     });
+    this.lastKnownLyrics = this.getParsedHistory();
   };
 
   public isNonEmptyHistory = (
