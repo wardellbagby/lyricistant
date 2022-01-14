@@ -34,7 +34,6 @@ platform :ios do
     )
     if options[:deploy]
       upload_to_app_store(
-        build_number: "latest",
         metadata_path: "./fastlane/metadata/ios",
         submit_for_review: true,
         force: true,
