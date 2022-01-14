@@ -41,8 +41,8 @@ const useMenuStyles = makeStyles<Theme, { isSmallLayout: boolean }>(
   (theme: Theme) => ({
     menu: {
       backgroundColor: theme.palette.background.paper,
-      height: (props) => (props.isSmallLayout ? '56px' : '100%'),
-      width: (props) => (props.isSmallLayout ? '100%' : '56px'),
+      height: (props) => (props.isSmallLayout ? 'auto' : '100%'),
+      width: (props) => (props.isSmallLayout ? '100%' : 'auto'),
     },
   })
 );

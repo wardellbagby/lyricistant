@@ -43,12 +43,14 @@ const useRhymeListStyles = makeStyles<
     '&:hover': {
       background: theme.palette.background.paper,
     },
+    padding: '12px',
+    margin: '0px',
   },
   listContainer: {
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: ({ listDirection }) => listDirection,
-    height: '100%',
+    height: ({ isSmallLayout }) => (isSmallLayout ? 'auto' : '100%'),
     flexGrow: 1,
     width: '100%',
     overflow: 'hidden',
@@ -99,7 +101,7 @@ const RhymesList = ({
       rhymeDimension = rhymeWidth as number;
       containerDimension = containerWidth;
     } else {
-      rhymeDimension = rhymeHeight;
+      rhymeDimension = rhymeHeight as number;
       containerDimension = containerHeight;
     }
 
@@ -184,6 +186,7 @@ const useInactiveHelperTextStyles = makeStyles((theme: Theme) => ({
 const HelperText = ({ text }: { text: string }) => {
   const classes = useInactiveHelperTextStyles();
   const theme = useTheme();
+  const isSmallLayout = useSmallLayout();
 
   return (
     <Box
@@ -200,12 +203,14 @@ const HelperText = ({ text }: { text: string }) => {
       justifyContent={'center'}
       flexDirection={'column'}
     >
-      <Feather
-        height={'64px'}
-        width={'64px'}
-        fill={theme.palette.text.disabled}
-        viewBox={'0 0 100 100'}
-      />
+      {!isSmallLayout && (
+        <Feather
+          height={'64px'}
+          width={'64px'}
+          fill={theme.palette.text.disabled}
+          viewBox={'0 0 100 100'}
+        />
+      )}
       <Typography className={classes.root} variant={'body1'}>
         {text}
       </Typography>
@@ -320,7 +325,7 @@ const ShowAllButton = ({ onClick }: { onClick: () => void }) => {
 
 const useRhymeComponentHeight = () => {
   if (useSmallLayout()) {
-    return 50;
+    return 'auto';
   } else {
     return 80;
   }

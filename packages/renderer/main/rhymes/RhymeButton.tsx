@@ -1,6 +1,5 @@
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { ListItem, ListItemText } from '@mui/material';
-import { isDevelopment } from '@lyricistant/common/BuildModes';
 import React from 'react';
 
 interface RhymeButtonProps {
@@ -27,7 +26,6 @@ export const RhymeButton = ({
     <ListItemText
       primary={rhyme.word ?? ''}
       primaryTypographyProps={{ align: 'center' }}
-      secondary={isDevelopment && rhyme.score}
     />
   </ListItem>
 );
