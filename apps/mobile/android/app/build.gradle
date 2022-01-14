@@ -1,14 +1,18 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+def versionsFile = project.file("versions.properties")
+def versions = new Properties()
+versions.load(new FileInputStream(versionsFile))
+
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   defaultConfig {
     applicationId "com.wardellbagby.lyricistant"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 2
-    versionName "1.2.7"
+    versionCode versions['versionCode'].toInteger()
+    versionName versions['versionName']
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     aaptOptions {
       // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
