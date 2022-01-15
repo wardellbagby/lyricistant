@@ -24,15 +24,14 @@ export * from './packages/renderer/test/test.gulp';
 
 export const buildAll = parallel(buildWeb, buildElectron);
 
-export const testCore = series(testCodemirror, testRenderer, testCommon);
+export const testCore = series(testCodemirror, testCommon, testRenderer);
 export const testAllWeb = series(testWeb, testCore, testCorePlatform);
 export const testAllElectron = series(testElectron, testCore);
 export const testAll = series(
+  testCorePlatform,
   testWeb,
   testElectron,
-  testCore,
-  testCorePlatform,
-  testRenderer
+  testCore
 );
 
 export const clean = async () => {
