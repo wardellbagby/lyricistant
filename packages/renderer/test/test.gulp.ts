@@ -47,4 +47,14 @@ export const testRenderer = async () => {
   const config = await KarmaConfig.parseConfig(null, rawConfig);
   const server = new Server(config);
   await server.start();
+
+  return new Promise<void>((resolve, reject) => {
+    server.on('run_complete', (browsers, results) => {
+      if (results.success) {
+        resolve();
+      } else {
+        reject();
+      }
+    });
+  });
 };
