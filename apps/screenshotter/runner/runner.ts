@@ -2,7 +2,7 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { BrowserContext, chromium, devices, JSHandle, Page } from 'playwright';
+import { BrowserContext, chromium, JSHandle, Page } from 'playwright';
 import {
   ColorScheme,
   Font,
@@ -14,58 +14,81 @@ import { DateTime } from 'luxon';
 
 use(chaiAsPromised);
 
-type Device = typeof devices[0] & { name: string };
-const selectedDevices: Device[] = [
+interface Device {
+  name: string;
+  viewport: {
+    width: number;
+    height: number;
+  };
+  deviceScaleFactor: number;
+}
+
+const devices: Device[] = [
   {
     name: 'electron',
-    userAgent: '',
     viewport: {
       width: 1000,
       height: 720,
     },
     deviceScaleFactor: 2.75,
-    isMobile: true,
-    hasTouch: true,
-    defaultBrowserType: 'chromium',
   },
-  { ...devices['Pixel 5'], name: 'androidPhone' },
-  { ...devices['Galaxy Tab S4 landscape'], name: 'androidTablet' },
-  { ...devices['iPhone 13 Pro Max'], name: 'iPhone13ProMax' },
-  { ...devices['iPhone 8 Plus'], name: 'iPhone8Plus' },
   {
     name: 'ipadPro129',
-    userAgent:
-      'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1',
     viewport: {
       width: 1366,
       height: 1024,
     },
     deviceScaleFactor: 2,
-    isMobile: true,
-    hasTouch: true,
-    defaultBrowserType: 'webkit',
   },
   {
     name: 'ipadPro',
-    userAgent:
-      'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1',
     viewport: {
       width: 1366,
       height: 1024,
     },
     deviceScaleFactor: 2,
-    isMobile: true,
-    hasTouch: true,
-    defaultBrowserType: 'webkit',
+  },
+  {
+    name: 'iPhone13ProMax',
+    viewport: {
+      width: 428,
+      height: 926,
+    },
+    deviceScaleFactor: 3,
+  },
+  {
+    name: 'iPhone8Plus',
+    viewport: {
+      width: 414,
+      height: 736,
+    },
+    deviceScaleFactor: 3,
+  },
+  {
+    name: 'androidPhone',
+    viewport: {
+      width: 393,
+      height: 851,
+    },
+    deviceScaleFactor: 2.75,
+  },
+  {
+    name: 'androidTablet',
+    viewport: {
+      width: 1138,
+      height: 712,
+    },
+    deviceScaleFactor: 2.25,
   },
 ];
+
 const lyrics =
   "Bury me loose.\nI ain't ever been about the views;\nTell 'em bury me loose.\nAnd don't let 'em give you no excuse.\nJust tell 'em, tell 'em bury me loose.";
 const expectedLyrics = lyrics.replaceAll('\n', '');
 
-const random = (min: number, max: number) => Math.random() * (max - min) + min;
+const screenshotDate = DateTime.local(2019, 7, 22, 9, 0, 0, 0);
 
-selectedDevices.forEach((device) => {
+devices.forEach((device) => {
   describe(`Screenshot ${device.name}`, function () {
     let browser: BrowserContext;
     let page: Page;
@@ -199,41 +222,29 @@ selectedDevices.forEach((device) => {
           {
             time: DateTime.local().minus({
               days: 10,
-              hours: random(0, 23),
-              minute: random(0, 60),
-              second: random(0, 60),
             }),
             patches: [],
           },
           {
             time: DateTime.local().minus({
               days: 8,
-              hours: random(0, 23),
-              minute: random(0, 60),
-              second: random(0, 60),
             }),
             patches: [],
           },
           {
             time: DateTime.local().minus({
               days: 5,
-              hours: random(0, 23),
-              minute: random(0, 60),
-              second: random(0, 60),
             }),
             patches: [],
           },
           {
             time: DateTime.local().minus({
               days: 2,
-              hours: random(0, 23),
-              minute: random(0, 60),
-              second: random(0, 60),
             }),
             patches: [],
           },
           {
-            time: DateTime.local().minus({ hours: 6 }),
+            time: screenshotDate,
             patches: [],
           },
         ])
