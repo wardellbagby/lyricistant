@@ -317,6 +317,7 @@ const ShowAllButton = ({ onClick }: { onClick: () => void }) => {
       style={{ height: isSmallLayout ? '100%' : undefined }}
       onClick={onClick}
       size="large"
+      aria-label={'Show All Rhymes'}
     >
       {isSmallLayout ? <DotsVertical /> : <ExpandMore />}
     </IconButton>

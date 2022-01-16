@@ -27,6 +27,7 @@
       "@electron-app/*": ["apps/electron/main/*"],
       "@electron-delegates/*": ["apps/electron/packages/delegates/*"],
       "@mobile-app/*": ["apps/mobile/main/*"],
+      "@screenshotter-app/*": ["apps/screenshotter/main/*"],
       "@web-app/*": ["apps/web/main/*"],
       "@lyricistant/codemirror/*": ["packages/codemirror/main/*"],
       "@lyricistant/core-platform/*": ["packages/core-platform/main/*"],

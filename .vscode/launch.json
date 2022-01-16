@@ -132,6 +132,16 @@
       "program": "node_modules/.bin/gulp"
     },
     {
+      "name": "Refresh Screenshots",
+      "args": ["refreshScreenshots"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
       "name": "Start Android",
       "args": ["startAndroid"],
       "type": "pwa-node",

@@ -22,12 +22,21 @@ const requireSuccessful = <T = string | Buffer>(
   }
 };
 const updateChangelog = () => {
+  console.log('Updating changelog');
   requireSuccessful(spawnSync('./node_modules/.bin/standard-changelog'), () => {
     console.error('Failed to create changelog');
   });
 };
 
+const refreshScreenshots = () => {
+  console.log('Refreshing screenshots');
+  requireSuccessful(spawnSync('gulp', ['refreshScreenshots']), () => {
+    console.error('Failed to create screenshots');
+  });
+};
+
 const updateMobileAppVersions = (version: string) => {
+  console.log('Updating Android and iOS versions');
   requireSuccessful(
     spawnSync('xcrun agvtool next-version -all', {
       cwd: 'apps/mobile/ios/App',
@@ -96,15 +105,31 @@ const questions: inquirer.QuestionCollection = [
   },
 ];
 
-console.log('Running pre-push checks...');
-requireSuccessful(spawnSync('git', ['push', '--dry-run']), () => {
-  console.error('Lint failures');
-});
-console.log('Pre-push checks are successful!');
+const commit = (message: string) => {
+  requireSuccessful(
+    spawnSync('git', ['commit', '--all', '-m', message]),
+    () => {
+      console.error('Failed to create commit');
+    }
+  );
+};
+
+const runPrePushChecks = () => {
+  console.log('Running pre-push checks');
+  requireSuccessful(spawnSync('git', ['diff', '--exit-code']), () => {
+    console.error('Quitting: there are uncommitted changes!');
+  });
+  requireSuccessful(spawnSync('git', ['push', '--dry-run']), () => {
+    console.error('Lint failures');
+  });
+};
 
 inquirer.prompt(questions).then(async (answers) => {
   const versionBumpType: string = answers['version'];
   const appUpdateTypes: string[] = answers['apps'];
+
+  runPrePushChecks();
+  refreshScreenshots();
 
   const newVersion = spawnSync('npm', [
     'version',
@@ -121,17 +146,13 @@ inquirer.prompt(questions).then(async (answers) => {
   }
   const commitMessage = gitTag.substr(1);
 
-  console.log('New version: ' + newVersion);
-  console.log('New tag: ' + gitTag);
+  console.log(`New version is "${newVersion}" and new tag: "${gitTag}"`);
 
   updateChangelog();
   updateMobileAppVersions(newVersion);
-  requireSuccessful(
-    spawnSync('git', ['commit', '--all', '-m', `${commitMessage}`]),
-    () => {
-      console.error('Failed to create commit');
-    }
-  );
+
+  commit(commitMessage);
+
   requireSuccessful(spawnSync('git', ['tag', '-a', gitTag, '-m', '""']), () => {
     console.error('Failed to create tag', gitTag);
   });

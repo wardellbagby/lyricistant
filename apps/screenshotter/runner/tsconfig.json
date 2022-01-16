@@ -1,0 +1,8 @@
+{
+  "include": ["**/*.ts"],
+  "compilerOptions": {
+    "lib": ["es2021", "dom"],
+    "types": ["../../packages/renderer-window", "mocha"]
+  },
+  "extends": "../../../tsconfig.json"
+}

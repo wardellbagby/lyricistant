@@ -80,7 +80,7 @@ interface AppBarProps {
 }
 
 const toMenuIcon = (item: OverflowItem) => (
-  <MenuIcon onClick={item.onClick} ariaLabel={item.label}>
+  <MenuIcon key={item.label} onClick={item.onClick} ariaLabel={item.label}>
     <item.icon />
   </MenuIcon>
 );
@@ -122,7 +122,7 @@ const MenuBar = (props: AppBarProps) => {
       <Box flexGrow={'1'} />
       <MenuIcon
         sx={{ display: isHorizontal ? undefined : 'none' }}
-        ariaLabel={'Overflow'}
+        ariaLabel={'Additional Menu Buttons'}
         onClick={onMenuClicked}
         debounce={false}
       >
@@ -143,6 +143,7 @@ const MenuBar = (props: AppBarProps) => {
       >
         {trailing.map((item) => (
           <MenuItem
+            aria-label={item.label}
             onClick={() => {
               setAnchor(null);
               item.onClick();

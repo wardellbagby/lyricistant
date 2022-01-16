@@ -1,0 +1,15 @@
+{
+  "include": ["main/**/*.ts"],
+  "compilerOptions": {
+    "outDir": "build",
+    "lib": ["es6", "dom"],
+    "types": ["../../packages/renderer-window", "webpack-env"],
+    "composite": true
+  },
+  "references": [
+    { "path": "../../packages/common/" },
+    { "path": "../../packages/renderer/" },
+    { "path": "../../packages/core-platform/" }
+  ],
+  "extends": "../../tsconfig.json"
+}
