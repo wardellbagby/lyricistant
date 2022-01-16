@@ -2,6 +2,7 @@
 import { spawnSync, SpawnSyncReturns } from 'child_process';
 import fs from 'fs';
 import inquirer from 'inquirer';
+import { DateTime } from 'luxon';
 
 const requireSuccessful = <T = string | Buffer>(
   result: SpawnSyncReturns<T>,
@@ -54,6 +55,11 @@ const updateMobileAppVersions = (version: string) => {
     () => {
       console.error('Failed to update iOS version string');
     }
+  );
+
+  fs.writeFileSync(
+    'fastlane/metadata/ios/copyright.txt',
+    `${DateTime.local().year} Wardell Bagby`
   );
 
   const androidVersions = fs
