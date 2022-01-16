@@ -1,3 +1,7 @@
+## [1.3.9](https://github.com/wardellbagby/lyricistant/compare/v1.3.8...v1.3.9) (2022-01-16)
+
+
+
 ## [1.3.8](https://github.com/wardellbagby/lyricistant/compare/v1.3.7...v1.3.8) (2022-01-14)
 
 
