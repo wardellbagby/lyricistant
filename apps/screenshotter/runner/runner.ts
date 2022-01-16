@@ -220,25 +220,25 @@ devices.forEach((device) => {
         },
         JSON.stringify([
           {
-            time: DateTime.local().minus({
+            time: screenshotDate.minus({
               days: 10,
             }),
             patches: [],
           },
           {
-            time: DateTime.local().minus({
+            time: screenshotDate.minus({
               days: 8,
             }),
             patches: [],
           },
           {
-            time: DateTime.local().minus({
+            time: screenshotDate.minus({
               days: 5,
             }),
             patches: [],
           },
           {
-            time: DateTime.local().minus({
+            time: screenshotDate.minus({
               days: 2,
             }),
             patches: [],
