@@ -26,6 +26,7 @@ platform :ios do
         metadata_path: "./fastlane/metadata/ios",
         submit_for_review: true,
         force: true,
+        overwrite_screenshots: true,
         precheck_include_in_app_purchases: false,
         submission_information: {
           add_id_info_uses_idfa: false,
