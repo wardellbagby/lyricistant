@@ -35,7 +35,7 @@ export const testRenderer = async () => {
     browserDisconnectTolerance: process.env.CI ? 30 : 0,
     browserNoActivityTimeout: process.env.CI ? 300_000 : 30_000,
     browserDisconnectTimeout: process.env.CI ? 300_000 : 30_000,
-    webpack: defaultWebpackConfig('development', {
+    webpack: defaultWebpackConfig('development', 'Test', {
       projectReferences: false,
       transpileOnly: true,
       compilerOptions: {

@@ -1,6 +1,7 @@
 {
   "include": ["main/**/*"],
   "compilerOptions": {
+    "outDir": "build",
     "lib": ["dom", "es6"],
     "types": ["../../packages/renderer-window", "webpack-env"]
   },

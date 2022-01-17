@@ -3,7 +3,9 @@ import path from 'path';
 import { merge } from 'webpack-merge';
 import { parallel, series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
-import defaultWebpackConfig from '@tooling/default.webpack.config';
+import defaultWebpackConfig, {
+  Platform,
+} from '@tooling/default.webpack.config';
 import webpack, { Configuration } from 'webpack';
 import { cleanBuildDirectory, Mode, spawn } from '@tooling/common-tasks.gulp';
 import del from 'del';
@@ -18,7 +20,7 @@ const cleanMobile = async () => {
   await del(outputDir);
 };
 
-const createWebpackConfig = async (mode: Mode) =>
+const createWebpackConfig = async (mode: Mode, platform: Platform) =>
   merge<Configuration>(
     {
       entry: {
@@ -30,7 +32,7 @@ const createWebpackConfig = async (mode: Mode) =>
       devtool: 'inline-source-map',
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig(mode)
+    defaultWebpackConfig(mode, platform)
   );
 
 const copyMobileHtmlFile = async () => {
@@ -41,8 +43,9 @@ const copyMobileHtmlFile = async () => {
   );
 };
 
-const bundleMobile = async () => {
-  const config = await createWebpackConfig('production');
+const bundleMobile = (platform: Platform) => async () => {
+  const config = await createWebpackConfig('production', platform);
+
   return new Promise<undefined>((resolve, reject) => {
     webpack(config, (error, stats) => {
       if (error) {
@@ -56,8 +59,8 @@ const bundleMobile = async () => {
   });
 };
 
-const runWebServer = async () => {
-  const config = await createWebpackConfig('development');
+const runWebServer = (platform: Platform) => async () => {
+  const config = await createWebpackConfig('development', platform);
 
   const server = new WebpackDevServer(
     {
@@ -143,26 +146,26 @@ export const bundleAndroid = series(
   cleanBuildDirectory,
   cleanMobile,
   copyMobileHtmlFile,
-  bundleMobile,
+  bundleMobile('Android'),
   cap('sync', 'android')
 );
 export const bundleIOS = series(
   cleanBuildDirectory,
   cleanMobile,
   copyMobileHtmlFile,
-  bundleMobile,
+  bundleMobile('iOS'),
   cap('sync', 'ios')
 );
 
 export const startAndroid = series(
   cleanMobile,
   copyMobileHtmlFile,
-  parallel(runWebServer, runAndroid)
+  parallel(runWebServer('Android'), runAndroid)
 );
 export const startIOS = series(
   cleanMobile,
   copyMobileHtmlFile,
-  parallel(runWebServer, runIOS)
+  parallel(runWebServer('Android'), runIOS)
 );
 
 export const buildAndroid = series(bundleAndroid, buildAndroidApp);

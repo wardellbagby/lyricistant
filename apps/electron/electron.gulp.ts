@@ -44,7 +44,7 @@ const createRendererWebpackConfig = async (mode: Mode) =>
       },
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig(mode)
+    defaultWebpackConfig(mode, 'Electron')
   );
 
 const createMainWebpackConfig = async (mode: Mode, useDevServer: boolean) =>
@@ -71,7 +71,7 @@ const createMainWebpackConfig = async (mode: Mode, useDevServer: boolean) =>
         minimize: false,
       },
     },
-    defaultWebpackConfig(mode)
+    defaultWebpackConfig(mode, 'Electron')
   );
 
 const createPreloadWebpackConfig = async (mode: Mode) =>
@@ -88,7 +88,7 @@ const createPreloadWebpackConfig = async (mode: Mode) =>
         minimize: false,
       },
     },
-    defaultWebpackConfig(mode)
+    defaultWebpackConfig(mode, 'Electron')
   );
 
 const copyElectronHtmlFile = (mode: Mode) => {

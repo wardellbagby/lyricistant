@@ -29,53 +29,64 @@ const devtool = (mode: Mode): Configuration['devtool'] => {
   return 'source-map';
 };
 
+const platforms = ['Android', 'Electron', 'iOS', 'Web', 'Test'] as const;
+export type Platform = typeof platforms[number];
+
 export default (
   mode: Mode,
+  platformName: Platform,
   tsLoaderOptions: Record<string, any> = {
     projectReferences: true,
     transpileOnly: false,
   }
-): Configuration => ({
-  mode: webpackMode(mode),
-  cache: mode === 'development',
-  devtool: devtool(mode),
-  resolve: {
-    plugins: [new TsconfigPathsPlugin()],
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.wasm'],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(tsx?)$/,
-        exclude: [/node_modules/],
-        loader: 'ts-loader',
-        options: {
-          ...tsLoaderOptions,
-          compiler: 'ttypescript',
+): Configuration => {
+  if (!platforms.includes(platformName)) {
+    throw new Error(`Invalid platform: ${platformName}`);
+  }
+
+  return {
+    mode: webpackMode(mode),
+    cache: mode === 'development',
+    devtool: devtool(mode),
+    resolve: {
+      plugins: [new TsconfigPathsPlugin()],
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.wasm'],
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(tsx?)$/,
+          exclude: [/node_modules/],
+          loader: 'ts-loader',
+          options: {
+            ...tsLoaderOptions,
+            compiler: 'ttypescript',
+          },
         },
-      },
-      {
-        test: /\.m?js/,
-        resolve: {
-          fullySpecified: false,
+        {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: false,
+          },
         },
-      },
-      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-      {
-        test: /\.(woff|woff2|eot|ttf|png)$/,
-        loader: 'file-loader',
-      },
-      { test: /\.svg$/, use: ['@svgr/webpack', 'raw-loader'] },
+        { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+        {
+          test: /\.(woff|woff2|eot|ttf|png)$/,
+          loader: 'file-loader',
+        },
+        { test: /\.svg$/, use: ['@svgr/webpack', 'raw-loader'] },
+      ],
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env.UI_TESTING': JSON.stringify(
+          mode === 'test' ? 'ui-testing' : ''
+        ),
+        'process.env.APP_VERSION': JSON.stringify(getAppVersion()),
+        'process.env.APP_HOMEPAGE': JSON.stringify(packageInfo.homepage),
+        'process.env.APP_AUTHOR': JSON.stringify(packageInfo.author.name),
+        'process.env.APP_PLATFORM': JSON.stringify(platformName),
+      }),
     ],
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.UI_TESTING': JSON.stringify(
-        mode === 'test' ? 'ui-testing' : ''
-      ),
-      'process.env.APP_VERSION': JSON.stringify(getAppVersion()),
-      'process.env.APP_HOMEPAGE': JSON.stringify(packageInfo.homepage),
-      'process.env.APP_AUTHOR': JSON.stringify(packageInfo.author.name),
-    }),
-  ],
-});
+  };
+};

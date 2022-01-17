@@ -42,7 +42,7 @@ const createWebpackConfig = async (mode: Mode) => {
       },
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig(mode)
+    defaultWebpackConfig(mode, 'Web')
   );
 };
 
