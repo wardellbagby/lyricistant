@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grow,
   LinearProgress,
   LinearProgressProps,
   Typography,
@@ -61,6 +62,8 @@ const useFullscreenDialogStyles = makeStyles((theme) => ({
 export function PlatformDialog() {
   const [dialogData, setDialogData] = useState<DialogData>(null);
   const [closeDialogTag, setCloseDialogTag] = useState<string>(null);
+  const [open, setOpen] = useState(false);
+
   const onButtonClick = useCallback(
     (label) => {
       setDialogData(null);
@@ -69,12 +72,15 @@ export function PlatformDialog() {
     [dialogData]
   );
 
-  useChannel('show-dialog', setDialogData);
+  useChannel('show-dialog', (data) => {
+    setDialogData(data);
+    setOpen(true);
+  });
   useChannel('close-dialog', setCloseDialogTag);
 
   useEffect(() => {
     if (closeDialogTag && closeDialogTag === dialogData?.tag) {
-      setDialogData(null);
+      setOpen(false);
       setCloseDialogTag(null);
     }
   }, [closeDialogTag, dialogData]);
@@ -85,11 +91,16 @@ export function PlatformDialog() {
 
   if (dialogData.type === 'alert') {
     return (
-      <AlertDialog dialogData={dialogData} onButtonClick={onButtonClick} />
+      <AlertDialog
+        open={open}
+        dialogData={dialogData}
+        onButtonClick={onButtonClick}
+      />
     );
   } else if (dialogData.type === 'fullscreen') {
     return (
       <FullscreenDialog
+        open={open}
         dialogData={dialogData}
         onCancel={() => setDialogData(null)}
       />
@@ -98,18 +109,21 @@ export function PlatformDialog() {
 }
 
 const FullscreenDialog = ({
+  open,
   dialogData,
   onCancel,
 }: {
+  open: boolean;
   dialogData: FullscreenDialogData;
   onCancel: () => void;
 }) => {
   const { dialog, content, paper } = useFullscreenDialogStyles();
   return (
     <Dialog
-      open
+      open={open}
       fullScreen
       className={dialog}
+      TransitionComponent={Grow}
       PaperProps={{ className: paper }}
     >
       <DialogContent className={content}>
@@ -138,15 +152,17 @@ const FullscreenDialog = ({
 };
 
 const AlertDialog = ({
+  open,
   dialogData,
   onButtonClick,
 }: {
+  open: boolean;
   dialogData: AlertDialogData;
   onButtonClick: (label: string) => void;
 }) => {
   const { accordionSummary, accordionMessage, dialog } = useAlertDialogStyles();
   return (
-    <Dialog open className={dialog}>
+    <Dialog open={open} className={dialog}>
       <DialogTitle>{dialogData.title}</DialogTitle>
       <DialogContent>
         {dialogData.message && (

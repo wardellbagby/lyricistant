@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   APP_AUTHOR,
   APP_HOMEPAGE,
@@ -53,53 +52,53 @@ const DividerlessTableCell = (props: TableCellProps) => {
   return <TableCell className={classes.root} {...props} />;
 };
 
-export const AboutDialog = () => {
-  const history = useHistory();
-  const onClose = () => history.replace('/');
+interface AboutDialogProps {
+  open: boolean;
+  onClose: () => void;
+}
 
-  return (
-    <Dialog onClose={onClose} open className={'paper'}>
-      <DialogContent>
-        <Grid
-          container
-          spacing={1}
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Grid item xs={12}>
-            <img src={appIcon} height={'48px'} alt={'Lyricistant Icon'} />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant={'h6'}>Lyricistant</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <TableContainer>
-              <Table size={'small'}>
-                <TableBody>
-                  {Object.keys(aboutInfo)
-                    .map((key: keyof typeof aboutInfo) => [key, aboutInfo[key]])
-                    .map(([key, value]) => (
-                      <TableRow key={key}>
-                        <DividerlessTableCell>{key}</DividerlessTableCell>
-                        <DividerlessTableCell>{value}</DividerlessTableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
-          <Box height={'8px'} />
-          <Grid item xs={12}>
-            <Button
-              variant={'outlined'}
-              onClick={() => platformDelegate.send('save-logs')}
-            >
-              Download Logs
-            </Button>
-          </Grid>
+export const AboutDialog = (props: AboutDialogProps) => (
+  <Dialog onClose={props.onClose} open={props.open} className={'paper'}>
+    <DialogContent>
+      <Grid
+        container
+        spacing={1}
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+          <img src={appIcon} height={'48px'} alt={'Lyricistant Icon'} />
         </Grid>
-      </DialogContent>
-    </Dialog>
-  );
-};
+        <Grid item xs={12}>
+          <Typography variant={'h6'}>Lyricistant</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <TableContainer>
+            <Table size={'small'}>
+              <TableBody>
+                {Object.keys(aboutInfo)
+                  .map((key: keyof typeof aboutInfo) => [key, aboutInfo[key]])
+                  .map(([key, value]) => (
+                    <TableRow key={key}>
+                      <DividerlessTableCell>{key}</DividerlessTableCell>
+                      <DividerlessTableCell>{value}</DividerlessTableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Box height={'8px'} />
+        <Grid item xs={12}>
+          <Button
+            variant={'outlined'}
+            onClick={() => platformDelegate.send('save-logs')}
+          >
+            Download Logs
+          </Button>
+        </Grid>
+      </Grid>
+    </DialogContent>
+  </Dialog>
+);

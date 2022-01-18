@@ -31,7 +31,6 @@ import {
   Save as SaveIcon,
 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { usePreferences } from './PreferencesStore';
 
 const DialogTransition = React.forwardRef<unknown, SlideProps>(
@@ -124,8 +123,13 @@ const SelectBox = <T extends string | number>({
   );
 };
 
-export const Preferences = () => {
-  const history = useHistory();
+interface PreferencesProps {
+  open: boolean;
+  onClose: () => void;
+  onAboutClicked: () => void;
+}
+
+export const Preferences = (props: PreferencesProps) => {
   const classes = dialogStyles(undefined);
   const originalPreferenceData = usePreferences();
   const [preferencesData, setPreferencesData] = useState(
@@ -166,12 +170,8 @@ export const Preferences = () => {
 
   const onPreferencesSaved = () => {
     platformDelegate.send('save-prefs', preferencesData);
-    closePreferences();
+    props.onClose();
   };
-
-  const closePreferences = () => history.replace('/');
-
-  const onAboutClicked = () => history.replace('/about');
 
   if (!preferencesData) {
     return <div />;
@@ -181,7 +181,7 @@ export const Preferences = () => {
     <Dialog
       fullScreen
       className={classes.root}
-      open
+      open={props.open}
       TransitionComponent={DialogTransition}
       PaperProps={{ className: classes.dialogPaper }}
     >
@@ -190,7 +190,7 @@ export const Preferences = () => {
           <IconButton
             color={'inherit'}
             edge="start"
-            onClick={closePreferences}
+            onClick={props.onClose}
             size="large"
           >
             <CloseIcon />
@@ -277,7 +277,7 @@ export const Preferences = () => {
               variant={'text'}
               startIcon={<Info />}
               size={'large'}
-              onClick={onAboutClicked}
+              onClick={props.onAboutClicked}
             >
               About Lyricistant
             </Button>

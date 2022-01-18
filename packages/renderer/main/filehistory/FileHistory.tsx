@@ -14,7 +14,6 @@ import {
   SxProps,
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { ParsedHistoryData } from '@lyricistant/common/history/FileHistory';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 
@@ -29,11 +28,18 @@ const FileHistoryItem = ({ data, onClick }: FileHistoryItemProps) => (
   </ListItem>
 );
 
-export function FileHistory() {
-  const history = useHistory();
-  const onClose = useCallback(() => history.replace('/'), []);
+interface FileHistoryProps {
+  open: boolean;
+  onClose: () => void;
+}
 
-  const [fileHistory] = useChannelData('file-history');
+export function FileHistory(props: FileHistoryProps) {
+  const onClose = useCallback(() => {
+    setDisplayedHistory(null);
+    props.onClose();
+  }, []);
+
+  const [fileHistory] = useChannelData('file-history', [props.open]);
   const [displayedHistory, setDisplayedHistory] =
     useState<ParsedHistoryData>(null);
 
@@ -73,7 +79,7 @@ export function FileHistory() {
       </Dialog>
       <Drawer
         onClose={onClose}
-        open
+        open={props.open}
         className={'paper'}
         anchor={anchor}
         PaperProps={{ sx: drawerStyles }}

@@ -2,7 +2,6 @@ import { Box, Button, Dialog, DialogTitle, Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Apple, AppleIos, Linux, MicrosoftWindows } from 'mdi-material-ui';
 import React, { useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   latestReleaseUrl,
   Release,
@@ -76,14 +75,16 @@ const DownloadButton = (props: { release: Release; onClick: () => void }) => {
   );
 };
 
-export const ChooseDownloadDialog = () => {
-  const history = useHistory();
-  const onClose = () => history.replace('/');
+interface ChooseDownloadDialogProps {
+  open: boolean;
+  onClose: () => void;
+}
 
+export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
   const handleReleaseClicked = (url: string) => {
     logger.info(`App download link clicked. Chosen URL: ${url}`);
     window.open(url, '_blank');
-    onClose();
+    props.onClose();
   };
 
   const releases = useMemo(
@@ -98,9 +99,9 @@ export const ChooseDownloadDialog = () => {
 
   return (
     <Dialog
-      onClose={onClose}
+      onClose={props.onClose}
       aria-labelledby="choose-download-dialog-title"
-      open
+      open={props.open}
     >
       <DialogTitle id="choose-download-dialog-title">
         Download Lyricistant
@@ -128,7 +129,12 @@ export const ChooseDownloadDialog = () => {
           )}
         </Grid>
       </Box>
-      <Button size={'large'} variant={'contained'} fullWidth onClick={onClose}>
+      <Button
+        size={'large'}
+        variant={'contained'}
+        fullWidth
+        onClick={props.onClose}
+      >
         Close
       </Button>
     </Dialog>
