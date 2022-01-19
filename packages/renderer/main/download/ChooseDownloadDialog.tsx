@@ -1,7 +1,16 @@
-import { Box, Button, Dialog, DialogTitle, Grid } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  Grid,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Apple, AppleIos, Linux, MicrosoftWindows } from 'mdi-material-ui';
-import React, { useMemo } from 'react';
+import React, { PropsWithChildren, useMemo } from 'react';
 import {
   latestReleaseUrl,
   Release,
@@ -32,7 +41,57 @@ const releaseColor = ({ platform }: Release) => {
   }
 };
 
-const downloadLabel = ({ platform, arch }: Release) => {
+const MaybeWrapInAccordion = (
+  props: PropsWithChildren<{ platform: string; releases: Release[] }>
+) => {
+  if (props.releases.length > 1) {
+    return (
+      <Grid
+        item
+        container
+        xs={12}
+        spacing={1}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        <Grid item xs={12}>
+          <Accordion sx={{ padding: '0px', boxShadow: 'unset' }}>
+            <AccordionSummary sx={{ padding: '0px' }}>
+              <Box padding={'8px'} width={'100%'}>
+                <Button
+                  sx={{
+                    background: releaseColor(props.releases[0]),
+                    color: releaseTextColor(props.releases[0]),
+                    textTransform: 'none',
+                  }}
+                  variant={'contained'}
+                  fullWidth
+                  startIcon={<ReleaseIcon platform={props.platform} />}
+                  size={'large'}
+                >
+                  {props.platform}
+                </Button>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container>{props.children}</Grid>
+            </AccordionDetails>
+          </Accordion>
+        </Grid>
+      </Grid>
+    );
+  } else {
+    return <>{props.children}</>;
+  }
+};
+
+const downloadLabel = ({
+  platform,
+  arch,
+}: {
+  platform: string;
+  arch?: string;
+}) => {
   switch (platform) {
     case 'Linux':
       return `${platform} - ${arch}`;
@@ -55,7 +114,7 @@ const releaseTextColor = ({ platform }: Release) => {
   }
 };
 
-const DownloadButton = (props: { release: Release; onClick: () => void }) => {
+const DownloadButton = (props: { release: Release; onClick?: () => void }) => {
   const { release, onClick } = props;
   const classes = useStyles(release);
 
@@ -65,7 +124,7 @@ const DownloadButton = (props: { release: Release; onClick: () => void }) => {
         className={classes.root}
         variant={'contained'}
         fullWidth
-        startIcon={<ReleaseIcon release={release} />}
+        startIcon={<ReleaseIcon {...release} />}
         size={'large'}
         onClick={onClick}
       >
@@ -113,20 +172,25 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
           alignItems={'center'}
           justifyContent={'center'}
         >
-          {[...releases.keys()].map((platform) =>
-            releases.get(platform).map((release) => (
-              <Grid key={release.asset} item xs={6}>
-                <DownloadButton
-                  release={release}
-                  onClick={() => {
-                    handleReleaseClicked(
-                      release.url ?? latestReleaseUrl + release.asset
-                    );
-                  }}
-                />
-              </Grid>
-            ))
-          )}
+          {[...releases.keys()].map((platform) => (
+            <MaybeWrapInAccordion
+              platform={platform}
+              releases={releases.get(platform)}
+            >
+              {releases.get(platform).map((release) => (
+                <Grid key={release.asset} item xs={6}>
+                  <DownloadButton
+                    release={release}
+                    onClick={() => {
+                      handleReleaseClicked(
+                        release.url ?? latestReleaseUrl + release.asset
+                      );
+                    }}
+                  />
+                </Grid>
+              ))}
+            </MaybeWrapInAccordion>
+          ))}
         </Grid>
       </Box>
       <Button
@@ -141,8 +205,7 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
   );
 };
 
-const ReleaseIcon = (props: { release: Release }) => {
-  const { platform } = props.release;
+const ReleaseIcon = ({ platform }: { platform: string }) => {
   switch (platform) {
     case 'Linux':
       return <Linux />;
