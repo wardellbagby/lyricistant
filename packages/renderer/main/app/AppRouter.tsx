@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { Redirect, Route, useHistory } from 'react-router-dom';
+import { Route, useHistory } from 'react-router-dom';
 import { ChooseDownloadDialog } from '@lyricistant/renderer/download/ChooseDownloadDialog';
 import { Preferences } from '@lyricistant/renderer/preferences/Preferences';
 import { AboutDialog } from '@lyricistant/renderer/about/AboutDialog';
@@ -56,7 +56,6 @@ export function AppRouter() {
           />
         )}
       />
-      <Route render={() => <Redirect to="/" />} />
       <PlatformDialog />
     </>
   );
