@@ -142,6 +142,7 @@ const MenuBar = (props: AppBarProps) => {
       >
         {trailing.map((item) => (
           <MenuItem
+            key={item.label}
             aria-label={item.label}
             onClick={() => {
               setAnchor(null);

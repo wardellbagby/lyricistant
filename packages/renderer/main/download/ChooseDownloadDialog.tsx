@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Apple, AppleIos, Linux, MicrosoftWindows } from 'mdi-material-ui';
-import React, { PropsWithChildren, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   latestReleaseUrl,
   Release,
@@ -41,9 +41,30 @@ const releaseColor = ({ platform }: Release) => {
   }
 };
 
-const MaybeWrapInAccordion = (
-  props: PropsWithChildren<{ platform: string; releases: Release[] }>
-) => {
+const PlatformDownloadOptions = (props: {
+  platform: string;
+  releases: Release[];
+  onClick: (release: Release) => void;
+}) => {
+  const children = useMemo(
+    () =>
+      props.releases.map((release) => (
+        <Grid
+          key={`${release.platform}/${release.asset}/${release.url}`}
+          item
+          xs={6}
+        >
+          <DownloadButton
+            release={release}
+            onClick={() => {
+              props.onClick(release);
+            }}
+          />
+        </Grid>
+      )),
+    [props.releases, props.onClick]
+  );
+
   if (props.releases.length > 1) {
     return (
       <Grid
@@ -55,7 +76,10 @@ const MaybeWrapInAccordion = (
         justifyContent={'center'}
       >
         <Grid item xs={12}>
-          <Accordion sx={{ padding: '0px', boxShadow: 'unset' }}>
+          <Accordion
+            key={props.platform + 'accordion'}
+            sx={{ padding: '0px', boxShadow: 'unset' }}
+          >
             <AccordionSummary sx={{ padding: '0px' }}>
               <Box padding={'8px'} width={'100%'}>
                 <Button
@@ -74,14 +98,14 @@ const MaybeWrapInAccordion = (
               </Box>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid container>{props.children}</Grid>
+              <Grid container>{children}</Grid>
             </AccordionDetails>
           </Accordion>
         </Grid>
       </Grid>
     );
   } else {
-    return <>{props.children}</>;
+    return <>{children}</>;
   }
 };
 
@@ -173,23 +197,16 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
           justifyContent={'center'}
         >
           {[...releases.keys()].map((platform) => (
-            <MaybeWrapInAccordion
+            <PlatformDownloadOptions
+              key={platform}
               platform={platform}
               releases={releases.get(platform)}
-            >
-              {releases.get(platform).map((release) => (
-                <Grid key={release.asset} item xs={6}>
-                  <DownloadButton
-                    release={release}
-                    onClick={() => {
-                      handleReleaseClicked(
-                        release.url ?? latestReleaseUrl + release.asset
-                      );
-                    }}
-                  />
-                </Grid>
-              ))}
-            </MaybeWrapInAccordion>
+              onClick={(release) =>
+                handleReleaseClicked(
+                  release.url ?? latestReleaseUrl + release.asset
+                )
+              }
+            />
           ))}
         </Grid>
       </Box>
