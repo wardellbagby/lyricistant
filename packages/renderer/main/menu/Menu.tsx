@@ -33,7 +33,6 @@ import React, {
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory } from 'react-router-dom';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
-import { downloadApp } from '@lyricistant/renderer/download';
 import { useEditorText } from '@lyricistant/renderer/editor/EditorTextStore';
 
 const useMenuStyles = makeStyles<Theme, { isSmallLayout: boolean }>(
@@ -178,11 +177,7 @@ export const Menu: React.FC = () => {
   );
 
   const onSettingsClicked = () => history.replace('/preferences');
-  const onDownloadClicked = () => {
-    if (!downloadApp()) {
-      history.replace('/download');
-    }
-  };
+  const onDownloadClicked = () => history.replace('/download');
   const onFileHistoryClicked = () => history.replace('/file-history');
 
   const leadingIcons = useMemo(
