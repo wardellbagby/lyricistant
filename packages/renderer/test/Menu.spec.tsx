@@ -106,10 +106,7 @@ describe('Menu component', () => {
     );
   });
 
-  it("goes to download app when clicked and we couldn't auto-download", async () => {
-    stub(require('@lyricistant/renderer/download'), 'downloadApp').returns(
-      false
-    );
+  it('goes to download app when clicked', async () => {
     const history: History = createMemoryHistory();
 
     render(
@@ -133,32 +130,5 @@ describe('Menu component', () => {
     await waitFor(() =>
       expect(history.location.pathname).to.equal('/download')
     );
-  });
-
-  it('does not go to download app when clicked and we could auto-download', async () => {
-    stub(require('@lyricistant/renderer/download'), 'downloadApp').returns(
-      true
-    );
-    const history: History = createMemoryHistory();
-
-    render(
-      <Router history={history}>
-        <Menu />
-      </Router>
-    );
-    await waitFor(() =>
-      platformDelegate.invoke('ui-config', {
-        showOpen: false,
-        showDownload: true,
-        showBrowserWarning: false,
-      })
-    );
-
-    const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Download Lyricistant' })
-    );
-    userEvent.click(element);
-
-    await waitFor(() => expect(history.location.pathname).to.equal('/'));
   });
 });
