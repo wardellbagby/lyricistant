@@ -23,7 +23,7 @@ interface FileHistoryItemProps {
 }
 
 const FileHistoryItem = ({ data, onClick }: FileHistoryItemProps) => (
-  <ListItem onClick={onClick}>
+  <ListItem button onClick={onClick}>
     <ListItemText primary={data.time} />
   </ListItem>
 );

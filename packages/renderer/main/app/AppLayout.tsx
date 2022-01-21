@@ -22,7 +22,6 @@ export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
   if (isSmallLayout) {
     displayableChildren = [
       <React.Fragment key={'menu'}>{menu}</React.Fragment>,
-      <div key={'menu-main-divider'} />,
       <React.Fragment key={'main'}>{main}</React.Fragment>,
       <div key={'main-detail-divider'} className={classes.divider} />,
       <React.Fragment key={'detail'}>{detail}</React.Fragment>,
@@ -57,7 +56,7 @@ export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
 
 const createGridTemplateRows = (isSmallLayout: boolean) => {
   if (isSmallLayout) {
-    return `auto 8px minmax(200px, 1fr) 4px auto`;
+    return `auto minmax(200px, 1fr) 4px auto`;
   } else {
     return `100%`;
   }
