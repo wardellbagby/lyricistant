@@ -1,4 +1,3 @@
-import { expose } from 'comlink';
 import pronunciationsJson from './pronunciations.json';
 
 /**
@@ -146,7 +145,3 @@ const getBaseWord = (word: string) => {
   const index = word.indexOf('(');
   return index < 0 ? word : word.slice(0, index).trim();
 };
-
-expose({
-  generateRhymes,
-});

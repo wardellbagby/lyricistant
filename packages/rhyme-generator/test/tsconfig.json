@@ -1,0 +1,10 @@
+{
+  "include": ["**/*"],
+  "exclude": ["**/*.gulp.ts"],
+  "compilerOptions": {
+    "types": ["mocha", "node"],
+    "composite": true
+  },
+  "references": [{ "path": "../" }],
+  "extends": "../tsconfig.json"
+}

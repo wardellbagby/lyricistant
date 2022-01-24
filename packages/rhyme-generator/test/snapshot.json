@@ -1,0 +1,4558 @@
+{
+  "hello": [
+    {
+      "score": 492422.6,
+      "word": "veilleux"
+    },
+    {
+      "score": 409946.8,
+      "word": "below"
+    },
+    {
+      "score": 400590.3,
+      "word": "aglow"
+    },
+    {
+      "score": 398324.7,
+      "word": "enloe"
+    },
+    {
+      "score": 397926.1,
+      "word": "rouleau"
+    },
+    {
+      "score": 397351.6,
+      "word": "boileau"
+    },
+    {
+      "score": 396533,
+      "word": "enlow"
+    },
+    {
+      "score": 396141,
+      "word": "guillot"
+    },
+    {
+      "score": 392771.2,
+      "word": "belleau"
+    },
+    {
+      "score": 384169.1,
+      "word": "soileau"
+    },
+    {
+      "score": 381007.4,
+      "word": "groleau"
+    },
+    {
+      "score": 377858.6,
+      "word": "inlow"
+    },
+    {
+      "score": 309959.9,
+      "word": "low"
+    },
+    {
+      "score": 309901.8,
+      "word": "yellow"
+    },
+    {
+      "score": 309898.4,
+      "word": "although"
+    },
+    {
+      "score": 309883.7,
+      "word": "follow"
+    },
+    {
+      "score": 309823.4,
+      "word": "flow"
+    },
+    {
+      "score": 309746.1,
+      "word": "blow"
+    },
+    {
+      "score": 309710,
+      "word": "slow"
+    },
+    {
+      "score": 309629.6,
+      "word": "lo"
+    },
+    {
+      "score": 309599.3,
+      "word": "buffalo"
+    },
+    {
+      "score": 309575.6,
+      "word": "fellow"
+    },
+    {
+      "score": 309533.7,
+      "word": "ceo"
+    },
+    {
+      "score": 309528.5,
+      "word": "solo"
+    },
+    {
+      "score": 309272.5,
+      "word": "polo"
+    },
+    {
+      "score": 309132.9,
+      "word": "pillow"
+    },
+    {
+      "score": 309127.3,
+      "word": "halo"
+    },
+    {
+      "score": 309086.3,
+      "word": "cio"
+    },
+    {
+      "score": 309043.5,
+      "word": "hollow"
+    },
+    {
+      "score": 309035,
+      "word": "glow"
+    },
+    {
+      "score": 309020.5,
+      "word": "willow"
+    },
+    {
+      "score": 308971.8,
+      "word": "shallow"
+    },
+    {
+      "score": 308928.4,
+      "word": "palo"
+    },
+    {
+      "score": 308907.6,
+      "word": "apo"
+    },
+    {
+      "score": 308831.4,
+      "word": "renault"
+    },
+    {
+      "score": 308829.6,
+      "word": "ngo"
+    },
+    {
+      "score": 308815.3,
+      "word": "lowe"
+    },
+    {
+      "score": 308802.6,
+      "word": "oslo"
+    },
+    {
+      "score": 308777.6,
+      "word": "overflow"
+    },
+    {
+      "score": 308758.6,
+      "word": "paulo"
+    },
+    {
+      "score": 308756.5,
+      "word": "tarot"
+    },
+    {
+      "score": 308657.4,
+      "word": "chateau"
+    },
+    {
+      "score": 308522.5,
+      "word": "angelo"
+    },
+    {
+      "score": 308427.9,
+      "word": "imo"
+    },
+    {
+      "score": 308410.8,
+      "word": "cello"
+    },
+    {
+      "score": 308329.4,
+      "word": "paolo"
+    },
+    {
+      "score": 308303.7,
+      "word": "cabo"
+    },
+    {
+      "score": 308201.8,
+      "word": "dunno"
+    },
+    {
+      "score": 308192.4,
+      "word": "nouveau"
+    },
+    {
+      "score": 308132.1,
+      "word": "bungalow"
+    },
+    {
+      "score": 307724,
+      "word": "colo"
+    },
+    {
+      "score": 307714.6,
+      "word": "hilo"
+    },
+    {
+      "score": 307694,
+      "word": "flo"
+    },
+    {
+      "score": 307680.1,
+      "word": "mellow"
+    },
+    {
+      "score": 307556,
+      "word": "milo"
+    },
+    {
+      "score": 307409.5,
+      "word": "gallo"
+    },
+    {
+      "score": 307316.6,
+      "word": "michelangelo"
+    },
+    {
+      "score": 307295.2,
+      "word": "glo"
+    },
+    {
+      "score": 307256.1,
+      "word": "miro"
+    },
+    {
+      "score": 307120.1,
+      "word": "rousseau"
+    },
+    {
+      "score": 307001.8,
+      "word": "plough"
+    },
+    {
+      "score": 306861.7,
+      "word": "shiloh"
+    },
+    {
+      "score": 306766.6,
+      "word": "kilo"
+    },
+    {
+      "score": 306717.2,
+      "word": "jello"
+    },
+    {
+      "score": 306710.3,
+      "word": "piccolo"
+    },
+    {
+      "score": 306695.6,
+      "word": "silo"
+    },
+    {
+      "score": 306672.1,
+      "word": "foucault"
+    },
+    {
+      "score": 306652.5,
+      "word": "bello"
+    },
+    {
+      "score": 306636,
+      "word": "loewe"
+    },
+    {
+      "score": 306542.4,
+      "word": "malo"
+    },
+    {
+      "score": 306536.2,
+      "word": "tupelo"
+    },
+    {
+      "score": 306318.6,
+      "word": "arnaud"
+    },
+    {
+      "score": 306215.8,
+      "word": "belo"
+    },
+    {
+      "score": 306203.3,
+      "word": "bigelow"
+    },
+    {
+      "score": 306102.2,
+      "word": "clo"
+    },
+    {
+      "score": 306070.8,
+      "word": "tableau"
+    },
+    {
+      "score": 306046.6,
+      "word": "philo"
+    },
+    {
+      "score": 306026.4,
+      "word": "yolo"
+    },
+    {
+      "score": 306017.2,
+      "word": "bellow"
+    },
+    {
+      "score": 305744.7,
+      "word": "mello"
+    },
+    {
+      "score": 305722.7,
+      "word": "melo"
+    },
+    {
+      "score": 305640.5,
+      "word": "velo"
+    },
+    {
+      "score": 305583.1,
+      "word": "fallow"
+    },
+    {
+      "score": 305544.1,
+      "word": "gigolo"
+    },
+    {
+      "score": 305515.3,
+      "word": "renaud"
+    },
+    {
+      "score": 305416.1,
+      "word": "loh"
+    },
+    {
+      "score": 305348.8,
+      "word": "rollo"
+    },
+    {
+      "score": 305275.2,
+      "word": "davao"
+    },
+    {
+      "score": 305232.6,
+      "word": "nolo"
+    },
+    {
+      "score": 304811.6,
+      "word": "rideau"
+    },
+    {
+      "score": 304706.3,
+      "word": "chabot"
+    },
+    {
+      "score": 304686.8,
+      "word": "mallow"
+    },
+    {
+      "score": 304552.6,
+      "word": "michaud"
+    },
+    {
+      "score": 304417.1,
+      "word": "pollo"
+    },
+    {
+      "score": 304408.9,
+      "word": "chateaux"
+    },
+    {
+      "score": 304346.8,
+      "word": "loe"
+    },
+    {
+      "score": 304272.3,
+      "word": "filo"
+    }
+  ],
+  "don't": [
+    {
+      "score": 508837.6,
+      "word": "wont"
+    },
+    {
+      "score": 501183.1,
+      "word": "bonet"
+    },
+    {
+      "score": 302166,
+      "word": "stormont"
+    },
+    {
+      "score": 300165.7,
+      "word": "delmont"
+    },
+    {
+      "score": 300000,
+      "word": "won't"
+    },
+    {
+      "score": 294091.5,
+      "word": "pierrepont"
+    },
+    {
+      "score": 100000,
+      "word": "andrepont"
+    }
+  ],
+  "chandler": [
+    {
+      "score": 708937.8,
+      "word": "handler"
+    },
+    {
+      "score": 707300.3,
+      "word": "sandler"
+    },
+    {
+      "score": 704188.9,
+      "word": "candler"
+    },
+    {
+      "score": 686609.5,
+      "word": "mandler"
+    },
+    {
+      "score": 500000,
+      "word": "kandler"
+    },
+    {
+      "score": 500000,
+      "word": "landler"
+    },
+    {
+      "score": 489250.5,
+      "word": "panhandler"
+    },
+    {
+      "score": 400000,
+      "word": "andler"
+    },
+    {
+      "score": 192973.1,
+      "word": "luhr"
+    },
+    {
+      "score": 109998.3,
+      "word": "or"
+    },
+    {
+      "score": 109998.1,
+      "word": "are"
+    },
+    {
+      "score": 109587.5,
+      "word": "er"
+    },
+    {
+      "score": 109267.4,
+      "word": "ur"
+    },
+    {
+      "score": 108864.8,
+      "word": "err"
+    },
+    {
+      "score": 103448.3,
+      "word": "eure"
+    }
+  ],
+  "flourish": [
+    {
+      "score": 406129.7,
+      "word": "nourish"
+    },
+    {
+      "score": 306460.5,
+      "word": "licorice"
+    },
+    {
+      "score": 304412.8,
+      "word": "gibberish"
+    },
+    {
+      "score": 303983,
+      "word": "feverish"
+    },
+    {
+      "score": 301478.3,
+      "word": "amateurish"
+    },
+    {
+      "score": 297202.6,
+      "word": "schweizerische"
+    },
+    {
+      "score": 208182.9,
+      "word": "ish"
+    },
+    {
+      "score": 200000,
+      "word": "berish"
+    },
+    {
+      "score": 200000,
+      "word": "malnourish"
+    },
+    {
+      "score": 200000,
+      "word": "undernourish"
+    },
+    {
+      "score": 193534.1,
+      "word": "isch"
+    },
+    {
+      "score": 109475.1,
+      "word": "sh"
+    },
+    {
+      "score": 104218.5,
+      "word": "shh"
+    }
+  ],
+  "tough": [
+    {
+      "score": 507018.8,
+      "word": "tuff"
+    },
+    {
+      "score": 409900.9,
+      "word": "stuff"
+    },
+    {
+      "score": 409445.3,
+      "word": "rough"
+    },
+    {
+      "score": 408894.2,
+      "word": "duff"
+    },
+    {
+      "score": 408505.6,
+      "word": "cuff"
+    },
+    {
+      "score": 408366.3,
+      "word": "buff"
+    },
+    {
+      "score": 408189.3,
+      "word": "puff"
+    },
+    {
+      "score": 407389,
+      "word": "huff"
+    },
+    {
+      "score": 407319.2,
+      "word": "ruff"
+    },
+    {
+      "score": 406609,
+      "word": "muff"
+    },
+    {
+      "score": 406083.8,
+      "word": "hough"
+    },
+    {
+      "score": 404967.9,
+      "word": "ruf"
+    },
+    {
+      "score": 403013,
+      "word": "luff"
+    },
+    {
+      "score": 399082.8,
+      "word": "guff"
+    },
+    {
+      "score": 395974.4,
+      "word": "cuffe"
+    },
+    {
+      "score": 392621.9,
+      "word": "stough"
+    },
+    {
+      "score": 309903.8,
+      "word": "enough"
+    },
+    {
+      "score": 309192.8,
+      "word": "plaintiff"
+    },
+    {
+      "score": 308825.1,
+      "word": "bluff"
+    },
+    {
+      "score": 307906.4,
+      "word": "slough"
+    },
+    {
+      "score": 307132.4,
+      "word": "snuff"
+    },
+    {
+      "score": 307037.1,
+      "word": "fluff"
+    },
+    {
+      "score": 306231.5,
+      "word": "mastiff"
+    },
+    {
+      "score": 304114.8,
+      "word": "pontiff"
+    },
+    {
+      "score": 303918.8,
+      "word": "gruff"
+    },
+    {
+      "score": 303828.9,
+      "word": "kristof"
+    },
+    {
+      "score": 303721.8,
+      "word": "scuff"
+    },
+    {
+      "score": 302970,
+      "word": "foodstuff"
+    },
+    {
+      "score": 301226.6,
+      "word": "macduff"
+    },
+    {
+      "score": 301121.6,
+      "word": "acuff"
+    },
+    {
+      "score": 300837.8,
+      "word": "mcgough"
+    },
+    {
+      "score": 298726,
+      "word": "rebuff"
+    },
+    {
+      "score": 298644.8,
+      "word": "mcduff"
+    },
+    {
+      "score": 298365.1,
+      "word": "leboeuf"
+    },
+    {
+      "score": 294928,
+      "word": "cluff"
+    },
+    {
+      "score": 294517.3,
+      "word": "dyestuff"
+    },
+    {
+      "score": 288206.5,
+      "word": "bruff"
+    },
+    {
+      "score": 287983.4,
+      "word": "mcgeough"
+    },
+    {
+      "score": 280658.3,
+      "word": "mastif"
+    },
+    {
+      "score": 209737.9,
+      "word": "joseph"
+    },
+    {
+      "score": 209093.2,
+      "word": "tariff"
+    },
+    {
+      "score": 209081.7,
+      "word": "sheriff"
+    },
+    {
+      "score": 208029.4,
+      "word": "josef"
+    },
+    {
+      "score": 207626.1,
+      "word": "woodruff"
+    },
+    {
+      "score": 207531.1,
+      "word": "mischief"
+    },
+    {
+      "score": 206736.4,
+      "word": "aleph"
+    },
+    {
+      "score": 205469.9,
+      "word": "dandruff"
+    },
+    {
+      "score": 205110.9,
+      "word": "mcauliffe"
+    },
+    {
+      "score": 204918.4,
+      "word": "yosef"
+    },
+    {
+      "score": 204634.2,
+      "word": "bailiff"
+    },
+    {
+      "score": 203898.9,
+      "word": "scottsbluff"
+    },
+    {
+      "score": 203828.4,
+      "word": "caliph"
+    },
+    {
+      "score": 203579.3,
+      "word": "jozef"
+    },
+    {
+      "score": 202256.2,
+      "word": "greenough"
+    },
+    {
+      "score": 201701.8,
+      "word": "handcuff"
+    },
+    {
+      "score": 200000,
+      "word": "schuff"
+    },
+    {
+      "score": 200000,
+      "word": "shuff"
+    },
+    {
+      "score": 198416.2,
+      "word": "bischof"
+    },
+    {
+      "score": 197337.4,
+      "word": "khalaf"
+    },
+    {
+      "score": 196488,
+      "word": "kerchief"
+    },
+    {
+      "score": 195205.2,
+      "word": "landgraf"
+    },
+    {
+      "score": 194721.9,
+      "word": "banzhaf"
+    },
+    {
+      "score": 194327.3,
+      "word": "imhof"
+    },
+    {
+      "score": 193468.8,
+      "word": "degraff"
+    },
+    {
+      "score": 192799.1,
+      "word": "iosif"
+    },
+    {
+      "score": 191949.5,
+      "word": "earmuff"
+    },
+    {
+      "score": 191492.2,
+      "word": "retzlaff"
+    },
+    {
+      "score": 190425.6,
+      "word": "tetzlaff"
+    },
+    {
+      "score": 189264.1,
+      "word": "markgraf"
+    },
+    {
+      "score": 187754.7,
+      "word": "kilduff"
+    },
+    {
+      "score": 186930.2,
+      "word": "ratzlaff"
+    },
+    {
+      "score": 181225.5,
+      "word": "macdonough"
+    },
+    {
+      "score": 181034.5,
+      "word": "galef"
+    },
+    {
+      "score": 179594,
+      "word": "updegraff"
+    },
+    {
+      "score": 178447.6,
+      "word": "goodnough"
+    },
+    {
+      "score": 177948.5,
+      "word": "margraf"
+    },
+    {
+      "score": 100000,
+      "word": "blickenstaff"
+    },
+    {
+      "score": 100000,
+      "word": "lebouef"
+    },
+    {
+      "score": 100000,
+      "word": "overstuff"
+    },
+    {
+      "score": 100000,
+      "word": "petstuff"
+    },
+    {
+      "score": 100000,
+      "word": "pluff"
+    },
+    {
+      "score": 0,
+      "word": "boruff"
+    },
+    {
+      "score": 0,
+      "word": "burggraf"
+    },
+    {
+      "score": 0,
+      "word": "calaf"
+    },
+    {
+      "score": 0,
+      "word": "carkhuff"
+    },
+    {
+      "score": 0,
+      "word": "dayhuff"
+    },
+    {
+      "score": 0,
+      "word": "dejoseph"
+    },
+    {
+      "score": 0,
+      "word": "fisticuff"
+    },
+    {
+      "score": 0,
+      "word": "mcauliff"
+    },
+    {
+      "score": 0,
+      "word": "mehlhaff"
+    },
+    {
+      "score": 0,
+      "word": "piedboeuf"
+    },
+    {
+      "score": 0,
+      "word": "seneff"
+    },
+    {
+      "score": 0,
+      "word": "vakuf"
+    }
+  ],
+  "division": [
+    {
+      "score": 901472.2,
+      "word": "divison"
+    },
+    {
+      "score": 709706,
+      "word": "revision"
+    },
+    {
+      "score": 709186.9,
+      "word": "subdivision"
+    },
+    {
+      "score": 707662.9,
+      "word": "envision"
+    },
+    {
+      "score": 703579.7,
+      "word": "univision"
+    },
+    {
+      "score": 609951.8,
+      "word": "tv"
+    },
+    {
+      "score": 609887.3,
+      "word": "decision"
+    },
+    {
+      "score": 609811.5,
+      "word": "vision"
+    },
+    {
+      "score": 609711.5,
+      "word": "provision"
+    },
+    {
+      "score": 609377.2,
+      "word": "supervision"
+    },
+    {
+      "score": 608894.9,
+      "word": "collision"
+    },
+    {
+      "score": 607780.6,
+      "word": "activision"
+    },
+    {
+      "score": 606785.8,
+      "word": "incision"
+    },
+    {
+      "score": 606420.7,
+      "word": "excision"
+    },
+    {
+      "score": 604792.2,
+      "word": "rescission"
+    },
+    {
+      "score": 601069.9,
+      "word": "multivision"
+    },
+    {
+      "score": 600919.9,
+      "word": "televison"
+    },
+    {
+      "score": 591112.8,
+      "word": "recision"
+    },
+    {
+      "score": 509838.6,
+      "word": "television"
+    },
+    {
+      "score": 509505.2,
+      "word": "precision"
+    },
+    {
+      "score": 507286.7,
+      "word": "circumcision"
+    },
+    {
+      "score": 506483.5,
+      "word": "parisian"
+    },
+    {
+      "score": 505055.5,
+      "word": "cablevision"
+    },
+    {
+      "score": 504253.4,
+      "word": "indecision"
+    },
+    {
+      "score": 503637.2,
+      "word": "macrovision"
+    },
+    {
+      "score": 503350.5,
+      "word": "derision"
+    },
+    {
+      "score": 500000,
+      "word": "xyvision"
+    },
+    {
+      "score": 492878.2,
+      "word": "coopervision"
+    },
+    {
+      "score": 300000,
+      "word": "computervision"
+    },
+    {
+      "score": 300000,
+      "word": "exploravision"
+    },
+    {
+      "score": 300000,
+      "word": "misprision"
+    },
+    {
+      "score": 300000,
+      "word": "spectravision"
+    },
+    {
+      "score": 300000,
+      "word": "valuevision"
+    },
+    {
+      "score": 300000,
+      "word": "worldvision"
+    },
+    {
+      "score": 209997.2,
+      "word": "an"
+    },
+    {
+      "score": 209831.2,
+      "word": "un"
+    },
+    {
+      "score": 0,
+      "word": "'n"
+    }
+  ],
+  "exaggerate": [
+    {
+      "score": 209756.2,
+      "word": "eight"
+    },
+    {
+      "score": 209100.1,
+      "word": "ate"
+    },
+    {
+      "score": 0,
+      "word": "aydt"
+    }
+  ],
+  "abundant": [
+    {
+      "score": 708757.8,
+      "word": "redundant"
+    }
+  ],
+  "slogan": [
+    {
+      "score": 690031.4,
+      "word": "blowgun"
+    },
+    {
+      "score": 609057.1,
+      "word": "logan"
+    },
+    {
+      "score": 604611,
+      "word": "grogan"
+    },
+    {
+      "score": 604175.7,
+      "word": "brogan"
+    },
+    {
+      "score": 508498.9,
+      "word": "hogan"
+    },
+    {
+      "score": 506489.7,
+      "word": "shogun"
+    },
+    {
+      "score": 504480.4,
+      "word": "rogan"
+    },
+    {
+      "score": 504176.2,
+      "word": "kogan"
+    },
+    {
+      "score": 502962.5,
+      "word": "cogan"
+    },
+    {
+      "score": 502904.2,
+      "word": "bogan"
+    },
+    {
+      "score": 498554.8,
+      "word": "dogan"
+    },
+    {
+      "score": 497127.5,
+      "word": "wogan"
+    },
+    {
+      "score": 491419.9,
+      "word": "ogan"
+    },
+    {
+      "score": 489839.9,
+      "word": "mogan"
+    },
+    {
+      "score": 481831.7,
+      "word": "vogan"
+    },
+    {
+      "score": 481642,
+      "word": "gogan"
+    },
+    {
+      "score": 400000,
+      "word": "crogan"
+    },
+    {
+      "score": 388855.6,
+      "word": "mycogen"
+    },
+    {
+      "score": 309666.6,
+      "word": "gun"
+    },
+    {
+      "score": 307801.5,
+      "word": "gunn"
+    },
+    {
+      "score": 300000,
+      "word": "ecogen"
+    },
+    {
+      "score": 300000,
+      "word": "mcgrogan"
+    },
+    {
+      "score": 300000,
+      "word": "slobogin"
+    },
+    {
+      "score": 209997.2,
+      "word": "an"
+    },
+    {
+      "score": 209831.2,
+      "word": "un"
+    },
+    {
+      "score": 200000,
+      "word": "marogen"
+    },
+    {
+      "score": 200000,
+      "word": "tecogen"
+    },
+    {
+      "score": 0,
+      "word": "'n"
+    }
+  ],
+  "fame": [
+    {
+      "score": 409989.3,
+      "word": "name"
+    },
+    {
+      "score": 409971.2,
+      "word": "same"
+    },
+    {
+      "score": 409969.6,
+      "word": "game"
+    },
+    {
+      "score": 409890.4,
+      "word": "came"
+    },
+    {
+      "score": 409181.7,
+      "word": "shame"
+    },
+    {
+      "score": 409101.2,
+      "word": "dame"
+    },
+    {
+      "score": 408621.6,
+      "word": "lame"
+    },
+    {
+      "score": 407712.2,
+      "word": "tame"
+    },
+    {
+      "score": 407008.7,
+      "word": "mame"
+    },
+    {
+      "score": 405438.9,
+      "word": "boehm"
+    },
+    {
+      "score": 404279.8,
+      "word": "damme"
+    },
+    {
+      "score": 403858.6,
+      "word": "haim"
+    },
+    {
+      "score": 402623.6,
+      "word": "defame"
+    },
+    {
+      "score": 401870.6,
+      "word": "maim"
+    },
+    {
+      "score": 398747.3,
+      "word": "bame"
+    },
+    {
+      "score": 398067.2,
+      "word": "sejm"
+    },
+    {
+      "score": 397074.9,
+      "word": "boehme"
+    },
+    {
+      "score": 389112.9,
+      "word": "mayme"
+    },
+    {
+      "score": 385579.1,
+      "word": "rhame"
+    },
+    {
+      "score": 384356.2,
+      "word": "kaim"
+    },
+    {
+      "score": 309821.7,
+      "word": "frame"
+    },
+    {
+      "score": 309797.9,
+      "word": "claim"
+    },
+    {
+      "score": 309783.8,
+      "word": "became"
+    },
+    {
+      "score": 309725,
+      "word": "aim"
+    },
+    {
+      "score": 309303,
+      "word": "flame"
+    },
+    {
+      "score": 309280.2,
+      "word": "blame"
+    },
+    {
+      "score": 308797.2,
+      "word": "rename"
+    },
+    {
+      "score": 308121.9,
+      "word": "acclaim"
+    },
+    {
+      "score": 307817.1,
+      "word": "graeme"
+    },
+    {
+      "score": 307759.6,
+      "word": "ame"
+    },
+    {
+      "score": 307736.5,
+      "word": "reclaim"
+    },
+    {
+      "score": 307396.3,
+      "word": "proclaim"
+    },
+    {
+      "score": 306716.1,
+      "word": "disclaim"
+    },
+    {
+      "score": 306198.4,
+      "word": "overcame"
+    },
+    {
+      "score": 304992.7,
+      "word": "aime"
+    },
+    {
+      "score": 303359.3,
+      "word": "exclaim"
+    },
+    {
+      "score": 302665.7,
+      "word": "ballgame"
+    },
+    {
+      "score": 301769.7,
+      "word": "postgame"
+    },
+    {
+      "score": 301187.5,
+      "word": "inflame"
+    },
+    {
+      "score": 300851.2,
+      "word": "aflame"
+    },
+    {
+      "score": 300000,
+      "word": "fayme"
+    },
+    {
+      "score": 299045.5,
+      "word": "swaim"
+    },
+    {
+      "score": 297342.7,
+      "word": "brame"
+    },
+    {
+      "score": 284542.5,
+      "word": "declaim"
+    },
+    {
+      "score": 282792.3,
+      "word": "ashame"
+    },
+    {
+      "score": 209793.7,
+      "word": "username"
+    },
+    {
+      "score": 209381.7,
+      "word": "filename"
+    },
+    {
+      "score": 209284.5,
+      "word": "nickname"
+    },
+    {
+      "score": 209151.7,
+      "word": "surname"
+    },
+    {
+      "score": 208157.4,
+      "word": "mainframe"
+    },
+    {
+      "score": 207801.8,
+      "word": "timeframe"
+    },
+    {
+      "score": 206906.9,
+      "word": "videogame"
+    },
+    {
+      "score": 206760.2,
+      "word": "burlingame"
+    },
+    {
+      "score": 205837.6,
+      "word": "aspartame"
+    },
+    {
+      "score": 205753.5,
+      "word": "airframe"
+    },
+    {
+      "score": 205165.6,
+      "word": "endgame"
+    },
+    {
+      "score": 204519.1,
+      "word": "boardgame"
+    },
+    {
+      "score": 203527.9,
+      "word": "counterclaim"
+    },
+    {
+      "score": 201984.9,
+      "word": "brandname"
+    },
+    {
+      "score": 200000,
+      "word": "baim"
+    },
+    {
+      "score": 109844.8,
+      "word": "mm"
+    },
+    {
+      "score": 100000,
+      "word": "flaim"
+    },
+    {
+      "score": 100000,
+      "word": "fraim"
+    },
+    {
+      "score": 0,
+      "word": "goodgame"
+    },
+    {
+      "score": 0,
+      "word": "nandaime"
+    }
+  ],
+  "disagreement": [
+    {
+      "score": 909929.3,
+      "word": "agreement"
+    },
+    {
+      "score": 607977.6,
+      "word": "accompaniment"
+    },
+    {
+      "score": 602356.6,
+      "word": "vehement"
+    },
+    {
+      "score": 598580.1,
+      "word": "bement"
+    },
+    {
+      "score": 508325.6,
+      "word": "embodiment"
+    },
+    {
+      "score": 401280.9,
+      "word": "munt"
+    },
+    {
+      "score": 397707.8,
+      "word": "mundt"
+    }
+  ],
+  "feeling": [
+    {
+      "score": 609589.7,
+      "word": "dealing"
+    },
+    {
+      "score": 609548.5,
+      "word": "healing"
+    },
+    {
+      "score": 609400.1,
+      "word": "ceiling"
+    },
+    {
+      "score": 608419.4,
+      "word": "sealing"
+    },
+    {
+      "score": 608165.8,
+      "word": "keeling"
+    },
+    {
+      "score": 607810.8,
+      "word": "wheeling"
+    },
+    {
+      "score": 606852.6,
+      "word": "peeling"
+    },
+    {
+      "score": 606666.3,
+      "word": "kneeling"
+    },
+    {
+      "score": 606013.8,
+      "word": "reeling"
+    },
+    {
+      "score": 598394.5,
+      "word": "unfeeling"
+    },
+    {
+      "score": 595704.9,
+      "word": "heeling"
+    },
+    {
+      "score": 578106.4,
+      "word": "mealing"
+    },
+    {
+      "score": 577001.4,
+      "word": "teeling"
+    },
+    {
+      "score": 508738.6,
+      "word": "appealing"
+    },
+    {
+      "score": 508695.4,
+      "word": "revealing"
+    },
+    {
+      "score": 508628.7,
+      "word": "stealing"
+    },
+    {
+      "score": 507361.3,
+      "word": "ealing"
+    },
+    {
+      "score": 506845.3,
+      "word": "annealing"
+    },
+    {
+      "score": 506058.3,
+      "word": "repealing"
+    },
+    {
+      "score": 505597.7,
+      "word": "concealing"
+    },
+    {
+      "score": 504402.3,
+      "word": "darjeeling"
+    },
+    {
+      "score": 501955.5,
+      "word": "squealing"
+    },
+    {
+      "score": 500725.7,
+      "word": "unappealing"
+    },
+    {
+      "score": 492297.6,
+      "word": "frieling"
+    },
+    {
+      "score": 400962.5,
+      "word": "freewheeling"
+    },
+    {
+      "score": 400000,
+      "word": "heling"
+    },
+    {
+      "score": 400000,
+      "word": "seeling"
+    },
+    {
+      "score": 400000,
+      "word": "sieling"
+    },
+    {
+      "score": 308291.2,
+      "word": "ling"
+    },
+    {
+      "score": 300000,
+      "word": "freehling"
+    },
+    {
+      "score": 291114.8,
+      "word": "lyng"
+    },
+    {
+      "score": 209595.6,
+      "word": "ing"
+    },
+    {
+      "score": 209447.9,
+      "word": "ng"
+    }
+  ],
+  "slam": [
+    {
+      "score": 508011.2,
+      "word": "clam"
+    },
+    {
+      "score": 507041.7,
+      "word": "glam"
+    },
+    {
+      "score": 506623.1,
+      "word": "alam"
+    },
+    {
+      "score": 502348.4,
+      "word": "flam"
+    },
+    {
+      "score": 493474.5,
+      "word": "flamm"
+    },
+    {
+      "score": 493202.4,
+      "word": "plam"
+    },
+    {
+      "score": 409743.3,
+      "word": "spam"
+    },
+    {
+      "score": 409493.5,
+      "word": "graham"
+    },
+    {
+      "score": 409157.4,
+      "word": "lamb"
+    },
+    {
+      "score": 408932.2,
+      "word": "gram"
+    },
+    {
+      "score": 408893.6,
+      "word": "scam"
+    },
+    {
+      "score": 408768.3,
+      "word": "lam"
+    },
+    {
+      "score": 408165,
+      "word": "siam"
+    },
+    {
+      "score": 408049.3,
+      "word": "dram"
+    },
+    {
+      "score": 407817.1,
+      "word": "graeme"
+    },
+    {
+      "score": 407805.1,
+      "word": "tram"
+    },
+    {
+      "score": 407239.4,
+      "word": "cram"
+    },
+    {
+      "score": 407210.2,
+      "word": "sram"
+    },
+    {
+      "score": 406802.1,
+      "word": "wham"
+    },
+    {
+      "score": 406597.9,
+      "word": "bram"
+    },
+    {
+      "score": 406413.2,
+      "word": "swam"
+    },
+    {
+      "score": 405203.1,
+      "word": "gramm"
+    },
+    {
+      "score": 405138.8,
+      "word": "fram"
+    },
+    {
+      "score": 404135.8,
+      "word": "schramm"
+    },
+    {
+      "score": 403036.5,
+      "word": "stam"
+    },
+    {
+      "score": 402923.6,
+      "word": "lamm"
+    },
+    {
+      "score": 401898.1,
+      "word": "stamm"
+    },
+    {
+      "score": 401133.6,
+      "word": "eelam"
+    },
+    {
+      "score": 400569.1,
+      "word": "schram"
+    },
+    {
+      "score": 398279.3,
+      "word": "kram"
+    },
+    {
+      "score": 397231.7,
+      "word": "frahm"
+    },
+    {
+      "score": 397175.8,
+      "word": "laflamme"
+    },
+    {
+      "score": 395921.5,
+      "word": "lambe"
+    },
+    {
+      "score": 384537.3,
+      "word": "lahm"
+    },
+    {
+      "score": 382712.1,
+      "word": "kramm"
+    },
+    {
+      "score": 380897.8,
+      "word": "mclamb"
+    },
+    {
+      "score": 379634.6,
+      "word": "kvam"
+    },
+    {
+      "score": 377995.8,
+      "word": "lamme"
+    },
+    {
+      "score": 309991.7,
+      "word": "am"
+    },
+    {
+      "score": 309680.5,
+      "word": "cam"
+    },
+    {
+      "score": 309678.8,
+      "word": "ram"
+    },
+    {
+      "score": 309661.5,
+      "word": "sam"
+    },
+    {
+      "score": 309608.2,
+      "word": "exam"
+    },
+    {
+      "score": 309474.2,
+      "word": "jam"
+    },
+    {
+      "score": 309442.8,
+      "word": "durham"
+    },
+    {
+      "score": 309427.3,
+      "word": "damn"
+    },
+    {
+      "score": 309342.3,
+      "word": "dam"
+    },
+    {
+      "score": 309201.5,
+      "word": "nam"
+    },
+    {
+      "score": 309175.1,
+      "word": "ham"
+    },
+    {
+      "score": 309063.1,
+      "word": "pam"
+    },
+    {
+      "score": 308431.3,
+      "word": "madame"
+    },
+    {
+      "score": 308348.1,
+      "word": "tam"
+    },
+    {
+      "score": 308245.2,
+      "word": "bam"
+    },
+    {
+      "score": 307998.7,
+      "word": "sham"
+    },
+    {
+      "score": 307542.7,
+      "word": "imam"
+    },
+    {
+      "score": 307414.6,
+      "word": "kam"
+    },
+    {
+      "score": 307393.5,
+      "word": "yam"
+    },
+    {
+      "score": 306799.9,
+      "word": "hamm"
+    },
+    {
+      "score": 306487.8,
+      "word": "abram"
+    },
+    {
+      "score": 306328.8,
+      "word": "pham"
+    },
+    {
+      "score": 306281.5,
+      "word": "tham"
+    },
+    {
+      "score": 305589.6,
+      "word": "cham"
+    },
+    {
+      "score": 304279.8,
+      "word": "damme"
+    },
+    {
+      "score": 304093.2,
+      "word": "damm"
+    },
+    {
+      "score": 303119,
+      "word": "camm"
+    },
+    {
+      "score": 302998.6,
+      "word": "sahm"
+    },
+    {
+      "score": 302915.8,
+      "word": "kamm"
+    },
+    {
+      "score": 302084.7,
+      "word": "jamb"
+    },
+    {
+      "score": 302083.7,
+      "word": "ghulam"
+    },
+    {
+      "score": 301772.4,
+      "word": "scram"
+    },
+    {
+      "score": 300000,
+      "word": "klamm"
+    },
+    {
+      "score": 299799.4,
+      "word": "rahm"
+    },
+    {
+      "score": 299110.9,
+      "word": "ramm"
+    },
+    {
+      "score": 298285.8,
+      "word": "tamm"
+    },
+    {
+      "score": 296964.3,
+      "word": "beacham"
+    },
+    {
+      "score": 296794,
+      "word": "gamm"
+    },
+    {
+      "score": 296013.3,
+      "word": "dahm"
+    },
+    {
+      "score": 295972,
+      "word": "panam"
+    },
+    {
+      "score": 295910.3,
+      "word": "burcham"
+    },
+    {
+      "score": 294040.9,
+      "word": "nahm"
+    },
+    {
+      "score": 293197.3,
+      "word": "ulam"
+    },
+    {
+      "score": 291842.8,
+      "word": "stram"
+    },
+    {
+      "score": 290634.2,
+      "word": "vandamme"
+    },
+    {
+      "score": 288940.9,
+      "word": "vandam"
+    },
+    {
+      "score": 286502.6,
+      "word": "zahm"
+    },
+    {
+      "score": 286225.6,
+      "word": "hamme"
+    },
+    {
+      "score": 285359.9,
+      "word": "hahm"
+    },
+    {
+      "score": 277976.4,
+      "word": "kvamme"
+    },
+    {
+      "score": 209980.2,
+      "word": "program"
+    },
+    {
+      "score": 209856.5,
+      "word": "programme"
+    },
+    {
+      "score": 209611.5,
+      "word": "birmingham"
+    },
+    {
+      "score": 209518,
+      "word": "amsterdam"
+    },
+    {
+      "score": 209356.6,
+      "word": "diagram"
+    },
+    {
+      "score": 209160.1,
+      "word": "nottingham"
+    },
+    {
+      "score": 209095.8,
+      "word": "abraham"
+    },
+    {
+      "score": 208681.8,
+      "word": "cunningham"
+    },
+    {
+      "score": 208632,
+      "word": "monogram"
+    }
+  ],
+  "solo": [
+    {
+      "score": 509272.5,
+      "word": "polo"
+    },
+    {
+      "score": 507724,
+      "word": "colo"
+    },
+    {
+      "score": 506026.4,
+      "word": "yolo"
+    },
+    {
+      "score": 505232.6,
+      "word": "nolo"
+    },
+    {
+      "score": 493877.1,
+      "word": "palazzolo"
+    },
+    {
+      "score": 478761.8,
+      "word": "rizzolo"
+    },
+    {
+      "score": 400431.5,
+      "word": "bartolo"
+    },
+    {
+      "score": 399932.4,
+      "word": "spagnolo"
+    },
+    {
+      "score": 391373.2,
+      "word": "caracciolo"
+    },
+    {
+      "score": 390791.4,
+      "word": "priolo"
+    },
+    {
+      "score": 390555.4,
+      "word": "debartolo"
+    },
+    {
+      "score": 389855.1,
+      "word": "romagnolo"
+    },
+    {
+      "score": 386371.2,
+      "word": "dipaolo"
+    },
+    {
+      "score": 385789,
+      "word": "mascolo"
+    },
+    {
+      "score": 385258.6,
+      "word": "riolo"
+    },
+    {
+      "score": 382339.7,
+      "word": "triolo"
+    },
+    {
+      "score": 382255,
+      "word": "criscuolo"
+    },
+    {
+      "score": 381270,
+      "word": "ceravolo"
+    },
+    {
+      "score": 381144.7,
+      "word": "ruffolo"
+    },
+    {
+      "score": 379314.4,
+      "word": "rotolo"
+    },
+    {
+      "score": 379238.8,
+      "word": "prioleau"
+    },
+    {
+      "score": 300000,
+      "word": "coehlo"
+    },
+    {
+      "score": 300000,
+      "word": "consolo"
+    },
+    {
+      "score": 209959.9,
+      "word": "low"
+    },
+    {
+      "score": 209629.6,
+      "word": "lo"
+    },
+    {
+      "score": 208815.3,
+      "word": "lowe"
+    },
+    {
+      "score": 206636,
+      "word": "loewe"
+    },
+    {
+      "score": 205416.1,
+      "word": "loh"
+    },
+    {
+      "score": 204346.8,
+      "word": "loe"
+    },
+    {
+      "score": 204068.3,
+      "word": "loew"
+    },
+    {
+      "score": 200000,
+      "word": "cracchiolo"
+    },
+    {
+      "score": 200000,
+      "word": "curatolo"
+    },
+    {
+      "score": 200000,
+      "word": "depolo"
+    },
+    {
+      "score": 200000,
+      "word": "dibartolo"
+    },
+    {
+      "score": 200000,
+      "word": "frolo"
+    },
+    {
+      "score": 200000,
+      "word": "lopiccolo"
+    },
+    {
+      "score": 200000,
+      "word": "magliolo"
+    },
+    {
+      "score": 200000,
+      "word": "monticciolo"
+    },
+    {
+      "score": 200000,
+      "word": "muolo"
+    },
+    {
+      "score": 200000,
+      "word": "puopolo"
+    },
+    {
+      "score": 200000,
+      "word": "roppolo"
+    },
+    {
+      "score": 200000,
+      "word": "ruotolo"
+    },
+    {
+      "score": 200000,
+      "word": "ruvolo"
+    },
+    {
+      "score": 200000,
+      "word": "spagnuolo"
+    },
+    {
+      "score": 200000,
+      "word": "tumolo"
+    },
+    {
+      "score": 200000,
+      "word": "vitolo"
+    },
+    {
+      "score": 200000,
+      "word": "vuolo"
+    },
+    {
+      "score": 109973.2,
+      "word": "o"
+    },
+    {
+      "score": 109900.6,
+      "word": "oh"
+    },
+    {
+      "score": 109804.5,
+      "word": "au"
+    },
+    {
+      "score": 109142.6,
+      "word": "eau"
+    },
+    {
+      "score": 108862.6,
+      "word": "aux"
+    },
+    {
+      "score": 108668.1,
+      "word": "owe"
+    },
+    {
+      "score": 108417.8,
+      "word": "ow"
+    },
+    {
+      "score": 106165,
+      "word": "ohh"
+    },
+    {
+      "score": 103000.3,
+      "word": "eaux"
+    },
+    {
+      "score": 100000,
+      "word": "cianciolo"
+    },
+    {
+      "score": 100000,
+      "word": "macumolo"
+    },
+    {
+      "score": 100000,
+      "word": "maiolo"
+    },
+    {
+      "score": -100000,
+      "word": "o."
+    },
+    {
+      "score": -100000,
+      "word": "o'"
+    }
+  ],
+  "ordinary": [
+    {
+      "score": 909301.9,
+      "word": "extraordinary"
+    },
+    {
+      "score": 405008.7,
+      "word": "nary"
+    },
+    {
+      "score": 404253.6,
+      "word": "neri"
+    },
+    {
+      "score": 307678.1,
+      "word": "airy"
+    },
+    {
+      "score": 307066.4,
+      "word": "ary"
+    },
+    {
+      "score": 305516.5,
+      "word": "arie"
+    },
+    {
+      "score": 300428.5,
+      "word": "aerie"
+    },
+    {
+      "score": 296693.2,
+      "word": "airey"
+    },
+    {
+      "score": 296280.7,
+      "word": "eyrie"
+    },
+    {
+      "score": 209988.1,
+      "word": "re"
+    },
+    {
+      "score": 207236,
+      "word": "ree"
+    },
+    {
+      "score": 202144.9,
+      "word": "rhee"
+    },
+    {
+      "score": 109991.9,
+      "word": "e"
+    },
+    {
+      "score": 109598.2,
+      "word": "ee"
+    },
+    {
+      "score": 0,
+      "word": "reeh"
+    },
+    {
+      "score": -100000,
+      "word": "e."
+    }
+  ],
+  "homie": [
+    {
+      "score": 503856.2,
+      "word": "homey"
+    },
+    {
+      "score": 404053.6,
+      "word": "nomi"
+    },
+    {
+      "score": 403755,
+      "word": "foamy"
+    },
+    {
+      "score": 401714.4,
+      "word": "loamy"
+    },
+    {
+      "score": 401587.9,
+      "word": "komi"
+    },
+    {
+      "score": 384023.8,
+      "word": "romey"
+    },
+    {
+      "score": 381564.9,
+      "word": "tomey"
+    },
+    {
+      "score": 309816.1,
+      "word": "army"
+    },
+    {
+      "score": 309575.1,
+      "word": "semi"
+    },
+    {
+      "score": 309493.6,
+      "word": "jimmy"
+    },
+    {
+      "score": 309348.7,
+      "word": "tommy"
+    },
+    {
+      "score": 309290.9,
+      "word": "jamie"
+    },
+    {
+      "score": 308675.6,
+      "word": "dummy"
+    },
+    {
+      "score": 308668,
+      "word": "jimi"
+    },
+    {
+      "score": 308624.6,
+      "word": "mommy"
+    },
+    {
+      "score": 308445.1,
+      "word": "sammy"
+    },
+    {
+      "score": 308433.9,
+      "word": "naomi"
+    },
+    {
+      "score": 308277.6,
+      "word": "acme"
+    },
+    {
+      "score": 308260.8,
+      "word": "tammy"
+    },
+    {
+      "score": 308260,
+      "word": "demi"
+    },
+    {
+      "score": 308179.3,
+      "word": "mummy"
+    },
+    {
+      "score": 308055.8,
+      "word": "tummy"
+    },
+    {
+      "score": 308039.2,
+      "word": "mimi"
+    },
+    {
+      "score": 308004.8,
+      "word": "yummy"
+    },
+    {
+      "score": 307982.8,
+      "word": "jaime"
+    },
+    {
+      "score": 307900.4,
+      "word": "gimme"
+    },
+    {
+      "score": 307557.4,
+      "word": "sami"
+    },
+    {
+      "score": 307412.3,
+      "word": "jimmie"
+    },
+    {
+      "score": 307233.8,
+      "word": "simi"
+    },
+    {
+      "score": 307064.7,
+      "word": "remy"
+    },
+    {
+      "score": 306985.4,
+      "word": "fermi"
+    },
+    {
+      "score": 306832.3,
+      "word": "timmy"
+    },
+    {
+      "score": 306357.8,
+      "word": "roomy"
+    },
+    {
+      "score": 306326.3,
+      "word": "tami"
+    },
+    {
+      "score": 305884.4,
+      "word": "chemie"
+    },
+    {
+      "score": 305231.9,
+      "word": "rummy"
+    },
+    {
+      "score": 304949.3,
+      "word": "salome"
+    },
+    {
+      "score": 304687.3,
+      "word": "ramey"
+    },
+    {
+      "score": 304671.3,
+      "word": "mamie"
+    },
+    {
+      "score": 304562,
+      "word": "remi"
+    },
+    {
+      "score": 304484.3,
+      "word": "gummy"
+    },
+    {
+      "score": 304469.5,
+      "word": "toomey"
+    },
+    {
+      "score": 304362.8,
+      "word": "lamy"
+    },
+    {
+      "score": 304279.7,
+      "word": "jami"
+    },
+    {
+      "score": 303848.7,
+      "word": "rami"
+    },
+    {
+      "score": 303810.6,
+      "word": "commie"
+    },
+    {
+      "score": 303747.4,
+      "word": "maumee"
+    },
+    {
+      "score": 303693.1,
+      "word": "whammy"
+    },
+    {
+      "score": 303486.9,
+      "word": "balmy"
+    },
+    {
+      "score": 303334.6,
+      "word": "gummi"
+    },
+    {
+      "score": 303301.6,
+      "word": "tommie"
+    },
+    {
+      "score": 303230.2,
+      "word": "sammie"
+    },
+    {
+      "score": 303058.6,
+      "word": "shimmy"
+    },
+    {
+      "score": 302359.2,
+      "word": "chimie"
+    },
+    {
+      "score": 301639,
+      "word": "niemi"
+    },
+    {
+      "score": 301495.9,
+      "word": "chemi"
+    },
+    {
+      "score": 301431.2,
+      "word": "tammie"
+    },
+    {
+      "score": 301413.4,
+      "word": "jayme"
+    },
+    {
+      "score": 301272.8,
+      "word": "armey"
+    },
+    {
+      "score": 301049.8,
+      "word": "lobotomy"
+    },
+    {
+      "score": 299574.4,
+      "word": "cammy"
+    },
+    {
+      "score": 299095.2,
+      "word": "jaimie"
+    },
+    {
+      "score": 297883.2,
+      "word": "hermie"
+    },
+    {
+      "score": 295529,
+      "word": "chummy"
+    },
+    {
+      "score": 295430.5,
+      "word": "kamei"
+    },
+    {
+      "score": 294018.5,
+      "word": "leumi"
+    },
+    {
+      "score": 293969.2,
+      "word": "fahmy"
+    },
+    {
+      "score": 292818.4,
+      "word": "leamy"
+    },
+    {
+      "score": 292668.2,
+      "word": "gumi"
+    },
+    {
+      "score": 292611.5,
+      "word": "cammie"
+    },
+    {
+      "score": 292228.5,
+      "word": "pammy"
+    },
+    {
+      "score": 291625.7,
+      "word": "seamy"
+    },
+    {
+      "score": 289290.4,
+      "word": "mccombie"
+    },
+    {
+      "score": 289155,
+      "word": "fumi"
+    },
+    {
+      "score": 288907.7,
+      "word": "remmy"
+    },
+    {
+      "score": 288655.3,
+      "word": "thermae"
+    },
+    {
+      "score": 287406.7,
+      "word": "summy"
+    },
+    {
+      "score": 287310.7,
+      "word": "tuomi"
+    },
+    {
+      "score": 285367.8,
+      "word": "hymie"
+    },
+    {
+      "score": 284397.3,
+      "word": "lamey"
+    },
+    {
+      "score": 282220.3,
+      "word": "reamy"
+    },
+    {
+      "score": 281817.4,
+      "word": "nummi"
+    },
+    {
+      "score": 280458.2,
+      "word": "antinomy"
+    },
+    {
+      "score": 279780.9,
+      "word": "lammi"
+    },
+    {
+      "score": 278466.6,
+      "word": "summey"
+    },
+    {
+      "score": 278213.1,
+      "word": "tschumi"
+    },
+    {
+      "score": 277447.7,
+      "word": "timmie"
+    },
+    {
+      "score": 209993.6,
+      "word": "only"
+    },
+    {
+      "score": 209991.2,
+      "word": "me"
+    },
+    {
+      "score": 209986.2,
+      "word": "city"
+    },
+    {
+      "score": 209982.7,
+      "word": "very"
+    },
+    {
+      "score": 209981.7,
+      "word": "many"
+    },
+    {
+      "score": 209969.9,
+      "word": "county"
+    },
+    {
+      "score": 209961.2,
+      "word": "cd"
+    },
+    {
+      "score": 209961,
+      "word": "money"
+    },
+    {
+      "score": 209960.8,
+      "word": "every"
+    },
+    {
+      "score": 209952.9,
+      "word": "really"
+    }
+  ],
+  "nihilism": [
+    {
+      "score": 407897.9,
+      "word": "ism"
+    },
+    {
+      "score": 209381.2,
+      "word": "um"
+    },
+    {
+      "score": 207898.9,
+      "word": "umm"
+    },
+    {
+      "score": 109844.8,
+      "word": "mm"
+    },
+    {
+      "score": 0,
+      "word": "'em"
+    },
+    {
+      "score": 0,
+      "word": "'m"
+    },
+    {
+      "score": 0,
+      "word": "i'm"
+    }
+  ],
+  "bashaw": [
+    {
+      "score": 309217.2,
+      "word": "shaw"
+    },
+    {
+      "score": 308833.8,
+      "word": "straw"
+    },
+    {
+      "score": 304250.9,
+      "word": "macaw"
+    },
+    {
+      "score": 303084.7,
+      "word": "earnshaw"
+    },
+    {
+      "score": 300769.3,
+      "word": "mccaw"
+    },
+    {
+      "score": 300095.8,
+      "word": "upshaw"
+    },
+    {
+      "score": 298650.5,
+      "word": "mcgaw"
+    },
+    {
+      "score": 295358.6,
+      "word": "robertshaw"
+    },
+    {
+      "score": 294443.2,
+      "word": "guffaw"
+    },
+    {
+      "score": 294403.1,
+      "word": "allbaugh"
+    },
+    {
+      "score": 293001.7,
+      "word": "inlaw"
+    },
+    {
+      "score": 291854.8,
+      "word": "mcgaugh"
+    },
+    {
+      "score": 291402.1,
+      "word": "ashbaugh"
+    },
+    {
+      "score": 289400.7,
+      "word": "alpaugh"
+    },
+    {
+      "score": 288910,
+      "word": "albaugh"
+    },
+    {
+      "score": 209966.9,
+      "word": "law"
+    },
+    {
+      "score": 209830.7,
+      "word": "saw"
+    },
+    {
+      "score": 209712.8,
+      "word": "utah"
+    },
+    {
+      "score": 209665.1,
+      "word": "draw"
+    },
+    {
+      "score": 209046.2,
+      "word": "aw"
+    },
+    {
+      "score": 208947.7,
+      "word": "withdraw"
+    },
+    {
+      "score": 208899.6,
+      "word": "mcgraw"
+    },
+    {
+      "score": 208561.4,
+      "word": "jaw"
+    },
+    {
+      "score": 208538.9,
+      "word": "nassau"
+    },
+    {
+      "score": 208382.5,
+      "word": "flaw"
+    },
+    {
+      "score": 208361.5,
+      "word": "awe"
+    },
+    {
+      "score": 208260.9,
+      "word": "outlaw"
+    },
+    {
+      "score": 208250.3,
+      "word": "paw"
+    },
+    {
+      "score": 208185.1,
+      "word": "claw"
+    },
+    {
+      "score": 207579.1,
+      "word": "bradshaw"
+    },
+    {
+      "score": 207471.8,
+      "word": "bylaw"
+    },
+    {
+      "score": 207193.7,
+      "word": "waugh"
+    },
+    {
+      "score": 206903.5,
+      "word": "wausau"
+    },
+    {
+      "score": 206865.8,
+      "word": "haw"
+    },
+    {
+      "score": 206854.3,
+      "word": "thaw"
+    },
+    {
+      "score": 206633.8,
+      "word": "daw"
+    },
+    {
+      "score": 205968.9,
+      "word": "maw"
+    },
+    {
+      "score": 205890.4,
+      "word": "crenshaw"
+    },
+    {
+      "score": 205313.1,
+      "word": "yaw"
+    },
+    {
+      "score": 205146.6,
+      "word": "redraw"
+    },
+    {
+      "score": 204705.9,
+      "word": "slaw"
+    },
+    {
+      "score": 204609,
+      "word": "caw"
+    },
+    {
+      "score": 203720.3,
+      "word": "grimshaw"
+    },
+    {
+      "score": 203399.2,
+      "word": "baugh"
+    },
+    {
+      "score": 203381.7,
+      "word": "henshaw"
+    },
+    {
+      "score": 203050.9,
+      "word": "faw"
+    },
+    {
+      "score": 202784.3,
+      "word": "foresaw"
+    },
+    {
+      "score": 202384.8,
+      "word": "craw"
+    },
+    {
+      "score": 202345.7,
+      "word": "hinshaw"
+    },
+    {
+      "score": 202115.9,
+      "word": "renshaw"
+    },
+    {
+      "score": 201687.2,
+      "word": "dawe"
+    },
+    {
+      "score": 201165,
+      "word": "murtaugh"
+    },
+    {
+      "score": 201086.6,
+      "word": "scrimshaw"
+    },
+    {
+      "score": 200999.8,
+      "word": "gaw"
+    },
+    {
+      "score": 200933.8,
+      "word": "seesaw"
+    },
+    {
+      "score": 199717,
+      "word": "gnaw"
+    },
+    {
+      "score": 199158.3,
+      "word": "graw"
+    },
+    {
+      "score": 197688.2,
+      "word": "haugh"
+    },
+    {
+      "score": 196892.2,
+      "word": "capshaw"
+    },
+    {
+      "score": 196336.6,
+      "word": "mccraw"
+    },
+    {
+      "score": 196187.2,
+      "word": "warshaw"
+    },
+    {
+      "score": 195966.7,
+      "word": "czeslaw"
+    },
+    {
+      "score": 195407,
+      "word": "spaw"
+    },
+    {
+      "score": 194686.9,
+      "word": "openshaw"
+    },
+    {
+      "score": 194676.1,
+      "word": "chaw"
+    },
+    {
+      "score": 194081.1,
+      "word": "loblaw"
+    },
+    {
+      "score": 193973.1,
+      "word": "harshaw"
+    },
+    {
+      "score": 193902.3,
+      "word": "bagshaw"
+    },
+    {
+      "score": 192883.8,
+      "word": "rauh"
+    },
+    {
+      "score": 192508,
+      "word": "votaw"
+    },
+    {
+      "score": 192340,
+      "word": "crawshaw"
+    },
+    {
+      "score": 191231.6,
+      "word": "belshaw"
+    },
+    {
+      "score": 191151.1,
+      "word": "cranshaw"
+    },
+    {
+      "score": 190741.8,
+      "word": "magaw"
+    },
+    {
+      "score": 190343.3,
+      "word": "hanshaw"
+    },
+    {
+      "score": 189865.6,
+      "word": "walkinshaw"
+    },
+    {
+      "score": 188815.3,
+      "word": "middaugh"
+    },
+    {
+      "score": 187287.5,
+      "word": "xio"
+    },
+    {
+      "score": 187198.1,
+      "word": "arbaugh"
+    },
+    {
+      "score": 186877.4,
+      "word": "moomaw"
+    },
+    {
+      "score": 186080.3,
+      "word": "papaw"
+    },
+    {
+      "score": 185918,
+      "word": "anspaugh"
+    },
+    {
+      "score": 181727.8,
+      "word": "hawe"
+    },
+    {
+      "score": 180427.3,
+      "word": "redshaw"
+    },
+    {
+      "score": 180326.9,
+      "word": "seabaugh"
+    },
+    {
+      "score": 179748.4,
+      "word": "paugh"
+    },
+    {
+      "score": 179263.2,
+      "word": "meddaugh"
+    },
+    {
+      "score": 178602.1,
+      "word": "alspaugh"
+    },
+    {
+      "score": 178329.4,
+      "word": "besaw"
+    },
+    {
+      "score": 176847.6,
+      "word": "croshaw"
+    },
+    {
+      "score": 109235.6,
+      "word": "wichita"
+    },
+    {
+      "score": 108791.2,
+      "word": "warsaw"
+    },
+    {
+      "score": 108677.9,
+      "word": "jigsaw"
+    },
+    {
+      "score": 107886.1,
+      "word": "saginaw"
+    },
+    {
+      "score": 107489.9,
+      "word": "chainsaw"
+    },
+    {
+      "score": 107242.2,
+      "word": "limbaugh"
+    },
+    {
+      "score": 106440.1,
+      "word": "kennesaw"
+    }
+  ],
+  "giraffes": [
+    {
+      "score": 509675.6,
+      "word": "crafts"
+    },
+    {
+      "score": 509170.5,
+      "word": "graphs"
+    },
+    {
+      "score": 507785.2,
+      "word": "staffs"
+    },
+    {
+      "score": 408573.6,
+      "word": "laughs"
+    },
+    {
+      "score": 398628.6,
+      "word": "gaffes"
+    },
+    {
+      "score": 309628.5,
+      "word": "photographs"
+    },
+    {
+      "score": 309061.8,
+      "word": "paragraphs"
+    },
+    {
+      "score": 308335.2,
+      "word": "autographs"
+    },
+    {
+      "score": 307567.7,
+      "word": "monographs"
+    },
+    {
+      "score": 305063.1,
+      "word": "lithographs"
+    },
+    {
+      "score": 303847.5,
+      "word": "aircrafts"
+    },
+    {
+      "score": 300000,
+      "word": "fraph's"
+    },
+    {
+      "score": 300000,
+      "word": "staff's"
+    },
+    {
+      "score": 297148.4,
+      "word": "epitaphs"
+    },
+    {
+      "score": 296617.6,
+      "word": "phonographs"
+    },
+    {
+      "score": 290835.6,
+      "word": "polygraphs"
+    },
+    {
+      "score": 209380.6,
+      "word": "fs"
+    },
+    {
+      "score": 200000,
+      "word": "calf's"
+    },
+    {
+      "score": 200000,
+      "word": "haft's"
+    },
+    {
+      "score": 200000,
+      "word": "hafts'"
+    },
+    {
+      "score": 200000,
+      "word": "hafts"
+    },
+    {
+      "score": 200000,
+      "word": "half's"
+    },
+    {
+      "score": 100000,
+      "word": "aircraft's"
+    },
+    {
+      "score": 100000,
+      "word": "allographs"
+    },
+    {
+      "score": 100000,
+      "word": "falstaff's"
+    },
+    {
+      "score": 100000,
+      "word": "flagstaffs"
+    },
+    {
+      "score": 100000,
+      "word": "intergraph's"
+    },
+    {
+      "score": 100000,
+      "word": "telegraph's"
+    }
+  ],
+  "gyrating": [
+    {
+      "score": 509965,
+      "word": "rating"
+    },
+    {
+      "score": 307706.1,
+      "word": "ting"
+    },
+    {
+      "score": 209595.6,
+      "word": "ing"
+    },
+    {
+      "score": 209447.9,
+      "word": "ng"
+    }
+  ],
+  "unskilled": [
+    {
+      "score": 609258,
+      "word": "skilled"
+    },
+    {
+      "score": 509672,
+      "word": "killed"
+    },
+    {
+      "score": 508608.4,
+      "word": "fulfilled"
+    },
+    {
+      "score": 507589.4,
+      "word": "distilled"
+    },
+    {
+      "score": 504128.6,
+      "word": "instilled"
+    },
+    {
+      "score": 487285.1,
+      "word": "salkeld"
+    },
+    {
+      "score": 409895.3,
+      "word": "build"
+    },
+    {
+      "score": 409674.1,
+      "word": "filled"
+    },
+    {
+      "score": 409264.4,
+      "word": "guild"
+    },
+    {
+      "score": 408932.8,
+      "word": "rebuild"
+    },
+    {
+      "score": 408699.2,
+      "word": "billed"
+    },
+    {
+      "score": 408515.6,
+      "word": "grilled"
+    },
+    {
+      "score": 408444.1,
+      "word": "bild"
+    },
+    {
+      "score": 408268.8,
+      "word": "thrilled"
+    },
+    {
+      "score": 408222.5,
+      "word": "drilled"
+    },
+    {
+      "score": 407962.1,
+      "word": "chilled"
+    },
+    {
+      "score": 407336,
+      "word": "spilled"
+    },
+    {
+      "score": 406299.2,
+      "word": "milled"
+    },
+    {
+      "score": 405834.8,
+      "word": "willed"
+    },
+    {
+      "score": 404757,
+      "word": "unfulfilled"
+    },
+    {
+      "score": 404607.8,
+      "word": "unfilled"
+    },
+    {
+      "score": 404053.2,
+      "word": "refilled"
+    },
+    {
+      "score": 402095.8,
+      "word": "mathilde"
+    },
+    {
+      "score": 401455.5,
+      "word": "hilde"
+    },
+    {
+      "score": 400563,
+      "word": "childe"
+    },
+    {
+      "score": 400190.2,
+      "word": "gild"
+    },
+    {
+      "score": 399880,
+      "word": "hild"
+    },
+    {
+      "score": 399329.7,
+      "word": "rietveld"
+    },
+    {
+      "score": 398975.8,
+      "word": "stilled"
+    },
+    {
+      "score": 377558.1,
+      "word": "clothilde"
+    },
+    {
+      "score": 307957.3,
+      "word": "mayfield"
+    },
+    {
+      "score": 300140.5,
+      "word": "stenciled"
+    },
+    {
+      "score": 295427.2,
+      "word": "groeneveld"
+    },
+    {
+      "score": 200000,
+      "word": "overbilled"
+    },
+    {
+      "score": 200000,
+      "word": "spilde"
+    },
+    {
+      "score": 100000,
+      "word": "bertilde"
+    },
+    {
+      "score": 100000,
+      "word": "brunnhilde"
+    },
+    {
+      "score": 100000,
+      "word": "harreld"
+    },
+    {
+      "score": 100000,
+      "word": "jereld"
+    },
+    {
+      "score": 100000,
+      "word": "rototilled"
+    }
+  ],
+  "blogging": [
+    {
+      "score": 705440.9,
+      "word": "clogging"
+    },
+    {
+      "score": 609329.4,
+      "word": "logging"
+    },
+    {
+      "score": 507845.3,
+      "word": "jogging"
+    },
+    {
+      "score": 505682.2,
+      "word": "cataloguing"
+    },
+    {
+      "score": 505242.3,
+      "word": "dogging"
+    },
+    {
+      "score": 501504.7,
+      "word": "hogging"
+    },
+    {
+      "score": 493514.1,
+      "word": "bogging"
+    },
+    {
+      "score": 392398.6,
+      "word": "leapfrogging"
+    },
+    {
+      "score": 209595.6,
+      "word": "ing"
+    },
+    {
+      "score": 209447.9,
+      "word": "ng"
+    }
+  ],
+  "cyclamen": [
+    {
+      "score": 309956,
+      "word": "men"
+    },
+    {
+      "score": 295922.1,
+      "word": "menne"
+    },
+    {
+      "score": 294286.7,
+      "word": "menn"
+    },
+    {
+      "score": 209988.3,
+      "word": "n"
+    },
+    {
+      "score": 209913.9,
+      "word": "en"
+    },
+    {
+      "score": 0,
+      "word": "n."
+    }
+  ],
+  "reed": [
+    {
+      "score": 509982.1,
+      "word": "read"
+    },
+    {
+      "score": 509089.2,
+      "word": "reid"
+    },
+    {
+      "score": 501965.2,
+      "word": "ried"
+    },
+    {
+      "score": 498248.6,
+      "word": "wrede"
+    },
+    {
+      "score": 483524.2,
+      "word": "riede"
+    },
+    {
+      "score": 409981.8,
+      "word": "need"
+    },
+    {
+      "score": 409882.5,
+      "word": "lead"
+    },
+    {
+      "score": 409870.8,
+      "word": "feed"
+    },
+    {
+      "score": 409722.7,
+      "word": "agreed"
+    },
+    {
+      "score": 409598.8,
+      "word": "seed"
+    },
+    {
+      "score": 409251.7,
+      "word": "breed"
+    },
+    {
+      "score": 409113,
+      "word": "weed"
+    },
+    {
+      "score": 408983.6,
+      "word": "bead"
+    },
+    {
+      "score": 408901.6,
+      "word": "fried"
+    },
+    {
+      "score": 408874.9,
+      "word": "deed"
+    },
+    {
+      "score": 408718.3,
+      "word": "creed"
+    },
+    {
+      "score": 408527.2,
+      "word": "freed"
+    },
+    {
+      "score": 408309.1,
+      "word": "mead"
+    },
+    {
+      "score": 408247,
+      "word": "greed"
+    },
+    {
+      "score": 408205.8,
+      "word": "meade"
+    },
+    {
+      "score": 407628.6,
+      "word": "heed"
+    },
+    {
+      "score": 407240.7,
+      "word": "disagreed"
+    },
+    {
+      "score": 406997.6,
+      "word": "keyed"
+    },
+    {
+      "score": 406120.9,
+      "word": "leed"
+    },
+    {
+      "score": 405909.9,
+      "word": "decreed"
+    },
+    {
+      "score": 405788.2,
+      "word": "reread"
+    },
+    {
+      "score": 404649.7,
+      "word": "bede"
+    },
+    {
+      "score": 403949.8,
+      "word": "misread"
+    },
+    {
+      "score": 403890.7,
+      "word": "knead"
+    },
+    {
+      "score": 403393.4,
+      "word": "cede"
+    },
+    {
+      "score": 403280.9,
+      "word": "dede"
+    },
+    {
+      "score": 402965.9,
+      "word": "peed"
+    },
+    {
+      "score": 402443.4,
+      "word": "screed"
+    },
+    {
+      "score": 401103.5,
+      "word": "teed"
+    },
+    {
+      "score": 399198.5,
+      "word": "gide"
+    },
+    {
+      "score": 398530.8,
+      "word": "degreed"
+    },
+    {
+      "score": 397906.5,
+      "word": "kneed"
+    },
+    {
+      "score": 397903.3,
+      "word": "brede"
+    },
+    {
+      "score": 397614.4,
+      "word": "nied"
+    },
+    {
+      "score": 396553.2,
+      "word": "fede"
+    },
+    {
+      "score": 394533.4,
+      "word": "frede"
+    },
+    {
+      "score": 390972.9,
+      "word": "thiede"
+    },
+    {
+      "score": 389597.5,
+      "word": "nead"
+    },
+    {
+      "score": 389546.3,
+      "word": "gaede"
+    },
+    {
+      "score": 389056.7,
+      "word": "wied"
+    },
+    {
+      "score": 388956.2,
+      "word": "friede"
+    },
+    {
+      "score": 387153.4,
+      "word": "thede"
+    },
+    {
+      "score": 386488.5,
+      "word": "tiede"
+    },
+    {
+      "score": 385512.7,
+      "word": "beede"
+    },
+    {
+      "score": 309903.2,
+      "word": "speed"
+    },
+    {
+      "score": 309737.4,
+      "word": "married"
+    },
+    {
+      "score": 309718.6,
+      "word": "guaranteed"
+    },
+    {
+      "score": 309712.5,
+      "word": "carried"
+    },
+    {
+      "score": 309710.6,
+      "word": "indeed"
+    },
+    {
+      "score": 309496,
+      "word": "exceed"
+    },
+    {
+      "score": 309437.3,
+      "word": "proceed"
+    },
+    {
+      "score": 309244,
+      "word": "succeed"
+    },
+    {
+      "score": 309216.1,
+      "word": "buried"
+    },
+    {
+      "score": 309199.7,
+      "word": "varied"
+    },
+    {
+      "score": 308242.4,
+      "word": "bleed"
+    },
+    {
+      "score": 308019.7,
+      "word": "tweed"
+    },
+    {
+      "score": 307866,
+      "word": "unmarried"
+    },
+    {
+      "score": 307545,
+      "word": "plead"
+    },
+    {
+      "score": 307073.9,
+      "word": "stampede"
+    },
+    {
+      "score": 307060.1,
+      "word": "impede"
+    },
+    {
+      "score": 306836.5,
+      "word": "concede"
+    },
+    {
+      "score": 306763.5,
+      "word": "steed"
+    },
+    {
+      "score": 306695.8,
+      "word": "precede"
+    },
+    {
+      "score": 306601.3,
+      "word": "hamid"
+    },
+    {
+      "score": 306593.6,
+      "word": "mislead"
+    },
+    {
+      "score": 306584.1,
+      "word": "rashid"
+    },
+    {
+      "score": 306473.3,
+      "word": "queried"
+    },
+    {
+      "score": 306343.4,
+      "word": "siegfried"
+    },
+    {
+      "score": 306199.6,
+      "word": "gilead"
+    },
+    {
+      "score": 305986.6,
+      "word": "aristide"
+    },
+    {
+      "score": 305733.7,
+      "word": "gottfried"
+    },
+    {
+      "score": 305516,
+      "word": "supersede"
+    },
+    {
+      "score": 305365.1,
+      "word": "proofread"
+    },
+    {
+      "score": 305329.7,
+      "word": "swede"
+    },
+    {
+      "score": 305105.6,
+      "word": "saeed"
+    },
+    {
+      "score": 304809.3,
+      "word": "sinead"
+    },
+    {
+      "score": 304581.2,
+      "word": "ede"
+    },
+    {
+      "score": 304447.1,
+      "word": "storied"
+    },
+    {
+      "score": 304342.7,
+      "word": "rasheed"
+    },
+    {
+      "score": 304116.5,
+      "word": "remarried"
+    },
+    {
+      "score": 303601.8,
+      "word": "recede"
+    },
+    {
+      "score": 303145.6,
+      "word": "accede"
+    },
+    {
+      "score": 303090.7,
+      "word": "inventoried"
+    },
+    {
+      "score": 303029.8,
+      "word": "smead"
+    },
+    {
+      "score": 302910,
+      "word": "walid"
+    },
+    {
+      "score": 302772.3,
+      "word": "snead"
+    },
+    {
+      "score": 302507.1,
+      "word": "sneed"
+    },
+    {
+      "score": 302153.8,
+      "word": "laclede"
+    },
+    {
+      "score": 301929,
+      "word": "wilfried"
+    },
+    {
+      "score": 301638.5,
+      "word": "intercede"
+    },
+    {
+      "score": 301597.2,
+      "word": "skied"
+    }
+  ],
+  "purveying": [
+    {
+      "score": 708462.2,
+      "word": "surveying"
+    },
+    {
+      "score": 507885.4,
+      "word": "spraying"
+    },
+    {
+      "score": 507304.4,
+      "word": "conveying"
+    },
+    {
+      "score": 507284.2,
+      "word": "delaying"
+    },
+    {
+      "score": 506201.2,
+      "word": "decaying"
+    },
+    {
+      "score": 503582.9,
+      "word": "repaying"
+    },
+    {
+      "score": 502788.7,
+      "word": "straying"
+    },
+    {
+      "score": 492623.1,
+      "word": "buffeting"
+    },
+    {
+      "score": 409837.3,
+      "word": "playing"
+    },
+    {
+      "score": 409782.1,
+      "word": "saying"
+    },
+    {
+      "score": 409626.4,
+      "word": "paying"
+    },
+    {
+      "score": 409480.9,
+      "word": "displaying"
+    },
+    {
+      "score": 409324.6,
+      "word": "staying"
+    },
+    {
+      "score": 408867,
+      "word": "laying"
+    },
+    {
+      "score": 408696.9,
+      "word": "weighing"
+    },
+    {
+      "score": 408567.3,
+      "word": "praying"
+    },
+    {
+      "score": 406165.9,
+      "word": "portraying"
+    },
+    {
+      "score": 406010.7,
+      "word": "slaying"
+    },
+    {
+      "score": 405592.2,
+      "word": "relaying"
+    },
+    {
+      "score": 405493.9,
+      "word": "swaying"
+    },
+    {
+      "score": 405424.5,
+      "word": "obeying"
+    },
+    {
+      "score": 404282,
+      "word": "betraying"
+    },
+    {
+      "score": 403270.9,
+      "word": "crocheting"
+    },
+    {
+      "score": 401373.3,
+      "word": "preying"
+    },
+    {
+      "score": 400827.7,
+      "word": "replaying"
+    },
+    {
+      "score": 400666.8,
+      "word": "graying"
+    },
+    {
+      "score": 400307.2,
+      "word": "disobeying"
+    },
+    {
+      "score": 400194.6,
+      "word": "fraying"
+    },
+    {
+      "score": 395882.6,
+      "word": "baying"
+    },
+    {
+      "score": 395854.5,
+      "word": "greying"
+    },
+    {
+      "score": 394371.4,
+      "word": "haying"
+    },
+    {
+      "score": 392356,
+      "word": "nonpaying"
+    },
+    {
+      "score": 390835.4,
+      "word": "dismaying"
+    },
+    {
+      "score": 390694.3,
+      "word": "outweighing"
+    },
+    {
+      "score": 389167.7,
+      "word": "prepaying"
+    },
+    {
+      "score": 386692.8,
+      "word": "allaying"
+    },
+    {
+      "score": 381508.9,
+      "word": "overplaying"
+    },
+    {
+      "score": 381010.4,
+      "word": "arraying"
+    },
+    {
+      "score": 307717.9,
+      "word": "roleplaying"
+    },
+    {
+      "score": 298503.2,
+      "word": "downplaying"
+    },
+    {
+      "score": 294759.1,
+      "word": "overpaying"
+    },
+    {
+      "score": 294031.1,
+      "word": "taxpaying"
+    },
+    {
+      "score": 284462.5,
+      "word": "ricocheting"
+    },
+    {
+      "score": 209595.6,
+      "word": "ing"
+    },
+    {
+      "score": 209447.9,
+      "word": "ng"
+    },
+    {
+      "score": 200000,
+      "word": "doomsaying"
+    },
+    {
+      "score": 200000,
+      "word": "foraying"
+    },
+    {
+      "score": 200000,
+      "word": "heying"
+    },
+    {
+      "score": 200000,
+      "word": "non-paying"
+    },
+    {
+      "score": 100000,
+      "word": "parlaying"
+    },
+    {
+      "score": 100000,
+      "word": "underpaying"
+    }
+  ],
+  "rundle": [
+    {
+      "score": 792535.6,
+      "word": "rundell"
+    },
+    {
+      "score": 709228.1,
+      "word": "bundle"
+    },
+    {
+      "score": 704647.1,
+      "word": "trundle"
+    },
+    {
+      "score": 701333.3,
+      "word": "mundell"
+    },
+    {
+      "score": 701059.5,
+      "word": "zundel"
+    },
+    {
+      "score": 696890.2,
+      "word": "lundell"
+    },
+    {
+      "score": 689083.5,
+      "word": "sundell"
+    },
+    {
+      "score": 684415.6,
+      "word": "gundel"
+    },
+    {
+      "score": 683850.8,
+      "word": "cundall"
+    },
+    {
+      "score": 607340,
+      "word": "arundel"
+    },
+    {
+      "score": 604639.5,
+      "word": "blundell"
+    },
+    {
+      "score": 600000,
+      "word": "rundall"
+    },
+    {
+      "score": 592243.4,
+      "word": "unbundle"
+    },
+    {
+      "score": 500000,
+      "word": "gundle"
+    },
+    {
+      "score": 400000,
+      "word": "blundall"
+    },
+    {
+      "score": 308670.8,
+      "word": "dull"
+    },
+    {
+      "score": 209096.2,
+      "word": "ul"
+    },
+    {
+      "score": 204011.9,
+      "word": "uhl"
+    },
+    {
+      "score": 100000,
+      "word": "dulle"
+    }
+  ],
+  "die": [
+    {
+      "score": 409791.2,
+      "word": "di"
+    },
+    {
+      "score": 408931.7,
+      "word": "dye"
+    },
+    {
+      "score": 407839.1,
+      "word": "dai"
+    },
+    {
+      "score": 309999,
+      "word": "by"
+    },
+    {
+      "score": 309996.2,
+      "word": "my"
+    },
+    {
+      "score": 309987.1,
+      "word": "buy"
+    },
+    {
+      "score": 309983.7,
+      "word": "high"
+    },
+    {
+      "score": 309961.9,
+      "word": "y"
+    },
+    {
+      "score": 309961.6,
+      "word": "why"
+    },
+    {
+      "score": 309881.5,
+      "word": "hi"
+    },
+    {
+      "score": 309818.7,
+      "word": "guy"
+    },
+    {
+      "score": 309804.4,
+      "word": "fi"
+    },
+    {
+      "score": 309603.2,
+      "word": "vi"
+    },
+    {
+      "score": 309539.4,
+      "word": "tie"
+    },
+    {
+      "score": 309511.8,
+      "word": "thai"
+    },
+    {
+      "score": 309507.2,
+      "word": "lie"
+    },
+    {
+      "score": 309494.5,
+      "word": "bi"
+    },
+    {
+      "score": 309468.6,
+      "word": "pi"
+    },
+    {
+      "score": 309468.1,
+      "word": "ai"
+    },
+    {
+      "score": 309425.5,
+      "word": "chi"
+    },
+    {
+      "score": 309383.4,
+      "word": "thy"
+    },
+    {
+      "score": 309368,
+      "word": "pie"
+    },
+    {
+      "score": 309333.7,
+      "word": "pty"
+    },
+    {
+      "score": 309287.4,
+      "word": "phi"
+    },
+    {
+      "score": 309164.8,
+      "word": "kai"
+    },
+    {
+      "score": 309147.5,
+      "word": "bye"
+    },
+    {
+      "score": 309119.9,
+      "word": "psi"
+    },
+    {
+      "score": 309058.8,
+      "word": "mai"
+    },
+    {
+      "score": 309054.5,
+      "word": "ty"
+    },
+    {
+      "score": 308883.8,
+      "word": "shy"
+    },
+    {
+      "score": 308842.2,
+      "word": "tai"
+    },
+    {
+      "score": 308668.4,
+      "word": "cy"
+    },
+    {
+      "score": 308661.2,
+      "word": "sigh"
+    },
+    {
+      "score": 308613.4,
+      "word": "ly"
+    },
+    {
+      "score": 308581.7,
+      "word": "sy"
+    },
+    {
+      "score": 308452.4,
+      "word": "vie"
+    },
+    {
+      "score": 308346.3,
+      "word": "hy"
+    },
+    {
+      "score": 308327.6,
+      "word": "thigh"
+    },
+    {
+      "score": 308303.6,
+      "word": "rye"
+    },
+    {
+      "score": 308253.7,
+      "word": "wai"
+    },
+    {
+      "score": 308091.7,
+      "word": "nie"
+    },
+    {
+      "score": 308011.7,
+      "word": "lai"
+    },
+    {
+      "score": 307988.9,
+      "word": "sai"
+    },
+    {
+      "score": 307791.8,
+      "word": "phy"
+    },
+    {
+      "score": 307751.6,
+      "word": "nye"
+    },
+    {
+      "score": 307740.4,
+      "word": "tae"
+    },
+    {
+      "score": 307739.9,
+      "word": "chai"
+    },
+    {
+      "score": 307482.7,
+      "word": "cai"
+    },
+    {
+      "score": 307348.8,
+      "word": "jai"
+    },
+    {
+      "score": 307249.4,
+      "word": "bae"
+    },
+    {
+      "score": 307110.7,
+      "word": "wye"
+    },
+    {
+      "score": 307078.4,
+      "word": "bandai"
+    },
+    {
+      "score": 306710.9,
+      "word": "vy"
+    },
+    {
+      "score": 306630.5,
+      "word": "nigh"
+    },
+    {
+      "score": 306314.5,
+      "word": "tsai"
+    },
+    {
+      "score": 306180.7,
+      "word": "tye"
+    },
+    {
+      "score": 305539.2,
+      "word": "wry"
+    },
+    {
+      "score": 305220.7,
+      "word": "awry"
+    },
+    {
+      "score": 305055.4,
+      "word": "pye"
+    },
+    {
+      "score": 304697.5,
+      "word": "pae"
+    },
+    {
+      "score": 304676,
+      "word": "shai"
+    },
+    {
+      "score": 304487.5,
+      "word": "lye"
+    },
+    {
+      "score": 304430.3,
+      "word": "fae"
+    },
+    {
+      "score": 303731.4,
+      "word": "fye"
+    },
+    {
+      "score": 302756.5,
+      "word": "gae"
+    },
+    {
+      "score": 302725.3,
+      "word": "ngai"
+    },
+    {
+      "score": 301801.4,
+      "word": "chae"
+    },
+    {
+      "score": 295428.4,
+      "word": "keye"
+    },
+    {
+      "score": 288525.8,
+      "word": "heye"
+    },
+    {
+      "score": 287915.5,
+      "word": "yie"
+    },
+    {
+      "score": 209998.7,
+      "word": "i"
+    },
+    {
+      "score": 209959.8,
+      "word": "reply"
+    },
+    {
+      "score": 209950.3,
+      "word": "july"
+    },
+    {
+      "score": 209931.7,
+      "word": "try"
+    },
+    {
+      "score": 209894,
+      "word": "apply"
+    },
+    {
+      "score": 209890.3,
+      "word": "supply"
+    },
+    {
+      "score": 209843.5,
+      "word": "eye"
+    },
+    {
+      "score": 209749.4,
+      "word": "dry"
+    },
+    {
+      "score": 209719.5,
+      "word": "fly"
+    },
+    {
+      "score": 209712.9,
+      "word": "sky"
+    },
+    {
+      "score": 209712.7,
+      "word": "nearby"
+    },
+    {
+      "score": 209632.1,
+      "word": "spy"
+    },
+    {
+      "score": 209602,
+      "word": "sci"
+    },
+    {
+      "score": 209526.2,
+      "word": "sri"
+    },
+    {
+      "score": 209525.3,
+      "word": "api"
+    },
+    {
+      "score": 209488.2,
+      "word": "comply"
+    },
+    {
+      "score": 209447.2,
+      "word": "cry"
+    },
+    {
+      "score": 209382.2,
+      "word": "tri"
+    },
+    {
+      "score": 209337.8,
+      "word": "rely"
+    },
+    {
+      "score": 209322.4,
+      "word": "cgi"
+    },
+    {
+      "score": 209291.1,
+      "word": "thereby"
+    },
+    {
+      "score": 209290.1,
+      "word": "wy"
+    },
+    {
+      "score": 209265.9,
+      "word": "ati"
+    },
+    {
+      "score": 209260.6,
+      "word": "shanghai"
+    }
+  ],
+  "ambassadorship": [
+    {
+      "score": 309865.3,
+      "word": "ship"
+    },
+    {
+      "score": 304598.4,
+      "word": "shipp"
+    },
+    {
+      "score": 209873.6,
+      "word": "ip"
+    }
+  ]
+}

@@ -34,6 +34,7 @@
       "@lyricistant/rhyme-generator": [
         "packages/rhyme-generator/main/index.ts"
       ],
+      "@lyricistant/rhyme-generator/*": ["packages/rhyme-generator/main/*"],
       "@tooling/*": ["tooling/*"],
       "@testing/utilities/*": ["packages/testing/utilities/*"],
       "@web-renderer/*": ["apps/web/packages/renderer/*"],
