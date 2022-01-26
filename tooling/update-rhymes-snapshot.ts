@@ -33,6 +33,10 @@ const words = [
   'rundle',
   'die',
   'ambassadorship',
+  'read',
+  'authentic',
+  'beatrice',
+  'graduates',
 ];
 
 const output = path.resolve(
