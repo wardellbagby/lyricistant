@@ -12,8 +12,7 @@ import { App } from './App';
 export function AppRouter() {
   const history = useHistory();
 
-  const goHome = useCallback(() => history.replace('/'), [history]);
-  const goAbout = useCallback(() => history.replace('/about'), [history]);
+  const goAbout = useCallback(() => history.push('/about'), [history]);
 
   useEffect(() => {
     logger.verbose('Navigation', location.pathname);
@@ -25,25 +24,25 @@ export function AppRouter() {
       <Route
         path="/download"
         children={({ match }: RouteChildrenProps) => (
-          <ChooseDownloadDialog open={!!match} onClose={goHome} />
+          <ChooseDownloadDialog open={!!match} onClose={history.goBack} />
         )}
       />
       <Route
         path="/about"
         children={({ match }: RouteChildrenProps) => (
-          <AboutDialog open={!!match} onClose={goHome} />
+          <AboutDialog open={!!match} onClose={history.goBack} />
         )}
       />
       <Route
         path="/privacypolicy"
         children={({ match }: RouteChildrenProps) => (
-          <PrivacyPolicy open={!!match} onClose={goHome} />
+          <PrivacyPolicy open={!!match} onClose={history.goBack} />
         )}
       />
       <Route
         path="/file-history"
         children={({ match }: RouteChildrenProps) => (
-          <FileHistory open={!!match} onClose={goHome} />
+          <FileHistory open={!!match} onClose={history.goBack} />
         )}
       />
       <Route
@@ -51,7 +50,7 @@ export function AppRouter() {
         children={({ match }: RouteChildrenProps) => (
           <Preferences
             open={!!match}
-            onClose={goHome}
+            onClose={history.goBack}
             onAboutClicked={goAbout}
           />
         )}

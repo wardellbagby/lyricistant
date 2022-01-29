@@ -177,9 +177,9 @@ export const Menu: React.FC = () => {
     [editorText]
   );
 
-  const onSettingsClicked = () => history.replace('/preferences');
-  const onDownloadClicked = () => history.replace('/download');
-  const onFileHistoryClicked = () => history.replace('/file-history');
+  const onSettingsClicked = () => history.push('/preferences');
+  const onDownloadClicked = () => history.push('/download');
+  const onFileHistoryClicked = () => history.push('/file-history');
 
   const leadingIcons = useMemo(
     () =>
