@@ -5,6 +5,7 @@ import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { Logger } from '@lyricistant/common/Logger';
 import { Manager } from '@lyricistant/common/Manager';
 import { BrowserWindow } from 'electron';
+import { UnsavedDataManager } from '@lyricistant/common/files/UnsavedDataManager';
 
 export class QuitManager implements Manager {
   private forceQuitTimeout?: NodeJS.Timeout;
@@ -41,7 +42,7 @@ export class QuitManager implements Manager {
 
   private onOkayForQuit = () => {
     clearTimeout(this.forceQuitTimeout);
-    this.temporaryFiles.delete();
+    this.temporaryFiles.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
     this.window.destroy();
   };
 

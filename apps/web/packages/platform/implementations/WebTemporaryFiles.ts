@@ -2,29 +2,24 @@ import { renderer } from '@web-platform/renderer';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 
 export class WebTemporaryFiles implements TemporaryFiles {
-  private temporaryFileKey = 'temporary_file';
-  public set = (data: string | null) => {
+  public set = (key: string, data: string | null) => {
     renderer
       .getLocalStorage()
-      .then((storage) =>
-        storage.setItem(this.temporaryFileKey, JSON.stringify(data))
-      );
+      .then((storage) => storage.setItem(key, JSON.stringify(data)));
   };
-  public get = async () => {
-    if (!(await this.exists())) {
+  public get = async (key: string) => {
+    if (!(await this.exists(key))) {
       return '';
     }
     const storage = await renderer.getLocalStorage();
-    return JSON.parse(await storage.getItem(this.temporaryFileKey));
+    return JSON.parse(await storage.getItem(key));
   };
 
-  public exists = async () => {
+  public exists = async (key: string) => {
     const storage = await renderer.getLocalStorage();
-    return !!(await storage.getItem(this.temporaryFileKey));
+    return !!(await storage.getItem(key));
   };
-  public delete = (): void => {
-    renderer
-      .getLocalStorage()
-      .then((storage) => storage.removeItem(this.temporaryFileKey));
+  public delete = (key: string): void => {
+    renderer.getLocalStorage().then((storage) => storage.removeItem(key));
   };
 }

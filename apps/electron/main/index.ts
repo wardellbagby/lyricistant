@@ -159,21 +159,19 @@ const createWindow = (): void => {
     isDevelopment,
   });
 
+  let rendererPage: string;
+
   if (process.env.RENDERER_SERVER_PORT) {
-    mainWindow
-      .loadURL(`http://localhost:${process.env.RENDERER_SERVER_PORT}`)
-      .catch(showLoadingError);
+    rendererPage = `http://localhost:${process.env.RENDERER_SERVER_PORT}`;
   } else {
-    mainWindow
-      .loadURL(
-        formatUrl({
-          pathname: path.join(__dirname, 'index.html'),
-          protocol: 'file',
-          slashes: true,
-        })
-      )
-      .catch(showLoadingError);
+    rendererPage = formatUrl({
+      pathname: path.join(__dirname, 'index.html'),
+      protocol: 'file',
+      slashes: true,
+    });
   }
+
+  mainWindow.loadURL(rendererPage).catch(showLoadingError);
 
   mainWindow.on('closed', () => {
     mainWindow = undefined;
@@ -185,20 +183,27 @@ const createWindow = (): void => {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
   });
-  mainWindow.webContents.on('new-window', (event, urlString) => {
-    const url = new URL(urlString);
+
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    const newUrl = new URL(url);
+    const rendererUrl = new URL(rendererPage);
     if (
-      url.host === 'github.com' &&
-      url.pathname.startsWith('/wardellbagby/lyricistant')
+      newUrl.host !== rendererUrl.host ||
+      newUrl.protocol !== rendererUrl.protocol ||
+      newUrl.origin !== rendererUrl.origin
     ) {
       event.preventDefault();
-      shell.openExternal(urlString);
+      shell.openExternal(url);
     }
+  });
+
+  mainWindow.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url);
+    return { action: 'deny' };
   });
   setMenu();
 };
 
-// TODO Can't open multiple files via double click and file saving isn't working.
 app.on('open-file', (event, filePath) => {
   event.preventDefault();
   if (appComponent) {

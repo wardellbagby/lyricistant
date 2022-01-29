@@ -1,6 +1,7 @@
 import { Manager } from '@lyricistant/common/Manager';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { Logger } from '@lyricistant/common/Logger';
+import { UnsavedDataManager } from '@lyricistant/common/files/UnsavedDataManager';
 
 export class UnloadManager implements Manager {
   public constructor(
@@ -11,7 +12,9 @@ export class UnloadManager implements Manager {
     addEventListener('unload', () => {
       this.logger.info('User is leaving page. Deleting unsaved lyrics.');
       this.logger.flush?.();
-      this.temporaryFiles.delete();
+
+      // TODO Managers shouldn't creep into each other implementations like this.
+      this.temporaryFiles.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
     });
   };
 }

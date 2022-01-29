@@ -1,19 +1,18 @@
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 
 export class CoreTemporaryFiles implements TemporaryFiles {
-  private temporaryFileKey = 'temporary_file';
-  public set = (data: string | null) => {
-    localStorage.setItem(this.temporaryFileKey, JSON.stringify(data));
+  public set = (key: string, data: string | null) => {
+    localStorage.setItem(key, JSON.stringify(data));
   };
-  public get = async () => {
-    if (!(await this.exists())) {
+  public get = async (key: string) => {
+    if (!(await this.exists(key))) {
       return '';
     }
-    return JSON.parse(localStorage.getItem(this.temporaryFileKey));
+    return JSON.parse(localStorage.getItem(key));
   };
 
-  public exists = async () => !!localStorage.getItem(this.temporaryFileKey);
-  public delete = (): void => {
-    localStorage.removeItem(this.temporaryFileKey);
+  public exists = async (key: string) => !!localStorage.getItem(key);
+  public delete = (key: string): void => {
+    localStorage.removeItem(key);
   };
 }

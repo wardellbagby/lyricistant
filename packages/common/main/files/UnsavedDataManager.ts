@@ -7,6 +7,7 @@ import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { FileHistory } from '@lyricistant/common/history/FileHistory';
 
 export class UnsavedDataManager implements Manager {
+  public static readonly UNSAVED_LYRICS_KEY = 'unsaved-lyrics-key';
   private static readonly RECOVER_UNSAVED_LYRICS_TAG =
     'unsaved-data-manager-recover-lyrics';
 
@@ -31,11 +32,15 @@ export class UnsavedDataManager implements Manager {
 
   private checkForUnsavedData = async () => {
     this.logger.verbose('Checking for unsaved data...');
-    const hasTemporaryData = await this.temporaryFiles.exists();
+    const hasTemporaryData = await this.temporaryFiles.exists(
+      UnsavedDataManager.UNSAVED_LYRICS_KEY
+    );
     const hasUnsavedData =
       hasTemporaryData &&
       this.fileHistory.isNonEmptyHistory(
-        JSON.parse(await this.temporaryFiles.get())
+        JSON.parse(
+          await this.temporaryFiles.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
+        )
       );
 
     if (hasUnsavedData) {
@@ -55,7 +60,7 @@ export class UnsavedDataManager implements Manager {
   private startAutomaticFileSaver = () => {
     setTimeout(this.saveFile, 5000);
     this.fileManager.addOnFileChangedListener(() => {
-      this.temporaryFiles.delete();
+      this.temporaryFiles.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
     });
   };
 
@@ -63,7 +68,9 @@ export class UnsavedDataManager implements Manager {
     if (tag === UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG) {
       if (buttonLabel === 'Yes') {
         this.fileHistory.deserialize(
-          JSON.parse(await this.temporaryFiles.get())
+          JSON.parse(
+            await this.temporaryFiles.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
+          )
         );
         this.rendererDelegate.send(
           'file-opened',
@@ -82,6 +89,7 @@ export class UnsavedDataManager implements Manager {
       this.fileHistory.add(text);
 
       await this.temporaryFiles.set(
+        UnsavedDataManager.UNSAVED_LYRICS_KEY,
         JSON.stringify(this.fileHistory.serialize())
       );
       setTimeout(this.saveFile, 30000);

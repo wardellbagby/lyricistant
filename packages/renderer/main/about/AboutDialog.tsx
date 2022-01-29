@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   Grid,
   Link,
@@ -14,20 +15,19 @@ import {
   Typography,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import React from 'react';
-import {
-  APP_AUTHOR,
-  APP_HOMEPAGE,
-  APP_VERSION,
-} from '@lyricistant/renderer/globals';
+import React, { ReactChild } from 'react';
+import { APP_HOMEPAGE, APP_VERSION } from '@lyricistant/renderer/globals';
 import appIcon from './app_icon.png';
 
-const aboutInfo = {
-  Author: APP_AUTHOR,
-  Version: APP_VERSION,
+const aboutInfo: Record<string, ReactChild> = {
   Homepage: (
     <Link target="_blank" rel="noopener" href={APP_HOMEPAGE}>
       GitHub
+    </Link>
+  ),
+  'Author Website': (
+    <Link target="_blank" rel="noopener" href={'https://wardellbagby.com'}>
+      wardellbagby.com
     </Link>
   ),
   'Report an issue': (
@@ -58,7 +58,12 @@ interface AboutDialogProps {
 }
 
 export const AboutDialog = (props: AboutDialogProps) => (
-  <Dialog onClose={props.onClose} open={props.open} className={'paper'}>
+  <Dialog
+    onClose={props.onClose}
+    open={props.open}
+    className={'paper'}
+    scroll={'paper'}
+  >
     <DialogContent>
       <Grid
         container
@@ -71,7 +76,42 @@ export const AboutDialog = (props: AboutDialogProps) => (
           <img src={appIcon} height={'48px'} alt={'Lyricistant Icon'} />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant={'h6'}>Lyricistant</Typography>
+          <Typography variant={'h6'}>Lyricistant - {APP_VERSION}</Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <p>
+            Hey! I'm Wardell, and I created Lyricistant! This app is completely
+            free to use and entirely open-source. Make your own modifications,
+            just make sure to make them open-source as well!
+          </p>
+          <p>
+            I use Lyricistant personally to write my own music, which I'd love
+            for you to listen to! Catch me on{' '}
+            <Link
+              target="_blank"
+              rel="noopener"
+              href={'https://open.spotify.com/artist/5NaXw8enpDRFxiTcB0J6H5'}
+            >
+              Spotify
+            </Link>
+            ,{' '}
+            <Link
+              target="_blank"
+              rel="noopener"
+              href={'https://music.apple.com/us/artist/mr-chandler/1331569890'}
+            >
+              Apple Music
+            </Link>
+            , or peep my{' '}
+            <Link
+              target="_blank"
+              rel="noopener"
+              href={'https://soundcloud.com/mr-chandler'}
+            >
+              SoundCloud.
+            </Link>
+          </p>
+          <p>Enjoy using Lyricistant!</p>
         </Grid>
         <Grid item xs={12}>
           <TableContainer>
@@ -79,7 +119,7 @@ export const AboutDialog = (props: AboutDialogProps) => (
               <TableBody>
                 {Object.keys(aboutInfo)
                   .map((key: keyof typeof aboutInfo) => [key, aboutInfo[key]])
-                  .map(([key, value]) => (
+                  .map(([key, value]: [string, ReactChild]) => (
                     <TableRow key={key}>
                       <DividerlessTableCell>{key}</DividerlessTableCell>
                       <DividerlessTableCell>{value}</DividerlessTableCell>
@@ -100,5 +140,10 @@ export const AboutDialog = (props: AboutDialogProps) => (
         </Grid>
       </Grid>
     </DialogContent>
+    <DialogActions>
+      <Button fullWidth variant={'contained'} onClick={props.onClose}>
+        Close
+      </Button>
+    </DialogActions>
   </Dialog>
 );

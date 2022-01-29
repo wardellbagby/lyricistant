@@ -3,39 +3,42 @@ import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 
 export class ElectronTemporaryFiles implements TemporaryFiles {
-  private temporaryFile = this.fs.resolve(
-    this.fs.getDataDirectory('temp'),
-    'temp_lyrics.txt'
-  );
-
   public constructor(private fs: FileSystem, private logger: Logger) {}
 
-  public set = (data: string | null) => {
+  public set = (key: string, data: string | null) => {
     this.fs
-      .writeFile(this.temporaryFile, data)
+      .writeFile(this.getTemporaryFile(key), data)
       .catch((reason) =>
         this.logger.warn(
           'Failed to save to temporary file!',
           reason,
-          this.temporaryFile
+          this.getTemporaryFile(key)
         )
       );
   };
-  public get = async () =>
-    this.fs.readFile(this.temporaryFile, { encoding: 'utf8' });
+  public get = async (key: string) =>
+    this.fs.readFile(this.getTemporaryFile(key), { encoding: 'utf8' });
 
-  public exists = async () => this.fs.existsSync(this.temporaryFile);
-  public delete = async () => {
-    if (await this.exists()) {
+  public exists = async (key: string) =>
+    this.fs.existsSync(this.getTemporaryFile(key));
+
+  public delete = async (key: string) => {
+    if (await this.exists(key)) {
       this.fs
-        .unlink(this.temporaryFile)
+        .unlink(this.getTemporaryFile(key))
         .catch((reason) =>
           this.logger.warn(
             'Failed to delete temporary file!',
             reason,
-            this.temporaryFile
+            this.getTemporaryFile(key)
           )
         );
     }
   };
+
+  private getTemporaryFile = (key: string) =>
+    this.fs.resolve(
+      this.fs.getDataDirectory('temp'),
+      `${key.replaceAll(/[ #%&{}\\<>*?\/$!'":@]/g, '_')}.json`
+    );
 }
