@@ -127,6 +127,7 @@
   },
   "dependencies": {
     "@capacitor/android": "^3.3.4",
+    "@capacitor/app": "^1.1.0",
     "@capacitor/core": "^3.3.4",
     "@capacitor/filesystem": "^1.0.7",
     "@capacitor/ios": "^3.3.4",

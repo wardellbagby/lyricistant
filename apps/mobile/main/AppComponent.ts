@@ -17,6 +17,7 @@ import {
   createBaseComponent,
   createBaseManagers,
 } from '@lyricistant/core-platform/AppComponent';
+import { BackButtonManager } from '@mobile-app/platform/BackButtonManager';
 
 const createComponent = (): DIContainer => {
   const component = createBaseComponent();
@@ -26,10 +27,12 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<TitleFormatter>(() => formatTitle);
 
   component.registerSingleton<StatusBarManager>();
+  component.registerSingleton<BackButtonManager>();
 
   component.registerSingleton<Managers>(() => [
     ...createBaseManagers(component),
     () => component.get<StatusBarManager>(),
+    () => component.get<BackButtonManager>(),
   ]);
   return component;
 };
