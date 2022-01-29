@@ -32,7 +32,7 @@ const createWebpackConfig = async () =>
       },
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig('development', 'Test')
+    defaultWebpackConfig('test', 'Test')
   );
 
 const bundleScreenshotter = async () => {
@@ -112,6 +112,6 @@ const exportScreenshots = async () => {
 
 export const refreshScreenshots = series(
   buildScreenshotter,
-  () => mocha('apps/screenshotter/runner/runner.ts'),
+  () => mocha('apps/screenshotter/runner/runner.ts', { bail: true }),
   exportScreenshots
 );

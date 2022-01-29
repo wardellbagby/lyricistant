@@ -13,9 +13,10 @@ export const getOutputDirectory = (mode: Mode, appDirectory: string) =>
 export const cleanBuildDirectory = async () =>
   del(path.resolve(__dirname, '..', 'build'));
 
-export const mocha = (...files: string[]) =>
-  src(files).pipe(
+export const mocha = (pattern: string, options?: Mocha.MochaOptions) =>
+  src(pattern).pipe(
     gulpMocha({
+      ...options,
       require: ['./register-ts-node'],
     })
   );
