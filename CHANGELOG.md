@@ -1,3 +1,13 @@
+## [1.3.12](https://github.com/wardellbagby/lyricistant/compare/v1.3.11...v1.3.12) (2022-01-29)
+
+
+### Features
+
+* add more info to about page and show it on first app launch ([0c4792b](https://github.com/wardellbagby/lyricistant/commit/0c4792ba2730b5b453cad6b6fe589dfd91c57000))
+* **android:** support using hardware back button ([af193a1](https://github.com/wardellbagby/lyricistant/commit/af193a1759fba2bc79841d8d4350852ba4e2b66b))
+
+
+
 ## [1.3.11](https://github.com/wardellbagby/lyricistant/compare/v1.3.10+ios...v1.3.11) (2022-01-17)
 
 
