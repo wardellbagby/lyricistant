@@ -14,8 +14,8 @@ export const editorTheme = (appTheme: Theme, font: string): Extension =>
         overflow: 'auto',
       },
       '&.cm-focused': {
-        outline_fallback: 'none',
-        outline: 'none',
+        outline_fallback: 'none !important',
+        outline: 'none !important',
       },
       '.cm-line': {
         color: appTheme.palette.text.primary,
