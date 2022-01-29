@@ -56,4 +56,34 @@ describe('File History', () => {
 
     expect(fileHistory.getParsedHistory()).to.equal(expected);
   });
+
+  it("doesn't save empty lyrics", async () => {
+    const expected = 'Row your boat.';
+
+    fileHistory.add('Row');
+    fileHistory.add('Row your');
+    fileHistory.add('Row your boat');
+    fileHistory.add('');
+    fileHistory.add('Row your boat!');
+    fileHistory.add('');
+    fileHistory.add(expected);
+    fileHistory.add('');
+
+    expect(fileHistory.getParsedHistory()).to.equal(expected);
+  });
+
+  it("doesn't save white-space only lyrics", async () => {
+    const expected = '\n\n\tRow your boat.\n';
+
+    fileHistory.add('Row');
+    fileHistory.add('Row your');
+    fileHistory.add('Row your boat');
+    fileHistory.add('\n\n\n\n\n');
+    fileHistory.add('Row your boat!');
+    fileHistory.add('\n\n');
+    fileHistory.add(expected);
+    fileHistory.add('\t');
+
+    expect(fileHistory.getParsedHistory()).to.equal(expected);
+  });
 });

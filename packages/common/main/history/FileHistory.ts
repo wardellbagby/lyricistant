@@ -63,7 +63,7 @@ export class FileHistory implements FileDataExtension<'history'> {
     });
 
   public add = (lyrics: string) => {
-    if (lyrics === this.lastKnownLyrics) {
+    if (lyrics === this.lastKnownLyrics || lyrics.trim().length === 0) {
       return;
     }
 
