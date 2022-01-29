@@ -6,7 +6,7 @@ name: 'Regenerate Pronunciations'
     paths:
       - 'tooling/additional_pronounciations.dict'
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 */14 * *'
   workflow_dispatch: {}
 jobs:
   cancelCurrentRuns:

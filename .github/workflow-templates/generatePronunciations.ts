@@ -11,7 +11,7 @@ export const generatePronunciations: Workflow = {
     },
     schedule: [
       {
-        cron: '0 0 * * *',
+        cron: '0 0 */14 * *',
       },
     ],
     workflow_dispatch: {},
