@@ -60,6 +60,7 @@ const useStyles = makeStyles<Theme, { isSmallLayout: boolean }>((theme) => ({
 }));
 
 interface RhymeDrawerProps {
+  open: boolean;
   onClose: () => void;
   rhymes: Rhyme[];
   query: string;
@@ -67,6 +68,7 @@ interface RhymeDrawerProps {
 }
 
 export const RhymeDrawer = ({
+  open,
   rhymes,
   onClose,
   onRhymeClicked,
@@ -76,10 +78,11 @@ export const RhymeDrawer = ({
 
   return (
     <Drawer
-      open={true}
+      open={open}
       PaperProps={{
         className: classes.paper,
       }}
+      SlideProps={{ direction: 'up' }}
       onClose={onClose}
       classes={{
         root: classes.root,

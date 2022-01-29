@@ -287,17 +287,16 @@ export const Rhymes: React.FC = () => {
           onRhymeClicked={onRhymeClicked}
         />
       )}
-      {showMoreRhymes && (
-        <RhymeDrawer
-          rhymes={rhymes}
-          query={selectedWord}
-          onClose={() => setShowMoreRhymes(false)}
-          onRhymeClicked={(rhyme) => {
-            setShowMoreRhymes(false);
-            onRhymeClicked(rhyme);
-          }}
-        />
-      )}
+      <RhymeDrawer
+        open={showMoreRhymes}
+        rhymes={rhymes}
+        query={selectedWord}
+        onClose={() => setShowMoreRhymes(false)}
+        onRhymeClicked={(rhyme) => {
+          setShowMoreRhymes(false);
+          onRhymeClicked(rhyme);
+        }}
+      />
     </Box>
   );
 };
