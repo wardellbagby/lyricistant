@@ -13,22 +13,15 @@ import popularWordsJson from './popular.json';
 const popularWords: string[] = popularWordsJson as string[];
 
 /**
- * The format the pronunciations will be saved as. Should be kept as condensed as possible for reduce file size.
+ * The format the pronunciations will be saved as. Should be kept as condensed as possible to reduce the file size.
  */
 interface Output {
   /**
    * A mapping of word to pronunciation and optional popularity.
+   *
+   * The first item is the pronunciation; the second is the popularity, which may not exist.
    */
-  [word: string]: {
-    /**
-     * The pronunciation for the word.
-     */
-    pr: string;
-    /**
-     * The popularity of the word, which is just an index in the popular words list, if available. Otherwise, omitted.
-     */
-    p?: number;
-  };
+  [word: string]: [pronunciation: string, popularity?: number];
 }
 
 /**
@@ -57,14 +50,7 @@ const loadCmuPronunciations = async (): Promise<Pronunciations> => {
   const response = await axios.get(cmuDictUrl);
   const data: string = response.data;
 
-  return data
-    .split('\n') // Split into lines.
-    .map((line) => [
-      // The word
-      line.slice(0, line.indexOf(' ')).trim().toLowerCase(),
-      // The pronunciation
-      line.slice(line.indexOf(' ') + 1),
-    ]);
+  return loadFromDictionaryFile(data);
 };
 
 /**
@@ -89,17 +75,44 @@ const loadAdditionalPronunciations = async (): Promise<Pronunciations> => {
     'utf8'
   );
 
-  return data
+  return loadFromDictionaryFile(data);
+};
+
+/**
+ * Load pronunciations from a CMUDict-like string, where `data` is a new-line seperated
+ * string where every line has a word and a pronunciation, and the word and pronunciation
+ * are seperated by a space or a tab.
+ *
+ * Ignores comments, which are defined as lines beginning with # or any text after # in any
+ * line.
+ * ```
+ * # This is a comment that will be stripped.
+ * SWAG  S W AE G # This is also a comment that will be striped.
+ * BRUH  B R UW
+ * FAM  F AE M
+ * ```
+ *
+ * @param data a CMUDict-like string.
+ */
+const loadFromDictionaryFile = async (data: string): Promise<Pronunciations> =>
+  data
     .split('\n')
     .filter((line) => !line.startsWith('#')) // Ignores any comment lines.
     .map((line) => line.replace('\t', ' '))
+    .map((line) => {
+      // Remove any in-line comments
+      const commentIndex = line.indexOf('#');
+      if (commentIndex >= 0) {
+        return line.substring(0, commentIndex);
+      }
+      return line;
+    })
     .map((line) => [
       // The word
       line.slice(0, line.indexOf(' ')).trim().toLowerCase(),
       // The pronunciation
       line.slice(line.indexOf(' ') + 1),
     ]);
-};
 
 /**
  * Using both the pronunciations and a mapping of words to their popularity,
@@ -115,14 +128,16 @@ const writePronunciations = async (
   const output: Output = Object.create(null);
 
   for (const [word, pronunciation] of pronunciations) {
-    let popularity = indexedPopularWords[getBaseWord(word)];
-    if (popularity < 0) {
-      popularity = undefined;
+    if (word.trim().length === 0) {
+      continue;
     }
-    output[word] = {
-      pr: pronunciation,
-      p: popularity,
-    };
+    const popularity = indexedPopularWords[getBaseWord(word)] ?? -1;
+
+    if (popularity < 0) {
+      output[word] = [pronunciation];
+    } else {
+      output[word] = [pronunciation, popularity];
+    }
   }
   writeFileSync(
     'packages/rhyme-generator/main/pronunciations.json',

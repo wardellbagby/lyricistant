@@ -4,17 +4,7 @@ import pronunciationsJson from './pronunciations.json';
  * The data structure used in the Pronunciations JSON that will be keyed by
  * a word.
  */
-interface Pronunciation {
-  /**
-  The pronunciation of the word.
-   */
-  pr: string;
-  /**
-   * The popularity of the word, ranked from MAX_POPULARITY_SCORE to 0, with 0
-   * being the most popular and MAX_POPULARITY_SCORE being the least.
-   */
-  p?: number;
-}
+type Pronunciation = [pronunciation: string, popularity?: number];
 
 interface Rhyme {
   score: number;
@@ -22,7 +12,11 @@ interface Rhyme {
 }
 
 // Force retype so that the IDE doesn't freak out with the large JSON file.
-const pronunciations = pronunciationsJson as Record<string, Pronunciation>;
+const pronunciations = pronunciationsJson as unknown as Record<
+  string,
+  Pronunciation
+>;
+
 const cache = new Map<string, Rhyme[]>();
 const MAX_POPULARITY_SCORE = 100_000;
 const MAX_RHYMES_COUNT = 100;
@@ -121,15 +115,15 @@ const compare = (
   matchPronunciation: Pronunciation,
   matchWord: string
 ) => {
-  let score = calculateScore(inputPronunciation.pr, matchPronunciation.pr);
+  let score = calculateScore(inputPronunciation[0], matchPronunciation[0]);
 
   if (score > 1) {
-    if (matchPronunciation.p) {
+    if (matchPronunciation[1]) {
       /*
        Popular words should match better than their unpopular peers, but not so
        well that they match higher than more "correct" matches.
       */
-      score += (MAX_POPULARITY_SCORE - matchPronunciation.p) / 10;
+      score += (MAX_POPULARITY_SCORE - matchPronunciation[1]) / 10;
     } else {
       // Unpopular words tend to be pretty weird, so demote them heavy.
       score -= MAX_POPULARITY_SCORE * 2;
