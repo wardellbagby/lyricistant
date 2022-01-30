@@ -4,7 +4,6 @@ import { format as formatUrl, URL } from 'url';
 import { isDevelopment, isUiTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileManager } from '@lyricistant/common/files/FileManager';
-import { Logger } from '@lyricistant/common/Logger';
 import { Managers } from '@lyricistant/common/Managers';
 import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
@@ -15,12 +14,21 @@ import { QuitManager } from '@electron-app/platform/QuitManager';
 import { createAppComponent } from '@electron-app/AppComponent';
 import { Manager } from '@lyricistant/common/Manager';
 import { Files } from '@lyricistant/common/files/Files';
+import { ElectronLogger } from '@electron-app/platform/Logger';
+import { Logger } from '@lyricistant/common/Logger';
 
 export let mainWindow: BrowserWindow;
 let appComponent: DIContainer;
 let rendererDelegate: RendererDelegate;
-let logger: Logger;
+let logger: ElectronLogger;
 let initialFilePath = app.isPackaged ? process.argv[1] : undefined;
+
+process.on('uncaughtException', (err) => {
+  crash(err);
+});
+process.on('unhandledRejection', (err) => {
+  crash(err);
+});
 
 if (isDevelopment || isUiTest) {
   debug({
@@ -29,16 +37,25 @@ if (isDevelopment || isUiTest) {
   });
 }
 
-const showLoadingError = (reason: any) => {
-  logger.error(
+const crash = (reason: any) => {
+  const availableLogger = logger ?? console;
+
+  availableLogger?.error(
     'Error loading the webpage',
     reason,
     path.join(__dirname, 'index.html')
   );
+
   mainWindow.destroy();
   dialog.showErrorBox(
-    'Error',
-    "Sorry, we couldn't load Lyricistant! Please contact the developers!"
+    'Crash',
+    [
+      'Sorry, Lyricistant has crashed! Please contact the developers.',
+      '',
+      `App version: ${process.env.APP_VERSION}`,
+      `Homepage: ${process.env.APP_HOMEPAGE}`,
+      `Log location: ${logger?.getLogFolder() ?? 'No logs available'}`,
+    ].join('\n')
   );
   app.quit();
 };
@@ -141,7 +158,7 @@ const createWindow = (): void => {
     },
   });
   appComponent = createAppComponent(mainWindow);
-  logger = appComponent.get<Logger>();
+  logger = appComponent.get<Logger>() as ElectronLogger;
   rendererDelegate = createRendererDelegate(mainWindow);
 
   appComponent.get<Managers>().forEach((getManager: () => Manager) => {
@@ -171,7 +188,7 @@ const createWindow = (): void => {
     });
   }
 
-  mainWindow.loadURL(rendererPage).catch(showLoadingError);
+  mainWindow.loadURL(rendererPage).catch(crash);
 
   mainWindow.on('closed', () => {
     mainWindow = undefined;

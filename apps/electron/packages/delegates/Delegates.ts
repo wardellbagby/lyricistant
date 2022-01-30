@@ -14,16 +14,58 @@ import log from 'electron-log';
 const logger = log;
 const newRendererListenerListeners = new Map<string, Array<() => void>>();
 
-interface WrappedListener {
-  (...args: any[]): void;
+interface WrappedListener extends ElectronListener {
   originalListener?: (...args: any[]) => void;
+}
+
+type ElectronListener = (
+  event: GlobalEvent,
+  ...args: []
+) => Promise<void> | void;
+
+class WrappedListenerHelper {
+  private listeners = new Set<WrappedListener>();
+
+  public wrap = (listener: (...args: any[]) => unknown): ElectronListener => {
+    const wrappedListener: WrappedListener = (
+      _: GlobalEvent,
+      ...args: any[]
+    ) => {
+      Promise.resolve(listener(...args)).catch((reason) => {
+        logger.error('Uncaught exception in listener', reason);
+        throw reason;
+      });
+    };
+
+    wrappedListener.originalListener = listener;
+
+    this.listeners.add(wrappedListener);
+
+    return wrappedListener;
+  };
+
+  public remove = (listener: (...args: any[]) => void): ElectronListener => {
+    let wrappedListener = null;
+    this.listeners.forEach((wrapped) => {
+      if (wrapped.originalListener === listener) {
+        wrappedListener = wrapped;
+      }
+    });
+
+    if (!wrappedListener) {
+      throw new Error("Can't remove listener that was never registered!");
+    }
+
+    this.listeners.delete(wrappedListener);
+    return wrappedListener;
+  };
 }
 
 export class ElectronRendererDelegate implements RendererDelegate {
   private ipcMain: IpcMain;
   private window: BrowserWindow;
 
-  private listeners = new Set<WrappedListener>();
+  private listeners = new WrappedListenerHelper();
 
   public constructor(ipcMain: IpcMain, window: BrowserWindow) {
     this.ipcMain = ipcMain;
@@ -47,18 +89,9 @@ export class ElectronRendererDelegate implements RendererDelegate {
 
   public on(channel: string, listener: (...args: any[]) => void): this {
     logger.info('Registering renderer listener', channel);
-    const listenerWithEvent: WrappedListener = (
-      _: GlobalEvent,
-      ...args: any[]
-    ) => {
-      listener(...args);
-    };
 
-    listenerWithEvent.originalListener = listener;
+    this.ipcMain.on(channel, this.listeners.wrap(listener));
 
-    this.listeners.add(listenerWithEvent);
-
-    this.ipcMain.on(channel, listenerWithEvent);
     return this;
   }
 
@@ -76,20 +109,9 @@ export class ElectronRendererDelegate implements RendererDelegate {
     listener: (...args: any[]) => void
   ): this {
     logger.info('Removing renderer listener', channel);
-    let wrappedListener: typeof listener;
 
-    this.listeners.forEach((wrapped) => {
-      if (wrapped.originalListener === listener) {
-        wrappedListener = wrapped;
-      }
-    });
+    this.ipcMain.removeListener(channel, this.listeners.remove(listener));
 
-    if (!wrappedListener) {
-      throw new Error("Can't remove listener that was never registered!");
-    }
-
-    this.listeners.delete(wrappedListener);
-    this.ipcMain.removeListener(channel, wrappedListener);
     return this;
   }
 }
@@ -97,10 +119,7 @@ export class ElectronRendererDelegate implements RendererDelegate {
 class ElectronPlatformDelegate implements PlatformDelegate {
   private ipcRenderer: IpcRenderer;
 
-  private listeners = new Map<
-    string,
-    (event: GlobalEvent, ...args: any[]) => void
-  >();
+  private listeners = new WrappedListenerHelper();
 
   public constructor(ipcRenderer: IpcRenderer) {
     this.ipcRenderer = ipcRenderer;
@@ -118,14 +137,10 @@ class ElectronPlatformDelegate implements PlatformDelegate {
 
   public on(channel: string, listener: (...args: any[]) => void): this {
     logger.info('Registering platform listener', channel);
-    const listenerWithEvent = (_: GlobalEvent, ...args: any[]) => {
-      listener(...args);
-    };
 
-    this.listeners.set(listener.toString(), listenerWithEvent);
-
-    this.ipcRenderer.on(channel, listenerWithEvent);
+    this.ipcRenderer.on(channel, this.listeners.wrap(listener));
     this.ipcRenderer.sendSync('new-listener-registered', channel);
+
     return this;
   }
 
@@ -134,10 +149,9 @@ class ElectronPlatformDelegate implements PlatformDelegate {
     listener: (...args: any[]) => void
   ): this {
     logger.info('Removing platform listener', channel);
-    this.ipcRenderer.removeListener(
-      channel,
-      this.listeners.get(listener.toString())
-    );
+
+    this.ipcRenderer.removeListener(channel, this.listeners.remove(listener));
+
     return this;
   }
 }

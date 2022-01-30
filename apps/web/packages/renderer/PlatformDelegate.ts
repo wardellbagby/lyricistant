@@ -12,9 +12,12 @@ class WebPlatformDelegate implements PlatformDelegate {
   private listeners: ListenerManager = new ListenerManager();
 
   public receive = (channel: string, args: any[]) => {
-    this.listeners
-      .getListeners(channel)
-      .forEach((listener) => listener(...args));
+    this.listeners.getListeners(channel).forEach((listener) => {
+      Promise.resolve(listener(...args)).catch((reason) => {
+        logger.error('Uncaught exception in listener', reason);
+        throw reason;
+      });
+    });
   };
 
   public on<Channel extends RendererChannel>(

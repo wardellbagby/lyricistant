@@ -16,9 +16,12 @@ export class WebRendererDelegate implements RendererDelegate {
   public constructor(private logger: Logger) {}
 
   public receive = (channel: string, args: any[]) => {
-    this.listeners
-      .getListeners(channel)
-      .forEach((listener) => listener(...args));
+    this.listeners.getListeners(channel).forEach((listener) => {
+      Promise.resolve(listener(...args)).catch((reason) => {
+        this.logger.error('Uncaught exception in listener', reason);
+        throw reason;
+      });
+    });
   };
 
   public on<Channel extends PlatformChannel>(

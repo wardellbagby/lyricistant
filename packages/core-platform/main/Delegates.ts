@@ -84,7 +84,7 @@ export class ListenerManager {
     this.listeners.set(channel, registeredListeners);
   }
 
-  public getListeners(channel: string): Array<(...args: any[]) => void> {
+  public getListeners(channel: string): Array<(...args: any[]) => unknown> {
     return [...(this.listeners.get(channel) ?? [])];
   }
 }

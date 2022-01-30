@@ -1,4 +1,4 @@
-import { parse } from 'path';
+import { parse, dirname } from 'path';
 import { Logger } from '@lyricistant/common/Logger';
 import AdmZip from 'adm-zip';
 import { BrowserWindow, dialog } from 'electron';
@@ -50,6 +50,9 @@ export class ElectronLogger implements Logger {
       await writeZip(zip, result.filePath);
     }
   }
+
+  public getLogFolder = (): string =>
+    dirname(log.transports.file.getFile().path);
 }
 
 const writeZip = async (zip: AdmZip, targetFileName: string) =>

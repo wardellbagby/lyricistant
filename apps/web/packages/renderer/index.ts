@@ -6,6 +6,26 @@ import { platformDelegate } from './PlatformDelegate';
 import { mainProcessWorker, platform } from './platform';
 
 window.platformDelegate = platformDelegate;
+window.onerror = (message, url, line, col, error) => {
+  const availableLogger = logger ?? console;
+  availableLogger.error(
+    JSON.stringify(message) + '\n',
+    `Url: ${url}\n`,
+    `Line: ${line}\n`,
+    `Column: ${col}\n`,
+    error
+  );
+  alert(
+    [
+      'Sorry, Lyricistant has crashed! Please close this page and contact the developers.',
+      'Continuing to use Lyricistant may result in undesired behavior.',
+      '',
+      `App version: ${process.env.APP_VERSION}`,
+      `Homepage: ${process.env.APP_HOMEPAGE}`,
+    ].join('\n')
+  );
+};
+window.onunhandledrejection = (event) => window.onerror(event.reason);
 
 export const receive = (channel: string, args: any[]) => {
   platformDelegate.receive(channel, args);
@@ -50,6 +70,9 @@ const getFileSystem: () => BufferFileSystem = () =>
 const getLocalStorage: () => Storage = () => proxy(localStorage);
 const getSessionStorage: () => Storage = () => proxy(sessionStorage);
 const showConfirmDialog = (message?: string) => confirm(message);
+const onError = (reason: any) => {
+  window.onerror(reason);
+};
 
 expose(
   {
@@ -58,6 +81,7 @@ expose(
     getLocalStorage,
     getSessionStorage,
     showConfirmDialog,
+    onError,
   },
   mainProcessWorker
 );

@@ -8,4 +8,5 @@ export interface Renderer {
   getLocalStorage: () => Promise<Remote<Storage>>;
   getSessionStorage: () => Promise<Remote<Storage>>;
   showConfirmDialog: (message: string) => Promise<boolean>;
+  onError: (reason: any) => void;
 }

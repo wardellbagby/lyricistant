@@ -11,19 +11,35 @@ import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEv
 import { Themed } from '@lyricistant/renderer/theme/Themed';
 import { AppError } from '@lyricistant/renderer/app/AppError';
 
-window.onerror = (message, url, line, col, error) => {
-  if (!logger) {
-    // eslint-disable-next-line no-console
-    console.error(message, url, line, col, error);
-  }
-  logger.error(
-    JSON.stringify(message) + '\n',
-    `Url: ${url}\n`,
-    `Line: ${line}\n`,
-    `Column: ${col}\n`,
-    error
-  );
-};
+if (!window.onerror) {
+  window.onerror = (message, url, line, col, error) => {
+    if (!logger) {
+      // eslint-disable-next-line no-console
+      console.error(message, url, line, col, error);
+    }
+    logger.error(
+      JSON.stringify(message) + '\n',
+      `Url: ${url}\n`,
+      `Line: ${line}\n`,
+      `Column: ${col}\n`,
+      error
+    );
+    alert(
+      [
+        'Sorry, Lyricistant has crashed! Please close this page and contact the developers.',
+        'Continuing to use Lyricistant may result in undesired behavior.',
+        '',
+        `App version: ${process.env.APP_VERSION}`,
+        `Homepage: ${process.env.APP_HOMEPAGE}`,
+      ].join('\n')
+    );
+  };
+}
+
+if (!window.onunhandledrejection) {
+  window.onunhandledrejection = (event) =>
+    window.onerror(event, null, null, null, null);
+}
 
 if (module.hot) {
   module.hot.accept();
@@ -33,36 +49,34 @@ setupAnalytics();
 const container: HTMLElement = document.getElementById('app');
 
 ReactDOM.render(
-  <PlatformEventsReadyHandler>
-    <Themed
-      onThemeChanged={(palette) => {
-        document.body.style.backgroundColor = palette.background;
-        document.body.style.color = palette.primaryText;
-        onThemeUpdated(palette);
-      }}
-      onThemeReady={() => {
-        onPageLoaded();
-        container.style.opacity = '100%';
-      }}
-    >
-      <SnackbarProvider
-        maxSnack={3}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
+  <ErrorBoundary fallbackRender={({ error }) => <AppError error={error} />}>
+    <PlatformEventsReadyHandler>
+      <Themed
+        onThemeChanged={(palette) => {
+          document.body.style.backgroundColor = palette.background;
+          document.body.style.color = palette.primaryText;
+          onThemeUpdated(palette);
+        }}
+        onThemeReady={() => {
+          onPageLoaded();
+          container.style.opacity = '100%';
         }}
       >
-        <HashRouter hashType={'noslash'}>
-          <ErrorBoundary
-            fallbackRender={({ error }) => <AppError error={error} />}
-          >
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+        >
+          <HashRouter hashType={'noslash'}>
             <DesktopOnly>
               <DialogRouter />
             </DesktopOnly>
-          </ErrorBoundary>
-        </HashRouter>
-      </SnackbarProvider>
-    </Themed>
-  </PlatformEventsReadyHandler>,
+          </HashRouter>
+        </SnackbarProvider>
+      </Themed>
+    </PlatformEventsReadyHandler>
+  </ErrorBoundary>,
   container
 );
