@@ -24,7 +24,7 @@ export class FirstLaunchManager implements Manager {
 
     this.temporaryFiles.set(
       FirstLaunchManager.IS_FIRST_LAUNCH_KEY,
-      JSON.stringify(true)
+      JSON.stringify(false)
     );
   };
 }

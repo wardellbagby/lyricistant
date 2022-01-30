@@ -22,7 +22,7 @@ export function App() {
     }
   });
   useChannel('app-title-changed', (title) => (document.title = title));
-  useChannel('open-about', () => history.push('/about'));
+  useChannel('open-about', () => history.push('/about'), [history]);
 
   return (
     <EditorTextStore>
