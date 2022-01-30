@@ -23,6 +23,7 @@ export function App() {
   });
   useChannel('app-title-changed', (title) => (document.title = title));
   useChannel('open-about', () => history.push('/about'), [history]);
+  useChannel('open-prefs', () => history.push('/preferences'), [history]);
 
   return (
     <EditorTextStore>

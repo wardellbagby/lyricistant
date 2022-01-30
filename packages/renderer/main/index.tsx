@@ -5,7 +5,7 @@ import { HashRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import { onPageLoaded, onThemeUpdated } from '@lyricistant/renderer/preload';
 import { setupAnalytics } from '@lyricistant/renderer/analytics/setupAnalytics';
-import { AppRouter } from '@lyricistant/renderer/app/AppRouter';
+import { DialogRouter } from '@lyricistant/renderer/app/DialogRouter';
 import { DesktopOnly } from '@lyricistant/renderer/app/DesktopOnly';
 import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEventsReadyHandler';
 import { Themed } from '@lyricistant/renderer/theme/Themed';
@@ -57,7 +57,7 @@ ReactDOM.render(
             fallbackRender={({ error }) => <AppError error={error} />}
           >
             <DesktopOnly>
-              <AppRouter />
+              <DialogRouter />
             </DesktopOnly>
           </ErrorBoundary>
         </HashRouter>

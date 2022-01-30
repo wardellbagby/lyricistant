@@ -9,7 +9,7 @@ import { RouteChildrenProps } from 'react-router';
 import { PlatformDialog } from '@lyricistant/renderer/dialog/PlatformDialogs';
 import { App } from './App';
 
-export function AppRouter() {
+export function DialogRouter() {
   const history = useHistory();
 
   const goAbout = useCallback(() => history.push('/about'), [history]);
