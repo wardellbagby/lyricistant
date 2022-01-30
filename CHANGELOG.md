@@ -1,3 +1,13 @@
+## [1.3.13](https://github.com/wardellbagby/lyricistant/compare/v1.3.12...v1.3.13) (2022-01-30)
+
+
+### Bug Fixes
+
+* **electron:** open preferences from app menu ([0d05c78](https://github.com/wardellbagby/lyricistant/commit/0d05c788070a52bb1951a6e137f0e6400bf7507c))
+* **mobile:** allow closing the first launch dialog ([9904ca7](https://github.com/wardellbagby/lyricistant/commit/9904ca7e6604d763c8c9b3ce833c1dee7933114b))
+
+
+
 ## [1.3.12](https://github.com/wardellbagby/lyricistant/compare/v1.3.11...v1.3.12) (2022-01-29)
 
 
