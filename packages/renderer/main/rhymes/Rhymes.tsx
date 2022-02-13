@@ -26,7 +26,6 @@ import {
 import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_feather.svg';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { DotsVertical } from 'mdi-material-ui';
-import { FlexDirectionProperty } from 'csstype';
 import useResizeObserver from 'use-resize-observer';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
 import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
@@ -35,7 +34,7 @@ import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles<
   Theme,
-  { listDirection: FlexDirectionProperty; isSmallLayout: boolean }
+  { listDirection: 'row' | 'column'; isSmallLayout: boolean }
 >((theme: Theme) => ({
   rhyme: {
     'text-align': 'center',
