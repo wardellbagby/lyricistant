@@ -15,7 +15,6 @@ import React, {
   useState,
 } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
-import { usePreferences } from '@lyricistant/renderer/preferences/PreferencesStore';
 import { useMachine } from '@xstate/react';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
 import {
@@ -30,6 +29,7 @@ import useResizeObserver from 'use-resize-observer';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
 import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
 import { ExpandMore } from '@mui/icons-material';
+import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles<
@@ -240,7 +240,7 @@ export const Rhymes: React.FC = () => {
     [selectedWord, selectedWordPosition]
   );
 
-  const preferences = usePreferences();
+  const [preferences] = useChannelData('prefs-updated');
 
   useLayoutEffect(() => {
     if (!selectedWord || !preferences) {

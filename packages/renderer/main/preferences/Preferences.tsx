@@ -31,7 +31,7 @@ import {
   Save as SaveIcon,
 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
-import { usePreferences } from './PreferencesStore';
+import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 
 const DialogTransition = React.forwardRef<unknown, SlideProps>(
   function Transition(props, ref) {
@@ -131,7 +131,7 @@ interface PreferencesProps {
 
 export const Preferences = (props: PreferencesProps) => {
   const classes = dialogStyles(undefined);
-  const originalPreferenceData = usePreferences();
+  const [originalPreferenceData] = useChannelData('prefs-updated');
   const [preferencesData, setPreferencesData] = useState(
     originalPreferenceData
   );

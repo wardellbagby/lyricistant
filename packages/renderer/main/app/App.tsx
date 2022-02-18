@@ -4,7 +4,6 @@ import { useSnackbar } from 'notistack';
 import { SelectedWordStore } from '@lyricistant/renderer/editor/SelectedWordStore';
 import { EditorTextStore } from '@lyricistant/renderer/editor/EditorTextStore';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
-import { PreferencesStore } from '@lyricistant/renderer/preferences/PreferencesStore';
 import { Editor } from '@lyricistant/renderer/editor/Editor';
 import { Menu } from '@lyricistant/renderer/menu/Menu';
 import { Rhymes } from '@lyricistant/renderer/rhymes/Rhymes';
@@ -27,11 +26,9 @@ export function App() {
 
   return (
     <EditorTextStore>
-      <PreferencesStore>
-        <SelectedWordStore>
-          <AppLayout menu={<Menu />} main={<Editor />} detail={<Rhymes />} />
-        </SelectedWordStore>
-      </PreferencesStore>
+      <SelectedWordStore>
+        <AppLayout menu={<Menu />} main={<Editor />} detail={<Rhymes />} />
+      </SelectedWordStore>
     </EditorTextStore>
   );
 }
