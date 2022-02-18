@@ -11,12 +11,12 @@ import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEv
 import { Themed } from '@lyricistant/renderer/theme/Themed';
 import { AppError } from '@lyricistant/renderer/app/AppError';
 
-if (!window.onerror) {
-  window.onerror = (message, url, line, col, error) => {
-    if (!logger) {
-      // eslint-disable-next-line no-console
-      console.error(message, url, line, col, error);
-    }
+const oldOnError = window.onerror;
+window.onerror = (message, url, line, col, error) => {
+  if (!logger) {
+    // eslint-disable-next-line no-console
+    console.error(message, url, line, col, error);
+  } else {
     logger.error(
       JSON.stringify(message) + '\n',
       `Url: ${url}\n`,
@@ -24,6 +24,14 @@ if (!window.onerror) {
       `Column: ${col}\n`,
       error
     );
+  }
+  if (message === 'ResizeObserver loop limit exceeded') {
+    // https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
+    return;
+  }
+  if (oldOnError) {
+    oldOnError(message, url, line, col, error);
+  } else {
     alert(
       [
         'Sorry, Lyricistant has crashed! Please close this page and contact the developers.',
@@ -33,8 +41,8 @@ if (!window.onerror) {
         `Homepage: ${process.env.APP_HOMEPAGE}`,
       ].join('\n')
     );
-  };
-}
+  }
+};
 
 if (!window.onunhandledrejection) {
   window.onunhandledrejection = (event) =>
