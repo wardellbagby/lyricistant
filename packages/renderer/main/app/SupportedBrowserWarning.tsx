@@ -12,13 +12,12 @@ import {
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 
-const isUnsupportedBrowser = isMobile || isIE;
+const isUnsupportedBrowser = isMobile || isIE || !Promise || !File || !Blob;
 
 const getTipMessage = () => {
   if (isMobile) {
     return 'Try switching to a desktop browser.';
-  }
-  if (isIE) {
+  } else {
     return 'Try switching to a more modern browser.';
   }
 };
@@ -49,7 +48,7 @@ const WarningDialog = ({
     </DialogActions>
   </Dialog>
 );
-export function DesktopOnly({
+export function SupportedBrowserWarning({
   children,
 }: PropsWithChildren<Record<never, never>>) {
   const [uiConfig, setUiConfig] = useState<UiConfig>(null);
