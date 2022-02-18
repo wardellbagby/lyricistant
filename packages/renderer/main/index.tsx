@@ -6,7 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { onPageLoaded, onThemeUpdated } from '@lyricistant/renderer/preload';
 import { setupAnalytics } from '@lyricistant/renderer/analytics/setupAnalytics';
 import { DialogRouter } from '@lyricistant/renderer/app/DialogRouter';
-import { DesktopOnly } from '@lyricistant/renderer/app/DesktopOnly';
+import { SupportedBrowserWarning } from '@lyricistant/renderer/app/SupportedBrowserWarning';
 import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEventsReadyHandler';
 import { Themed } from '@lyricistant/renderer/theme/Themed';
 import { AppError } from '@lyricistant/renderer/app/AppError';
@@ -78,9 +78,9 @@ ReactDOM.render(
           }}
         >
           <HashRouter hashType={'noslash'}>
-            <DesktopOnly>
+            <SupportedBrowserWarning>
               <DialogRouter />
-            </DesktopOnly>
+            </SupportedBrowserWarning>
           </HashRouter>
         </SnackbarProvider>
       </Themed>
