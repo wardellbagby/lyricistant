@@ -1,10 +1,11 @@
 import React from 'react';
-import { App } from '@lyricistant/renderer/app/App';
+import { App as RealApp } from '@lyricistant/renderer/app/App';
 import { waitFor } from '@testing-library/react';
 import { restore } from 'sinon';
 import { configure, screen } from '@testing-library/dom';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
+import { MemoryRouter } from 'react-router-dom';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { MockLogger } from './MockLogger';
 import { render } from './Wrappers';
@@ -59,4 +60,10 @@ describe('App component', () => {
 
     expect(screen.getByText("Couldn't open selected file.")).to.exist;
   });
+
+  const App = () => (
+    <MemoryRouter>
+      <RealApp />
+    </MemoryRouter>
+  );
 });

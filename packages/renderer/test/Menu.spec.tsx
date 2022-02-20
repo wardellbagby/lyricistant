@@ -1,13 +1,11 @@
 import React from 'react';
-import { Menu } from '@lyricistant/renderer/menu/Menu';
+import { Menu as RealMenu, MenuProps } from '@lyricistant/renderer/menu/Menu';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { expect, use } from 'chai';
 import { configure } from '@testing-library/dom';
 import { restore, stub } from 'sinon';
 import sinonChai from 'sinon-chai';
-import { Router } from 'react-router-dom';
-import { createMemoryHistory, History } from 'history';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { render } from './Wrappers';
@@ -38,18 +36,18 @@ describe('Menu component', () => {
   });
 
   it('tells the platform when user attempts to make a new file', async () => {
-    render(<Menu />);
+    const onNewClicked = stub();
+    render(<Menu onNewClicked={onNewClicked} />);
 
     const element = screen.getByRole('button', { name: 'New File' });
     userEvent.click(element);
 
-    await waitFor(() =>
-      expect(platformDelegate.send).to.have.been.calledWith('new-file-attempt')
-    );
+    await waitFor(() => expect(onNewClicked).to.have.been.called);
   });
 
   it('tells the platform when user attempts to open a file', async () => {
-    render(<Menu />);
+    const onOpenClicked = stub();
+    render(<Menu onOpenClicked={onOpenClicked} />);
 
     await waitFor(() =>
       platformDelegate.invoke('ui-config', {
@@ -63,57 +61,37 @@ describe('Menu component', () => {
     );
     userEvent.click(element);
 
-    await waitFor(() =>
-      expect(platformDelegate.send).to.have.been.calledWith('open-file-attempt')
-    );
+    await waitFor(() => expect(onOpenClicked).to.have.been.called);
   });
 
   it('tells the platform when user attempts to save a file', async () => {
-    stub(
-      require('@lyricistant/renderer/editor/EditorTextStore'),
-      'useEditorText'
-    ).returns('Text!');
+    const onSaveClicked = stub();
+    render(<Menu onSaveClicked={onSaveClicked} />);
 
-    render(<Menu />);
     const element = await waitFor(() =>
       screen.getByRole('button', { name: 'Save File' })
     );
     userEvent.click(element);
 
-    await waitFor(() =>
-      expect(platformDelegate.send).to.have.been.calledWith(
-        'save-file-attempt',
-        'Text!'
-      )
-    );
+    await waitFor(() => expect(onSaveClicked).to.have.been.called);
   });
 
   it('goes to preferences when clicked', async () => {
-    const history: History = createMemoryHistory();
+    const onPreferencesClicked = stub();
 
-    render(
-      <Router history={history}>
-        <Menu />
-      </Router>
-    );
+    render(<Menu onPreferencesClicked={onPreferencesClicked} />);
     const element = await waitFor(() =>
       screen.getByRole('button', { name: 'Open Preferences' })
     );
     userEvent.click(element);
 
-    await waitFor(() =>
-      expect(history.location.pathname).to.equal('/preferences')
-    );
+    await waitFor(() => expect(onPreferencesClicked).to.have.been.called);
   });
 
   it('goes to download app when clicked', async () => {
-    const history: History = createMemoryHistory();
+    const onDownloadClicked = stub();
 
-    render(
-      <Router history={history}>
-        <Menu />
-      </Router>
-    );
+    render(<Menu onDownloadClicked={onDownloadClicked} />);
     await waitFor(() =>
       platformDelegate.invoke('ui-config', {
         showOpen: false,
@@ -127,8 +105,18 @@ describe('Menu component', () => {
     );
     userEvent.click(element);
 
-    await waitFor(() =>
-      expect(history.location.pathname).to.equal('/download')
-    );
+    await waitFor(() => expect(onDownloadClicked).to.have.been.called);
   });
+
+  const Menu = (props: Partial<MenuProps>) => (
+    <RealMenu
+      onNewClicked={stub()}
+      onOpenClicked={stub()}
+      onSaveClicked={stub()}
+      onPreferencesClicked={stub()}
+      onDownloadClicked={stub()}
+      onFileHistoryClicked={stub()}
+      {...props}
+    />
+  );
 });

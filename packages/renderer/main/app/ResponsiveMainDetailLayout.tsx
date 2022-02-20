@@ -9,13 +9,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface AppLayoutProps {
+interface ResponsiveMenuDetailLayout {
   main: ReactNode;
   detail: ReactNode;
   menu: ReactNode;
 }
 
-export const AppLayout = ({ main, detail, menu }: AppLayoutProps) => {
+export const ResponsiveMainDetailLayout = ({
+  main,
+  detail,
+  menu,
+}: ResponsiveMenuDetailLayout) => {
   const classes = useStyles();
   const isSmallLayout = useSmallLayout();
   let displayableChildren: ReactNode[];

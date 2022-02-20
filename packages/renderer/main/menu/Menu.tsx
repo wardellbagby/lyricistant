@@ -25,15 +25,12 @@ import {
 import React, {
   FunctionComponent,
   MouseEvent,
-  useCallback,
   useEffect,
   useMemo,
   useState,
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useHistory } from 'react-router-dom';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
-import { useEditorText } from '@lyricistant/renderer/editor/EditorTextStore';
 
 const useMenuStyles = makeStyles<Theme, { isSmallLayout: boolean }>(
   (theme: Theme) => ({
@@ -66,7 +63,7 @@ const MenuIcon: FunctionComponent<{
   );
 };
 
-interface OverflowItem {
+interface MenuItemData {
   icon: SvgIconComponent;
   label: string;
   onClick: () => void;
@@ -74,11 +71,11 @@ interface OverflowItem {
 
 interface AppBarProps {
   direction: 'horizontal' | 'vertical';
-  leading: OverflowItem[];
-  trailing: OverflowItem[];
+  leading: MenuItemData[];
+  trailing: MenuItemData[];
 }
 
-const toMenuIcon = (item: OverflowItem) => (
+const toMenuIcon = (item: MenuItemData) => (
   <MenuIcon key={item.label} onClick={item.onClick} ariaLabel={item.label}>
     <item.icon />
   </MenuIcon>
@@ -94,14 +91,14 @@ const MenuBar = (props: AppBarProps) => {
     [props.leading, isHorizontal]
   );
 
-  const leading = useMemo(() => {
+  const leading: MenuItemData[] = useMemo(() => {
     if (shouldTrim) {
       return props.leading.slice(0, 3);
     }
     return props.leading;
   }, [props.leading, shouldTrim]);
 
-  const trailing = useMemo(() => {
+  const trailing: MenuItemData[] = useMemo(() => {
     if (shouldTrim) {
       return [...props.leading.slice(3), ...props.trailing];
     }
@@ -161,25 +158,21 @@ const MenuBar = (props: AppBarProps) => {
   );
 };
 
-export const Menu: React.FC = () => {
+export interface MenuProps {
+  onNewClicked: () => void;
+  onOpenClicked: () => void;
+  onSaveClicked: () => void;
+  onPreferencesClicked: () => void;
+  onDownloadClicked: () => void;
+  onFileHistoryClicked: () => void;
+}
+
+export const Menu: React.FC<MenuProps> = (props) => {
   const theme = useTheme();
   const classes = useMenuStyles({ isSmallLayout: useSmallLayout() });
   const [uiConfig, setUiConfig] = useState<UiConfig>(null);
-  const editorText = useEditorText();
-  const history = useHistory();
   const isSmallLayout = useSmallLayout();
   const direction = isSmallLayout ? 'horizontal' : 'vertical';
-
-  const onNewClicked = () => platformDelegate.send('new-file-attempt');
-  const onOpenClicked = () => platformDelegate.send('open-file-attempt');
-  const onSaveClicked = useCallback(
-    () => platformDelegate.send('save-file-attempt', editorText),
-    [editorText]
-  );
-
-  const onSettingsClicked = () => history.push('/preferences');
-  const onDownloadClicked = () => history.push('/download');
-  const onFileHistoryClicked = () => history.push('/file-history');
 
   const leadingIcons = useMemo(
     () =>
@@ -187,25 +180,25 @@ export const Menu: React.FC = () => {
         {
           label: 'New File',
           icon: AddCircle,
-          onClick: onNewClicked,
+          onClick: props.onNewClicked,
         },
         uiConfig?.showOpen && {
           label: 'Open File',
           icon: FolderOpen,
-          onClick: onOpenClicked,
+          onClick: props.onOpenClicked,
         },
         {
           label: 'Save File',
           icon: Save,
-          onClick: onSaveClicked,
+          onClick: props.onSaveClicked,
         },
         uiConfig?.showOpen && {
           label: 'View file history',
           icon: History,
-          onClick: onFileHistoryClicked,
+          onClick: props.onFileHistoryClicked,
         },
       ].filter((node) => node),
-    [uiConfig, onSaveClicked]
+    [uiConfig, props]
   );
   const trailingIcons = useMemo(
     () =>
@@ -213,15 +206,15 @@ export const Menu: React.FC = () => {
         uiConfig?.showDownload && {
           label: 'Download Lyricistant',
           icon: GetApp,
-          onClick: onDownloadClicked,
+          onClick: props.onDownloadClicked,
         },
         {
           label: 'Open Preferences',
           icon: Settings,
-          onClick: onSettingsClicked,
+          onClick: props.onPreferencesClicked,
         },
       ].filter((value) => !!value),
-    [uiConfig]
+    [uiConfig, props]
   );
 
   useEffect(() => {
