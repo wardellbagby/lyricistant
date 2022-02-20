@@ -5,11 +5,12 @@ import { HashRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import { onPageLoaded, onThemeUpdated } from '@lyricistant/renderer/preload';
 import { setupAnalytics } from '@lyricistant/renderer/analytics/setupAnalytics';
-import { DialogRouter } from '@lyricistant/renderer/app/DialogRouter';
 import { SupportedBrowserWarning } from '@lyricistant/renderer/app/SupportedBrowserWarning';
 import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEventsReadyHandler';
 import { Themed } from '@lyricistant/renderer/theme/Themed';
 import { AppError } from '@lyricistant/renderer/app/AppError';
+import { App } from '@lyricistant/renderer/app/App';
+import { EditorTextStore } from '@lyricistant/renderer/editor/EditorTextStore';
 
 const oldOnError = window.onerror;
 window.onerror = (message, url, line, col, error) => {
@@ -77,11 +78,14 @@ ReactDOM.render(
             horizontal: 'right',
           }}
         >
-          <HashRouter hashType={'noslash'}>
-            <SupportedBrowserWarning>
-              <DialogRouter />
-            </SupportedBrowserWarning>
-          </HashRouter>
+          <SupportedBrowserWarning>
+            <HashRouter hashType={'noslash'}>
+              {/* TODO replace this with a true way of storing editor state */}
+              <EditorTextStore>
+                <App />
+              </EditorTextStore>
+            </HashRouter>
+          </SupportedBrowserWarning>
         </SnackbarProvider>
       </Themed>
     </PlatformEventsReadyHandler>
