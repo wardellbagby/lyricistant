@@ -1,148 +1,211 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Compartment,
-  EditorSelection,
   EditorState,
   EditorStateConfig,
+  Extension,
 } from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
-import { history, historyKeymap } from '@codemirror/history';
-import { styled, useTheme } from '@mui/material';
-import { searchKeymap } from '@codemirror/search';
+import {
+  history,
+  historyKeymap,
+  redo as redoTextChange,
+  undo as undoTextChange,
+  undoDepth,
+} from '@codemirror/history';
+import { useTheme } from '@mui/material';
+import { openSearchPanel, searchKeymap } from '@codemirror/search';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
 import { WordAtPosition, wordSelection } from './wordSelection';
-
-const EditorContainer = styled('div')({
-  height: '100%',
-  width: '100%',
-  paddingTop: '8px',
-});
 
 export interface WordReplacement {
   originalWord: WordAtPosition;
   newWord: string;
 }
 
+const textChanged = (onTextChanged: (text: string) => void) => {
+  return EditorView.updateListener.of((update) => {
+    if (update.docChanged) {
+      onTextChanged(update.state.doc.toString());
+    }
+  });
+};
+
+const fileDropped = (onFileDropped: (item: DataTransferItem | File) => void) =>
+  EditorView.domEventHandlers({
+    drop: (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      if (
+        event.dataTransfer?.items?.length > 0 ||
+        event.dataTransfer?.files?.length > 0
+      ) {
+        onFileDropped(
+          event.dataTransfer?.items?.[0] || event.dataTransfer?.files?.[0]
+        );
+      }
+    },
+  });
+
+const useReconfigurableExtension = (
+  view: EditorView,
+  compartment: Compartment,
+  extension: Extension
+) => {
+  useEffect(() => {
+    if (!view) {
+      return;
+    }
+    view.dispatch({
+      effects: compartment.reconfigure(extension),
+    });
+  }, [view, compartment, extension]);
+};
+
 export interface CodeMirrorEditorProps {
+  text: string;
+  container: HTMLDivElement;
   font: string;
-  onEditorMounted: (view: EditorView) => void;
-  onWordSelected?: (word: WordAtPosition) => void;
-  wordReplacement?: WordReplacement;
-  onDefaultConfigReady?: (state: EditorStateConfig) => void;
-  onTextChanged?: (text: string) => void;
-  onFileDropped?: (view: EditorView, item: DataTransferItem | File) => void;
+  onWordSelected: (word: WordAtPosition) => void;
+  onTextChanged: (text: string) => void;
+  onFileDropped: (item: DataTransferItem | File) => void;
 }
 
-export function CodeMirrorEditor(props: CodeMirrorEditorProps) {
-  const ref = useRef<HTMLDivElement>();
+export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const [view, setView] = useState<EditorView>(null);
+
   const appTheme = useTheme();
   const themeCompartment = useMemo(() => new Compartment(), []);
+  const textCompartment = useMemo(() => new Compartment(), []);
+  const selectionCompartment = useMemo(() => new Compartment(), []);
+  const fileDroppedCompartment = useMemo(() => new Compartment(), []);
+
+  const themeExtension = useMemo(
+    () => editorTheme(appTheme, props.font),
+    [appTheme, props.font]
+  );
+  const textChangedExtension = useMemo(
+    () => textChanged(props.onTextChanged),
+    [props.onTextChanged]
+  );
+  const selectionExtension = useMemo(
+    () => wordSelection(props.onWordSelected),
+    [props.onWordSelected]
+  );
+  const fileDroppedExtension = useMemo(
+    () => fileDropped(props.onFileDropped),
+    [props.onFileDropped]
+  );
+
+  /*
+  When the view gets its state set explicitly set (like it does when its first
+  created and whenever we need to clear the undo state), this is used to provide
+  default extensions. This is not used for "transactional" updates, like prop
+  changes. Only when view.setState is called.
+  
+  This still needs to be kept up to date on prop changes because we never know
+  when a new state update is going to happen. In order to reconfigure (i.e.,
+  recreate) an extension due to prop changes, rely on useReconfigurableExtension
+  instead.
+   */
   const defaultConfig = useMemo<EditorStateConfig>(
     () => ({
       extensions: [
         syllableCounts(),
-        themeCompartment.of(editorTheme(appTheme, props.font)),
         history(),
-        wordSelection({
-          onWordSelected: props.onWordSelected,
-        }),
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged || update.state === update.startState) {
-            props.onTextChanged(update.state.doc.toString());
-          }
-        }),
         EditorView.lineWrapping,
         placeholder('Type out some lyrics...'),
-        EditorView.domEventHandlers({
-          drop: (event, editorView) => {
-            event.stopPropagation();
-            event.preventDefault();
-            if (
-              event.dataTransfer?.items?.length > 0 ||
-              event.dataTransfer?.files?.length > 0
-            ) {
-              props.onFileDropped(
-                editorView,
-                event.dataTransfer?.items?.[0] || event.dataTransfer?.files?.[0]
-              );
-            }
-          },
-        }),
+        themeCompartment.of(themeExtension),
+        textCompartment.of(textChangedExtension),
+        selectionCompartment.of(selectionExtension),
+        fileDroppedCompartment.of(fileDroppedExtension),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
       ],
     }),
-    [appTheme, props.onTextChanged, props.onFileDropped]
+    [
+      appTheme,
+      themeExtension,
+      textChangedExtension,
+      selectionExtension,
+      fileDroppedExtension,
+    ]
   );
+
   useEffect(() => {
-    if (defaultConfig) {
-      props.onDefaultConfigReady?.(defaultConfig);
-    }
-  }, [props.onDefaultConfigReady, defaultConfig]);
-  useEffect(() => {
-    if (!ref.current) {
+    if (!props.container) {
       return;
     }
 
-    if (!view) {
-      const newView = new EditorView({
-        parent: ref.current,
-      });
-      newView.setState(EditorState.create(defaultConfig));
-      setView(newView);
-    }
+    const newView = new EditorView({
+      parent: props.container,
+    });
+    newView.setState(
+      EditorState.create({
+        ...defaultConfig,
+        doc: props.text,
+      })
+    );
+    setView(newView);
 
     return () => {
-      if (!ref.current) {
-        view.destroy();
+      if (!props.container) {
         setView(null);
+        newView.destroy();
       }
     };
-  }, [view, setView]);
+  }, [props.container]);
+
   useEffect(() => {
-    if (view) {
-      props.onEditorMounted(view);
+    const currentText = view ? view.state.doc.toString() : '';
+    if (view && props.text !== currentText) {
+      view.dispatch({
+        changes: { from: 0, to: currentText.length, insert: props.text || '' },
+      });
     }
-  }, [view, props.onEditorMounted]);
+  }, [props.text, view]);
+
+  useReconfigurableExtension(view, themeCompartment, themeExtension);
+  useReconfigurableExtension(view, textCompartment, textChangedExtension);
+  useReconfigurableExtension(view, selectionCompartment, selectionExtension);
+  useReconfigurableExtension(
+    view,
+    fileDroppedCompartment,
+    fileDroppedExtension
+  );
+
   useEffect(() => {
-    if (!view) {
+    if (!props.container) {
       return;
     }
-    view.dispatch({
-      effects: themeCompartment.reconfigure(editorTheme(appTheme, props.font)),
-    });
-  }, [view, appTheme, props.font]);
-  useEffect(() => {
-    if (!view || !props.wordReplacement) {
-      return;
-    }
-    const {
-      originalWord: { from, to },
-      newWord: insert,
-    } = props.wordReplacement;
-    const changes = view.state.changes({
-      from: Math.max(0, from),
-      to: Math.min(to, view.state.doc.length),
-      insert,
-    });
-    const selection = EditorSelection.cursor(
-      changes.mapPos(Math.min(to, view.state.doc.length))
-    );
-    view.dispatch({
-      changes,
-      selection,
-    });
-  }, [view, props.wordReplacement, props.onWordSelected]);
-  useEffect(() => {
-    Array.from(ref.current.getElementsByClassName('cm-content')).forEach(
+
+    Array.from(props.container.getElementsByClassName('cm-content')).forEach(
       (element) => {
         element.setAttribute('spellcheck', 'on');
         element.setAttribute('autocorrect', 'on');
         element.setAttribute('autocapitalize', 'on');
       }
     );
-  }, [ref]);
-  return <EditorContainer ref={ref} />;
-}
+  }, [props.container]);
+
+  const resetHistory = useCallback(
+    () =>
+      view?.setState(EditorState.create({ ...defaultConfig, doc: props.text })),
+    [view, props.text]
+  );
+  const undo = useCallback(() => undoTextChange(view), [view]);
+  const redo = useCallback(() => redoTextChange(view), [view]);
+  const openFindReplaceDialog = useCallback(
+    () => openSearchPanel(view),
+    [view]
+  );
+
+  return {
+    isModified: view?.state ? undoDepth(view.state) !== 0 : false,
+    resetHistory,
+    undo,
+    redo,
+    openFindReplaceDialog,
+  };
+};

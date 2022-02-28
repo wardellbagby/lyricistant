@@ -217,41 +217,42 @@ const HelperText = ({ text }: { text: string }) => {
   );
 };
 
-export const Rhymes: React.FC = () => {
+export interface RhymesProps {
+  query?: string;
+  onRhymeClicked: (rhyme: Rhyme) => void;
+}
+export const Rhymes: React.FC<RhymesProps> = (props) => {
   const [state, send] = useMachine(rhymesMachine);
 
-  const selectedWordStore = useSelectedWordStore();
   const handleError = useErrorHandler();
-  const selectedWord = useSelectedWords();
-  const selectedWordPosition = useSelectedWordPosition();
   const [hasMoreRhymes, setHasMoreRhymes] = useState(false);
   const [showMoreRhymes, setShowMoreRhymes] = useState(false);
 
-  const onRhymeClicked = useMemo(
-    () => (rhyme: Rhyme) =>
-      selectedWordStore.onWordReplaced({
-        originalWord: {
-          word: selectedWord,
-          from: selectedWordPosition[0],
-          to: selectedWordPosition[1],
-        },
-        newWord: rhyme.word,
-      }),
-    [selectedWord, selectedWordPosition]
-  );
+  // const onRhymeClicked = useMemo(
+  //   () => (rhyme: Rhyme) =>
+  //     selectedWordStore.onWordReplaced({
+  //       originalWord: {
+  //         word: selectedWord,
+  //         from: selectedWordPosition[0],
+  //         to: selectedWordPosition[1],
+  //       },
+  //       newWord: rhyme.word,
+  //     }),
+  //   [selectedWord, selectedWordPosition]
+  // );
 
   const [preferences] = useChannelData('prefs-updated');
 
   useLayoutEffect(() => {
-    if (!selectedWord || !preferences) {
+    if (!props.query || !preferences) {
       return;
     }
     send({
       type: 'INPUT',
-      input: selectedWord,
+      input: props.query,
       rhymeSource: preferences.rhymeSource,
     });
-  }, [selectedWord, preferences]);
+  }, [props.query, preferences]);
 
   useEffect(() => {
     if (state.matches('error')) {
@@ -283,17 +284,17 @@ export const Rhymes: React.FC = () => {
               />
             )
           }
-          onRhymeClicked={onRhymeClicked}
+          onRhymeClicked={props.onRhymeClicked}
         />
       )}
       <RhymeDrawer
         open={showMoreRhymes}
         rhymes={rhymes}
-        query={selectedWord}
+        query={props.query}
         onClose={() => setShowMoreRhymes(false)}
         onRhymeClicked={(rhyme) => {
           setShowMoreRhymes(false);
-          onRhymeClicked(rhyme);
+          props.onRhymeClicked(rhyme);
         }}
       />
     </Box>

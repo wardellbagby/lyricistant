@@ -13,7 +13,9 @@ const editorText = new BehaviorSubject<string>(null);
 const editorTextStore = {
   editorText: (subscriber: (text: string) => void): Subscription =>
     editorText.pipe(distinctUntilChanged()).subscribe(subscriber),
-  onEditorText: (text: string) => editorText.next(text),
+  onEditorText: (text: string) => {
+    editorText.next(text);
+  },
 };
 
 const EditorTextStoreContext = createContext(editorTextStore);

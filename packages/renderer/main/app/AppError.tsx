@@ -10,18 +10,18 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
-import { useEditorText } from '@lyricistant/renderer/editor/EditorTextStore';
 
 interface AppErrorProps {
   error: Error;
+  editorText: string;
 }
-export function AppError({ error }: AppErrorProps) {
+export function AppError({ error, editorText }: AppErrorProps) {
   const onClose = useCallback(() => window.location.reload(), []);
   const onCopy = useCallback(
     () => window.navigator.clipboard.writeText(editorText),
     []
   );
-  const editorText = useEditorText();
+
   useEffect(() => {
     logger.error('Error in renderer', error);
   }, [error]);
@@ -58,7 +58,7 @@ export function AppError({ error }: AppErrorProps) {
       </Box>
       <DialogActions>
         <Button variant={'contained'} onClick={onCopy}>
-          Copy
+          Copy Lyrics
         </Button>
         <Button variant={'contained'} onClick={onClose}>
           Reload

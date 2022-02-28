@@ -4,7 +4,10 @@ import { configure, fireEvent, screen } from '@testing-library/dom';
 import { fake, replace, restore, SinonSpy, spy, stub } from 'sinon';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
-import { Editor } from '@lyricistant/renderer/editor/Editor';
+import {
+  Editor as RealEditor,
+  EditorProps,
+} from '@lyricistant/renderer/editor/Editor';
 import { PlatformFile } from '@lyricistant/common/files/Files';
 import { EditorView } from '@codemirror/view';
 import { Text } from '@codemirror/state';
@@ -24,6 +27,18 @@ const droppedFile: PlatformFile = {
   data: new TextEncoder().encode('Oh wow!').buffer,
 };
 
+const Editor = (props: Partial<EditorProps>) => {
+  return (
+    <Editor
+      onWordSelected={() => undefined}
+      onModificationStateChanged={() => undefined}
+      onTextChange={() => undefined}
+      value={{ isTransactional: false, text: '' }}
+      {...props}
+    />
+  );
+};
+
 describe('Editor component', function () {
   let platformDelegate: MockPlatformDelegate;
   let setState: SinonSpy;
@@ -37,28 +52,6 @@ describe('Editor component', function () {
         return error;
       },
     });
-    const CodeMirrorEditor =
-      require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor;
-    replace(
-      require('@lyricistant/codemirror/CodeMirror'),
-      'CodeMirrorEditor',
-      (props: CodeMirrorEditorProps) => {
-        const onEditorMounted = props.onEditorMounted;
-        const newProps = useMemo(
-          () => ({
-            ...props,
-            onEditorMounted: (view: EditorView) => {
-              setState = spy(view, 'setState');
-              dispatch = spy(view, 'dispatch');
-              onEditorMounted(view);
-            },
-          }),
-          [props.onEditorMounted]
-        );
-        return CodeMirrorEditor(newProps);
-      }
-    );
-    fake(require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor);
     platformDelegate = new MockPlatformDelegate();
 
     window.platformDelegate = platformDelegate;
@@ -95,19 +88,6 @@ describe('Editor component', function () {
         droppedFile
       )
     );
-  });
-
-  it('handles files being saved', async () => {
-    render(<Editor />);
-
-    await waitFor(() =>
-      platformDelegate.invoke('file-save-ended', undefined, 'apath.txt')
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('apath.txt saved')).to.exist;
-      expect(setState).to.have.been.called;
-    });
   });
 
   it("handles the platform checking if file is modified when it isn't", async () => {

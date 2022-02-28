@@ -8,13 +8,12 @@ export interface WordAtPosition {
   word: string;
 }
 
-export interface WordSelectionConfig {
-  onWordSelected: (word: WordAtPosition) => void;
-}
-export const wordSelection = (config: WordSelectionConfig) => [
+export const wordSelection = (
+  onWordSelected: (word: WordAtPosition) => void
+) => [
   EditorView.updateListener.of((update) => {
     if (update.selectionSet) {
-      config.onWordSelected(
+      onWordSelected(
         findWordAt(update.state.doc, update.state.selection.asSingle().main)
       );
     }

@@ -58,37 +58,32 @@ setupAnalytics();
 const container: HTMLElement = document.getElementById('app');
 
 ReactDOM.render(
-  <ErrorBoundary fallbackRender={({ error }) => <AppError error={error} />}>
-    <PlatformEventsReadyHandler>
-      <Themed
-        onThemeChanged={(palette) => {
-          document.body.style.backgroundColor = palette.background;
-          document.body.style.color = palette.primaryText;
-          onThemeUpdated(palette);
-        }}
-        onThemeReady={() => {
-          onPageLoaded();
-          container.style.opacity = '100%';
+  <PlatformEventsReadyHandler>
+    <Themed
+      onThemeChanged={(palette) => {
+        document.body.style.backgroundColor = palette.background;
+        document.body.style.color = palette.primaryText;
+        onThemeUpdated(palette);
+      }}
+      onThemeReady={() => {
+        onPageLoaded();
+        container.style.opacity = '100%';
+      }}
+    >
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
         }}
       >
-        <SnackbarProvider
-          maxSnack={3}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-        >
-          <SupportedBrowserWarning>
-            <HashRouter hashType={'noslash'}>
-              {/* TODO replace this with a true way of storing editor state */}
-              <EditorTextStore>
-                <App />
-              </EditorTextStore>
-            </HashRouter>
-          </SupportedBrowserWarning>
-        </SnackbarProvider>
-      </Themed>
-    </PlatformEventsReadyHandler>
-  </ErrorBoundary>,
+        <SupportedBrowserWarning>
+          <HashRouter hashType={'noslash'}>
+            <App />
+          </HashRouter>
+        </SupportedBrowserWarning>
+      </SnackbarProvider>
+    </Themed>
+  </PlatformEventsReadyHandler>,
   container
 );
