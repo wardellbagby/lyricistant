@@ -1,18 +1,16 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { waitFor } from '@testing-library/react';
 import { configure, fireEvent, screen } from '@testing-library/dom';
-import { fake, replace, restore, SinonSpy, spy, stub } from 'sinon';
+import { restore, stub } from 'sinon';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
-import { Editor } from '@lyricistant/renderer/editor/Editor';
-import { PlatformFile } from '@lyricistant/common/files/Files';
-import { EditorView } from '@codemirror/view';
-import { Text } from '@codemirror/state';
 import {
-  CodeMirrorEditorProps,
-  WordReplacement,
-} from '@lyricistant/codemirror/CodeMirror';
-import { render as render } from './Wrappers';
+  Editor as RealEditor,
+  EditorProps,
+} from '@lyricistant/renderer/editor/Editor';
+import { PlatformFile } from '@lyricistant/common/files/Files';
+import userEvent from '@testing-library/user-event';
+import { render as render, wait } from './Wrappers';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 
@@ -24,10 +22,18 @@ const droppedFile: PlatformFile = {
   data: new TextEncoder().encode('Oh wow!').buffer,
 };
 
+const Editor = (props: Partial<EditorProps>) => (
+  <RealEditor
+    onTextSelected={() => undefined}
+    onModificationStateChanged={() => undefined}
+    onTextChanged={() => undefined}
+    value={{ isTransactional: false, text: '' }}
+    {...props}
+  />
+);
+
 describe('Editor component', function () {
   let platformDelegate: MockPlatformDelegate;
-  let setState: SinonSpy;
-  let dispatch: SinonSpy;
 
   beforeEach(async () => {
     configure({
@@ -37,28 +43,6 @@ describe('Editor component', function () {
         return error;
       },
     });
-    const CodeMirrorEditor =
-      require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor;
-    replace(
-      require('@lyricistant/codemirror/CodeMirror'),
-      'CodeMirrorEditor',
-      (props: CodeMirrorEditorProps) => {
-        const onEditorMounted = props.onEditorMounted;
-        const newProps = useMemo(
-          () => ({
-            ...props,
-            onEditorMounted: (view: EditorView) => {
-              setState = spy(view, 'setState');
-              dispatch = spy(view, 'dispatch');
-              onEditorMounted(view);
-            },
-          }),
-          [props.onEditorMounted]
-        );
-        return CodeMirrorEditor(newProps);
-      }
-    );
-    fake(require('@lyricistant/codemirror/CodeMirror').CodeMirrorEditor);
     platformDelegate = new MockPlatformDelegate();
 
     window.platformDelegate = platformDelegate;
@@ -97,200 +81,109 @@ describe('Editor component', function () {
     );
   });
 
-  it('handles files being saved', async () => {
-    render(<Editor />);
-
-    await waitFor(() =>
-      platformDelegate.invoke('file-save-ended', undefined, 'apath.txt')
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('apath.txt saved')).to.exist;
-      expect(setState).to.have.been.called;
-    });
-  });
-
-  it("handles the platform checking if file is modified when it isn't", async () => {
-    stub(require('@codemirror/history'), 'undoDepth').returns(0);
-
-    render(<Editor />);
-
-    await waitFor(() => platformDelegate.invoke('check-file-modified'));
-
-    await waitFor(() => {
-      expect(platformDelegate.send).to.have.been.calledWith(
-        'is-file-modified',
-        false
-      );
-    });
-  });
-
-  it('handles the platform checking if file is modified when user has made edits', async () => {
-    stub(require('@codemirror/history'), 'undoDepth').returns(1);
-
-    render(<Editor />);
-
-    await waitFor(() => platformDelegate.invoke('check-file-modified'));
-
-    await waitFor(() => {
-      expect(platformDelegate.send).to.have.been.calledWith(
-        'is-file-modified',
-        true
-      );
-    });
-  });
-
-  it('handles the platform having created a new file', async () => {
-    render(<Editor />);
-
-    await waitFor(() => platformDelegate.invoke('new-file-created'));
-
-    await waitFor(() => expect(setState).to.have.been.called);
-  });
-
-  it('handles the platform having opened a file', async () => {
-    render(<Editor />);
-
-    await waitFor(() =>
-      platformDelegate.invoke('file-opened', null, 'Oh wow!', true)
-    );
-
-    expect(setState).to.have.been.calledWithMatch({
-      doc: Text.of(['Oh wow!']),
-    });
-  });
-
-  it('handles the platform having opened a file but does not clear history', async () => {
-    render(<Editor />);
-    dispatch({ changes: { from: 0, to: 0, insert: 'Hello' } });
-
-    await waitFor(() =>
-      platformDelegate.invoke('file-opened', null, 'Oh wow!', false)
-    );
-
-    expect(dispatch).to.have.been.calledWithMatch({
-      changes: {
-        from: 0,
-        to: 5,
-        insert: 'Oh wow!',
-      },
-    });
-  });
-
-  it('handles the platform asking for the editor text', async () => {
-    render(<Editor />);
-    dispatch({ changes: { from: 0, to: 0, insert: 'Hello' } });
-
-    await waitFor(() => platformDelegate.invoke('request-editor-text'));
-
-    await waitFor(() =>
-      expect(platformDelegate.send).to.have.been.calledWith(
-        'editor-text',
-        'Hello'
-      )
-    );
-  });
-
   it('handles the platform trying to undo', async () => {
-    const undo = spy(require('@codemirror/history'), 'undo');
-
     render(<Editor />);
 
-    await waitFor(() => platformDelegate.invoke('undo'));
+    const editor = await screen.findByRole('textbox');
+    await userEvent.type(editor, 'you got bamboozled');
+    await expect(screen.getByText('you got bamboozled')).to.exist;
 
-    await waitFor(() => expect(undo).to.have.been.called);
+    await wait(1000);
+
+    await userEvent.clear(editor);
+    await userEvent.type(editor, 'mozambique here');
+    await expect(screen.getByText('mozambique here')).to.exist;
+
+    await wait(1000);
+
+    // userEvent doesn't let you specify where you typed at, so we clear the
+    // editor then type a new phrase. This means the first undo takes us back to
+    // clear, and the second gives us back the original phrase.
+    await platformDelegate.invoke('undo');
+    await platformDelegate.invoke('undo');
+
+    await expect(screen.getByText('you got bamboozled')).to.exist;
   });
 
   it('handles the platform trying to redo', async () => {
-    const redo = spy(require('@codemirror/history'), 'redo');
-
     render(<Editor />);
 
-    await waitFor(() => platformDelegate.invoke('redo'));
+    const editor = await screen.findByRole('textbox');
+    await userEvent.type(editor, 'you got bamboozled');
+    await expect(screen.getByText('you got bamboozled')).to.exist;
 
-    await waitFor(() => expect(redo).to.have.been.called);
+    await wait(1000);
+
+    await userEvent.clear(editor);
+    await userEvent.type(editor, 'mozambique here');
+    await expect(screen.getByText('mozambique here')).to.exist;
+
+    await wait(1000);
+
+    // userEvent doesn't let you specify where you typed at, so we clear the
+    // editor then type a new phrase. This means the first undo takes us back to
+    // clear, and the second gives us back the original phrase.
+    await platformDelegate.invoke('undo');
+    await platformDelegate.invoke('undo');
+
+    await expect(screen.getByText('you got bamboozled')).to.exist;
+
+    await platformDelegate.invoke('redo');
+    await platformDelegate.invoke('redo');
+
+    expect(screen.getByText('mozambique here')).to.exist;
   });
 
   it('handles the platform trying to perform a search', async () => {
-    const openSearchPanel = spy(
-      require('@codemirror/search'),
-      'openSearchPanel'
-    );
-
     render(<Editor />);
 
-    await waitFor(() => platformDelegate.invoke('find'));
+    expect(screen.queryByPlaceholderText('Find')).to.not.exist;
+    expect(screen.queryByPlaceholderText('Replace')).to.not.exist;
 
-    await waitFor(() => expect(openSearchPanel).to.have.been.called);
+    await platformDelegate.invoke('find');
+
+    expect(screen.getByPlaceholderText('Find')).to.exist;
+    expect(screen.getByPlaceholderText('Replace')).to.exist;
   });
 
   it('handles the platform trying to perform a replace', async () => {
-    const openSearchPanel = spy(
-      require('@codemirror/search'),
-      'openSearchPanel'
-    );
-
     render(<Editor />);
 
-    await waitFor(() => platformDelegate.invoke('replace'));
+    expect(screen.queryByPlaceholderText('Find')).to.not.exist;
+    expect(screen.queryByPlaceholderText('Replace')).to.not.exist;
 
-    await waitFor(() => expect(openSearchPanel).to.have.been.called);
+    await platformDelegate.invoke('replace');
+
+    expect(screen.getByPlaceholderText('Find')).to.exist;
+    expect(screen.getByPlaceholderText('Replace')).to.exist;
   });
 
-  it('passes the selected word store into codemirror', async () => {
-    const CodeMirrorEditor = spy(
-      require('@lyricistant/codemirror/CodeMirror'),
-      'CodeMirrorEditor'
-    );
+  it('updates the selected word', async () => {
     const onWordSelected = stub();
-    stub(
-      require('@lyricistant/renderer/editor/SelectedWordStore'),
-      'useSelectedWordStore'
-    ).returns({
-      onWordSelected,
-    });
-    stub(
-      require('@lyricistant/renderer/editor/SelectedWordStore'),
-      'useSelectedWords'
-    );
-    stub(
-      require('@lyricistant/renderer/editor/SelectedWordStore'),
-      'useReplacedWords'
-    );
 
-    render(<Editor />);
+    render(<Editor onTextSelected={onWordSelected} />);
 
-    await waitFor(() => {
-      expect(CodeMirrorEditor).to.have.been.calledWithMatch({
-        onWordSelected,
-      });
+    const editor = await screen.findByRole('textbox');
+    await userEvent.type(editor, 'ziplock');
+
+    expect(screen.getByText('ziplock')).to.exist;
+    expect(onWordSelected).to.have.been.calledWith({
+      from: 0,
+      to: 7,
+      text: 'ziplock',
     });
   });
 
-  it('passes the replaced word into codemirror', async () => {
-    const CodeMirrorEditor = spy(
-      require('@lyricistant/codemirror/CodeMirror'),
-      'CodeMirrorEditor'
+  it('shows the text from props', async () => {
+    render(
+      <Editor
+        value={{
+          text: "I'm willing to bet it all",
+          isTransactional: false,
+        }}
+      />
     );
-    const wordReplacement: WordReplacement = {
-      originalWord: {
-        from: 0,
-        to: 5,
-        word: 'hello',
-      },
-      newWord: 'world',
-    };
-    stub(
-      require('@lyricistant/renderer/editor/SelectedWordStore'),
-      'useReplacedWords'
-    ).returns(wordReplacement);
 
-    render(<Editor />);
-
-    await waitFor(() =>
-      expect(CodeMirrorEditor).to.have.been.calledWithMatch({
-        wordReplacement,
-      })
-    );
+    expect(screen.getByText("I'm willing to bet it all")).to.exist;
   });
 });

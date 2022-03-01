@@ -1,4 +1,4 @@
-import { findWordAt } from '@lyricistant/codemirror/wordSelection';
+import { findWordAt } from '@lyricistant/codemirror/textSelection';
 import { Text } from '@codemirror/text';
 import { expect } from 'chai';
 import { EditorSelection } from '@codemirror/state';
@@ -8,7 +8,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 0,
       to: 5,
-      word: 'Hello',
+      text: 'Hello',
     };
     const actual = findWordAt(Text.of(['Hello']), EditorSelection.cursor(0));
     expect(expected).to.deep.equal(actual);
@@ -18,7 +18,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 0,
       to: 5,
-      word: 'Hello',
+      text: 'Hello',
     };
     const actual = findWordAt(Text.of(['Hello']), EditorSelection.cursor(5));
     expect(expected).to.deep.equal(actual);
@@ -28,7 +28,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 0,
       to: 5,
-      word: 'Hello',
+      text: 'Hello',
     };
     const actual = findWordAt(Text.of(['Hello']), EditorSelection.cursor(3));
     expect(expected).to.deep.equal(actual);
@@ -38,7 +38,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 1,
       to: 6,
-      word: 'Hello',
+      text: 'Hello',
     };
     const actual = findWordAt(
       Text.of(['', 'Hello']),
@@ -51,7 +51,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 1,
       to: 6,
-      word: 'Hello',
+      text: 'Hello',
     };
     const actual = findWordAt(
       Text.of(['', 'Hello']),
@@ -64,7 +64,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 1,
       to: 6,
-      word: 'Hello',
+      text: 'Hello',
     };
     const actual = findWordAt(
       Text.of(['', 'Hello']),
@@ -77,7 +77,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 3,
       to: 8,
-      word: 'Hello',
+      text: 'Hello',
     };
     const actual = findWordAt(
       Text.of(['', '  Hello']),
@@ -90,7 +90,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 3,
       to: 8,
-      word: 'Hello',
+      text: 'Hello',
     };
     const actual = findWordAt(
       Text.of(['', '  Hello']),
@@ -103,7 +103,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 2,
       to: 8,
-      word: 'do-nut',
+      text: 'do-nut',
     };
     const actual = findWordAt(
       Text.of(['I do-nut wanna.']),
@@ -116,7 +116,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 2,
       to: 8,
-      word: 'do-nut',
+      text: 'do-nut',
     };
     const actual = findWordAt(
       Text.of(['I do-nut wanna.']),
@@ -129,7 +129,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 2,
       to: 7,
-      word: "don't",
+      text: "don't",
     };
     const actual = findWordAt(
       Text.of(["I don't wanna."]),
@@ -142,7 +142,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 2,
       to: 7,
-      word: "don't",
+      text: "don't",
     };
     const actual = findWordAt(
       Text.of(["I don't wanna."]),
@@ -155,7 +155,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 48,
       to: 52,
-      word: 'know',
+      text: 'know',
     };
     const actual = findWordAt(
       Text.of([
@@ -174,7 +174,7 @@ describe('Word Selection', () => {
     const expected = {
       from: 44,
       to: 52,
-      word: 'you know',
+      text: 'you know',
     };
     const actual = findWordAt(
       Text.of([

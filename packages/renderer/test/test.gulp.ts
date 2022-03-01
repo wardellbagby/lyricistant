@@ -7,6 +7,14 @@ const argv = parser(process.argv.slice(2), { boolean: ['headless'] });
 export const testRenderer = async () => {
   const { headless, watch } = { headless: true, watch: false, ...argv };
   const browser = headless ? 'ChromeHeadless' : 'Chrome';
+  let timeout;
+  if (process.env.CI) {
+    timeout = 60_000;
+  } else if (watch) {
+    timeout = 300_000;
+  } else {
+    timeout = 30_000;
+  }
 
   const rawConfig: ConfigOptions = {
     basePath: __dirname,
@@ -29,7 +37,7 @@ export const testRenderer = async () => {
     client: {
       mocha: {
         reporter: 'html',
-        timeout: process.env.CI ? '60000' : '3000',
+        timeout,
       },
     },
     browserDisconnectTolerance: process.env.CI ? 30 : 0,

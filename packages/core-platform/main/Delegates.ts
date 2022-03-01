@@ -79,7 +79,7 @@ export class ListenerManager {
     listener: (...args: any[]) => void
   ): void {
     const registeredListeners = this.getListeners(channel);
-    registeredListeners.splice(registeredListeners.indexOf(listener));
+    registeredListeners.splice(registeredListeners.indexOf(listener), 1);
 
     this.listeners.set(channel, registeredListeners);
   }

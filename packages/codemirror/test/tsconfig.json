@@ -1,7 +1,7 @@
 {
-  "include": ["**/*.spec.ts"],
+  "include": ["**/*.spec.ts", "../main/*"],
   "compilerOptions": {
-    "types": ["jest"]
+    "types": ["mocha"]
   },
   "extends": "../tsconfig.json"
 }

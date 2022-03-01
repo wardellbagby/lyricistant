@@ -1,16 +1,11 @@
-import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
-import { CodeMirrorEditor } from '@lyricistant/codemirror/CodeMirror';
-import { EditorView } from '@codemirror/view';
-import { redo, undo, undoDepth } from '@codemirror/history';
-import { EditorState, EditorStateConfig } from '@codemirror/state';
-import { openSearchPanel } from '@codemirror/search';
+import { useCodeMirror } from '@lyricistant/codemirror/CodeMirror';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { Font } from '@lyricistant/common/preferences/PreferencesData';
+import { styled } from '@mui/material';
+import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { toPlatformFile } from './to-platform-file';
-import { useReplacedWords, useSelectedWordStore } from './SelectedWordStore';
-import { useEditorTextStore } from './EditorTextStore';
 
 const fontFamily = (font?: Font) => {
   switch (font) {
@@ -20,138 +15,101 @@ const fontFamily = (font?: Font) => {
       return 'Roboto Mono';
   }
 };
-export const Editor: React.FC = () => {
-  const [editor, setEditor] = useState<EditorView>(null);
-  const [defaultConfig, setDefaultConfig] = useState<EditorStateConfig>(null);
-  const [themeData] = useChannelData('theme-updated');
-  const onFileDropped = useCallback(
-    (view: EditorView, item: DataTransferItem | File) => {
-      if (!view) {
-        logger.debug("Attempted to drop a file but editor wasn't set");
-        return;
-      }
-      logger.debug('Attempted to drop a file.');
-      toPlatformFile(item)
-        .then((file) => platformDelegate.send('open-file-attempt', file))
-        .catch((reason) => {
-          logger.error(reason);
-        });
-    },
-    []
-  );
+const EditorContainer = styled('div')({
+  height: '100%',
+  width: '100%',
+  paddingTop: '8px',
+});
 
-  useEffect(handleEditorEvents(editor, defaultConfig), [editor, defaultConfig]);
+export interface EditorTextData {
+  text: string;
+  /**
+   * Does this represent a change from the last text data, or should this be
+   * considered brand new?
+   *
+   * TODO This cannot be a good name...
+   */
+  isTransactional?: boolean;
+}
+
+export interface EditorProps {
+  value: EditorTextData;
+  onTextChanged: (value: EditorTextData) => void;
+  onTextSelected: (value: TextSelectionData) => void;
+  onModificationStateChanged: (isModified: boolean) => void;
+}
+
+export const Editor: React.FC<EditorProps> = (props) => {
+  const editor = useRef();
+  const [themeData] = useChannelData('theme-updated');
+  const onFileDropped = useCallback((item: DataTransferItem | File) => {
+    logger.debug('Attempted to drop a file.');
+    toPlatformFile(item)
+      .then((file) => platformDelegate.send('open-file-attempt', file))
+      .catch((reason) => {
+        logger.error(reason);
+      });
+  }, []);
+
+  const onTextChanged = useCallback((text: string) => {
+    props.onTextChanged({
+      text,
+      isTransactional: true,
+    });
+  }, []);
+  const {
+    isModified,
+    resetHistory,
+    redo,
+    undo,
+    openFindReplaceDialog,
+    setContainer,
+  } = useCodeMirror({
+    text: props.value.text,
+    onTextChanged,
+    onFileDropped,
+    onWordSelected: props.onTextSelected,
+    font: fontFamily(themeData?.font),
+  });
+
+  useEffect(() => {
+    if (editor.current) {
+      setContainer(editor.current);
+    }
+  }, [editor.current]);
+
+  useEffect(() => props.onModificationStateChanged(isModified), [isModified]);
+  useEffect(() => {
+    if (!props.value.isTransactional) {
+      resetHistory();
+    }
+  }, [props.value]);
+
+  useTextActionEvents(undo, redo, openFindReplaceDialog);
   useBeforeUnload(() => {
-    if (editor && undoDepth(editor.state) !== 0) {
+    if (isModified) {
       return "Are you sure you want to leave? Your changes haven't been saved.";
     }
   });
-  const store = useSelectedWordStore();
-  const { onEditorText } = useEditorTextStore();
-  return (
-    <CodeMirrorEditor
-      font={fontFamily(themeData?.font)}
-      onEditorMounted={setEditor}
-      onWordSelected={store.onWordSelected}
-      wordReplacement={useReplacedWords()}
-      onDefaultConfigReady={setDefaultConfig}
-      onTextChanged={onEditorText}
-      onFileDropped={onFileDropped}
-    />
-  );
+  return <EditorContainer ref={editor} />;
 };
 
-function handleEditorEvents(
-  editor: EditorView,
-  defaultConfig: EditorStateConfig
-) {
-  const { enqueueSnackbar } = useSnackbar();
-  return () => {
-    if (!editor) {
-      return;
-    }
-
-    const onCheckFileModified = () => {
-      platformDelegate.send('is-file-modified', undoDepth(editor.state) > 0);
-    };
-    platformDelegate.on('check-file-modified', onCheckFileModified);
-
-    const onFileSaveEnded = (error: any, path: string) => {
-      // Resets the undo stack.
-      editor.setState(
-        EditorState.create({
-          ...defaultConfig,
-          doc: editor.state.doc,
-        })
-      );
-
-      if (path) {
-        enqueueSnackbar(`${path} saved`, { variant: 'success' });
-      }
-    };
-    platformDelegate.on('file-save-ended', onFileSaveEnded);
-
-    const onNewFileCreated = () => {
-      editor.setState(EditorState.create(defaultConfig));
-    };
-    platformDelegate.on('new-file-created', onNewFileCreated);
-
-    const onFileOpened = (
-      error: Error,
-      fileContents: string,
-      clearHistory: boolean
-    ) => {
-      if (!error) {
-        if (clearHistory) {
-          editor.setState(
-            EditorState.create({
-              ...defaultConfig,
-              doc: fileContents,
-            })
-          );
-        } else {
-          editor.dispatch({
-            changes: {
-              from: 0,
-              to: editor.state.doc.length,
-              insert: fileContents,
-            },
-          });
-        }
-      }
-    };
-    platformDelegate.on('file-opened', onFileOpened);
-
-    const onTextRequested = () => {
-      platformDelegate.send('editor-text', editor.state.doc.toString());
-    };
-    platformDelegate.on('request-editor-text', onTextRequested);
-
-    const onUndo = () => undo(editor);
-    platformDelegate.on('undo', onUndo);
-
-    const onRedo = () => redo(editor);
-    platformDelegate.on('redo', onRedo);
-
-    const onFind = () => openSearchPanel(editor);
-    platformDelegate.on('find', onFind);
-
-    const onReplace = () => openSearchPanel(editor);
-    platformDelegate.on('replace', onReplace);
+const useTextActionEvents = (
+  undo: () => void,
+  redo: () => void,
+  openFindReplaceModal: () => void
+) => {
+  useEffect(() => {
+    platformDelegate.on('undo', undo);
+    platformDelegate.on('redo', redo);
+    platformDelegate.on('find', openFindReplaceModal);
+    platformDelegate.on('replace', openFindReplaceModal);
 
     return () => {
-      platformDelegate.removeListener(
-        'check-file-modified',
-        onCheckFileModified
-      );
-      platformDelegate.removeListener('file-save-ended', onFileSaveEnded);
-      platformDelegate.removeListener('new-file-created', onNewFileCreated);
-      platformDelegate.removeListener('file-opened', onFileOpened);
-      platformDelegate.removeListener('request-editor-text', onTextRequested);
-      platformDelegate.removeListener('undo', onUndo);
-      platformDelegate.removeListener('redo', onRedo);
-      platformDelegate.removeListener('find', onFind);
-      platformDelegate.removeListener('replace', onReplace);
+      platformDelegate.removeListener('undo', undo);
+      platformDelegate.removeListener('redo', redo);
+      platformDelegate.removeListener('find', openFindReplaceModal);
+      platformDelegate.removeListener('replace', openFindReplaceModal);
     };
-  };
-}
+  }, [undo, redo, openFindReplaceModal]);
+};

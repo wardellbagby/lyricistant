@@ -11,6 +11,11 @@ const add = (key: string, value: any, map: Map<string, any[]>) => {
   const currentValues = map.get(key) ?? [];
   map.set(key, [...currentValues, value]);
 };
+const remove = (key: string, value: any, map: Map<string, any[]>) => {
+  const currentValues = map.get(key) ?? [];
+  currentValues.splice(currentValues.indexOf(value), 1);
+  map.set(key, currentValues);
+};
 const invokeAll = async (
   key: string,
   args: any[],
@@ -44,6 +49,13 @@ export class RendererListeners {
     key: Channel,
     value: RendererToPlatformListener[Channel]
   ) => add(key, value, this.listeners);
+
+  public remove = <Channel extends PlatformChannel>(
+    key: Channel,
+    value: RendererToPlatformListener[Channel]
+  ) => {
+    remove(key, value, this.listeners);
+  };
 }
 
 export class PlatformListeners {
@@ -59,6 +71,13 @@ export class PlatformListeners {
     key: Channel,
     value: PlatformToRendererListener[Channel]
   ) => add(key, value, this.listeners);
+
+  public remove = <Channel extends RendererChannel>(
+    key: Channel,
+    value: PlatformToRendererListener[Channel]
+  ) => {
+    remove(key, value, this.listeners);
+  };
 }
 
 export class EventListeners {

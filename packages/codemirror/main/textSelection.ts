@@ -2,19 +2,18 @@ import { EditorView } from '@codemirror/view';
 import { Text } from '@codemirror/text';
 import { SelectionRange } from '@codemirror/state';
 
-export interface WordAtPosition {
+export interface TextSelectionData {
   from: number;
   to: number;
-  word: string;
+  text: string;
 }
 
-export interface WordSelectionConfig {
-  onWordSelected: (word: WordAtPosition) => void;
-}
-export const wordSelection = (config: WordSelectionConfig) => [
+export const textSelection = (
+  onTextSelected: (word: TextSelectionData) => void
+) => [
   EditorView.updateListener.of((update) => {
     if (update.selectionSet) {
-      config.onWordSelected(
+      onTextSelected(
         findWordAt(update.state.doc, update.state.selection.asSingle().main)
       );
     }
@@ -54,6 +53,6 @@ export const findWordAt = (document: Text, position: SelectionRange) => {
   return {
     from: start + line.from,
     to: end + line.from,
-    word: line.text.substring(start, end),
+    text: line.text.substring(start, end),
   };
 };

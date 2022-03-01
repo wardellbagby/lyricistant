@@ -1,5 +1,4 @@
-import webpack, { Configuration } from 'webpack';
-import packageInfo from '../../../package.json';
+import { Configuration } from 'webpack';
 
 export default (): Configuration => ({
   entry: {
@@ -14,11 +13,4 @@ export default (): Configuration => ({
     },
     chunkFilename: '[id].renderer.js',
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.APP_HOMEPAGE': JSON.stringify(packageInfo.homepage),
-      'process.env.APP_AUTHOR': JSON.stringify(packageInfo.author.name),
-      'process.env.IMPORT_META_URL': 'import.meta.url',
-    }),
-  ],
 });

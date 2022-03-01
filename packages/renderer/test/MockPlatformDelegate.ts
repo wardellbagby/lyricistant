@@ -18,7 +18,14 @@ export class MockPlatformDelegate implements PlatformDelegate {
     this.listeners.set(channel, listener);
     return this;
   };
-  public removeListener = (): this => this;
+  public removeListener = <Channel extends RendererChannel>(
+    channel: Channel,
+    listener: PlatformToRendererListener[Channel]
+  ): this => {
+    this.listeners.remove(channel, listener);
+    return this;
+  };
+
   public invoke = async <Channel extends RendererChannel>(
     key: Channel,
     ...args: Parameters<PlatformToRendererListener[Channel]>

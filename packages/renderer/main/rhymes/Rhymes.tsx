@@ -17,19 +17,14 @@ import React, {
 import { useErrorHandler } from 'react-error-boundary';
 import { useMachine } from '@xstate/react';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
-import {
-  useSelectedWordPosition,
-  useSelectedWords,
-  useSelectedWordStore,
-} from '@lyricistant/renderer/editor/SelectedWordStore';
 import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_feather.svg';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { DotsVertical } from 'mdi-material-ui';
-import useResizeObserver from 'use-resize-observer';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
 import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
 import { ExpandMore } from '@mui/icons-material';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
+import useResizeObserver from 'use-resize-observer';
 import { Rhyme } from './rhyme';
 
 const useRhymeListStyles = makeStyles<
@@ -129,6 +124,7 @@ const RhymesList = ({
     rhymeWidth,
     rhymes,
     isSmallLayout,
+    onRhymeClicked,
   ]);
 
   useEffect(() => {
@@ -217,41 +213,30 @@ const HelperText = ({ text }: { text: string }) => {
   );
 };
 
-export const Rhymes: React.FC = () => {
+export interface RhymesProps {
+  query?: string;
+  onRhymeClicked: (rhyme: Rhyme) => void;
+}
+
+export const Rhymes: React.FC<RhymesProps> = (props) => {
   const [state, send] = useMachine(rhymesMachine);
 
-  const selectedWordStore = useSelectedWordStore();
   const handleError = useErrorHandler();
-  const selectedWord = useSelectedWords();
-  const selectedWordPosition = useSelectedWordPosition();
   const [hasMoreRhymes, setHasMoreRhymes] = useState(false);
   const [showMoreRhymes, setShowMoreRhymes] = useState(false);
-
-  const onRhymeClicked = useMemo(
-    () => (rhyme: Rhyme) =>
-      selectedWordStore.onWordReplaced({
-        originalWord: {
-          word: selectedWord,
-          from: selectedWordPosition[0],
-          to: selectedWordPosition[1],
-        },
-        newWord: rhyme.word,
-      }),
-    [selectedWord, selectedWordPosition]
-  );
 
   const [preferences] = useChannelData('prefs-updated');
 
   useLayoutEffect(() => {
-    if (!selectedWord || !preferences) {
+    if (!props.query || !preferences) {
       return;
     }
     send({
       type: 'INPUT',
-      input: selectedWord,
+      input: props.query,
       rhymeSource: preferences.rhymeSource,
     });
-  }, [selectedWord, preferences]);
+  }, [props.query, preferences]);
 
   useEffect(() => {
     if (state.matches('error')) {
@@ -283,17 +268,17 @@ export const Rhymes: React.FC = () => {
               />
             )
           }
-          onRhymeClicked={onRhymeClicked}
+          onRhymeClicked={props.onRhymeClicked}
         />
       )}
       <RhymeDrawer
         open={showMoreRhymes}
         rhymes={rhymes}
-        query={selectedWord}
+        query={props.query}
         onClose={() => setShowMoreRhymes(false)}
         onRhymeClicked={(rhyme) => {
           setShowMoreRhymes(false);
-          onRhymeClicked(rhyme);
+          props.onRhymeClicked(rhyme);
         }}
       />
     </Box>

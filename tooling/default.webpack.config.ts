@@ -80,12 +80,13 @@ export default (
     plugins: [
       new webpack.DefinePlugin({
         'process.env.UI_TESTING': JSON.stringify(
-          mode === 'test' ? 'ui-testing' : ''
+          mode === 'test' || platformName === 'Test'
         ),
         'process.env.APP_VERSION': JSON.stringify(getAppVersion()),
         'process.env.APP_HOMEPAGE': JSON.stringify(packageInfo.homepage),
         'process.env.APP_AUTHOR': JSON.stringify(packageInfo.author.name),
         'process.env.APP_PLATFORM': JSON.stringify(platformName),
+        'process.env.IMPORT_META_URL': 'import.meta.url',
       }),
     ],
   };

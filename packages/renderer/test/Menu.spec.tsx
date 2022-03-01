@@ -40,7 +40,7 @@ describe('Menu component', () => {
     render(<Menu onNewClicked={onNewClicked} />);
 
     const element = screen.getByRole('button', { name: 'New File' });
-    userEvent.click(element);
+    await userEvent.click(element);
 
     await waitFor(() => expect(onNewClicked).to.have.been.called);
   });
@@ -59,7 +59,7 @@ describe('Menu component', () => {
     const element = await waitFor(() =>
       screen.getByRole('button', { name: 'Open File' })
     );
-    userEvent.click(element);
+    await userEvent.click(element);
 
     await waitFor(() => expect(onOpenClicked).to.have.been.called);
   });
@@ -71,7 +71,7 @@ describe('Menu component', () => {
     const element = await waitFor(() =>
       screen.getByRole('button', { name: 'Save File' })
     );
-    userEvent.click(element);
+    await userEvent.click(element);
 
     await waitFor(() => expect(onSaveClicked).to.have.been.called);
   });
@@ -83,7 +83,7 @@ describe('Menu component', () => {
     const element = await waitFor(() =>
       screen.getByRole('button', { name: 'Open Preferences' })
     );
-    userEvent.click(element);
+    await userEvent.click(element);
 
     await waitFor(() => expect(onPreferencesClicked).to.have.been.called);
   });
@@ -103,7 +103,7 @@ describe('Menu component', () => {
     const element = await waitFor(() =>
       screen.getByRole('button', { name: 'Download Lyricistant' })
     );
-    userEvent.click(element);
+    await userEvent.click(element);
 
     await waitFor(() => expect(onDownloadClicked).to.have.been.called);
   });

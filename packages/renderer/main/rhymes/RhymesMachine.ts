@@ -2,14 +2,25 @@ import { assign, createMachine, EventObject } from 'xstate';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
 import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
+import { isUiTest } from '@lyricistant/common/BuildModes';
 
 type generateRhymes =
   typeof import('@lyricistant/rhyme-generator')['rhymeGenerator']['generateRhymes'];
 
-const offlineRhymes = (...args: Parameters<generateRhymes>) =>
-  import('@lyricistant/rhyme-generator').then((value) =>
-    value.rhymeGenerator.generateRhymes(...args)
-  );
+const offlineRhymes = (...args: Parameters<generateRhymes>) => {
+  // TODO Replace with an actual system for mocking out rhymes in ui tests.
+  if (isUiTest) {
+    return Promise.resolve([
+      { word: 'Test Rhyme 1', score: 100 },
+      { word: 'Test Rhyme 2', score: 99 },
+      { word: 'Test Rhyme 3', score: 98 },
+    ]);
+  } else {
+    return import('@lyricistant/rhyme-generator').then((value) =>
+      value.rhymeGenerator.generateRhymes(...args)
+    );
+  }
+};
 
 interface RhymesContext {
   rhymeSource?: RhymeSource;
@@ -24,7 +35,10 @@ interface RhymesEvent extends EventObject {
   rhymeSource: RhymeSource;
 }
 
-const fetchRhymes = async (input: string, rhymeSource: RhymeSource) => {
+const fetchRhymes = async (
+  input: string,
+  rhymeSource: RhymeSource
+): Promise<Rhyme[]> => {
   let results: Rhyme[];
   switch (rhymeSource) {
     case RhymeSource.Offline:

@@ -21,3 +21,6 @@ export const render = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'queries'>
 ) => realRender(ui, { ...options, wrapper: DefaultWrapper });
+
+export const wait = async (timeout: number) =>
+  new Promise<void>((resolve) => setTimeout(() => resolve(), timeout));
