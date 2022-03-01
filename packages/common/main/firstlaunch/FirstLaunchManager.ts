@@ -1,7 +1,7 @@
 import { Manager } from '@lyricistant/common/Manager';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
-import { isUiTest } from '@lyricistant/common/BuildModes';
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 
 export class FirstLaunchManager implements Manager {
   private static readonly IS_FIRST_LAUNCH_KEY = 'is-first-launch';
@@ -18,7 +18,7 @@ export class FirstLaunchManager implements Manager {
     const isFirstLaunch = !(await this.temporaryFiles.exists(
       FirstLaunchManager.IS_FIRST_LAUNCH_KEY
     ));
-    if (isFirstLaunch && !isUiTest) {
+    if (isFirstLaunch && !isUnderTest) {
       this.rendererDelegate.send('open-about');
     }
 

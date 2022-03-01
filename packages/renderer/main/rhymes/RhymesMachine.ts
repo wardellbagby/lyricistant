@@ -2,14 +2,14 @@ import { assign, createMachine, EventObject } from 'xstate';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
 import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
-import { isUiTest } from '@lyricistant/common/BuildModes';
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 
 type generateRhymes =
   typeof import('@lyricistant/rhyme-generator')['rhymeGenerator']['generateRhymes'];
 
 const offlineRhymes = (...args: Parameters<generateRhymes>) => {
   // TODO Replace with an actual system for mocking out rhymes in ui tests.
-  if (isUiTest) {
+  if (isUnderTest) {
     return Promise.resolve([
       { word: 'Test Rhyme 1', score: 100 },
       { word: 'Test Rhyme 2', score: 99 },

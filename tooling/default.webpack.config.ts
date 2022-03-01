@@ -29,7 +29,14 @@ const devtool = (mode: Mode): Configuration['devtool'] => {
   return 'source-map';
 };
 
-const platforms = ['Android', 'Electron', 'iOS', 'Web', 'Test'] as const;
+const platforms = [
+  'Android',
+  'Electron',
+  'iOS',
+  'Web',
+  'Screenshotter',
+  'Test',
+] as const;
 export type Platform = typeof platforms[number];
 
 export default (
@@ -79,7 +86,7 @@ export default (
     },
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.UI_TESTING': JSON.stringify(
+        'process.env.IS_UNDER_TEST': JSON.stringify(
           mode === 'test' || platformName === 'Test'
         ),
         'process.env.APP_VERSION': JSON.stringify(getAppVersion()),

@@ -1,4 +1,4 @@
-import { isDevelopment, isUiTest } from '@lyricistant/common/BuildModes';
+import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
 import { Manager } from '@lyricistant/common/Manager';
@@ -38,7 +38,7 @@ export class UpdateManager implements Manager {
   };
 
   private checkForUpdates = () => {
-    if (isDevelopment || isUiTest) {
+    if (isDevelopment || isUnderTest) {
       this.logger.verbose('Skipping update checks since this is a dev build.');
       return;
     }

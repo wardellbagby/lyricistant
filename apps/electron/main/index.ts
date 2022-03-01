@@ -1,7 +1,7 @@
 import { platform } from 'os';
 import * as path from 'path';
 import { format as formatUrl, URL } from 'url';
-import { isDevelopment, isUiTest } from '@lyricistant/common/BuildModes';
+import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileManager } from '@lyricistant/common/files/FileManager';
 import { Managers } from '@lyricistant/common/Managers';
@@ -30,7 +30,7 @@ process.on('unhandledRejection', (err) => {
   crash(err);
 });
 
-if (isDevelopment || isUiTest) {
+if (isDevelopment || isUnderTest) {
   debug({
     isEnabled: true,
     showDevTools: false,
@@ -150,9 +150,9 @@ const createWindow = (): void => {
     backgroundColor: '#00000000',
     show: false,
     webPreferences: {
-      nodeIntegration: isUiTest,
+      nodeIntegration: isUnderTest,
       contextIsolation: false,
-      enableRemoteModule: isUiTest,
+      enableRemoteModule: isUnderTest,
       preload: path.resolve(__dirname, 'preload.js'),
       disableBlinkFeatures: 'FileSystemAccess',
     },

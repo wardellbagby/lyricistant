@@ -32,7 +32,7 @@ const createWebpackConfig = async () =>
       },
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig('test', 'Test')
+    defaultWebpackConfig('production', 'Screenshotter')
   );
 
 const bundleScreenshotter = async () => {
