@@ -2,8 +2,6 @@ import { ChildProcess, spawn as nodeSpawn, SpawnOptions } from 'child_process';
 import path from 'path';
 import { runCLI } from '@jest/core';
 import del from 'del';
-import { src } from 'gulp';
-import gulpMocha from 'gulp-mocha';
 
 export type Mode = 'development' | 'production' | 'test';
 
@@ -13,13 +11,18 @@ export const getOutputDirectory = (mode: Mode, appDirectory: string) =>
 export const cleanBuildDirectory = async () =>
   del(path.resolve(__dirname, '..', 'build'));
 
-export const mocha = (pattern: string, options?: Mocha.MochaOptions) =>
-  src(pattern).pipe(
-    gulpMocha({
-      ...options,
-      require: ['./register-ts-node'],
-    })
-  );
+export const mocha = (pattern: string, options?: { bail?: boolean }) => {
+  const args = [
+    'mocha',
+    '--require',
+    './register-ts-node',
+    options?.bail ? '--bail' : null,
+    pattern,
+  ].filter((it) => !!it);
+  return spawn('npx', args, {
+    cwd: path.resolve(__dirname, '..'),
+  });
+};
 
 export const jest = async (directory: string) => {
   const { results } = await runCLI({ _: [], $0: 'jest', rootDir: directory }, [
