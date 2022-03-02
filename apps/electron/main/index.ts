@@ -46,7 +46,6 @@ const crash = (reason: any) => {
     path.join(__dirname, 'index.html')
   );
 
-  mainWindow.destroy();
   dialog.showErrorBox(
     'Crash',
     [
@@ -57,7 +56,10 @@ const crash = (reason: any) => {
       `Log location: ${logger?.getLogFolder() ?? 'No logs available'}`,
     ].join('\n')
   );
-  app.quit();
+  if (!isDevelopment) {
+    mainWindow.destroy();
+    app.quit();
+  }
 };
 
 const newMenuItemHandler = async () => {

@@ -19,8 +19,10 @@ export class ElectronTemporaryFiles implements TemporaryFiles {
   public get = async (key: string) =>
     this.fs.readFile(this.getTemporaryFile(key), { encoding: 'utf8' });
 
-  public exists = async (key: string) =>
-    this.fs.existsSync(this.getTemporaryFile(key));
+  public exists = async (key: string) => {
+    const file = this.getTemporaryFile(key);
+    return this.fs.existsSync(file) && (await this.fs.isReadable(file));
+  };
 
   public delete = async (key: string) => {
     if (await this.exists(key)) {

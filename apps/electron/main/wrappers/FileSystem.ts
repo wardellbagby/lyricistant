@@ -1,8 +1,10 @@
 import {
   existsSync,
   promises as fspromises,
+  constants as fsconstants,
   readFileSync,
   writeFileSync,
+  access,
 } from 'fs';
 import path from 'path';
 import { isText } from 'istextorbinary';
@@ -15,6 +17,7 @@ export interface FileSystem {
   readFileSync: typeof readFileSync;
   existsSync: typeof existsSync;
   unlink: typeof fspromises.unlink;
+  isReadable: (path: string) => Promise<boolean>;
 
   isText: typeof isText;
   getDataDirectory: typeof app.getPath;
@@ -29,8 +32,14 @@ export class NodeFileSystem implements FileSystem {
   public existsSync = existsSync;
   public unlink = fspromises.unlink;
   public resolve = path.resolve;
-
   public isText = isText;
+
+  public isReadable = (filePath: string) =>
+    new Promise<boolean>((resolve) => {
+      access(filePath, fsconstants.R_OK, (err) => {
+        resolve(!err);
+      });
+    });
   public getDataDirectory = (...args: Parameters<typeof app.getPath>) =>
-    app.getPath(...args);
+    path.resolve(app.getPath(...args));
 }
