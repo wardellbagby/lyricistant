@@ -45,12 +45,15 @@ export const Themed: FunctionComponent<
     'theme-updated',
     (themeData) => {
       const appTheme = createTheme(themeData);
-      setTheme(appTheme);
       setPalette(getThemePalette(themeData).palette);
 
       loadFont(themeData)
-        .then(onThemeReady)
+        .then(() => {
+          setTheme(appTheme);
+          onThemeReady();
+        })
         .catch((reason) => {
+          setTheme(appTheme);
           onThemeReady();
           logger.warn('Failed to load fonts', reason);
         });
