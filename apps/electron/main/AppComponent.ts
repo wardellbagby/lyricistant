@@ -1,5 +1,4 @@
 import type { RendererDelegate } from '@lyricistant/common/Delegates';
-import type { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
 import type { Files } from '@lyricistant/common/files/Files';
 import type { RecentFiles } from '@lyricistant/common/files/RecentFiles';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
@@ -28,7 +27,6 @@ import {
 import { AppUpdater, autoUpdater } from 'electron-updater';
 import { ElectronRendererDelegate } from '@electron-delegates/Delegates';
 import { AppStore } from '@electron-app/AppStore';
-import type { ElectronDialogs } from '@electron-app/platform/Dialogs';
 import type { ElectronFiles } from '@electron-app/platform/Files';
 import type { ElectronLogger } from '@electron-app/platform/Logger';
 import type { ElectronPreferences } from '@electron-app/platform/Preferences';
@@ -57,7 +55,6 @@ const registerElectronFunctionality = (component: DIContainer) => {
 };
 const registerPlatformFunctionality = (component: DIContainer) => {
   component.registerSingleton<AppStore>();
-  component.registerSingleton<Dialogs, ElectronDialogs>();
   component.registerSingleton<Files, ElectronFiles>();
   component.registerSingleton<Logger, ElectronLogger>();
   component.registerSingleton<Preferences, ElectronPreferences>();

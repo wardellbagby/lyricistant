@@ -1,7 +1,6 @@
 import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
 import { Logger } from '@lyricistant/common/Logger';
-import { Manager } from '@lyricistant/common/Manager';
+import { Manager, showPlatformDialog } from '@lyricistant/common/Manager';
 import {
   ExtensionData,
   Files,
@@ -15,10 +14,12 @@ import {
 import { LyricistantFileHandler } from '@lyricistant/common/files/handlers/LyricistantFileHandler';
 import { FileDataExtensions } from '@lyricistant/common/files/extensions/FileDataExtension';
 
-const SAVE_FILE_DIALOG_TAG = 'save-file';
-const OPEN_FILE_DIALOG_TAG = 'open-file';
-
 export class FileManager implements Manager {
+  public static SAVE_FILE_DIALOG_TAG = 'save-file';
+  public static OPEN_FILE_DIALOG_TAG = 'open-file';
+  public static CONFIRM_NEW_FILE_TAG = 'confirm-new-file';
+  public static CONFIRM_OPEN_FILE_TAG = 'confirm-open-file';
+
   public initialFile: PlatformFile | null = null;
 
   private currentFilePath: string | null = null;
@@ -33,7 +34,6 @@ export class FileManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private files: Files,
     private recentFiles: RecentFiles,
-    private dialogs: Dialogs,
     private fileHandlers: FileHandlers,
     private defaultFileHandler: LyricistantFileHandler,
     private fileDataExtensions: FileDataExtensions,
@@ -96,7 +96,7 @@ export class FileManager implements Manager {
 
   public onSaveFile = (forceSaveAs: boolean) => {
     this.rendererDelegate.send('show-dialog', {
-      tag: SAVE_FILE_DIALOG_TAG,
+      tag: FileManager.SAVE_FILE_DIALOG_TAG,
       type: 'fullscreen',
       message: 'Saving file',
       progress: 'indeterminate',
@@ -131,7 +131,10 @@ export class FileManager implements Manager {
       this.logger.error('Error opening file.', e);
       this.rendererDelegate.send('file-opened', e, undefined, true);
     } finally {
-      this.rendererDelegate.send('close-dialog', OPEN_FILE_DIALOG_TAG);
+      this.rendererDelegate.send(
+        'close-dialog',
+        FileManager.OPEN_FILE_DIALOG_TAG
+      );
     }
   };
 
@@ -197,7 +200,10 @@ export class FileManager implements Manager {
     } catch (e) {
       this.logger.error('Error saving file', e);
     } finally {
-      this.rendererDelegate.send('close-dialog', SAVE_FILE_DIALOG_TAG);
+      this.rendererDelegate.send(
+        'close-dialog',
+        FileManager.SAVE_FILE_DIALOG_TAG
+      );
     }
   };
 
@@ -242,26 +248,40 @@ export class FileManager implements Manager {
   };
 
   private onPromptSaveFileForNew = async () => {
-    const result = await this.dialogs.showDialog(
-      "Your changes haven't been saved. Are you sure you want to create a new file?"
-    );
+    const [tag, button] = await showPlatformDialog(this.rendererDelegate, {
+      tag: FileManager.CONFIRM_NEW_FILE_TAG,
+      type: 'alert',
+      title: 'Discard unsaved changes?',
+      message:
+        "Your changes haven't been saved. Are you sure you want to create a new file?",
+      buttons: ['Cancel', 'Create New File'],
+    });
 
-    if (result === 'yes') {
-      this.createNewFile();
-    } else {
-      this.logger.debug('User selected to not create a new file.');
+    if (tag === FileManager.CONFIRM_NEW_FILE_TAG) {
+      if (button === 'Create New File') {
+        this.createNewFile();
+      } else {
+        this.logger.debug('User selected to not create a new file.');
+      }
     }
   };
 
   private onPromptSaveFileForOpen = async (file?: PlatformFile) => {
-    const result = await this.dialogs.showDialog(
-      "Your changes haven't been saved. Are you sure you want to open a different file?"
-    );
+    const [tag, button] = await showPlatformDialog(this.rendererDelegate, {
+      tag: FileManager.CONFIRM_OPEN_FILE_TAG,
+      type: 'alert',
+      title: 'Discard unsaved changes?',
+      message:
+        "Your changes haven't been saved. Are you sure you want to open a different file?",
+      buttons: ['Cancel', 'Open File'],
+    });
 
-    if (result === 'yes') {
-      await this.openFile(file);
-    } else {
-      this.logger.debug('User selected to not open file', file?.metadata);
+    if (tag === FileManager.CONFIRM_OPEN_FILE_TAG) {
+      if (button === 'Open File') {
+        await this.openFile(file);
+      } else {
+        this.logger.debug('User selected to not open file', file?.metadata);
+      }
     }
   };
 
@@ -286,7 +306,10 @@ export class FileManager implements Manager {
 
   private showLoadingDialog = (type: 'open' | 'save', cancelable = false) => {
     this.rendererDelegate.send('show-dialog', {
-      tag: type === 'open' ? OPEN_FILE_DIALOG_TAG : SAVE_FILE_DIALOG_TAG,
+      tag:
+        type === 'open'
+          ? FileManager.OPEN_FILE_DIALOG_TAG
+          : FileManager.SAVE_FILE_DIALOG_TAG,
       type: 'fullscreen',
       message: `${type === 'open' ? 'Opening' : 'Saving'} file`,
       progress: 'indeterminate',

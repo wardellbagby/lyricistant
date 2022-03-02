@@ -1,6 +1,5 @@
 import { TextDecoder, TextEncoder } from 'util';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
 import { FileManager } from '@lyricistant/common/files/FileManager';
 import { Files } from '@lyricistant/common/files/Files';
 import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
@@ -26,7 +25,6 @@ describe('File Manager', () => {
   let rendererDelegate: StubbedInstance<RendererDelegate>;
   let files: StubbedInstance<Files>;
   let recentFiles: StubbedInstance<RecentFiles>;
-  let dialogs: StubbedInstance<Dialogs>;
   let fileHandler: StubbedInstance<FileHandler>;
   let defaultFileHandler: StubbedInstance<LyricistantFileHandler>;
   const rendererListeners = new RendererListeners();
@@ -52,9 +50,6 @@ describe('File Manager', () => {
       setRecentFiles: undefined,
       getRecentFiles: ['1', '2', '3'],
     });
-    dialogs = stubInterface<Dialogs>({
-      showDialog: Promise.resolve('cancelled'),
-    });
     fileHandler = stubInterface<FileHandler>({
       canHandle: true,
     });
@@ -79,7 +74,6 @@ describe('File Manager', () => {
       rendererDelegate,
       files,
       recentFiles,
-      dialogs,
       [() => fileHandler, () => defaultFileHandler],
       defaultFileHandler,
       [mockExtension],
@@ -172,16 +166,30 @@ describe('File Manager', () => {
   });
 
   it('shows a prompt when creating a new file and the renderer says current file has modifications', async () => {
+    rendererListeners.invokeOnSet(
+      'dialog-button-clicked',
+      FileManager.CONFIRM_NEW_FILE_TAG,
+      'Cancel'
+    );
+
     manager.register();
 
     manager.onNewFile();
 
     await rendererListeners.invoke('is-file-modified', true);
 
-    expect(dialogs.showDialog).to.have.been.called;
+    expect(rendererDelegate.send).to.have.been.calledWithMatch('show-dialog', {
+      tag: FileManager.CONFIRM_NEW_FILE_TAG,
+    });
   });
 
   it('shows a prompt when opening a file and the renderer says current file has modifications', async () => {
+    rendererListeners.invokeOnSet(
+      'dialog-button-clicked',
+      FileManager.CONFIRM_OPEN_FILE_TAG,
+      'Cancel'
+    );
+
     manager.register();
 
     await rendererListeners.invoke('ready-for-events');
@@ -190,28 +198,36 @@ describe('File Manager', () => {
 
     await rendererListeners.invoke('is-file-modified', true);
 
-    expect(dialogs.showDialog).to.have.been.called;
+    expect(rendererDelegate.send).to.have.been.calledWithMatch('show-dialog', {
+      tag: FileManager.CONFIRM_OPEN_FILE_TAG,
+    });
   });
 
   it('creates a new file when prompt dialog says yes was chosen', async () => {
-    dialogs.showDialog.returns(Promise.resolve('yes'));
+    rendererListeners.invokeOnSet(
+      'dialog-button-clicked',
+      FileManager.CONFIRM_NEW_FILE_TAG,
+      'Create New File'
+    );
 
     manager.register();
     await manager.onNewFile();
     await rendererListeners.invoke('is-file-modified', true);
 
-    expect(dialogs.showDialog).to.have.been.called;
     expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
   });
 
   it("does nothing when prompt dialog doesn't say yes was chosen", async () => {
-    dialogs.showDialog.returns(Promise.resolve('no'));
+    rendererListeners.invokeOnSet(
+      'dialog-button-clicked',
+      FileManager.CONFIRM_NEW_FILE_TAG,
+      'Cancel'
+    );
 
     manager.register();
     await manager.onNewFile();
     await rendererListeners.invoke('is-file-modified', true);
 
-    expect(dialogs.showDialog).to.have.been.called;
     expect(files.openFile).to.not.have.been.called;
     expect(rendererDelegate.send).to.have.not.been.calledWithMatch(
       'file-opened'
@@ -223,13 +239,19 @@ describe('File Manager', () => {
     await manager.onNewFile();
     await rendererListeners.invoke('is-file-modified', false);
 
-    expect(dialogs.showDialog).to.have.not.been.called;
+    expect(rendererDelegate.send).to.have.not.been.calledWithMatch(
+      'show-dialog'
+    );
     expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
   });
 
   it('opens the file when prompt dialog says yes was chosen', async () => {
-    dialogs.showDialog.returns(Promise.resolve('yes'));
     files.openFile.callsFake((file) => Promise.resolve(file));
+    rendererListeners.invokeOnSet(
+      'dialog-button-clicked',
+      FileManager.CONFIRM_OPEN_FILE_TAG,
+      'Open File'
+    );
 
     manager.register();
     await rendererListeners.invoke('ready-for-events');
@@ -242,7 +264,6 @@ describe('File Manager', () => {
     });
     await rendererListeners.invoke('is-file-modified', true);
 
-    expect(dialogs.showDialog).to.have.been.called;
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,

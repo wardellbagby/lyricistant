@@ -1,18 +1,17 @@
 import { setTimeout } from 'timers';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { Logger } from '@lyricistant/common/Logger';
-import { Manager } from '@lyricistant/common/Manager';
+import { Manager, showPlatformDialog } from '@lyricistant/common/Manager';
 import { BrowserWindow } from 'electron';
 import { UnsavedDataManager } from '@lyricistant/common/files/UnsavedDataManager';
 
+const PROMPT_QUIT_TAG = 'prompt-quit';
 export class QuitManager implements Manager {
   private forceQuitTimeout?: NodeJS.Timeout;
 
   public constructor(
     private rendererDelegate: RendererDelegate,
-    private dialogs: Dialogs,
     private temporaryFiles: TemporaryFiles,
     private logger: Logger,
     private window: BrowserWindow
@@ -48,12 +47,19 @@ export class QuitManager implements Manager {
 
   private onPromptQuit = async () => {
     clearTimeout(this.forceQuitTimeout);
-    const result = await this.dialogs.showDialog(
-      "Are you sure you want to quit? Your changes haven't been saved."
-    );
+    const [tag, button] = await showPlatformDialog(this.rendererDelegate, {
+      tag: PROMPT_QUIT_TAG,
+      type: 'alert',
+      title: 'Discard unsaved changes?',
+      message:
+        "Are you sure you want to quit? Your changes haven't been saved.",
+      buttons: ['No', 'Quit Lyricistant'],
+    });
 
-    if (result === 'yes') {
-      this.onOkayForQuit();
+    if (tag === PROMPT_QUIT_TAG) {
+      if (button === 'Quit Lyricistant') {
+        this.onOkayForQuit();
+      }
     }
   };
 }

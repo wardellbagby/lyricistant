@@ -1,8 +1,29 @@
-import { RendererDelegate } from '@lyricistant/common/Delegates';
+import {
+  PlatformToRendererListener,
+  RendererDelegate,
+  RendererToPlatformListener,
+} from '@lyricistant/common/Delegates';
 
 export interface Manager {
   register(): void;
 }
+
+export const showPlatformDialog = async (
+  rendererDelegate: RendererDelegate,
+  ...args: Parameters<PlatformToRendererListener['show-dialog']>
+): Promise<Parameters<RendererToPlatformListener['dialog-button-clicked']>> =>
+  new Promise<[string, string]>((resolve) => {
+    const listener = (
+      ...clickArgs: Parameters<
+        RendererToPlatformListener['dialog-button-clicked']
+      >
+    ) => {
+      rendererDelegate.removeListener('dialog-button-clicked', listener);
+      resolve(clickArgs);
+    };
+    rendererDelegate.on('dialog-button-clicked', listener);
+    rendererDelegate.send('show-dialog', ...args);
+  });
 
 export const withDialogSupport = (
   manager: Manager,

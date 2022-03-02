@@ -11,8 +11,6 @@ import {
   CoreFileSystem,
   FileSystem,
 } from '@lyricistant/core-platform/wrappers/FileSystem';
-import { Dialogs } from '@lyricistant/common/dialogs/Dialogs';
-import { CoreDialogs } from '@lyricistant/core-platform/platform/Dialogs';
 import { Files } from '@lyricistant/common/files/Files';
 import { CoreFiles } from '@lyricistant/core-platform/platform/Files';
 import { Logger } from '@lyricistant/common/Logger';
@@ -57,7 +55,6 @@ export const createBaseComponent = (): DIContainer => {
 
   component.registerSingleton<FileSystem, CoreFileSystem>();
 
-  component.registerSingleton<Dialogs, CoreDialogs>();
   component.registerSingleton<Files, CoreFiles>();
   component.registerSingleton<Logger, CoreLogger>();
   component.registerSingleton<Preferences, CorePreferences>();

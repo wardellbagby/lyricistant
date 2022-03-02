@@ -33,6 +33,7 @@ const invokeAll = async (
 
 export class RendererListeners {
   private listeners: Map<PlatformChannel, Listener[]> = new Map();
+  private delayedInvokes: Map<PlatformChannel, any[][]> = new Map();
   public clear = () => this.listeners.clear();
 
   public invoke = async <Channel extends PlatformChannel>(
@@ -45,10 +46,25 @@ export class RendererListeners {
     return invokeAll(key, args, this.listeners);
   };
 
-  public set = <Channel extends PlatformChannel>(
+  public invokeOnSet = <Channel extends PlatformChannel>(
+    key: Channel,
+    ...args: Parameters<RendererToPlatformListener[Channel]>
+  ) => {
+    add(key, args, this.delayedInvokes);
+  };
+
+  public set = async <Channel extends PlatformChannel>(
     key: Channel,
     value: RendererToPlatformListener[Channel]
-  ) => add(key, value, this.listeners);
+  ) => {
+    add(key, value, this.listeners);
+    if (this.delayedInvokes.has(key)) {
+      for (const args of this.delayedInvokes.get(key)) {
+        await this.invoke(key, ...(args as any));
+      }
+      this.delayedInvokes.delete(key);
+    }
+  };
 
   public remove = <Channel extends PlatformChannel>(
     key: Channel,

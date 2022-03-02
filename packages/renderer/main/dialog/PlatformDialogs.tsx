@@ -192,11 +192,14 @@ const AlertDialog = ({
 
       {dialogData.buttons && (
         <DialogActions>
-          {dialogData.buttons.map((label) => (
+          {dialogData.buttons.map((label, index) => (
             <Button
               key={label}
               onClick={() => onButtonClick(label)}
               color="primary"
+              variant={
+                index === dialogData.buttons.length - 1 ? 'contained' : 'text'
+              }
             >
               {label}
             </Button>
