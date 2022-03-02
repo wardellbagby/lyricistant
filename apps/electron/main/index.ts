@@ -154,7 +154,6 @@ const createWindow = (): void => {
     webPreferences: {
       nodeIntegration: isUnderTest,
       contextIsolation: false,
-      enableRemoteModule: isUnderTest,
       preload: path.resolve(__dirname, 'preload.js'),
       disableBlinkFeatures: 'FileSystemAccess',
     },
