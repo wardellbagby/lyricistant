@@ -1,7 +1,7 @@
 export const YES_NO_BUTTONS = ['No', 'Yes'];
 export type DialogData = {
   tag: string;
-} & (FullscreenDialogData | AlertDialogData);
+} & (FullscreenDialogData | AlertDialogData | SelectionDialogData);
 
 export interface FullscreenDialogData {
   type: 'fullscreen';
@@ -20,4 +20,20 @@ export interface AlertDialogData {
   };
   buttons?: string[];
   progress?: number;
+}
+
+export interface SelectionDialogData {
+  type: 'selection';
+  title: string;
+  message?: string;
+  checkbox?: {
+    label: string;
+  };
+  options: string[];
+}
+
+export interface DialogInteractionData {
+  checkboxes?: {
+    [label: string]: boolean;
+  };
 }

@@ -1,7 +1,9 @@
 import {
   AlertDialogData,
   DialogData,
+  DialogInteractionData,
   FullscreenDialogData,
+  SelectionDialogData,
 } from '@lyricistant/common/dialogs/Dialog';
 import {
   Accordion,
@@ -10,15 +12,20 @@ import {
   alpha,
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControlLabel,
+  FormGroup,
   Grow,
   LinearProgress,
   LinearProgressProps,
+  MenuItem,
+  Select,
   Typography,
 } from '@mui/material';
 import * as React from 'react';
@@ -65,12 +72,23 @@ export function PlatformDialog() {
   const [open, setOpen] = useState(false);
 
   const onButtonClick = useCallback(
-    (label) => {
-      setDialogData(null);
-      platformDelegate.send('dialog-button-clicked', dialogData.tag, label);
+    (label: string, interactionData?: DialogInteractionData) => {
+      setOpen(false);
+      platformDelegate.send(
+        'dialog-button-clicked',
+        dialogData.tag,
+        label,
+        interactionData
+      );
+      platformDelegate.send('dialog-closed', dialogData.tag);
     },
     [dialogData]
   );
+
+  const onClosed = useCallback(() => {
+    setOpen(false);
+    platformDelegate.send('dialog-closed', dialogData.tag);
+  }, [dialogData]);
 
   useChannel('show-dialog', (data) => {
     setDialogData(data);
@@ -82,6 +100,7 @@ export function PlatformDialog() {
     if (closeDialogTag && closeDialogTag === dialogData?.tag) {
       setOpen(false);
       setCloseDialogTag(null);
+      platformDelegate.send('dialog-closed', dialogData.tag);
     }
   }, [closeDialogTag, dialogData]);
 
@@ -103,6 +122,15 @@ export function PlatformDialog() {
         open={open}
         dialogData={dialogData}
         onCancel={() => setDialogData(null)}
+      />
+    );
+  } else if (dialogData.type === 'selection') {
+    return (
+      <SelectionDialog
+        open={open}
+        dialogData={dialogData}
+        onSelectionChosen={onButtonClick}
+        onClosed={onClosed}
       />
     );
   }
@@ -206,6 +234,85 @@ const AlertDialog = ({
           ))}
         </DialogActions>
       )}
+    </Dialog>
+  );
+};
+
+const SelectionDialog = ({
+  open,
+  dialogData,
+  onSelectionChosen,
+  onClosed,
+}: {
+  open: boolean;
+  dialogData: SelectionDialogData;
+  onSelectionChosen: (
+    option: string,
+    interactionData?: DialogInteractionData
+  ) => void;
+  onClosed: () => void;
+}) => {
+  const [selection, setSelection] = useState<string>(dialogData.options[0]);
+  const [isChecked, setChecked] = useState(false);
+  return (
+    <Dialog open={open}>
+      <DialogTitle>{dialogData.title}</DialogTitle>
+      <DialogContent>
+        <p>
+          {dialogData.message && (
+            <DialogContentText>{dialogData.message}</DialogContentText>
+          )}
+        </p>
+        <Select
+          value={selection}
+          fullWidth
+          onChange={(event) => setSelection(event.target.value)}
+        >
+          {dialogData.options.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+
+        {dialogData.checkbox && (
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  value={isChecked}
+                  onChange={(event) => {
+                    setChecked(event.target.checked);
+                  }}
+                />
+              }
+              label={dialogData.checkbox.label}
+            />
+          </FormGroup>
+        )}
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={() => onClosed()} color="primary" variant={'text'}>
+          Cancel
+        </Button>
+        <Button
+          onClick={() => {
+            onSelectionChosen(
+              selection,
+              dialogData.checkbox && {
+                checkboxes: {
+                  [dialogData.checkbox.label]: isChecked,
+                },
+              }
+            );
+          }}
+          color="primary"
+          variant={'contained'}
+        >
+          Confirm
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };

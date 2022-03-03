@@ -2,10 +2,11 @@ import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { PreferenceManager } from '@lyricistant/common/preferences/PreferenceManager';
 import { Preferences } from '@lyricistant/common/preferences/Preferences';
 import {
+  ColorScheme,
+  DefaultFileType,
+  Font,
   PreferencesData,
   RhymeSource,
-  ColorScheme,
-  Font,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
 import {
@@ -82,6 +83,7 @@ describe('Preference Manager', () => {
       colorScheme: ColorScheme.System,
       rhymeSource: RhymeSource.Datamuse,
       font: Font.Roboto,
+      defaultFileType: DefaultFileType.Always_Ask,
     });
   });
 
@@ -91,6 +93,7 @@ describe('Preference Manager', () => {
       colorScheme: ColorScheme.Dark,
       rhymeSource: RhymeSource.Offline,
       font: Font.Roboto_Mono,
+      defaultFileType: DefaultFileType.Plain_Text,
     };
     preferences.getPreferences.resolves(prefs);
 
@@ -104,18 +107,23 @@ describe('Preference Manager', () => {
     );
   });
 
-  it('saves prefs to the platform', () => {
+  it('saves prefs to the platform', async () => {
     const prefs: PreferencesData = {
       textSize: 22,
       colorScheme: ColorScheme.Dark,
       rhymeSource: RhymeSource.Datamuse,
       font: Font.Roboto_Mono,
+      defaultFileType: DefaultFileType.Lyricistant_Lyrics,
     };
-    const theme: ThemeData = { ...prefs, systemPalette: undefined };
+    const theme: ThemeData = {
+      ...prefs,
+      colorScheme: ColorScheme.Dark,
+      systemPalette: undefined,
+    };
 
     manager.register();
 
-    rendererListeners.get('save-prefs')(prefs);
+    await rendererListeners.get('save-prefs')(prefs);
 
     expect(preferences.setPreferences).to.have.been.calledWith(prefs);
     expect(rendererDelegate.send).to.have.been.calledWith(

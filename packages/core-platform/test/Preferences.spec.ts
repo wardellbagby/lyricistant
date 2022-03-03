@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { CorePreferences } from '@lyricistant/core-platform/platform/Preferences';
 import {
   ColorScheme,
+  DefaultFileType,
   Font,
   PreferencesData,
   RhymeSource,
@@ -28,6 +29,7 @@ describe('Preferences', () => {
       rhymeSource: RhymeSource.Datamuse,
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
+      defaultFileType: DefaultFileType.Lyricistant_Lyrics,
     };
 
     preferences.setPreferences(expected);
@@ -43,12 +45,14 @@ describe('Preferences', () => {
       rhymeSource: RhymeSource.Datamuse,
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
+      defaultFileType: DefaultFileType.Always_Ask,
     };
     const expected: PreferencesData = {
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
+      defaultFileType: DefaultFileType.Lyricistant_Lyrics,
     };
 
     preferences.setPreferences(initial);

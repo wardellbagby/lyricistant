@@ -13,6 +13,11 @@ export enum RhymeSource {
   Offline,
   Datamuse,
 }
+export enum DefaultFileType {
+  Always_Ask,
+  Lyricistant_Lyrics,
+  Plain_Text,
+}
 export type DisplayableColorScheme = ColorScheme.Light | ColorScheme.Dark;
 
 export interface ThemeData {
@@ -26,4 +31,5 @@ export interface PreferencesData {
   textSize: number;
   font: Font;
   rhymeSource: RhymeSource;
+  defaultFileType: DefaultFileType;
 }

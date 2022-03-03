@@ -5,13 +5,14 @@ import {
   SystemTheme,
   SystemThemeProvider,
 } from '@lyricistant/common/theme/SystemTheme';
-import { Preferences } from '@lyricistant/common/preferences/Preferences';
+import {
+  getPreferencesDataOrDefault,
+  Preferences,
+} from '@lyricistant/common/preferences/Preferences';
 import {
   ColorScheme,
   DisplayableColorScheme,
-  Font,
   PreferencesData,
-  RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
 
 export class PreferenceManager implements Manager {
@@ -34,7 +35,9 @@ export class PreferenceManager implements Manager {
         this.systemTheme = systemTheme;
         this.systemPalette = palette;
 
-        this.sendThemeUpdate(await this.preferencesOrDefault());
+        this.sendThemeUpdate(
+          await getPreferencesDataOrDefault(this.preferences)
+        );
       }
     );
     this.rendererDelegate.addRendererListenerSetListener(
@@ -42,14 +45,16 @@ export class PreferenceManager implements Manager {
       async () => {
         this.rendererDelegate.send(
           'prefs-updated',
-          await this.preferencesOrDefault()
+          await getPreferencesDataOrDefault(this.preferences)
         );
       }
     );
     this.rendererDelegate.addRendererListenerSetListener(
       'theme-updated',
       async () => {
-        this.sendThemeUpdate(await this.preferencesOrDefault());
+        this.sendThemeUpdate(
+          await getPreferencesDataOrDefault(this.preferences)
+        );
       }
     );
   }
@@ -60,23 +65,15 @@ export class PreferenceManager implements Manager {
     this.onThemeChangedListeners.push(listener);
   };
 
-  private onSavePrefs = (data: PreferencesData): void => {
+  private onSavePrefs = async (data: PreferencesData) => {
     if (!data) {
       return;
     }
 
-    this.preferences.setPreferences(data);
+    await this.preferences.setPreferences(data);
     this.rendererDelegate.send('prefs-updated', data);
     this.sendThemeUpdate(data);
   };
-
-  private preferencesOrDefault = async (): Promise<PreferencesData> => ({
-    textSize: 16,
-    colorScheme: ColorScheme.System,
-    rhymeSource: RhymeSource.Datamuse,
-    font: Font.Roboto,
-    ...((await this.preferences.getPreferences()) as Partial<PreferencesData>),
-  });
 
   private sendThemeUpdate = (data: PreferencesData): void => {
     const colorScheme = this.normalizeColorScheme(data.colorScheme);

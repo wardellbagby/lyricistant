@@ -10,6 +10,13 @@ import { RendererListeners } from '@testing/utilities/Listeners';
 import { FileHandler } from '@lyricistant/common/files/handlers/FileHandler';
 import { LyricistantFileHandler } from '@lyricistant/common/files/handlers/LyricistantFileHandler';
 import { FileDataExtension } from '@lyricistant/common/files/extensions/FileDataExtension';
+import { Preferences } from '@lyricistant/common/preferences/Preferences';
+import {
+  ColorScheme,
+  DefaultFileType,
+  Font,
+  RhymeSource,
+} from '@lyricistant/common/preferences/PreferencesData';
 
 use(sinonChai);
 
@@ -25,13 +32,12 @@ describe('File Manager', () => {
   let rendererDelegate: StubbedInstance<RendererDelegate>;
   let files: StubbedInstance<Files>;
   let recentFiles: StubbedInstance<RecentFiles>;
-  let fileHandler: StubbedInstance<FileHandler>;
-  let defaultFileHandler: StubbedInstance<LyricistantFileHandler>;
+  let lyricsFileHandler: StubbedInstance<FileHandler>;
+  let textFileHandler: StubbedInstance<FileHandler>;
+  let preferences: StubbedInstance<Preferences>;
   const rendererListeners = new RendererListeners();
-  const mockExtension: Writable<FileDataExtension> =
-    stubInterface<FileDataExtension>({
-      serialize: { version: 1, data: 'world' },
-    });
+  const mockExtension: StubbedInstance<Writable<FileDataExtension>> =
+    stubInterface<FileDataExtension>();
 
   beforeEach(() => {
     sinon.reset();
@@ -50,19 +56,30 @@ describe('File Manager', () => {
       setRecentFiles: undefined,
       getRecentFiles: ['1', '2', '3'],
     });
-    fileHandler = stubInterface<FileHandler>({
+    lyricsFileHandler = stubInterface<FileHandler>({
       canHandle: true,
     });
-    defaultFileHandler = stubInterface<LyricistantFileHandler>({
+    textFileHandler = stubInterface<LyricistantFileHandler>({
       canHandle: true,
+    });
+    preferences = stubInterface();
+    preferences.getPreferences.resolves({
+      defaultFileType: DefaultFileType.Lyricistant_Lyrics,
+      font: Font.Roboto_Mono,
+      colorScheme: ColorScheme.Dark,
+      textSize: 16,
+      rhymeSource: RhymeSource.Offline,
     });
 
-    fileHandler.extension = 'wow';
-    fileHandler.load.callsFake(async (file) => ({ lyrics: decode(file.data) }));
-    fileHandler.create.callsFake(async (file) => encode(file.lyrics));
-    defaultFileHandler.extension = 'yup';
-    defaultFileHandler.create.callsFake(async (file) => encode(file.lyrics));
+    lyricsFileHandler.extension = 'lyrics';
+    lyricsFileHandler.load.callsFake(async (file) => ({
+      lyrics: decode(file.data),
+    }));
+    lyricsFileHandler.create.callsFake(async (file) => encode(file.lyrics));
+    textFileHandler.extension = 'txt';
+    textFileHandler.create.callsFake(async (file) => encode(file.lyrics));
     mockExtension.key = 'hello';
+    mockExtension.serialize.returns({ version: 1, data: 'world' });
 
     rendererDelegate = stubInterface();
     rendererDelegate.on.callsFake(function (channel, listener) {
@@ -74,9 +91,9 @@ describe('File Manager', () => {
       rendererDelegate,
       files,
       recentFiles,
-      [() => fileHandler, () => defaultFileHandler],
-      defaultFileHandler,
+      [() => lyricsFileHandler, () => textFileHandler],
       [mockExtension],
+      preferences,
       stubInterface()
     );
   });
@@ -299,7 +316,7 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith(
       encode('Reeboks on; just do it!'),
-      'Lyrics.yup'
+      'Lyrics.lyrics'
     );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -377,7 +394,7 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith(
       encode('Blessings, blessings.'),
-      'Lyrics.wow',
+      'Lyrics.lyrics',
       '/Desktop/whitetuxedo.txt'
     );
     expect(fileChangeListener).to.have.been.called;
@@ -421,7 +438,7 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith(
       encode('Blessings, blessings.'),
-      'Lyrics.wow',
+      'Lyrics.lyrics',
       '/Desktop/whitetuxedo2.txt'
     );
     expect(fileChangeListener).to.have.been.called.callCount(3);
@@ -527,8 +544,8 @@ describe('File Manager', () => {
   });
 
   it('saves opened files with the same file handler that opened them', async () => {
-    fileHandler.canHandle.callsFake((file) => file.type === 'mytype');
-    defaultFileHandler.canHandle.returns(false);
+    lyricsFileHandler.canHandle.callsFake((file) => file.type === 'mytype');
+    textFileHandler.canHandle.returns(false);
     files.openFile.returns(
       Promise.resolve({
         metadata: { name: 'anewdress.txt', path: '121' },
@@ -552,11 +569,96 @@ describe('File Manager', () => {
     expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
       'Cherry Red Chariot'
     );
-    expect(fileHandler.create).to.have.been.calledWith({
+    expect(lyricsFileHandler.create).to.have.been.calledWith({
       lyrics: 'Cherry Red Chariot',
       extensions: {
         hello: JSON.stringify(mockExtension.serialize()),
       },
+    });
+  });
+
+  it('prompts the user for their chosen file handler - lyrics', async () => {
+    preferences.getPreferences.resolves({
+      defaultFileType: DefaultFileType.Always_Ask,
+      font: Font.Roboto_Mono,
+      colorScheme: ColorScheme.Dark,
+      textSize: 16,
+      rhymeSource: RhymeSource.Offline,
+    });
+    rendererListeners.invokeOnSet(
+      'dialog-button-clicked',
+      FileManager.CHOOSE_FILE_HANDLER_TAG,
+      'Lyricistant file (.lyrics)'
+    );
+
+    manager.register();
+    await rendererListeners.invoke('save-file-attempt', 'Hiiipower');
+
+    expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
+      'Hiiipower'
+    );
+    expect(lyricsFileHandler.create).to.have.been.calledWith({
+      lyrics: 'Hiiipower',
+      extensions: {
+        hello: JSON.stringify(mockExtension.serialize()),
+      },
+    });
+  });
+  it('prompts the user for their chosen file handler - text', async () => {
+    preferences.getPreferences.resolves({
+      defaultFileType: DefaultFileType.Always_Ask,
+      font: Font.Roboto_Mono,
+      colorScheme: ColorScheme.Dark,
+      textSize: 16,
+      rhymeSource: RhymeSource.Offline,
+    });
+    rendererListeners.invokeOnSet(
+      'dialog-button-clicked',
+      FileManager.CHOOSE_FILE_HANDLER_TAG,
+      'Plain Text (.txt)'
+    );
+
+    manager.register();
+    await rendererListeners.invoke('save-file-attempt', 'Hiiipower');
+
+    expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
+      'Hiiipower'
+    );
+    expect(textFileHandler.create).to.have.been.calledWith({
+      lyrics: 'Hiiipower',
+      extensions: {
+        hello: JSON.stringify(mockExtension.serialize()),
+      },
+    });
+  });
+  it('saves the default file handler', async () => {
+    preferences.getPreferences.resolves({
+      defaultFileType: DefaultFileType.Always_Ask,
+      font: Font.Roboto_Mono,
+      colorScheme: ColorScheme.Dark,
+      textSize: 16,
+      rhymeSource: RhymeSource.Offline,
+    });
+    rendererListeners.invokeOnSet(
+      'dialog-button-clicked',
+      FileManager.CHOOSE_FILE_HANDLER_TAG,
+      'Plain Text (.txt)',
+      {
+        checkboxes: {
+          'Never Ask Again': true,
+        },
+      }
+    );
+
+    manager.register();
+    await rendererListeners.invoke('save-file-attempt', 'Hiiipower');
+
+    expect(preferences.setPreferences).to.have.been.calledWith({
+      defaultFileType: DefaultFileType.Plain_Text,
+      font: Font.Roboto_Mono,
+      colorScheme: ColorScheme.Dark,
+      textSize: 16,
+      rhymeSource: RhymeSource.Offline,
     });
   });
 });

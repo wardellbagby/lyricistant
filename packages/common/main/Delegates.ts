@@ -1,4 +1,7 @@
-import { DialogData } from '@lyricistant/common/dialogs/Dialog';
+import {
+  DialogData,
+  DialogInteractionData,
+} from '@lyricistant/common/dialogs/Dialog';
 import {
   PreferencesData,
   ThemeData,
@@ -20,7 +23,12 @@ export interface RendererToPlatformListener {
   'save-file-attempt': (data: string) => void;
   'request-ui-config': () => void;
   'save-logs': () => void;
-  'dialog-button-clicked': (dialogTag: string, buttonLabel: string) => void;
+  'dialog-button-clicked': (
+    dialogTag: string,
+    buttonLabel: string,
+    interactionData?: DialogInteractionData
+  ) => void;
+  'dialog-closed': (dialogTag: string) => void;
   'apply-file-history': (history: ParsedHistoryData) => void;
 }
 

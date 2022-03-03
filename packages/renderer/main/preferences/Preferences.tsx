@@ -1,6 +1,7 @@
 import {
   ColorScheme as LyricistantTheme,
   ColorScheme,
+  DefaultFileType,
   Font,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
@@ -168,6 +169,13 @@ export const Preferences = (props: PreferencesProps) => {
     });
   };
 
+  const onDefaultFileTypeChanged = (defaultFileType: DefaultFileType) => {
+    setPreferencesData({
+      ...preferencesData,
+      defaultFileType,
+    });
+  };
+
   const onPreferencesSaved = () => {
     platformDelegate.send('save-prefs', preferencesData);
     props.onClose();
@@ -268,6 +276,27 @@ export const Preferences = (props: PreferencesProps) => {
                       { value: RhymeSource.Datamuse, label: 'Datamuse' },
                     ]}
                     label={'Rhyme Source'}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <SelectBox
+                    value={preferencesData.defaultFileType}
+                    onChange={onDefaultFileTypeChanged}
+                    items={[
+                      {
+                        value: DefaultFileType.Always_Ask,
+                        label: 'Always Ask',
+                      },
+                      {
+                        value: DefaultFileType.Lyricistant_Lyrics,
+                        label: 'Lyricistant file (.lyrics)',
+                      },
+                      {
+                        value: DefaultFileType.Plain_Text,
+                        label: 'Plain Text (.txt)',
+                      },
+                    ]}
+                    label={'Default File Type'}
                   />
                 </Grid>
               </Grid>

@@ -11,19 +11,24 @@ import {
   FileHandler,
   FileHandlers,
 } from '@lyricistant/common/files/handlers/FileHandler';
-import { LyricistantFileHandler } from '@lyricistant/common/files/handlers/LyricistantFileHandler';
 import { FileDataExtensions } from '@lyricistant/common/files/extensions/FileDataExtension';
+import {
+  getPreferencesDataOrDefault,
+  Preferences,
+} from '@lyricistant/common/preferences/Preferences';
+import { DefaultFileType } from '@lyricistant/common/preferences/PreferencesData';
 
 export class FileManager implements Manager {
   public static SAVE_FILE_DIALOG_TAG = 'save-file';
   public static OPEN_FILE_DIALOG_TAG = 'open-file';
   public static CONFIRM_NEW_FILE_TAG = 'confirm-new-file';
   public static CONFIRM_OPEN_FILE_TAG = 'confirm-open-file';
+  public static CHOOSE_FILE_HANDLER_TAG = 'choose-file-handler';
 
   public initialFile: PlatformFile | null = null;
 
   private currentFilePath: string | null = null;
-  private currentFileHandler: FileHandler = this.defaultFileHandler;
+  private currentFileHandler: FileHandler | null = null;
   private fileChangedListeners: Array<
     (currentFilename: string | null, recentFiles: string[]) => void
   > = [];
@@ -35,8 +40,8 @@ export class FileManager implements Manager {
     private files: Files,
     private recentFiles: RecentFiles,
     private fileHandlers: FileHandlers,
-    private defaultFileHandler: LyricistantFileHandler,
     private fileDataExtensions: FileDataExtensions,
+    private preferences: Preferences,
     private logger: Logger
   ) {}
 
@@ -173,7 +178,17 @@ export class FileManager implements Manager {
         },
         {}
       );
-      const serializedFileData = await this.currentFileHandler.create({
+
+      // We check based off the path instead of the current file handler being null
+      // for the case where we're doing a "Save As", so the current file handler is
+      // set but the user still wants to save a new file.
+      // If there's a path, then a file should be opened so there should be a
+      // current file handler.
+      const fileHandler = !path
+        ? await this.getDefaultFileHandler()
+        : this.currentFileHandler;
+
+      const serializedFileData = await fileHandler.create({
         extensions,
         lyrics,
       });
@@ -181,7 +196,7 @@ export class FileManager implements Manager {
       this.showLoadingDialog('save', true);
       const newFileMetadata = await this.files.saveFile(
         serializedFileData,
-        `Lyrics.${this.currentFileHandler.extension}`,
+        `Lyrics.${fileHandler.extension}`,
         path
       );
       if (newFileMetadata) {
@@ -239,7 +254,7 @@ export class FileManager implements Manager {
 
   private createNewFile = () => {
     this.currentFilePath = null;
-    this.currentFileHandler = this.defaultFileHandler;
+    this.currentFileHandler = null;
     this.rendererDelegate.send('new-file-created');
     this.fileDataExtensions.forEach((extension) => extension.deserialize(null));
     this.fileChangedListeners.forEach((listener) =>
@@ -315,5 +330,73 @@ export class FileManager implements Manager {
       progress: 'indeterminate',
       cancelable,
     });
+  };
+
+  private promptFileHandlerSelection = async (): Promise<FileHandler> => {
+    const lyricsHandler = this.fileHandlers.find(
+      (handler) => handler().extension === 'lyrics'
+    )();
+    const textHandler = this.fileHandlers.find(
+      (handler) => handler().extension === 'txt'
+    )();
+
+    const lyricsOption = 'Lyricistant file (.lyrics)';
+    const textOption = 'Plain Text (.txt)';
+    const neverAskAgainLabel = 'Never Ask Again';
+
+    const [tag, option, interactionData] = await showPlatformDialog(
+      this.rendererDelegate,
+      {
+        tag: FileManager.CHOOSE_FILE_HANDLER_TAG,
+        type: 'selection',
+        title: 'Select File Type',
+        checkbox: {
+          label: neverAskAgainLabel,
+        },
+        message:
+          'What file type to save as? Text files have wide compatibility, but Lyrics files support all Lyricistant features.',
+        options: [lyricsOption, textOption],
+      }
+    );
+
+    if (tag !== FileManager.CHOOSE_FILE_HANDLER_TAG) {
+      return;
+    }
+
+    if (interactionData?.checkboxes?.[neverAskAgainLabel]) {
+      const preferencesData = await getPreferencesDataOrDefault(
+        this.preferences
+      );
+      await this.preferences.setPreferences({
+        ...preferencesData,
+        defaultFileType:
+          option === textOption
+            ? DefaultFileType.Plain_Text
+            : DefaultFileType.Lyricistant_Lyrics,
+      });
+    }
+    if (option === textOption) {
+      return textHandler;
+    }
+    return lyricsHandler;
+  };
+
+  private getDefaultFileHandler = async (): Promise<FileHandler> => {
+    const preferencesData = await getPreferencesDataOrDefault(this.preferences);
+    const textFileHandler = this.fileHandlers.find(
+      (handler) => handler().extension === 'txt'
+    )();
+    const lyricsFileHandler = this.fileHandlers.find(
+      (handler) => handler().extension === 'lyrics'
+    )();
+
+    switch (preferencesData.defaultFileType) {
+      case DefaultFileType.Always_Ask:
+        return await this.promptFileHandlerSelection();
+      case DefaultFileType.Plain_Text:
+        return textFileHandler;
+      default:
+        return lyricsFileHandler;
+    }
   };
 }

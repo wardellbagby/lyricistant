@@ -12,7 +12,7 @@ export const showPlatformDialog = async (
   rendererDelegate: RendererDelegate,
   ...args: Parameters<PlatformToRendererListener['show-dialog']>
 ): Promise<Parameters<RendererToPlatformListener['dialog-button-clicked']>> =>
-  new Promise<[string, string]>((resolve) => {
+  new Promise((resolve) => {
     const listener = (
       ...clickArgs: Parameters<
         RendererToPlatformListener['dialog-button-clicked']
@@ -21,7 +21,12 @@ export const showPlatformDialog = async (
       rendererDelegate.removeListener('dialog-button-clicked', listener);
       resolve(clickArgs);
     };
+    const onCloseListener = () => {
+      rendererDelegate.removeListener('dialog-button-clicked', listener);
+      rendererDelegate.removeListener('dialog-closed', onCloseListener);
+    };
     rendererDelegate.on('dialog-button-clicked', listener);
+    rendererDelegate.on('dialog-closed', onCloseListener);
     rendererDelegate.send('show-dialog', ...args);
   });
 
