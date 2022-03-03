@@ -87,7 +87,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('does not prompt if unsaved data is found but is not valid', async () => {
-    temporaryFiles.ebxists.resolves(true);
+    temporaryFiles.exists.resolves(true);
     fileHistory.isNonEmptyHistory.returns(false);
 
     manager.register();
@@ -102,9 +102,9 @@ describe('Unsaved Data Manager', () => {
     manager.register();
     await initialFileLoadedListener();
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
-      'Yes'
+      { selectedButton: 'Yes' }
     );
 
     expect(rendererDelegate.send).to.have.been.calledWith(
@@ -121,9 +121,9 @@ describe('Unsaved Data Manager', () => {
     manager.register();
     await initialFileLoadedListener();
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
-      'No'
+      { selectedButton: 'No' }
     );
 
     expect(rendererDelegate.send).to.have.not.been.calledWith(
@@ -150,9 +150,9 @@ describe('Unsaved Data Manager', () => {
     manager.register();
     await initialFileLoadedListener();
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
-      'No'
+      { selectedButton: 'No' }
     );
 
     fileChangedListener();

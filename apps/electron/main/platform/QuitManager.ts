@@ -2,7 +2,7 @@ import { setTimeout } from 'timers';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { Logger } from '@lyricistant/common/Logger';
-import { Manager, showPlatformDialog } from '@lyricistant/common/Manager';
+import { Manager, showRendererDialog } from '@lyricistant/common/Manager';
 import { BrowserWindow } from 'electron';
 import { UnsavedDataManager } from '@lyricistant/common/files/UnsavedDataManager';
 
@@ -47,17 +47,20 @@ export class QuitManager implements Manager {
 
   private onPromptQuit = async () => {
     clearTimeout(this.forceQuitTimeout);
-    const [tag, button] = await showPlatformDialog(this.rendererDelegate, {
-      tag: PROMPT_QUIT_TAG,
-      type: 'alert',
-      title: 'Discard unsaved changes?',
-      message:
-        "Are you sure you want to quit? Your changes haven't been saved.",
-      buttons: ['No', 'Quit Lyricistant'],
-    });
+    const [tag, { selectedButton }] = await showRendererDialog(
+      this.rendererDelegate,
+      {
+        tag: PROMPT_QUIT_TAG,
+        type: 'alert',
+        title: 'Discard unsaved changes?',
+        message:
+          "Are you sure you want to quit? Your changes haven't been saved.",
+        buttons: ['No', 'Quit Lyricistant'],
+      }
+    );
 
     if (tag === PROMPT_QUIT_TAG) {
-      if (button === 'Quit Lyricistant') {
+      if (selectedButton === 'Quit Lyricistant') {
         this.onOkayForQuit();
       }
     }

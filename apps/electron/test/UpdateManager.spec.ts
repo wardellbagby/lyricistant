@@ -55,9 +55,7 @@ describe('Update Manager', () => {
   it('registers for dialog button clicks on register', async () => {
     manager.register();
 
-    expect(rendererDelegate.on).to.have.been.calledWith(
-      'dialog-button-clicked'
-    );
+    expect(rendererDelegate.on).to.have.been.calledWith('dialog-interaction');
   });
 
   it('checks for update when the renderer is ready', async () => {
@@ -87,9 +85,9 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      'Yes'
+      { selectedButton: 'Yes' }
     );
 
     expect(appUpdater.downloadUpdate).to.have.been.called;
@@ -104,9 +102,9 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      'Never'
+      { selectedButton: 'Never' }
     );
 
     expect(appUpdater.downloadUpdate).to.have.not.been.called;
@@ -122,9 +120,9 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      'No'
+      { selectedButton: 'No' }
     );
 
     expect(appUpdater.downloadUpdate).to.have.not.been.called;
@@ -140,9 +138,9 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      'Yes'
+      { selectedButton: 'Yes' }
     );
     await appUpdaterListeners.invoke('download-progress', {
       transferred: 1,
@@ -178,9 +176,9 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      'Yes'
+      { selectedButton: 'Yes' }
     );
     await appUpdaterListeners.invoke('update-downloaded');
 
@@ -202,15 +200,15 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      'Yes'
+      { selectedButton: 'Yes' }
     );
     await appUpdaterListeners.invoke('update-downloaded');
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).UPDATE_DOWNLOADED_DIALOG_TAG,
-      'Restart'
+      { selectedButton: 'Restart' }
     );
 
     expect(appUpdater.quitAndInstall).to.have.been.called;
@@ -225,15 +223,15 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      'Yes'
+      { selectedButton: 'Yes' }
     );
     await appUpdaterListeners.invoke('update-downloaded');
     await rendererListeners.invoke(
-      'dialog-button-clicked',
+      'dialog-interaction',
       (UpdateManager as any).UPDATE_DOWNLOADED_DIALOG_TAG,
-      'Later'
+      { selectedButton: 'Later' }
     );
 
     expect(appUpdater.quitAndInstall).to.have.not.been.called;

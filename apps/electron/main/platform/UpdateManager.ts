@@ -5,6 +5,7 @@ import { Manager } from '@lyricistant/common/Manager';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
 import { AppStore } from '@electron-app/AppStore';
 import { HttpClient } from '@electron-app/wrappers/HttpClient';
+import { DialogInteractionData } from '@lyricistant/common/dialogs/Dialog';
 
 export class UpdateManager implements Manager {
   private static readonly INSTALL_UPDATE_DIALOG_TAG =
@@ -24,10 +25,7 @@ export class UpdateManager implements Manager {
 
   public register(): void {
     this.setupAppUpdater();
-    this.rendererDelegate.on(
-      'dialog-button-clicked',
-      this.onDialogButtonClicked
-    );
+    this.rendererDelegate.on('dialog-interaction', this.onDialogInteraction);
     this.rendererDelegate.on('ready-for-events', this.checkForUpdates);
   }
 
@@ -124,13 +122,16 @@ export class UpdateManager implements Manager {
     });
   };
 
-  private onDialogButtonClicked = (dialogTag: string, buttonLabel: string) => {
+  private onDialogInteraction = (
+    dialogTag: string,
+    interactionData: DialogInteractionData
+  ) => {
     switch (dialogTag) {
       case UpdateManager.INSTALL_UPDATE_DIALOG_TAG:
-        this.onUpdateAvailableDialogClicked(buttonLabel);
+        this.onUpdateAvailableDialogClicked(interactionData.selectedButton);
         break;
       case UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG:
-        this.onUpdateDownloadedDialogClicked(buttonLabel);
+        this.onUpdateDownloadedDialogClicked(interactionData.selectedButton);
         break;
     }
   };

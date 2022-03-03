@@ -23,10 +23,9 @@ export interface RendererToPlatformListener {
   'save-file-attempt': (data: string) => void;
   'request-ui-config': () => void;
   'save-logs': () => void;
-  'dialog-button-clicked': (
+  'dialog-interaction': (
     dialogTag: string,
-    buttonLabel: string,
-    interactionData?: DialogInteractionData
+    interactionData: DialogInteractionData
   ) => void;
   'dialog-closed': (dialogTag: string) => void;
   'apply-file-history': (history: ParsedHistoryData) => void;

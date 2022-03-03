@@ -71,13 +71,12 @@ export function PlatformDialog() {
   const [closeDialogTag, setCloseDialogTag] = useState<string>(null);
   const [open, setOpen] = useState(false);
 
-  const onButtonClick = useCallback(
-    (label: string, interactionData?: DialogInteractionData) => {
+  const onDialogInteraction = useCallback(
+    (interactionData: DialogInteractionData) => {
       setOpen(false);
       platformDelegate.send(
-        'dialog-button-clicked',
+        'dialog-interaction',
         dialogData.tag,
-        label,
         interactionData
       );
       platformDelegate.send('dialog-closed', dialogData.tag);
@@ -113,7 +112,7 @@ export function PlatformDialog() {
       <AlertDialog
         open={open}
         dialogData={dialogData}
-        onButtonClick={onButtonClick}
+        onDialogInteraction={onDialogInteraction}
       />
     );
   } else if (dialogData.type === 'fullscreen') {
@@ -129,7 +128,7 @@ export function PlatformDialog() {
       <SelectionDialog
         open={open}
         dialogData={dialogData}
-        onSelectionChosen={onButtonClick}
+        onDialogInteraction={onDialogInteraction}
         onClosed={onClosed}
       />
     );
@@ -182,11 +181,11 @@ const FullscreenDialog = ({
 const AlertDialog = ({
   open,
   dialogData,
-  onButtonClick,
+  onDialogInteraction,
 }: {
   open: boolean;
   dialogData: AlertDialogData;
-  onButtonClick: (label: string) => void;
+  onDialogInteraction: (interactionData: DialogInteractionData) => void;
 }) => {
   const { accordionSummary, accordionMessage, dialog } = useAlertDialogStyles();
   return (
@@ -223,7 +222,7 @@ const AlertDialog = ({
           {dialogData.buttons.map((label, index) => (
             <Button
               key={label}
-              onClick={() => onButtonClick(label)}
+              onClick={() => onDialogInteraction({ selectedButton: label })}
               color="primary"
               variant={
                 index === dialogData.buttons.length - 1 ? 'contained' : 'text'
@@ -241,15 +240,12 @@ const AlertDialog = ({
 const SelectionDialog = ({
   open,
   dialogData,
-  onSelectionChosen,
+  onDialogInteraction,
   onClosed,
 }: {
   open: boolean;
   dialogData: SelectionDialogData;
-  onSelectionChosen: (
-    option: string,
-    interactionData?: DialogInteractionData
-  ) => void;
+  onDialogInteraction: (interactionData?: DialogInteractionData) => void;
   onClosed: () => void;
 }) => {
   const [selection, setSelection] = useState<string>(dialogData.options[0]);
@@ -298,14 +294,13 @@ const SelectionDialog = ({
         </Button>
         <Button
           onClick={() => {
-            onSelectionChosen(
-              selection,
-              dialogData.checkbox && {
-                checkboxes: {
-                  [dialogData.checkbox.label]: isChecked,
-                },
-              }
-            );
+            onDialogInteraction({
+              selectedButton: 'Confirm',
+              selectedOption: selection,
+              checkboxes: {
+                [dialogData.checkbox.label]: isChecked,
+              },
+            });
           }}
           color="primary"
           variant={'contained'}

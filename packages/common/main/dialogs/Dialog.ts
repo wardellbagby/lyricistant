@@ -33,6 +33,8 @@ export interface SelectionDialogData {
 }
 
 export interface DialogInteractionData {
+  selectedButton: string;
+  selectedOption?: string;
   checkboxes?: {
     [label: string]: boolean;
   };

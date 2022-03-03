@@ -1,6 +1,6 @@
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
-import { Manager, showPlatformDialog } from '@lyricistant/common/Manager';
+import { Manager, showRendererDialog } from '@lyricistant/common/Manager';
 import {
   ExtensionData,
   Files,
@@ -263,17 +263,20 @@ export class FileManager implements Manager {
   };
 
   private onPromptSaveFileForNew = async () => {
-    const [tag, button] = await showPlatformDialog(this.rendererDelegate, {
-      tag: FileManager.CONFIRM_NEW_FILE_TAG,
-      type: 'alert',
-      title: 'Discard unsaved changes?',
-      message:
-        "Your changes haven't been saved. Are you sure you want to create a new file?",
-      buttons: ['Cancel', 'Create New File'],
-    });
+    const [tag, { selectedButton }] = await showRendererDialog(
+      this.rendererDelegate,
+      {
+        tag: FileManager.CONFIRM_NEW_FILE_TAG,
+        type: 'alert',
+        title: 'Discard unsaved changes?',
+        message:
+          "Your changes haven't been saved. Are you sure you want to create a new file?",
+        buttons: ['Cancel', 'Create New File'],
+      }
+    );
 
     if (tag === FileManager.CONFIRM_NEW_FILE_TAG) {
-      if (button === 'Create New File') {
+      if (selectedButton === 'Create New File') {
         this.createNewFile();
       } else {
         this.logger.debug('User selected to not create a new file.');
@@ -282,17 +285,20 @@ export class FileManager implements Manager {
   };
 
   private onPromptSaveFileForOpen = async (file?: PlatformFile) => {
-    const [tag, button] = await showPlatformDialog(this.rendererDelegate, {
-      tag: FileManager.CONFIRM_OPEN_FILE_TAG,
-      type: 'alert',
-      title: 'Discard unsaved changes?',
-      message:
-        "Your changes haven't been saved. Are you sure you want to open a different file?",
-      buttons: ['Cancel', 'Open File'],
-    });
+    const [tag, { selectedButton }] = await showRendererDialog(
+      this.rendererDelegate,
+      {
+        tag: FileManager.CONFIRM_OPEN_FILE_TAG,
+        type: 'alert',
+        title: 'Discard unsaved changes?',
+        message:
+          "Your changes haven't been saved. Are you sure you want to open a different file?",
+        buttons: ['Cancel', 'Open File'],
+      }
+    );
 
     if (tag === FileManager.CONFIRM_OPEN_FILE_TAG) {
-      if (button === 'Open File') {
+      if (selectedButton === 'Open File') {
         await this.openFile(file);
       } else {
         this.logger.debug('User selected to not open file', file?.metadata);
@@ -344,7 +350,7 @@ export class FileManager implements Manager {
     const textOption = 'Plain Text (.txt)';
     const neverAskAgainLabel = 'Never Ask Again';
 
-    const [tag, option, interactionData] = await showPlatformDialog(
+    const [tag, interactionData] = await showRendererDialog(
       this.rendererDelegate,
       {
         tag: FileManager.CHOOSE_FILE_HANDLER_TAG,
@@ -363,19 +369,19 @@ export class FileManager implements Manager {
       return;
     }
 
-    if (interactionData?.checkboxes?.[neverAskAgainLabel]) {
+    if (interactionData.checkboxes?.[neverAskAgainLabel]) {
       const preferencesData = await getPreferencesDataOrDefault(
         this.preferences
       );
       await this.preferences.setPreferences({
         ...preferencesData,
         defaultFileType:
-          option === textOption
+          interactionData.selectedOption === textOption
             ? DefaultFileType.Plain_Text
             : DefaultFileType.Lyricistant_Lyrics,
       });
     }
-    if (option === textOption) {
+    if (interactionData.selectedOption === textOption) {
       return textHandler;
     }
     return lyricsHandler;

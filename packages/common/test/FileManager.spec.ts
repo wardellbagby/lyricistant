@@ -184,9 +184,9 @@ describe('File Manager', () => {
 
   it('shows a prompt when creating a new file and the renderer says current file has modifications', async () => {
     rendererListeners.invokeOnSet(
-      'dialog-button-clicked',
+      'dialog-interaction',
       FileManager.CONFIRM_NEW_FILE_TAG,
-      'Cancel'
+      { selectedButton: 'Cancel' }
     );
 
     manager.register();
@@ -202,9 +202,9 @@ describe('File Manager', () => {
 
   it('shows a prompt when opening a file and the renderer says current file has modifications', async () => {
     rendererListeners.invokeOnSet(
-      'dialog-button-clicked',
+      'dialog-interaction',
       FileManager.CONFIRM_OPEN_FILE_TAG,
-      'Cancel'
+      { selectedButton: 'Cancel' }
     );
 
     manager.register();
@@ -222,9 +222,9 @@ describe('File Manager', () => {
 
   it('creates a new file when prompt dialog says yes was chosen', async () => {
     rendererListeners.invokeOnSet(
-      'dialog-button-clicked',
+      'dialog-interaction',
       FileManager.CONFIRM_NEW_FILE_TAG,
-      'Create New File'
+      { selectedButton: 'Create New File' }
     );
 
     manager.register();
@@ -236,9 +236,9 @@ describe('File Manager', () => {
 
   it("does nothing when prompt dialog doesn't say yes was chosen", async () => {
     rendererListeners.invokeOnSet(
-      'dialog-button-clicked',
+      'dialog-interaction',
       FileManager.CONFIRM_NEW_FILE_TAG,
-      'Cancel'
+      { selectedButton: 'Cancel' }
     );
 
     manager.register();
@@ -265,9 +265,9 @@ describe('File Manager', () => {
   it('opens the file when prompt dialog says yes was chosen', async () => {
     files.openFile.callsFake((file) => Promise.resolve(file));
     rendererListeners.invokeOnSet(
-      'dialog-button-clicked',
+      'dialog-interaction',
       FileManager.CONFIRM_OPEN_FILE_TAG,
-      'Open File'
+      { selectedButton: 'Open File' }
     );
 
     manager.register();
@@ -586,9 +586,9 @@ describe('File Manager', () => {
       rhymeSource: RhymeSource.Offline,
     });
     rendererListeners.invokeOnSet(
-      'dialog-button-clicked',
+      'dialog-interaction',
       FileManager.CHOOSE_FILE_HANDLER_TAG,
-      'Lyricistant file (.lyrics)'
+      { selectedButton: 'Lyricistant file (.lyrics)' }
     );
 
     manager.register();
@@ -613,9 +613,9 @@ describe('File Manager', () => {
       rhymeSource: RhymeSource.Offline,
     });
     rendererListeners.invokeOnSet(
-      'dialog-button-clicked',
+      'dialog-interaction',
       FileManager.CHOOSE_FILE_HANDLER_TAG,
-      'Plain Text (.txt)'
+      { selectedButton: 'Confirm', selectedOption: 'Plain Text (.txt)' }
     );
 
     manager.register();
@@ -640,10 +640,11 @@ describe('File Manager', () => {
       rhymeSource: RhymeSource.Offline,
     });
     rendererListeners.invokeOnSet(
-      'dialog-button-clicked',
+      'dialog-interaction',
       FileManager.CHOOSE_FILE_HANDLER_TAG,
-      'Plain Text (.txt)',
       {
+        selectedButton: 'Confirm',
+        selectedOption: 'Plain Text (.txt)',
         checkboxes: {
           'Never Ask Again': true,
         },
