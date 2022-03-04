@@ -1,4 +1,5 @@
 # Lyricistant
+
 ![lyricistant](lyricistant.png)
 
 An assistant to the lyricist in you!
@@ -12,10 +13,11 @@ An assistant to the lyricist in you!
 
 Lyricistant is a writing app geared toward helping you write lyrics, poetry, or anything else you desire!
 
-Unlike other apps with a focus on rhyming, Lyricistant is first and foremost a writing app. It's made for you to use to 
+Unlike other apps with a focus on rhyming, Lyricistant is first and foremost a writing app. It's made for you to use to
 write your lyrics, while offering helpful features to keep you in the writing zone.
 
 Its features include:
+
 - Showing the amount of syllables per line.
 - Contextually displaying rhymes as you type or select words.
 - Easily saving and reopening lyrics that you've made.
@@ -24,6 +26,7 @@ Its features include:
 - _[Desktop Only]_ Remembering your recently opened lyrics to help you continue where you left off.
 - Both a light and dark theme that it can automatically switch between.
 - Automatically updates.
+- _[Android 12+ Only]_ Matching your device's theme colors to effortlessly match Material You.
 - Available on your favorite platforms!
   - [Mac](https://lyricistant.app/#download)
   - [Windows](https://lyricistant.app/#download)
@@ -34,9 +37,12 @@ Its features include:
 
 ## How can I use it?
 
-#### [Browse it in your browser!](https://lyricistant.app)  
-#### [Check it out on your Mac, Windows, or Linux computer!](https://lyricistant.app/#download)
+#### [Browse it in your browser!](https://lyricistant.app)
+
+#### [Check it out on your computer!](https://lyricistant.app/#download)
+
 #### [Install it on your iPhone or iPad!](https://apps.apple.com/om/app/lyricistant/id1561506174)
+
 #### [Activate it on your Android device!](https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant)
 
 ## What's up with the name?
@@ -48,15 +54,20 @@ It's a combination of two words:
 
 Lyricistant!
 
-
 ## Information for developers
-### Getting Started
 
-This project uses [Gulp](https://gulpjs.com/) to build. 
+### Documentation
+
+You can take a look at the [current documentation here.](docs/1-getting_started.md)
+
+### Building Lyricistant
+
+This project uses [Gulp](https://gulpjs.com/) to build.
 
 The easiest way to use Gulp is via installing Gulp globally via `npm install -g gulp`, but this isn't required as `Gulp` is included as a dev dependency for this project, and so doing `npm install; node_modules/.bin/gulp <task>` will also work.
 
 How to check out and run the project:
+
 ```shell
 git checkout https://github.com/wardellbagby/lyricistant.git
 cd lyricistant
@@ -64,18 +75,23 @@ cd lyricistant
 gulp startElectron
 # Starts the Web app for development.
 gulp startWeb
+# Starts the Android app for development.
+gulp startAndroid
+# Starts the iOS app for development.
+gulp startIOS
 ```
 
 If you use a Jetbrains IDE (WebStorm, IntelliJ IDEA, etc) or Visual Studio Code, you can build and attach a debugger for all of these tasks natively in the IDE (via either Run Configurations for Jetbrains products or Run & Debug for Visual Studio Code).
-
 
 ### Viewing the latest on `main`
 
 New commits to `main` are automatically deployed, both on the web and as native binaries.
 
-- [Web](https://dev.lyricistant.app)  
+- [Web](https://dev.lyricistant.app)
 - [Native binaries](https://github.com/wardellbagby/lyricistant/releases/tag/latest)
+
 ### Running Tests
+
 There are currently unit and UI tests in the project.
 
 You can run all tests in a terminal via:
@@ -84,7 +100,7 @@ You can run all tests in a terminal via:
 gulp testAll
 ```
 
-There are also run the tests natively in your IDE, which will make it easier to attach a debugger.
+You can also run the tests natively in your IDE, which will make it easier to attach a debugger.
 
 If you'd like to attach a debugger while testing via terminal:
 
@@ -101,14 +117,18 @@ This is very useful for updating any scoped NPM dependencies that should be upda
 Example usage:
 
 ```shell
-./scripts/install-latest.ts @codemirror 18.1.0
+./scripts/install-latest.ts @codemirror 0.19.0 # omit to update to latest
 ```
 
 ### Committing
 
-This project uses [Commitzen](https://github.com/commitizen/cz-cli) and [Commitlint](https://commitlint.js.org/#/) to enforce a single commit style. 
+This project uses [Commitzen](https://github.com/commitizen/cz-cli) and [Commitlint](https://commitlint.js.org/#/) to enforce a single commit style.
 
-To create a commit using an interactive wizard that follows the commit standards, run `git cz` 
+To create a commit using an interactive wizard that follows the commit standards, run `git cz`
+
+## Code of Conduct
+
+We aim to be an inclusive and welcoming community. To make that explicit, we have a [code of conduct](CODE_OF_CONDUCT.md) that applies to this project.
 
 ## License
 
