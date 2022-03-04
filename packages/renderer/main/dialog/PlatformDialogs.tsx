@@ -120,7 +120,7 @@ export function PlatformDialog() {
       <FullscreenDialog
         open={open}
         dialogData={dialogData}
-        onCancel={() => setDialogData(null)}
+        onCancel={onClosed}
       />
     );
   } else if (dialogData.type === 'selection') {

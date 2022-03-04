@@ -152,7 +152,7 @@ describe('File Manager', () => {
 
   it("doesn't add to recent files when a file is not opened", async () => {
     recentFiles.getRecentFiles.returns(['1', '2', '3', 'test']);
-    files.openFile.returns(undefined);
+    files.openFile.resolves(undefined);
 
     manager.register();
 
@@ -483,7 +483,7 @@ describe('File Manager', () => {
   });
 
   it('updates the renderer when a file is opened by the platform directly', async () => {
-    files.openFile.returnsArg(0);
+    files.openFile.resolvesArg(0);
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
       sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);
@@ -514,7 +514,7 @@ describe('File Manager', () => {
   });
 
   it('updates the renderer when a file is opened by the renderer', async () => {
-    files.openFile.returnsArg(0);
+    files.openFile.resolvesArg(0);
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
       sinon.fake();
     manager.addOnFileChangedListener(fileChangeListener);

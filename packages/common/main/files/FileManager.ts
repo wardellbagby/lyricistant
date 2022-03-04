@@ -17,6 +17,11 @@ import {
   Preferences,
 } from '@lyricistant/common/preferences/Preferences';
 import { DefaultFileType } from '@lyricistant/common/preferences/PreferencesData';
+import {
+  Cancellable,
+  CancelSignal,
+  makeCancellable,
+} from '@lyricistant/common/Cancellable';
 
 export class FileManager implements Manager {
   public static SAVE_FILE_DIALOG_TAG = 'save-file';
@@ -123,12 +128,15 @@ export class FileManager implements Manager {
   };
 
   private openFile = async (file?: PlatformFile) => {
-    this.showLoadingDialog('open', true);
+    const cancelSignal = this.showLoadingDialog('open', true);
 
     try {
       // We still pass this to the Files in-case they have state they want to set based on the PlatformFile, or if they
       // need to make any platform-specific changes before we open it.
-      const platformFile = await this.files.openFile(file);
+      const platformFile = await makeCancellable(
+        this.files.openFile(file),
+        cancelSignal
+      );
       if (platformFile) {
         await this.openFileActual(platformFile);
       }
@@ -193,11 +201,14 @@ export class FileManager implements Manager {
         lyrics,
       });
 
-      this.showLoadingDialog('save', true);
-      const newFileMetadata = await this.files.saveFile(
-        serializedFileData,
-        `Lyrics.${fileHandler.extension}`,
-        path
+      const cancelSignal = this.showLoadingDialog('save', true);
+      const newFileMetadata = await makeCancellable(
+        this.files.saveFile(
+          serializedFileData,
+          `Lyrics.${fileHandler.extension}`,
+          path
+        ),
+        cancelSignal
       );
       if (newFileMetadata) {
         this.showLoadingDialog('save');
@@ -325,17 +336,39 @@ export class FileManager implements Manager {
     };
   };
 
-  private showLoadingDialog = (type: 'open' | 'save', cancelable = false) => {
+  /**
+   * Shows a full screen dialog over the renderer to denote that the FileManager
+   * is doing potentially long running work.
+   *
+   * @param type Whether the long running work is for opening or saving files.
+   * @param cancelable Whether the dialog can be cancelled by the user.
+   */
+  private showLoadingDialog = (
+    type: 'open' | 'save',
+    cancelable = false
+  ): CancelSignal | null => {
+    const tag =
+      type === 'open'
+        ? FileManager.OPEN_FILE_DIALOG_TAG
+        : FileManager.SAVE_FILE_DIALOG_TAG;
     this.rendererDelegate.send('show-dialog', {
-      tag:
-        type === 'open'
-          ? FileManager.OPEN_FILE_DIALOG_TAG
-          : FileManager.SAVE_FILE_DIALOG_TAG,
+      tag,
       type: 'fullscreen',
       message: `${type === 'open' ? 'Opening' : 'Saving'} file`,
       progress: 'indeterminate',
       cancelable,
     });
+    if (cancelable === true) {
+      const cancellable = new Cancellable();
+      const onDialogClosed = (closedTag: string) => {
+        if (closedTag === tag) {
+          this.rendererDelegate.removeListener('dialog-closed', onDialogClosed);
+          cancellable.cancel();
+        }
+      };
+      this.rendererDelegate.on('dialog-closed', onDialogClosed);
+      return cancellable.signal;
+    }
   };
 
   private promptFileHandlerSelection = async (): Promise<FileHandler> => {
