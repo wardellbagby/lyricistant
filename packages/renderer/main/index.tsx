@@ -23,7 +23,7 @@ window.onerror = (message, url, line, col, error) => {
       error
     );
   }
-  if (message === 'ResizeObserver loop limit exceeded') {
+  if (typeof message === 'string' && message.includes('ResizeObserver')) {
     // https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
     return;
   }
