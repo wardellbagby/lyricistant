@@ -8,4 +8,7 @@ export interface Logger {
   getPrintedLogs: () => Promise<string[]>;
 }
 
+/**
+ * A subset of the logger used by the platform for use in the renderer.
+ */
 export type RendererLogger = Omit<Logger, 'getPrintedLogs'>;

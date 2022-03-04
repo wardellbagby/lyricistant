@@ -56,7 +56,13 @@ export interface PlatformToRendererListener {
   'file-history': (history: ParsedHistoryData[]) => void;
 }
 
+/**
+ * All possible channels that the platform can use to talk to the renderer.
+ */
 export type RendererChannel = Extract<keyof PlatformToRendererListener, string>;
+/**
+ * All possible channels that the renderer can use to talk to the platform.
+ */
 export type PlatformChannel = Extract<keyof RendererToPlatformListener, string>;
 
 /**

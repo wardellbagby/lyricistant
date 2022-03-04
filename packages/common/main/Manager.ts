@@ -4,6 +4,29 @@ import {
   RendererToPlatformListener,
 } from '@lyricistant/common/Delegates';
 
+/**
+ * Represents some discrete "grouping" of logic related mostly to a single bit
+ * of functionality that needs to be handled on the platform.
+ *
+ * Managers are the basic building block of all platform-related code. They
+ * primarily handle communication between the platform and the renderer via
+ * having a {@link RendererDelegate} injected via their constructors, and
+ * registering for renderer events (or using
+ * {@link RendererDelegate.addRendererListenerSetListener}) to respond to with
+ * data.
+ *
+ * Some general tips:
+ *
+ * 1. Managers should avoid talking directly to other managers. Instead, inject
+ * "platform" classes directly. Lyricistant doesn't currently hold this rule
+ * true, but it's still a good tip to abide by.
+ * 2. Prefer sending data immediately to the renderer as soon as the renderer
+ * sets a listener for a channel, vs waiting for a specific event from the
+ * renderer asking for data.
+ * 3. Keep managers focused on a single feature. What feature means is loosely
+ * defined but if you're listening to more than 4 renderer channels, your
+ * manager is likely doing too much work.
+ */
 export interface Manager {
   register(): void;
 }
