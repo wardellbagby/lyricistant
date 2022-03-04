@@ -1,7 +1,8 @@
 ## Table of Contents
 
-- [Getting Started (You're here!)](1-getting_started.md)  
+- [**Getting Started**](1-getting_started.md)  
 - [How Platforms Work](2-how_platforms_work.md)
+- [How The Renderer Works](3-how_the_renderer_works.md)
 
 # Getting Started with Lyricistant
 
@@ -11,7 +12,7 @@ So you want to potentially contribute to Lyricistant? I'm happy to hear that! Le
 
 ### The Platforms of Lyricistant
 
-First, it's important to know that Lyricistant builds for Web, Electron, Android, and iOS. In code, these are referred to as "platforms". Every platform includes a core set of common functionality and can also provide platform-specific functionality that makes sense for that platform. For instance, Electron has special logic to handle app updates, while other platforms don't need that logic and so don't include it.
+First, it's important to know that Lyricistant builds for Web, Electron, Android, and iOS. In code, these are referred to as "platforms". Every platform includes a core set of common functionality (the common platform) and can also provide platform-specific functionality that makes sense for that platform. For instance, Electron has special logic to handle app updates, while other platforms don't need that logic and so don't include it.
 
 Depending on the platform in question, platform code can run directly in the browser with access to the DOM (Android & iOS), in Node (Electron), or in a Web Worker (Web when running in Chrome or Firefox). This is important as it means that all the common functionality for platforms must be written in an entirely agnostic way. It must assume it doesn't have access to the DOM or Node, and instead use pure ES6 functionality.
 
@@ -33,4 +34,4 @@ Platforms use a `RendererDelegate` to communicate with the renderer, and the ren
 
 ---
 
-[Next, let's talk more about how platforms work!](2-how_platforms_work.md)
+### [Next, let's talk more about how platforms work!](2-how_platforms_work.md)
