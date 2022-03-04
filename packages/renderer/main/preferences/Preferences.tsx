@@ -13,7 +13,6 @@ import {
   Dialog,
   Divider,
   FormControl,
-  Grid,
   IconButton,
   InputLabel,
   MenuItem,
@@ -58,7 +57,6 @@ const dialogStyles = makeStyles((theme: Theme) =>
       background: theme.palette.background.default,
     },
     paper: {
-      height: '100%',
       paddingTop: '32px',
       paddingBottom: '32px',
       paddingLeft: '32px',
@@ -77,12 +75,12 @@ const dialogStyles = makeStyles((theme: Theme) =>
 const Header = ({ label }: { label: string }) => {
   const classes = dialogStyles(undefined);
   return (
-    <>
+    <div>
       <Typography className={classes.header} variant={'h6'}>
         {label}
       </Typography>
       <Divider className={classes.divider} />
-    </>
+    </div>
   );
 };
 
@@ -218,97 +216,85 @@ export const Preferences = (props: PreferencesProps) => {
         </Toolbar>
       </AppBar>
       <Container maxWidth={'md'} className={classes.container}>
-        <Paper elevation={4} square className={classes.paper}>
-          <Box display={'flex'} flexDirection={'column'} height={'100%'}>
-            <Box flexGrow={1}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <Header label={'Display'} />
-                </Grid>
-                <Grid item xs={12}>
-                  <SelectBox
-                    value={preferencesData.font}
-                    onChange={onFontChanged}
-                    items={[
-                      { value: Font.Roboto_Mono, label: 'Roboto Monospace' },
-                      { value: Font.Roboto, label: 'Roboto' },
-                    ]}
-                    label={'Font'}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <SelectBox
-                    value={preferencesData.textSize}
-                    onChange={onDetailsSizeChanged}
-                    items={[
-                      { value: 8, label: '8' },
-                      { value: 12, label: '12' },
-                      { value: 16, label: '16 (Default)' },
-                      { value: 20, label: '20' },
-                      { value: 24, label: '24' },
-                      { value: 28, label: '28' },
-                    ]}
-                    label={'Text Size'}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <SelectBox
-                    value={preferencesData.colorScheme}
-                    onChange={onColorSchemeChanged}
-                    items={[
-                      { value: LyricistantTheme.Light, label: 'Light' },
-                      { value: LyricistantTheme.Dark, label: 'Dark' },
-                      {
-                        value: LyricistantTheme.System,
-                        label: 'Use Device Color Scheme',
-                      },
-                    ]}
-                    label={'Color Scheme'}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Header label={'Other'} />
-                </Grid>
-                <Grid item xs={12}>
-                  <SelectBox
-                    value={preferencesData.rhymeSource}
-                    onChange={onRhymeSourceChanged}
-                    items={[
-                      { value: RhymeSource.Offline, label: 'Offline (alpha)' },
-                      { value: RhymeSource.Datamuse, label: 'Datamuse' },
-                    ]}
-                    label={'Rhyme Source'}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <SelectBox
-                    value={preferencesData.defaultFileType}
-                    onChange={onDefaultFileTypeChanged}
-                    items={[
-                      {
-                        value: DefaultFileType.Always_Ask,
-                        label: 'Always Ask',
-                      },
-                      {
-                        value: DefaultFileType.Lyricistant_Lyrics,
-                        label: 'Lyricistant file (.lyrics)',
-                      },
-                      {
-                        value: DefaultFileType.Plain_Text,
-                        label: 'Plain Text (.txt)',
-                      },
-                    ]}
-                    label={'Default File Type'}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
+        <Paper className={classes.paper}>
+          <Box display={'flex'} flexDirection={'column'} gap={'24px'}>
+            <Header label={'Display'} />
+
+            <SelectBox
+              value={preferencesData.font}
+              onChange={onFontChanged}
+              items={[
+                { value: Font.Roboto_Mono, label: 'Roboto Monospace' },
+                { value: Font.Roboto, label: 'Roboto' },
+              ]}
+              label={'Font'}
+            />
+
+            <SelectBox
+              value={preferencesData.textSize}
+              onChange={onDetailsSizeChanged}
+              items={[
+                { value: 8, label: '8' },
+                { value: 12, label: '12' },
+                { value: 16, label: '16 (Default)' },
+                { value: 20, label: '20' },
+                { value: 24, label: '24' },
+                { value: 28, label: '28' },
+              ]}
+              label={'Text Size'}
+            />
+
+            <SelectBox
+              value={preferencesData.colorScheme}
+              onChange={onColorSchemeChanged}
+              items={[
+                { value: LyricistantTheme.Light, label: 'Light' },
+                { value: LyricistantTheme.Dark, label: 'Dark' },
+                {
+                  value: LyricistantTheme.System,
+                  label: 'Use Device Color Scheme',
+                },
+              ]}
+              label={'Color Scheme'}
+            />
+
+            <Header label={'Other'} />
+
+            <SelectBox
+              value={preferencesData.rhymeSource}
+              onChange={onRhymeSourceChanged}
+              items={[
+                { value: RhymeSource.Offline, label: 'Offline (alpha)' },
+                { value: RhymeSource.Datamuse, label: 'Datamuse' },
+              ]}
+              label={'Rhyme Source'}
+            />
+
+            <SelectBox
+              value={preferencesData.defaultFileType}
+              onChange={onDefaultFileTypeChanged}
+              items={[
+                {
+                  value: DefaultFileType.Always_Ask,
+                  label: 'Always Ask',
+                },
+                {
+                  value: DefaultFileType.Lyricistant_Lyrics,
+                  label: 'Lyricistant file (.lyrics)',
+                },
+                {
+                  value: DefaultFileType.Plain_Text,
+                  label: 'Plain Text (.txt)',
+                },
+              ]}
+              label={'Default File Type'}
+            />
             <Button
-              fullWidth={false}
               variant={'text'}
               startIcon={<Info />}
               size={'large'}
               onClick={props.onAboutClicked}
+              sx={{ flexGrow: 1 }}
             >
               About Lyricistant
             </Button>
