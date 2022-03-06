@@ -3,8 +3,8 @@ import * as path from 'path';
 import { format as formatUrl, URL } from 'url';
 import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { FileManager } from '@lyricistant/common/files/FileManager';
-import { Managers } from '@lyricistant/common/Managers';
+import { FileManager } from '@lyricistant/common-platform/files/FileManager';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 import debug from 'electron-debug';
 import { DIContainer } from '@wessberg/di';
@@ -12,8 +12,7 @@ import { createRendererDelegate } from '@electron-delegates/Delegates';
 import { createAppMenu } from '@electron-app/app-menu';
 import { QuitManager } from '@electron-app/platform/QuitManager';
 import { createAppComponent } from '@electron-app/AppComponent';
-import { Manager } from '@lyricistant/common/Manager';
-import { Files } from '@lyricistant/common/files/Files';
+import { Files } from '@lyricistant/common-platform/files/Files';
 import { ElectronLogger } from '@electron-app/platform/Logger';
 import { Logger } from '@lyricistant/common/Logger';
 
@@ -137,7 +136,7 @@ const onAppComponentCreated = () => {
       .get<Files>()
       .readFile(initialFilePath)
       .then(appComponent.get<FileManager>().onOpenFile)
-      .catch((reason) =>
+      .catch((reason: any) =>
         logger.error('Failed to open initial file', initialFilePath, reason)
       );
   }
@@ -162,8 +161,7 @@ const createWindow = (): void => {
   logger = appComponent.get<Logger>() as ElectronLogger;
   rendererDelegate = createRendererDelegate(mainWindow);
 
-  appComponent.get<Managers>().forEach((getManager: () => Manager) => {
-    const manager = getManager();
+  appComponent.get<Managers>().forEach((manager) => {
     logger.verbose(`Registering ${manager.constructor.name}`);
     manager.register();
   });
@@ -229,7 +227,7 @@ app.on('open-file', (event, filePath) => {
       .get<Files>()
       .readFile(filePath)
       .then(appComponent.get<FileManager>().onOpenFile)
-      .catch((reason) =>
+      .catch((reason: any) =>
         logger.error('Failed to open initial file', initialFilePath, reason)
       );
   } else {

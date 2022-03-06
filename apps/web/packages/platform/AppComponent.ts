@@ -1,37 +1,55 @@
-import type { Managers } from '@lyricistant/common/Managers';
+import type { Managers } from '@lyricistant/common-platform/Managers';
 import { DIContainer } from '@wessberg/di';
-import { UnloadManager } from '@lyricistant/core-platform/platform/UnloadManager';
+import { UnloadManager } from '@lyricistant/core-dom-platform/platform/UnloadManager';
 import {
-  createBaseComponent,
-  createBaseManagers,
-} from '@lyricistant/core-platform/AppComponent';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Preferences } from '@lyricistant/common/preferences/Preferences';
+  getCommonManagers,
+  registerCommonPlatform,
+} from '@lyricistant/common-platform/AppComponents';
 import { WebPreferences } from '@web-platform/implementations/WebPreferences';
-import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
 import { WebRecentFiles } from '@web-platform/implementations/WebRecentFiles';
-import { Files } from '@lyricistant/common/files/Files';
 import { WebFiles } from '@web-platform/implementations/WebFiles';
-import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
 import { WebTemporaryFiles } from '@web-platform/implementations/WebTemporaryFiles';
-import { Logger } from '@lyricistant/common/Logger';
 import { WebLogger } from '@web-platform/implementations/WebLogger';
+import {
+  formatTitle,
+  provideUiConfig,
+} from '@lyricistant/core-dom-platform/platform/UiConfigProvider';
+import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
+import { CoreSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
 import { WebRendererDelegate } from './RendererDelegate';
 
 const createComponent = (): DIContainer => {
-  const component = createBaseComponent();
+  const component = new DIContainer();
 
-  component.registerSingleton<RendererDelegate, WebRendererDelegate>();
+  component.registerSingleton<WebRendererDelegate>();
+  component.registerSingleton<WebLogger>();
+  component.registerSingleton<WebPreferences>();
+  component.registerSingleton<WebRecentFiles>();
+  component.registerSingleton<WebTemporaryFiles>();
+  component.registerSingleton<WebFiles>();
+  component.registerSingleton<CoreSystemThemeProvider>();
+  component.registerSingleton<CoreBuffers>();
+
+  registerCommonPlatform(
+    {
+      rendererDelegate: () => component.get<WebRendererDelegate>(),
+      logger: () => component.get<WebLogger>(),
+      files: () => component.get<WebFiles>(),
+      preferences: () => component.get<WebPreferences>(),
+      titleFormatter: () => formatTitle,
+      buffers: () => component.get<CoreBuffers>(),
+      temporaryFiles: () => component.get<WebTemporaryFiles>(),
+      systemThemeProvider: () => component.get<CoreSystemThemeProvider>(),
+      recentFiles: () => component.get<WebRecentFiles>(),
+      uiConfigProvider: () => provideUiConfig,
+    },
+    component
+  );
   component.registerSingleton<UnloadManager>();
-  component.registerSingleton<Logger, WebLogger>();
-  component.registerSingleton<Preferences, WebPreferences>();
-  component.registerSingleton<RecentFiles, WebRecentFiles>();
-  component.registerSingleton<TemporaryFiles, WebTemporaryFiles>();
-  component.registerSingleton<Files, WebFiles>();
 
   component.registerSingleton<Managers>(() => [
-    ...createBaseManagers(component),
-    () => component.get<UnloadManager>(),
+    ...getCommonManagers(component),
+    component.get<UnloadManager>(),
   ]);
   return component;
 };

@@ -1,0 +1,10 @@
+{
+  "include": ["main/**/*"],
+  "compilerOptions": {
+    "outDir": "build",
+    "lib": ["dom", "es6"],
+    "composite": true
+  },
+  "references": [{ "path": "../common" }, { "path": "../common-platform" }],
+  "extends": "../../tsconfig.json"
+}

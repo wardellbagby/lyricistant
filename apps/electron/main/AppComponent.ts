@@ -1,20 +1,8 @@
-import type { RendererDelegate } from '@lyricistant/common/Delegates';
-import type { Files } from '@lyricistant/common/files/Files';
-import type { RecentFiles } from '@lyricistant/common/files/RecentFiles';
-import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
-import type { Logger } from '@lyricistant/common/Logger';
-import type { Managers } from '@lyricistant/common/Managers';
-import type { PreferenceManager } from '@lyricistant/common/preferences/PreferenceManager';
-import type { Preferences } from '@lyricistant/common/preferences/Preferences';
-import type { SystemThemeProvider } from '@lyricistant/common/theme/SystemTheme';
+import type { Managers } from '@lyricistant/common-platform/Managers';
 import {
-  createBaseComponent,
-  createBaseManagers,
-} from '@lyricistant/core-platform/AppComponent';
-import type {
-  TitleFormatter,
-  UiConfigProvider,
-} from '@lyricistant/common/ui/UiConfig';
+  getCommonManagers,
+  registerCommonPlatform,
+} from '@lyricistant/common-platform/AppComponents';
 import { DIContainer } from '@wessberg/di';
 import {
   BrowserWindow,
@@ -44,58 +32,64 @@ import type {
   NodeFileSystem,
 } from '@electron-app/wrappers/FileSystem';
 import { AxiosHttpClient, HttpClient } from '@electron-app/wrappers/HttpClient';
-import { Buffers } from '@lyricistant/common/files/Buffers';
 import { ElectronBuffers } from '@electron-app/platform/Buffers';
 
-const registerElectronFunctionality = (component: DIContainer) => {
+const registerElectronFunctionality = (
+  component: DIContainer,
+  window: BrowserWindow
+) => {
+  component.registerSingleton<BrowserWindow>(() => window);
+  component.registerSingleton<AppStore>();
+  component.registerSingleton<AppUpdater>(() => autoUpdater);
   component.registerSingleton<ElectronDialog>(() => dialog);
   component.registerSingleton<FileSystem, NodeFileSystem>();
   component.registerSingleton<HttpClient, AxiosHttpClient>();
   component.registerSingleton<NativeTheme>(() => nativeTheme);
 };
+
 const registerPlatformFunctionality = (component: DIContainer) => {
-  component.registerSingleton<AppStore>();
-  component.registerSingleton<Files, ElectronFiles>();
-  component.registerSingleton<Logger, ElectronLogger>();
-  component.registerSingleton<Preferences, ElectronPreferences>();
-  component.registerSingleton<RecentFiles, ElectronRecentFiles>();
-  component.registerSingleton<
-    SystemThemeProvider,
-    ElectronSystemThemeProvider
-  >();
-  component.registerSingleton<TemporaryFiles, ElectronTemporaryFiles>();
-  component.registerSingleton<Buffers, ElectronBuffers>();
-  component.registerSingleton<UiConfigProvider>(() => provideUiConfig);
-  component.registerSingleton<TitleFormatter>(() => formatTitle);
-  component.registerSingleton<AppUpdater>(() => autoUpdater);
+  component.registerSingleton<ElectronFiles>();
+  component.registerSingleton<ElectronLogger>();
+  component.registerSingleton<ElectronPreferences>();
+  component.registerSingleton<ElectronRecentFiles>();
+  component.registerSingleton<ElectronSystemThemeProvider>();
+  component.registerSingleton<ElectronTemporaryFiles>();
+  component.registerSingleton<ElectronBuffers>();
+  registerCommonPlatform(
+    {
+      rendererDelegate: () =>
+        new ElectronRendererDelegate(ipcMain, component.get<BrowserWindow>()),
+      files: () => component.get<ElectronFiles>(),
+      logger: () => component.get<ElectronLogger>(),
+      buffers: () => component.get<ElectronBuffers>(),
+      preferences: () => component.get<ElectronPreferences>(),
+      recentFiles: () => component.get<ElectronRecentFiles>(),
+      temporaryFiles: () => component.get<ElectronTemporaryFiles>(),
+      systemThemeProvider: () => component.get<ElectronSystemThemeProvider>(),
+      titleFormatter: () => formatTitle,
+      uiConfigProvider: () => provideUiConfig,
+    },
+    component
+  );
 };
 
 const registerManagers = (component: DIContainer) => {
-  component.registerSingleton<PreferenceManager>();
   component.registerSingleton<QuitManager>();
   component.registerSingleton<UpdateManager>();
 
   component.registerTransient<Managers>(() => [
-    ...createBaseManagers(component),
-    () => component.get<PreferenceManager>(),
-    () => component.get<QuitManager>(),
-    () => component.get<UpdateManager>(),
+    ...getCommonManagers(component),
+    component.get<QuitManager>(),
+    component.get<UpdateManager>(),
   ]);
 };
 
-const createComponent = (): DIContainer => {
-  const component = createBaseComponent();
-  component.registerTransient<RendererDelegate>(
-    () => new ElectronRendererDelegate(ipcMain, component.get<BrowserWindow>())
-  );
+export const createAppComponent = (window: BrowserWindow): DIContainer => {
+  const component = new DIContainer();
 
-  registerElectronFunctionality(component);
+  registerElectronFunctionality(component, window);
   registerPlatformFunctionality(component);
   registerManagers(component);
-  return component;
-};
-export const createAppComponent = (window: BrowserWindow): DIContainer => {
-  const component = createComponent();
-  component.registerSingleton<BrowserWindow>(() => window);
+
   return component;
 };

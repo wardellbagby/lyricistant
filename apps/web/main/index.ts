@@ -1,21 +1,13 @@
 import { start as startNew } from '@web-renderer/index';
 import { isChrome, isFirefox } from 'react-device-detect';
 import { Logger } from '@lyricistant/common/Logger';
-import { platformDelegate } from '@lyricistant/core-platform/Delegates';
-import { Managers } from '@lyricistant/common/Managers';
-import {
-  createBaseComponent,
-  createBaseManagers,
-} from '@lyricistant/core-platform/AppComponent';
-import { UnloadManager } from '@lyricistant/core-platform/platform/UnloadManager';
+import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
+import { Managers } from '@lyricistant/common-platform/Managers';
+import { createComponent as createLegacyComponent } from '@web-app/LegacyAppComponent';
+import { Manager } from '@lyricistant/common-platform/Manager';
 
 const startLegacy = async () => {
-  const appComponent = createBaseComponent();
-  appComponent.registerSingleton<UnloadManager>();
-  appComponent.registerSingleton<Managers>(() => [
-    ...createBaseManagers(appComponent),
-    () => appComponent.get<UnloadManager>(),
-  ]);
+  const appComponent = createLegacyComponent();
 
   const logger = appComponent.get<Logger>();
 
@@ -23,7 +15,9 @@ const startLegacy = async () => {
   window.platformDelegate = platformDelegate;
 
   return new Promise<void>((resolve) => {
-    appComponent.get<Managers>().forEach((manager) => manager().register());
+    appComponent
+      .get<Managers>()
+      .forEach((manager: Manager) => manager.register());
     resolve();
   })
     .then(async () => {

@@ -1,5 +1,5 @@
 import { renderer } from '@web-platform/renderer';
-import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
+import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 
 export class WebTemporaryFiles implements TemporaryFiles {
   public set = (key: string, data: string | null) => {

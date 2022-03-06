@@ -6,15 +6,7 @@ import { platformDelegate } from './PlatformDelegate';
 import { mainProcessWorker, platform } from './platform';
 
 window.platformDelegate = platformDelegate;
-window.onerror = (message, url, line, col, error) => {
-  const availableLogger = logger ?? console;
-  availableLogger.error(
-    JSON.stringify(message) + '\n',
-    `Url: ${url}\n`,
-    `Line: ${line}\n`,
-    `Column: ${col}\n`,
-    error
-  );
+window.onerror = () => {
   alert(
     [
       'Sorry, Lyricistant has crashed! Please close this page and contact the developers.',

@@ -1,4 +1,4 @@
-import { PlatformFile } from '@lyricistant/common/files/Files';
+import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import { FileSystemHandle } from 'browser-fs-access';
 
 type FSApiDataTransferItem = DataTransferItem & {

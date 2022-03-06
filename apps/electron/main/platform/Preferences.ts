@@ -1,4 +1,4 @@
-import { Preferences as IPreferences } from '@lyricistant/common/preferences/Preferences';
+import { Preferences as IPreferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';

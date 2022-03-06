@@ -7,6 +7,7 @@ import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import {
   ColorScheme,
+  DefaultFileType,
   Font,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
@@ -179,6 +180,7 @@ describe('App component', () => {
       font: Font.Roboto,
       colorScheme: ColorScheme.Dark,
       textSize: 16,
+      defaultFileType: DefaultFileType.Always_Ask,
     });
 
     const editor = await screen.findByRole('textbox');

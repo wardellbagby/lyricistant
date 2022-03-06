@@ -1,9 +1,9 @@
-import { Managers } from '@lyricistant/common/Managers';
-import { Manager } from '@lyricistant/common/Manager';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { expose, proxy } from 'comlink';
 import { Logger } from '@lyricistant/common/Logger';
 import { renderer } from '@web-platform/renderer';
+import { Manager } from '@lyricistant/common-platform/Manager';
 import { WebRendererDelegate } from './RendererDelegate';
 import { appComponent } from './AppComponent';
 
@@ -21,7 +21,7 @@ const start = () => {
   try {
     appComponent
       .get<Managers>()
-      .forEach((manager: () => Manager) => manager().register());
+      .forEach((manager: Manager) => manager.register());
   } catch (e) {
     self.onerror(e);
   }

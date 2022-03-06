@@ -1,4 +1,4 @@
-import { TemporaryFiles } from '@lyricistant/common/files/TemporaryFiles';
+import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 

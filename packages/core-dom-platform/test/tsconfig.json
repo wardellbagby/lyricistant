@@ -1,0 +1,7 @@
+{
+  "include": ["*.spec.ts", "../main/**/*.ts"],
+  "compilerOptions": {
+    "types": ["jest"]
+  },
+  "extends": "../tsconfig.json"
+}

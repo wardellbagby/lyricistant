@@ -5,7 +5,7 @@ import {
   RendererDelegate,
   RendererToPlatformListener,
 } from '@lyricistant/common/Delegates';
-import { ListenerManager } from '@lyricistant/core-platform/Delegates';
+import { ListenerManager } from '@lyricistant/core-dom-platform/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
 import { renderer } from './renderer';
 

@@ -1,9 +1,11 @@
 import {
-  FileMetadata,
   Files as IFiles,
   LYRICS_EXTENSION,
+} from '@lyricistant/common-platform/files/Files';
+import {
+  FileMetadata,
   PlatformFile,
-} from '@lyricistant/common/files/Files';
+} from '@lyricistant/common/files/PlatformFile';
 import { BrowserWindow, Dialog as ElectronDialog } from 'electron';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 

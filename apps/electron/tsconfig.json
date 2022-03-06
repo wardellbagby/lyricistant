@@ -8,7 +8,7 @@
   },
   "references": [
     { "path": "../../packages/common" },
-    { "path": "../../packages/core-platform" },
+    { "path": "../../packages/common-platform" },
     { "path": "../../packages/renderer/" },
     { "path": "./packages/delegates/" }
   ],

@@ -9,7 +9,7 @@
   "references": [
     { "path": "../../packages/common/" },
     { "path": "../../packages/renderer/" },
-    { "path": "../../packages/core-platform/" }
+    { "path": "../../packages/core-dom-platform/"}
   ],
   "extends": "../../tsconfig.json"
 }

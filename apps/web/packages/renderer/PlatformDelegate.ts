@@ -5,7 +5,7 @@ import {
   RendererChannel,
   RendererToPlatformListener,
 } from '@lyricistant/common/Delegates';
-import { ListenerManager } from '@lyricistant/core-platform/Delegates';
+import { ListenerManager } from '@lyricistant/core-dom-platform/Delegates';
 import { platform } from './platform';
 
 class WebPlatformDelegate implements PlatformDelegate {

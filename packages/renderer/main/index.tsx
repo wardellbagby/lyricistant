@@ -13,18 +13,20 @@ const oldOnError = window.onerror;
 window.onerror = (message, url, line, col, error) => {
   if (!logger) {
     // eslint-disable-next-line no-console
-    console.error(message, url, line, col, error);
+    console.error(message, { url, line, col }, error);
   } else {
-    logger.error(
-      JSON.stringify(message) + '\n',
-      `Url: ${url}\n`,
-      `Line: ${line}\n`,
-      `Column: ${col}\n`,
-      error
-    );
+    logger.error(JSON.stringify(message), { url, line, col }, error);
   }
   if (typeof message === 'string' && message.includes('ResizeObserver')) {
     // https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
+    return;
+  }
+  if (
+    (!url || url.length === 0) &&
+    typeof message === 'string' &&
+    message.includes('Script error')
+  ) {
+    // Safari likes to throw out extra unnecessary errors.
     return;
   }
   if (oldOnError) {

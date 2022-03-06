@@ -3,9 +3,9 @@ if (module.hot) {
 }
 
 import { Logger } from '@lyricistant/common/Logger';
-import { Managers } from '@lyricistant/common/Managers';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { appComponent } from '@mobile-app/AppComponent';
-import { platformDelegate } from '@lyricistant/core-platform/Delegates';
+import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
 
 const logger = appComponent.get<Logger>();
 
@@ -33,7 +33,7 @@ window.onerror = (message, url, line, col, error) => {
 window.onunhandledrejection = (event) => window.onerror(event.reason);
 
 new Promise<void>((resolve) => {
-  appComponent.get<Managers>().forEach((manager) => manager().register());
+  appComponent.get<Managers>().forEach((manager) => manager.register());
   resolve();
 })
   .then(async () => {

@@ -1,4 +1,4 @@
-import { Preferences } from '@lyricistant/common/preferences/Preferences';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
 import { renderer } from '@web-platform/renderer';
 

@@ -1,4 +1,4 @@
-import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
+import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 
 export class WebRecentFiles implements RecentFiles {
   public getRecentFiles = (): string[] => [];

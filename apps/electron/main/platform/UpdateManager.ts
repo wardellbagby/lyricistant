@@ -1,7 +1,7 @@
 import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
-import { Manager } from '@lyricistant/common/Manager';
+import { Manager } from '@lyricistant/common-platform/Manager';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
 import { AppStore } from '@electron-app/AppStore';
 import { HttpClient } from '@electron-app/wrappers/HttpClient';

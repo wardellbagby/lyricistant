@@ -8,7 +8,8 @@
   },
   "references": [
     { "path": "../../../../packages/common/" },
-    { "path": "../../../../packages/core-platform/" },
+    { "path": "../../../../packages/common-platform/"},
+    { "path": "../../../../packages/core-dom-platform/"},
     { "path": "../../packages/common" }
   ],
   "extends": "../../../../tsconfig.json"

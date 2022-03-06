@@ -1,5 +1,5 @@
 import { TextDecoder, TextEncoder } from 'util';
-import { Buffers } from '@lyricistant/common/files/Buffers';
+import { Buffers } from '@lyricistant/common-platform/files/Buffers';
 
 const decoder = new TextDecoder();
 const encoder = new TextEncoder();

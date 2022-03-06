@@ -23,6 +23,7 @@
     ],
     "paths": {
       "@lyricistant/common/*": ["packages/common/main/*"],
+      "@lyricistant/common-platform/*": ["packages/common-platform/main/*"],
       "@lyricistant/renderer/*": ["packages/renderer/main/*"],
       "@electron-app/*": ["apps/electron/main/*"],
       "@electron-delegates/*": ["apps/electron/packages/delegates/*"],
@@ -30,7 +31,7 @@
       "@screenshotter-app/*": ["apps/screenshotter/main/*"],
       "@web-app/*": ["apps/web/main/*"],
       "@lyricistant/codemirror/*": ["packages/codemirror/main/*"],
-      "@lyricistant/core-platform/*": ["packages/core-platform/main/*"],
+      "@lyricistant/core-dom-platform/*": ["packages/core-dom-platform/main/*"],
       "@lyricistant/rhyme-generator": [
         "packages/rhyme-generator/main/index.ts"
       ],

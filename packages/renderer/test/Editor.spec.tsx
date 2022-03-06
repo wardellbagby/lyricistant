@@ -8,7 +8,7 @@ import {
   Editor as RealEditor,
   EditorProps,
 } from '@lyricistant/renderer/editor/Editor';
-import { PlatformFile } from '@lyricistant/common/files/Files';
+import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import userEvent from '@testing-library/user-event';
 import { render as render, wait } from './Wrappers';
 import { MockLogger } from './MockLogger';

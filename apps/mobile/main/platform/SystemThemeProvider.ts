@@ -3,7 +3,7 @@ import {
   SystemTheme,
   SystemThemeProvider,
 } from '@lyricistant/common/theme/SystemTheme';
-import { setColorSchemeListener } from '@lyricistant/core-platform/platform/SystemThemeProvider';
+import { setColorSchemeListener } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
 
 declare global {
   interface Window {

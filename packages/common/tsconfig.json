@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "build",
     "lib": ["es6"],
-    "types": [],
+    "types": ["webpack-env"],
     "composite": true
   },
   "references": [],

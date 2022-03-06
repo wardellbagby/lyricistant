@@ -1,4 +1,4 @@
-import { RecentFiles as IRecentFiles } from '@lyricistant/common/files/RecentFiles';
+import { RecentFiles as IRecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 

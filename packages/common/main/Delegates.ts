@@ -7,8 +7,8 @@ import {
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
-import { PlatformFile } from '@lyricistant/common/files/Files';
-import { ParsedHistoryData } from '@lyricistant/common/history/FileHistory';
+import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
+import { ParsedHistoryData } from '@lyricistant/common/history/ParsedHistoryData';
 
 /**
  * Information that the renderer wants to send to the platform.

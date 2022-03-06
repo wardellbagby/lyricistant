@@ -232,8 +232,8 @@
       "program": "node_modules/.bin/gulp"
     },
     {
-      "name": "Test Common",
-      "args": ["testCommon"],
+      "name": "Test Common Platform",
+      "args": ["testCommonPlatform"],
       "type": "pwa-node",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
@@ -252,8 +252,8 @@
       "program": "node_modules/.bin/gulp"
     },
     {
-      "name": "Test Core Platform",
-      "args": ["testCorePlatform"],
+      "name": "Test Core Dom Platform",
+      "args": ["testCoreDOMPlatform"],
       "type": "pwa-node",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],

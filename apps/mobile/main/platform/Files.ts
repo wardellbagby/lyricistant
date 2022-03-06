@@ -1,5 +1,6 @@
 import { registerPlugin } from '@capacitor/core';
-import { FileMetadata, Files } from '@lyricistant/common/files/Files';
+import { Files } from '@lyricistant/common-platform/files/Files';
+import { FileMetadata } from '@lyricistant/common/files/PlatformFile';
 import { Logger } from '@lyricistant/common/Logger';
 
 interface MobileFilesPlugin {
