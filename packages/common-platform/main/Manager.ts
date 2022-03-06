@@ -43,18 +43,21 @@ export const showRendererDialog = async (
   ...args: Parameters<PlatformToRendererListener['show-dialog']>
 ): Promise<Parameters<RendererToPlatformListener['dialog-interaction']>> =>
   new Promise((resolve) => {
-    const listener = (
+    const onInteraction = (
       ...clickArgs: Parameters<RendererToPlatformListener['dialog-interaction']>
     ) => {
-      rendererDelegate.removeListener('dialog-interaction', listener);
+      rendererDelegate.removeListener('dialog-interaction', onInteraction);
+      rendererDelegate.removeListener('dialog-closed', onClose);
       resolve(clickArgs);
     };
-    const onCloseListener = () => {
-      rendererDelegate.removeListener('dialog-interaction', listener);
-      rendererDelegate.removeListener('dialog-closed', onCloseListener);
+
+    const onClose = () => {
+      rendererDelegate.removeListener('dialog-interaction', onInteraction);
+      rendererDelegate.removeListener('dialog-closed', onClose);
     };
-    rendererDelegate.on('dialog-interaction', listener);
-    rendererDelegate.on('dialog-closed', onCloseListener);
+
+    rendererDelegate.on('dialog-interaction', onInteraction);
+    rendererDelegate.on('dialog-closed', onClose);
     rendererDelegate.send('show-dialog', ...args);
   });
 

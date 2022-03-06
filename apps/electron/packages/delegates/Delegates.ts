@@ -44,7 +44,9 @@ class WrappedListenerHelper {
     return wrappedListener;
   };
 
-  public remove = (listener: (...args: any[]) => void): ElectronListener => {
+  public remove = (
+    listener: (...args: any[]) => void
+  ): ElectronListener | null => {
     let wrappedListener = null;
     this.listeners.forEach((wrapped) => {
       if (wrapped.originalListener === listener) {
@@ -53,7 +55,7 @@ class WrappedListenerHelper {
     });
 
     if (!wrappedListener) {
-      throw new Error("Can't remove listener that was never registered!");
+      return null;
     }
 
     this.listeners.delete(wrappedListener);
@@ -110,7 +112,10 @@ export class ElectronRendererDelegate implements RendererDelegate {
   ): this {
     logger.info('Removing renderer listener', channel);
 
-    this.ipcMain.removeListener(channel, this.listeners.remove(listener));
+    const realListener = this.listeners.remove(listener);
+    if (realListener) {
+      this.ipcMain.removeListener(channel, realListener);
+    }
 
     return this;
   }
@@ -150,7 +155,10 @@ class ElectronPlatformDelegate implements PlatformDelegate {
   ): this {
     logger.info('Removing platform listener', channel);
 
-    this.ipcRenderer.removeListener(channel, this.listeners.remove(listener));
+    const realListener = this.listeners.remove(listener);
+    if (realListener) {
+      this.ipcRenderer.removeListener(channel, realListener);
+    }
 
     return this;
   }
