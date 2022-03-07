@@ -13,7 +13,7 @@ import {
 } from '@lyricistant/common/files/PlatformFile';
 import chaiAsPromised from 'chai-as-promised';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
-import { FileSystemHandle, FileWithHandle } from 'browser-fs-access';
+import { FileWithHandle } from 'browser-fs-access';
 import chaiSubset from 'chai-subset';
 
 use(sinonChai);
@@ -97,12 +97,13 @@ describe('Files', () => {
   });
 
   it('saves the file when saving a file with a file handle', async () => {
-    const handle: FileSystemHandle = {
+    const handle: FileSystemFileHandle = {
       name: 'mycoollyrics.txt',
       kind: 'file',
       isSameEntry: () => undefined,
       requestPermission: () => undefined,
       queryPermission: () => undefined,
+      getFile: () => undefined,
     };
 
     const file: FileWithHandle = new File(['oh'], 'mycoollyrics.lyrics', {

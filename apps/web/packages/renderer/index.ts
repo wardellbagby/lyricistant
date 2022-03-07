@@ -1,5 +1,5 @@
 import { expose, proxy, transfer } from 'comlink';
-import { fileOpen, fileSave } from 'browser-fs-access';
+import { fileOpen, fileSave, FileSystemHandle } from 'browser-fs-access';
 import { Storage } from '@web-common/Storage';
 import { BufferFileSystem } from '@web-common/BufferFileSystem';
 import { platformDelegate } from './PlatformDelegate';
@@ -22,6 +22,13 @@ window.onunhandledrejection = (event) => window.onerror(event.reason);
 export const receive = (channel: string, args: any[]) => {
   platformDelegate.receive(channel, args);
 };
+
+// Remove this when Typescript types start including the queryPermission and
+// requestPermission properties.
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface FileSystemFileHandle extends FileSystemHandle {}
+}
 
 const getFileSystem: () => BufferFileSystem = () =>
   proxy({

@@ -9,8 +9,8 @@ import {
   SUPPORTED_MIME_TYPES,
 } from '@lyricistant/common-platform/files/Files';
 import { Logger } from '@lyricistant/common/Logger';
-import { FileSystemHandle, FileWithHandle } from 'browser-fs-access';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
+import { FileWithHandle, FileSystemHandle } from 'browser-fs-access';
 
 export class CoreFiles implements IFiles {
   /*
