@@ -1,3 +1,19 @@
+## [1.3.14](https://github.com/wardellbagby/lyricistant/compare/v1.3.13...v1.3.14) (2022-03-07)
+
+
+### Bug Fixes
+
+* **electron:** correctly load font on app start ([cd1c96f](https://github.com/wardellbagby/lyricistant/commit/cd1c96f481fea76d9e3f1e8810f44223286d3b3f))
+* force preferences to refresh from platform when opened ([3a8aa2e](https://github.com/wardellbagby/lyricistant/commit/3a8aa2e6b13c5ac13ae2bfeecdccac2bacc9500c))
+* **preferences:** don't clip preferences background on small screens ([1940ef0](https://github.com/wardellbagby/lyricistant/commit/1940ef010b03f04950317305351902b4b1664b4f))
+
+
+### Features
+
+* add ability to select file type to save lyrics as ([16d11be](https://github.com/wardellbagby/lyricistant/commit/16d11bef41998e4b3d571adffabd2ca8d9a01f41))
+
+
+
 ## [1.3.13](https://github.com/wardellbagby/lyricistant/compare/v1.3.12...v1.3.13) (2022-01-30)
 
 
