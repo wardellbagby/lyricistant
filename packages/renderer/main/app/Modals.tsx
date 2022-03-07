@@ -6,9 +6,9 @@ import { AboutDialog } from '@lyricistant/renderer/about/AboutDialog';
 import { PrivacyPolicy } from '@lyricistant/renderer/privacy/PrivacyPolicy';
 import { FileHistory } from '@lyricistant/renderer/filehistory/FileHistory';
 import { RouteChildrenProps } from 'react-router';
-import { PlatformDialog } from '@lyricistant/renderer/dialog/PlatformDialogs';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import { History } from 'history';
+import { PlatformDialogs } from '@lyricistant/renderer/platform/PlatformDialogs';
 
 type ModalRoutePathNames =
   | 'about'
@@ -77,7 +77,7 @@ export function Modals() {
           <Preferences open={open} onClose={goBack} onAboutClicked={goAbout} />
         )}
       />
-      <PlatformDialog />
+      <PlatformDialogs />
     </>
   );
 }

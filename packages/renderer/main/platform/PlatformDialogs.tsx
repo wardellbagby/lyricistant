@@ -66,7 +66,7 @@ const useFullscreenDialogStyles = makeStyles((theme) => ({
   },
 }));
 
-export function PlatformDialog() {
+export function PlatformDialogs() {
   const [dialogData, setDialogData] = useState<DialogData>(null);
   const [closeDialogTag, setCloseDialogTag] = useState<string>(null);
   const [open, setOpen] = useState(false);
