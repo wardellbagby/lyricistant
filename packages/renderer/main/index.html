@@ -48,6 +48,42 @@
         padding: env(safe-area-inset-top) env(safe-area-inset-right)
           env(safe-area-inset-bottom) env(safe-area-inset-left);
       }
+      @keyframes preload-overlay-feather-animation {
+        0% {
+          fill: var(--primary);
+        }
+
+        100% {
+          fill: var(--surface);
+        }
+      }
+      #preload-overlay {
+        opacity: 1;
+        background-color: var(--background);
+        color: var(--text);
+        transition: opacity 500ms linear, background-color 500ms;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        position: fixed;
+        overscroll-behavior: none;
+        z-index: 999;
+      }
+      #preload-overlay-feather {
+        animation-duration: 2s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: preload-overlay-feather-animation;
+        animation-timing-function: ease-in-out;
+        animation-direction: alternate;
+      }
       #app {
         height: 100%;
         width: 100%;
