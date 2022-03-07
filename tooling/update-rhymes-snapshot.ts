@@ -1,7 +1,7 @@
 #!/usr/bin/env -S node -r ./register-ts-node
 
-import path from 'path';
 import { writeFileSync } from 'fs';
+import path from 'path';
 import { generateRhymes } from '@lyricistant/rhyme-generator/rhyme-generator';
 
 const words = [

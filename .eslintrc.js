@@ -175,7 +175,15 @@ module.exports = {
         ],
       },
     ],
-    'import/order': 'error',
+    'import/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+      },
+    ],
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-indentation': 'error',
     'jsdoc/newline-after-description': 'error',

@@ -3,11 +3,11 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { nightlyReleases } from '../.github/workflow-templates/nightlyReleases';
-import { Job, Workflow } from '../.github/workflow-templates/helpers/Workflow';
 import { continuousIntegration } from '../.github/workflow-templates/continuousIntegration';
-import { productionReleases } from '../.github/workflow-templates/productionReleases';
 import { generatePronunciations } from '../.github/workflow-templates/generatePronunciations';
+import { Job, Workflow } from '../.github/workflow-templates/helpers/Workflow';
+import { nightlyReleases } from '../.github/workflow-templates/nightlyReleases';
+import { productionReleases } from '../.github/workflow-templates/productionReleases';
 
 const fromEntries = <T>(entries: Array<[keyof T, T[keyof T]]>): T => {
   const newObject = Object.create(null);

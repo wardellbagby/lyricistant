@@ -5,6 +5,12 @@ import {
   Font,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
+import {
+  Close as CloseIcon,
+  Info,
+  Save as SaveIcon,
+} from '@mui/icons-material';
 import {
   AppBar,
   Box,
@@ -25,13 +31,7 @@ import {
   Typography,
 } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
-import {
-  Close as CloseIcon,
-  Info,
-  Save as SaveIcon,
-} from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
-import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 
 const DialogTransition = React.forwardRef<unknown, SlideProps>(
   function Transition(props, ref) {

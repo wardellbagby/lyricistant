@@ -1,7 +1,7 @@
+import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { Box, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { ReactNode, useEffect } from 'react';
-import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 
 const useStyles = makeStyles((theme: Theme) => ({
   divider: {

@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { Mode } from '@tooling/common-tasks.gulp';
-import webpack, { Configuration } from 'webpack';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import webpack, { Configuration } from 'webpack';
 import packageInfo from '../package.json';
 
 const commitHash = () =>

@@ -1,4 +1,10 @@
 import {
+  latestReleaseUrl,
+  Release,
+  supportedReleases,
+} from '@lyricistant/renderer/download';
+import { Android } from '@mui/icons-material';
+import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
@@ -11,12 +17,6 @@ import {
 import { makeStyles } from '@mui/styles';
 import { Apple, AppleIos, Linux, MicrosoftWindows } from 'mdi-material-ui';
 import React, { useMemo } from 'react';
-import {
-  latestReleaseUrl,
-  Release,
-  supportedReleases,
-} from '@lyricistant/renderer/download';
-import { Android } from '@mui/icons-material';
 
 const useStyles = (release: Release) =>
   makeStyles(() => ({

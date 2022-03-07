@@ -3,9 +3,9 @@ import {
   onVersion,
   VersionedExtensionData,
 } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
+import { Logger } from '@lyricistant/common/Logger';
 import { diff_match_patch, patch_obj as Patch } from 'diff-match-patch';
 import { DateTime } from 'luxon';
-import { Logger } from '@lyricistant/common/Logger';
 
 const CURRENT_VERSION = 1;
 

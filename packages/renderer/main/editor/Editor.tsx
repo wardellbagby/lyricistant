@@ -1,10 +1,10 @@
+import { useCodeMirror } from '@lyricistant/codemirror/CodeMirror';
+import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
+import { Font } from '@lyricistant/common/preferences/PreferencesData';
+import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
+import { styled } from '@mui/material';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
-import { useCodeMirror } from '@lyricistant/codemirror/CodeMirror';
-import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
-import { Font } from '@lyricistant/common/preferences/PreferencesData';
-import { styled } from '@mui/material';
-import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { toPlatformFile } from './to-platform-file';
 
 const fontFamily = (font?: Font) => {

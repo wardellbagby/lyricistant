@@ -1,3 +1,5 @@
+import { ParsedHistoryData } from '@lyricistant/common/history/ParsedHistoryData';
+import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import {
   Button,
@@ -14,8 +16,6 @@ import {
   SxProps,
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
-import { ParsedHistoryData } from '@lyricistant/common/history/ParsedHistoryData';
-import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 
 interface FileHistoryItemProps {
   data: ParsedHistoryData;

@@ -1,8 +1,8 @@
-import { Job, Step } from './Workflow';
+import { ifTrue } from './addIfTrue';
 import { basicSetup } from './basicSetup';
 import { gulp } from './local-tasks';
 import { DOWNLOAD_ARTIFACT, UPLOAD_ARTIFACT } from './versions';
-import { ifTrue } from './addIfTrue';
+import { Job, Step } from './Workflow';
 
 const ANDROID_TAG = 'android-app';
 

@@ -1,5 +1,5 @@
-import { Manager } from '@lyricistant/common-platform/Manager';
 import { App } from '@capacitor/app';
+import { Manager } from '@lyricistant/common-platform/Manager';
 
 export class BackButtonManager implements Manager {
   public register = (): void => {

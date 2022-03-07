@@ -1,22 +1,22 @@
 import { TextDecoder, TextEncoder } from 'util';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { FileDataExtension } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { Files } from '@lyricistant/common-platform/files/Files';
-import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
-import { expect, use } from 'chai';
-import sinonChai from 'sinon-chai';
-import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
-import { RendererListeners } from '@testing/utilities/Listeners';
 import { FileHandler } from '@lyricistant/common-platform/files/handlers/FileHandler';
 import { LyricistantFileHandler } from '@lyricistant/common-platform/files/handlers/LyricistantFileHandler';
-import { FileDataExtension } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
+import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   ColorScheme,
   DefaultFileType,
   Font,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { RendererListeners } from '@testing/utilities/Listeners';
+import { expect, use } from 'chai';
+import sinonChai from 'sinon-chai';
+import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
 
 use(sinonChai);
 

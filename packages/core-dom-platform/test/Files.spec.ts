@@ -1,7 +1,3 @@
-import { CoreFiles } from '@lyricistant/core-dom-platform/platform/Files';
-import { expect, use } from 'chai';
-import sinon, { stubInterface } from 'ts-sinon';
-import sinonChai from 'sinon-chai';
 import {
   Files,
   LYRICS_EXTENSION,
@@ -11,10 +7,14 @@ import {
   FileMetadata,
   PlatformFile,
 } from '@lyricistant/common/files/PlatformFile';
-import chaiAsPromised from 'chai-as-promised';
+import { CoreFiles } from '@lyricistant/core-dom-platform/platform/Files';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { FileWithHandle } from 'browser-fs-access';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
+import sinonChai from 'sinon-chai';
+import sinon, { stubInterface } from 'ts-sinon';
 
 use(sinonChai);
 use(chaiAsPromised);

@@ -1,11 +1,11 @@
-import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Logger } from '@lyricistant/common/Logger';
-import { Manager } from '@lyricistant/common-platform/Manager';
-import { AppUpdater, UpdateInfo } from 'electron-updater';
 import { AppStore } from '@electron-app/AppStore';
 import { HttpClient } from '@electron-app/wrappers/HttpClient';
+import { Manager } from '@lyricistant/common-platform/Manager';
+import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { DialogInteractionData } from '@lyricistant/common/dialogs/Dialog';
+import { Logger } from '@lyricistant/common/Logger';
+import { AppUpdater, UpdateInfo } from 'electron-updater';
 
 export class UpdateManager implements Manager {
   private static readonly INSTALL_UPDATE_DIALOG_TAG =

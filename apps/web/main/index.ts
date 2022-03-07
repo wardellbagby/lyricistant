@@ -1,10 +1,10 @@
-import { start as startNew } from '@web-renderer/index';
-import { isChrome, isFirefox } from 'react-device-detect';
+import { Manager } from '@lyricistant/common-platform/Manager';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { Logger } from '@lyricistant/common/Logger';
 import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
-import { Managers } from '@lyricistant/common-platform/Managers';
 import { createComponent as createLegacyComponent } from '@web-app/LegacyAppComponent';
-import { Manager } from '@lyricistant/common-platform/Manager';
+import { start as startNew } from '@web-renderer/index';
+import { isChrome, isFirefox } from 'react-device-detect';
 
 const startLegacy = async () => {
   const appComponent = createLegacyComponent();

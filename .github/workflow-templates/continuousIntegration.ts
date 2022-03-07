@@ -1,8 +1,8 @@
-import { Job, Workflow } from './helpers/Workflow';
-import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
 import { basicSetup } from './helpers/basicSetup';
+import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
 import { npm } from './helpers/local-tasks';
 import { test } from './helpers/test';
+import { Job, Workflow } from './helpers/Workflow';
 
 const lint: Job = {
   name: 'Lint',

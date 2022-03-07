@@ -1,9 +1,9 @@
-import { expect, use } from 'chai';
-import sinon from 'ts-sinon';
-import sinonChai from 'sinon-chai';
-import chaiAsPromised from 'chai-as-promised';
 import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 import { CoreRecentFiles } from '@lyricistant/core-dom-platform/platform/RecentFiles';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import sinonChai from 'sinon-chai';
+import sinon from 'ts-sinon';
 
 use(sinonChai);
 use(chaiAsPromised);

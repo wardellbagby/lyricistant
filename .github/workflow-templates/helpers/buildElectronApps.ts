@@ -1,7 +1,7 @@
-import { Job, Step } from './Workflow';
 import { basicSetup } from './basicSetup';
-import { DOWNLOAD_ARTIFACT, RETRY, UPLOAD_ARTIFACT } from './versions';
 import { gulp } from './local-tasks';
+import { DOWNLOAD_ARTIFACT, RETRY, UPLOAD_ARTIFACT } from './versions';
+import { Job, Step } from './Workflow';
 
 const ELECTRON_TAG = 'electron-apps';
 interface Options {

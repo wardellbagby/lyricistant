@@ -1,19 +1,19 @@
 import { Manager } from '@lyricistant/common-platform/Manager';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import {
-  SystemPalette,
-  SystemTheme,
-} from '@lyricistant/common/theme/SystemTheme';
 import {
   getPreferencesDataOrDefault,
   Preferences,
 } from '@lyricistant/common-platform/preferences/Preferences';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   ColorScheme,
   DisplayableColorScheme,
   PreferencesData,
 } from '@lyricistant/common/preferences/PreferencesData';
-import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
+import {
+  SystemPalette,
+  SystemTheme,
+} from '@lyricistant/common/theme/SystemTheme';
 
 export class PreferenceManager implements Manager {
   private onThemeChangedListeners: Array<

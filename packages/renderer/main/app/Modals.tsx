@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, ReactNode } from 'react';
-import { Route, useHistory } from 'react-router-dom';
-import { ChooseDownloadDialog } from '@lyricistant/renderer/download/ChooseDownloadDialog';
-import { Preferences } from '@lyricistant/renderer/preferences/Preferences';
 import { AboutDialog } from '@lyricistant/renderer/about/AboutDialog';
-import { PrivacyPolicy } from '@lyricistant/renderer/privacy/PrivacyPolicy';
+import { ChooseDownloadDialog } from '@lyricistant/renderer/download/ChooseDownloadDialog';
 import { FileHistory } from '@lyricistant/renderer/filehistory/FileHistory';
-import { RouteChildrenProps } from 'react-router';
-import { useChannel } from '@lyricistant/renderer/platform/useChannel';
-import { History } from 'history';
 import { PlatformDialogs } from '@lyricistant/renderer/platform/PlatformDialogs';
+import { useChannel } from '@lyricistant/renderer/platform/useChannel';
+import { Preferences } from '@lyricistant/renderer/preferences/Preferences';
+import { PrivacyPolicy } from '@lyricistant/renderer/privacy/PrivacyPolicy';
+import { History } from 'history';
+import React, { useCallback, useEffect, ReactNode } from 'react';
+import { RouteChildrenProps } from 'react-router';
+import { Route, useHistory } from 'react-router-dom';
 
 type ModalRoutePathNames =
   | 'about'

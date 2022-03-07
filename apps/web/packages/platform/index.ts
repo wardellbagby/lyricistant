@@ -1,11 +1,11 @@
+import { Manager } from '@lyricistant/common-platform/Manager';
 import { Managers } from '@lyricistant/common-platform/Managers';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { expose, proxy } from 'comlink';
 import { Logger } from '@lyricistant/common/Logger';
 import { renderer } from '@web-platform/renderer';
-import { Manager } from '@lyricistant/common-platform/Manager';
-import { WebRendererDelegate } from './RendererDelegate';
+import { expose, proxy } from 'comlink';
 import { appComponent } from './AppComponent';
+import { WebRendererDelegate } from './RendererDelegate';
 
 self.onerror = (error) => {
   const availableLogger = appComponent?.get<Logger>() ?? console;

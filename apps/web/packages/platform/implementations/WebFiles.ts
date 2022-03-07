@@ -1,10 +1,10 @@
 import { Files } from '@lyricistant/common-platform/files/Files';
-import { renderer } from '@web-platform/renderer';
-import { FileSystemHandle } from 'browser-fs-access';
 import {
   FileMetadata,
   PlatformFile,
 } from '@lyricistant/common/files/PlatformFile';
+import { renderer } from '@web-platform/renderer';
+import { FileSystemHandle } from 'browser-fs-access';
 
 export class WebFiles implements Files {
   private handles: Map<string, FileSystemHandle> = new Map<

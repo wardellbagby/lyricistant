@@ -1,18 +1,18 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { merge } from 'webpack-merge';
-import WebpackDevServer from 'webpack-dev-server';
-import { series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
-import defaultWebpackConfig from '@tooling/default.webpack.config';
 import {
   cleanBuildDirectory,
   getOutputDirectory as getOutDir,
   Mode,
 } from '@tooling/common-tasks.gulp';
-import { Configuration, webpack } from 'webpack';
+import defaultWebpackConfig from '@tooling/default.webpack.config';
 import { capitalCase } from 'change-case';
 import del from 'del';
+import { series } from 'gulp';
+import { Configuration, webpack } from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import { merge } from 'webpack-merge';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);
 

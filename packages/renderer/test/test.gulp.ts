@@ -1,5 +1,5 @@
-import { config as KarmaConfig, ConfigOptions, Server } from 'karma';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
+import { config as KarmaConfig, ConfigOptions, Server } from 'karma';
 import parser from 'yargs-parser';
 
 const argv = parser(process.argv.slice(2), { boolean: ['headless'] });

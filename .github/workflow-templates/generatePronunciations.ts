@@ -1,6 +1,6 @@
-import { Workflow } from './helpers/Workflow';
 import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
 import { CACHE, CHECKOUT, SETUP_NODE } from './helpers/versions';
+import { Workflow } from './helpers/Workflow';
 
 export const generatePronunciations: Workflow = {
   name: 'Regenerate Pronunciations',

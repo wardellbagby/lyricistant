@@ -1,13 +1,13 @@
 import { setTimeout } from 'timers';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
-import { Logger } from '@lyricistant/common/Logger';
+import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import {
   Manager,
   showRendererDialog,
 } from '@lyricistant/common-platform/Manager';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
 import { BrowserWindow } from 'electron';
-import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 
 const PROMPT_QUIT_TAG = 'prompt-quit';
 export class QuitManager implements Manager {

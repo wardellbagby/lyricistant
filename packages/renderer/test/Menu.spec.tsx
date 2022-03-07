@@ -1,9 +1,9 @@
-import React from 'react';
 import { Menu as RealMenu, MenuProps } from '@lyricistant/renderer/menu/Menu';
+import { configure } from '@testing-library/dom';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { expect, use } from 'chai';
-import { configure } from '@testing-library/dom';
+import React from 'react';
 import { restore, stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 import { MockLogger } from './MockLogger';

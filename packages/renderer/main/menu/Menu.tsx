@@ -1,4 +1,15 @@
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
+import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
+import {
+  AddCircle,
+  FolderOpen,
+  GetApp,
+  History,
+  MoreVert,
+  Save,
+  Settings,
+  SvgIconComponent,
+} from '@mui/icons-material';
 import {
   Box,
   IconButton,
@@ -12,16 +23,6 @@ import {
   useTheme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import {
-  AddCircle,
-  FolderOpen,
-  GetApp,
-  History,
-  MoreVert,
-  Save,
-  Settings,
-  SvgIconComponent,
-} from '@mui/icons-material';
 import React, {
   FunctionComponent,
   MouseEvent,
@@ -30,7 +31,6 @@ import React, {
   useState,
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 
 const useMenuStyles = makeStyles<Theme, { isSmallLayout: boolean }>(
   (theme: Theme) => ({

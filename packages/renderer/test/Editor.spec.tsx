@@ -1,18 +1,18 @@
-import React from 'react';
-import { waitFor } from '@testing-library/react';
-import { configure, fireEvent, screen } from '@testing-library/dom';
-import { restore, stub } from 'sinon';
-import { expect, use } from 'chai';
-import sinonChai from 'sinon-chai';
+import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import {
   Editor as RealEditor,
   EditorProps,
 } from '@lyricistant/renderer/editor/Editor';
-import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
+import { configure, fireEvent, screen } from '@testing-library/dom';
+import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render as render, wait } from './Wrappers';
+import { expect, use } from 'chai';
+import React from 'react';
+import { restore, stub } from 'sinon';
+import sinonChai from 'sinon-chai';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
+import { render as render, wait } from './Wrappers';
 
 use(sinonChai);
 

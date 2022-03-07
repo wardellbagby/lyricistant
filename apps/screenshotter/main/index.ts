@@ -1,9 +1,9 @@
-import { Logger } from '@lyricistant/common/Logger';
-import { Managers } from '@lyricistant/common/Managers';
-import { appComponent } from '@screenshotter-app/AppComponent';
-import { platformDelegate } from '@lyricistant/core-platform/Delegates';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileHistory } from '@lyricistant/common/history/FileHistory';
+import { Logger } from '@lyricistant/common/Logger';
+import { Managers } from '@lyricistant/common/Managers';
+import { platformDelegate } from '@lyricistant/core-platform/Delegates';
+import { appComponent } from '@screenshotter-app/AppComponent';
 
 if (module.hot) {
   module.hot.accept();

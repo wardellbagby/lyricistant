@@ -1,22 +1,22 @@
+import { ChildProcess, spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { ChildProcess, spawn } from 'child_process';
-import kill from 'tree-kill';
-import { Configuration, DefinePlugin, webpack } from 'webpack';
-import { merge } from 'webpack-merge';
-import WebpackDevServer from 'webpack-dev-server';
-import { parallel, series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
-import defaultWebpackConfig, {
-  webpackMode,
-} from '@tooling/default.webpack.config';
 import {
   cleanBuildDirectory,
   getOutputDirectory as getOutDir,
   Mode,
 } from '@tooling/common-tasks.gulp';
+import defaultWebpackConfig, {
+  webpackMode,
+} from '@tooling/default.webpack.config';
 import { capitalCase } from 'change-case';
 import del from 'del';
+import { parallel, series } from 'gulp';
+import kill from 'tree-kill';
+import { Configuration, DefinePlugin, webpack } from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import { merge } from 'webpack-merge';
 import { buildElectronApp } from './build_apps';
 
 const getOutputDirectory = (mode: Mode) => getOutDir(mode, __dirname);

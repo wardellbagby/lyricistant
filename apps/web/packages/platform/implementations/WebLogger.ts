@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
+import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
+import { renderer } from '@web-platform/renderer';
 import { DateTime } from 'luxon';
 import { sprintf } from 'sprintf-js';
-import { renderer } from '@web-platform/renderer';
-import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 
 const logFormatTemplate = '[%(date)s] [%(level)s] %(text)s';
 const format = 'yyyy-MM-dd hh:mm.u';

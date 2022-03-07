@@ -1,15 +1,15 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { merge } from 'webpack-merge';
-import { parallel, series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
+import { cleanBuildDirectory, Mode, spawn } from '@tooling/common-tasks.gulp';
 import defaultWebpackConfig, {
   Platform,
 } from '@tooling/default.webpack.config';
-import webpack, { Configuration } from 'webpack';
-import { cleanBuildDirectory, Mode, spawn } from '@tooling/common-tasks.gulp';
 import del from 'del';
+import { parallel, series } from 'gulp';
+import webpack, { Configuration } from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
+import { merge } from 'webpack-merge';
 
 type CapacitorCommand = 'add' | 'run' | 'sync' | 'open';
 type CapacitorPlatform = 'android' | 'ios';

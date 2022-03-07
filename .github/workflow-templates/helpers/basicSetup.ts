@@ -1,6 +1,6 @@
-import { Step } from './Workflow';
 import { ifTrue } from './addIfTrue';
 import { CACHE, CHECKOUT, SETUP_NODE, SETUP_RUBY } from './versions';
+import { Step } from './Workflow';
 
 interface Options {
   forTests?: boolean;

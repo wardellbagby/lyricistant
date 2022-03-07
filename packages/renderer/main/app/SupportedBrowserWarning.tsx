@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { PropsWithChildren } from 'react';
-import { isIE, isMobile } from 'react-device-detect';
+import { UiConfig } from '@lyricistant/common/ui/UiConfig';
+import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import {
   Button,
   Dialog,
@@ -9,8 +8,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import { useChannel } from '@lyricistant/renderer/platform/useChannel';
-import { UiConfig } from '@lyricistant/common/ui/UiConfig';
+import React, { useState } from 'react';
+import { PropsWithChildren } from 'react';
+import { isIE, isMobile } from 'react-device-detect';
 
 const isUnsupportedBrowser = isMobile || isIE || !Promise || !File || !Blob;
 

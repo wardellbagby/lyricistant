@@ -1,29 +1,29 @@
-import { DIContainer } from '@wessberg/di';
-import { FileManager } from '@lyricistant/common-platform/files/FileManager';
-import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
-import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
-import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
-import { LogManager } from '@lyricistant/common-platform/logging/LogManager';
-import { FileHistoryManager } from '@lyricistant/common-platform/history/FileHistoryManager';
-import { FirstLaunchManager } from '@lyricistant/common-platform/firstlaunch/FirstLaunchManager';
-import { Logger } from '@lyricistant/common/Logger';
-import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
-import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
-import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 import { Buffers } from '@lyricistant/common-platform/files/Buffers';
+import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
+import { FileManager } from '@lyricistant/common-platform/files/FileManager';
+import { Files } from '@lyricistant/common-platform/files/Files';
+import { FileHandlers } from '@lyricistant/common-platform/files/handlers/FileHandler';
+import { LyricistantFileHandler } from '@lyricistant/common-platform/files/handlers/LyricistantFileHandler';
+import { TextFileHandler } from '@lyricistant/common-platform/files/handlers/TextFileHandler';
+import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
+import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
+import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
+import { FirstLaunchManager } from '@lyricistant/common-platform/firstlaunch/FirstLaunchManager';
+import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import { FileHistoryManager } from '@lyricistant/common-platform/history/FileHistoryManager';
+import { LogManager } from '@lyricistant/common-platform/logging/LogManager';
+import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
+import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
+import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
 import {
   TitleFormatter,
   UiConfigProvider,
 } from '@lyricistant/common/ui/UiConfig';
-import { LyricistantFileHandler } from '@lyricistant/common-platform/files/handlers/LyricistantFileHandler';
-import { TextFileHandler } from '@lyricistant/common-platform/files/handlers/TextFileHandler';
-import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
-import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
-import { FileHandlers } from '@lyricistant/common-platform/files/handlers/FileHandler';
-import { Files } from '@lyricistant/common-platform/files/Files';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
+import { DIContainer } from '@wessberg/di';
 
 export type Provider<T> = () => T;
 

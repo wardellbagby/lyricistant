@@ -2,12 +2,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import yaml from 'js-yaml';
-import * as gulpFile from '../../gulpfile';
-import { scripts } from '../../package.json';
 import {
   Workflow,
   Step,
 } from '../../.github/workflow-templates/helpers/Workflow';
+import * as gulpFile from '../../gulpfile';
+import { scripts } from '../../package.json';
 
 const COMMAND_REGEX = /npm run ([\w-_]+)|gulp ([\w-_]+)/g;
 

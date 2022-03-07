@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSnackbar } from 'notistack';
-import { useChannel } from '@lyricistant/renderer/platform/useChannel';
+import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
+import { AppError } from '@lyricistant/renderer/app/AppError';
+import { goTo, Modals } from '@lyricistant/renderer/app/Modals';
 import { Editor, EditorTextData } from '@lyricistant/renderer/editor/Editor';
 import { Menu } from '@lyricistant/renderer/menu/Menu';
-import { Rhymes } from '@lyricistant/renderer/rhymes/Rhymes';
-import { goTo, Modals } from '@lyricistant/renderer/app/Modals';
-import { useHistory } from 'react-router-dom';
-import { AppError } from '@lyricistant/renderer/app/AppError';
-import { ErrorBoundary } from 'react-error-boundary';
-import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
+import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
+import { Rhymes } from '@lyricistant/renderer/rhymes/Rhymes';
+import { useSnackbar } from 'notistack';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { useHistory } from 'react-router-dom';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
 
 export function App() {

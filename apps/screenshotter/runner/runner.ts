@@ -1,16 +1,16 @@
 import path from 'path';
 import { pathToFileURL } from 'url';
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import { BrowserContext, chromium, JSHandle, Page } from 'playwright';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { FileHistory } from '@lyricistant/common/history/FileHistory';
 import {
   ColorScheme,
   Font,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { FileHistory } from '@lyricistant/common/history/FileHistory';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { DateTime } from 'luxon';
+import { BrowserContext, chromium, JSHandle, Page } from 'playwright';
 
 use(chaiAsPromised);
 

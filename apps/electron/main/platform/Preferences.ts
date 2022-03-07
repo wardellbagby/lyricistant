@@ -1,7 +1,7 @@
-import { Preferences as IPreferences } from '@lyricistant/common-platform/preferences/Preferences';
-import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
-import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
+import { Preferences as IPreferences } from '@lyricistant/common-platform/preferences/Preferences';
+import { Logger } from '@lyricistant/common/Logger';
+import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
 
 export class ElectronPreferences implements IPreferences {
   private readonly preferencesFilePath: string;

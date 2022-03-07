@@ -1,13 +1,13 @@
 import {
-  createTheme as createMuiTheme,
-  responsiveFontSizes,
-  Theme,
-} from '@mui/material';
-import {
   ColorScheme,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { Palette } from '@lyricistant/common/theme/SystemTheme';
+import {
+  createTheme as createMuiTheme,
+  responsiveFontSizes,
+  Theme,
+} from '@mui/material';
 
 export const getThemePalette = (
   themeData?: ThemeData

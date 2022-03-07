@@ -2,10 +2,10 @@ if (module.hot) {
   module.hot.accept();
 }
 
-import { Logger } from '@lyricistant/common/Logger';
 import { Managers } from '@lyricistant/common-platform/Managers';
-import { appComponent } from '@mobile-app/AppComponent';
+import { Logger } from '@lyricistant/common/Logger';
 import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
+import { appComponent } from '@mobile-app/AppComponent';
 
 const logger = appComponent.get<Logger>();
 

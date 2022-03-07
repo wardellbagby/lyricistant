@@ -1,3 +1,4 @@
+import { APP_HOMEPAGE, APP_VERSION } from '@lyricistant/renderer/globals';
 import {
   Box,
   Button,
@@ -16,7 +17,6 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { ReactChild } from 'react';
-import { APP_HOMEPAGE, APP_VERSION } from '@lyricistant/renderer/globals';
 import appIcon from './app_icon.png';
 
 const aboutInfo: Record<string, ReactChild> = {

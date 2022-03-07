@@ -1,9 +1,4 @@
-import { Job, Workflow } from './helpers/Workflow';
-import { test } from './helpers/test';
-import {
-  buildIOSApp as buildIOSAppJob,
-  downloadIOSApp,
-} from './helpers/buildIOSApp';
+import { basicSetup } from './helpers/basicSetup';
 import {
   buildAndroidApp as buildAndroidAppJob,
   downloadAndroidApp,
@@ -12,10 +7,15 @@ import {
   buildElectronApps as buildElectronAppsJob,
   downloadElectronApps,
 } from './helpers/buildElectronApps';
+import {
+  buildIOSApp as buildIOSAppJob,
+  downloadIOSApp,
+} from './helpers/buildIOSApp';
 import { createGithubReleaseAlt as createGithubReleaseStep } from './helpers/createGithubRelease';
-import { basicSetup } from './helpers/basicSetup';
-import { gulp } from './helpers/local-tasks';
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
+import { gulp } from './helpers/local-tasks';
+import { test } from './helpers/test';
+import { Job, Workflow } from './helpers/Workflow';
 
 const tagMatches = (platform: 'ios' | 'android' | 'electron' | 'web') =>
   `\${{ contains(github.ref, '${platform}') ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]

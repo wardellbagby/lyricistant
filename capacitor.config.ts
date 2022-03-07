@@ -1,5 +1,5 @@
-import ip from 'internal-ip';
 import { CapacitorConfig } from '@capacitor/cli';
+import ip from 'internal-ip';
 
 const config: CapacitorConfig = {
   appId: 'com.wardellbagby.lyricistant',

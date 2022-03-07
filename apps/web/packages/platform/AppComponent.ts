@@ -1,21 +1,21 @@
-import type { Managers } from '@lyricistant/common-platform/Managers';
-import { DIContainer } from '@wessberg/di';
-import { UnloadManager } from '@lyricistant/core-dom-platform/platform/UnloadManager';
 import {
   getCommonManagers,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
-import { WebPreferences } from '@web-platform/implementations/WebPreferences';
-import { WebRecentFiles } from '@web-platform/implementations/WebRecentFiles';
-import { WebFiles } from '@web-platform/implementations/WebFiles';
-import { WebTemporaryFiles } from '@web-platform/implementations/WebTemporaryFiles';
-import { WebLogger } from '@web-platform/implementations/WebLogger';
+import type { Managers } from '@lyricistant/common-platform/Managers';
+import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
+import { CoreSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
 import {
   formatTitle,
   provideUiConfig,
 } from '@lyricistant/core-dom-platform/platform/UiConfigProvider';
-import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
-import { CoreSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
+import { UnloadManager } from '@lyricistant/core-dom-platform/platform/UnloadManager';
+import { WebFiles } from '@web-platform/implementations/WebFiles';
+import { WebLogger } from '@web-platform/implementations/WebLogger';
+import { WebPreferences } from '@web-platform/implementations/WebPreferences';
+import { WebRecentFiles } from '@web-platform/implementations/WebRecentFiles';
+import { WebTemporaryFiles } from '@web-platform/implementations/WebTemporaryFiles';
+import { DIContainer } from '@wessberg/di';
 import { WebRendererDelegate } from './RendererDelegate';
 
 const createComponent = (): DIContainer => {

@@ -1,13 +1,13 @@
 import {
-  FileMetadata,
-  PlatformFile,
-} from '@lyricistant/common/files/PlatformFile';
-import {
   Files as IFiles,
   LYRICS_MIME_TYPE,
   SUPPORTED_EXTENSIONS,
   SUPPORTED_MIME_TYPES,
 } from '@lyricistant/common-platform/files/Files';
+import {
+  FileMetadata,
+  PlatformFile,
+} from '@lyricistant/common/files/PlatformFile';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { FileWithHandle, FileSystemHandle } from 'browser-fs-access';

@@ -1,4 +1,11 @@
 import {
+  Font,
+  ThemeData,
+} from '@lyricistant/common/preferences/PreferencesData';
+import { Palette } from '@lyricistant/common/theme/SystemTheme';
+import { useChannel } from '@lyricistant/renderer/platform/useChannel';
+import { createTheme, getThemePalette } from '@lyricistant/renderer/theme';
+import {
   CssBaseline,
   StyledEngineProvider,
   Theme,
@@ -10,13 +17,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { createTheme, getThemePalette } from '@lyricistant/renderer/theme';
-import { useChannel } from '@lyricistant/renderer/platform/useChannel';
-import {
-  Font,
-  ThemeData,
-} from '@lyricistant/common/preferences/PreferencesData';
-import { Palette } from '@lyricistant/common/theme/SystemTheme';
 
 declare module '@mui/styles/defaultTheme' {
   // Needed so that makeStyles has the right typings for theme.

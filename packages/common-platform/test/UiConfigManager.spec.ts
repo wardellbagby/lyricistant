@@ -1,15 +1,15 @@
-import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
+import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   TitleFormatter,
   UiConfigProvider,
 } from '@lyricistant/common/ui/UiConfig';
-import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
+import { RendererListeners } from '@testing/utilities/Listeners';
 import { expect, use } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { StubbedInstance, stubInterface } from 'ts-sinon';
-import { RendererListeners } from '@testing/utilities/Listeners';
 
 use(sinonChai);
 

@@ -1,13 +1,13 @@
+import { setupAnalytics } from '@lyricistant/renderer/analytics/setupAnalytics';
+import { App } from '@lyricistant/renderer/app/App';
+import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEventsReadyHandler';
+import { SupportedBrowserWarning } from '@lyricistant/renderer/app/SupportedBrowserWarning';
+import { onPageLoaded, onThemeUpdated } from '@lyricistant/renderer/preload';
+import { Themed } from '@lyricistant/renderer/theme/Themed';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
-import { onPageLoaded, onThemeUpdated } from '@lyricistant/renderer/preload';
-import { setupAnalytics } from '@lyricistant/renderer/analytics/setupAnalytics';
-import { SupportedBrowserWarning } from '@lyricistant/renderer/app/SupportedBrowserWarning';
-import { PlatformEventsReadyHandler } from '@lyricistant/renderer/app/PlatformEventsReadyHandler';
-import { Themed } from '@lyricistant/renderer/theme/Themed';
-import { App } from '@lyricistant/renderer/app/App';
 
 const oldOnError = window.onerror;
 window.onerror = (message, url, line, col, error) => {

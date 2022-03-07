@@ -1,12 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Compartment,
-  EditorState,
-  EditorStateConfig,
-  Extension,
-} from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
-import { EditorView, keymap, placeholder } from '@codemirror/view';
 import {
   history,
   historyKeymap,
@@ -14,8 +6,16 @@ import {
   undo as undoTextChange,
   undoDepth,
 } from '@codemirror/history';
-import { useTheme } from '@mui/material';
 import { openSearchPanel, searchKeymap } from '@codemirror/search';
+import {
+  Compartment,
+  EditorState,
+  EditorStateConfig,
+  Extension,
+} from '@codemirror/state';
+import { EditorView, keymap, placeholder } from '@codemirror/view';
+import { useTheme } from '@mui/material';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
 import { TextSelectionData, textSelection } from './textSelection';

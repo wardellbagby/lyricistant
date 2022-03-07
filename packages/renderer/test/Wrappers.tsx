@@ -1,7 +1,7 @@
-import React, { PropsWithChildren, ReactElement } from 'react';
-import { SnackbarProvider } from 'notistack';
-import { render as realRender, RenderOptions } from '@testing-library/react';
 import { Themed } from '@lyricistant/renderer/theme/Themed';
+import { render as realRender, RenderOptions } from '@testing-library/react';
+import { SnackbarProvider } from 'notistack';
+import React, { PropsWithChildren, ReactElement } from 'react';
 
 const DefaultWrapper = ({ children }: PropsWithChildren<unknown>) => (
   <Themed onThemeChanged={() => undefined} onThemeReady={() => undefined}>

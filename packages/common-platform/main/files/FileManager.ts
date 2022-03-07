@@ -1,27 +1,27 @@
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Logger } from '@lyricistant/common/Logger';
-import {
-  Manager,
-  showRendererDialog,
-} from '@lyricistant/common-platform/Manager';
+import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import { ExtensionData, Files } from '@lyricistant/common-platform/files/Files';
-import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
-import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 import {
   FileHandler,
   FileHandlers,
 } from '@lyricistant/common-platform/files/handlers/FileHandler';
-import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
+import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
+import {
+  Manager,
+  showRendererDialog,
+} from '@lyricistant/common-platform/Manager';
 import {
   getPreferencesDataOrDefault,
   Preferences,
 } from '@lyricistant/common-platform/preferences/Preferences';
-import { DefaultFileType } from '@lyricistant/common/preferences/PreferencesData';
 import {
   Cancellable,
   CancelSignal,
   makeCancellable,
 } from '@lyricistant/common/Cancellable';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
+import { Logger } from '@lyricistant/common/Logger';
+import { DefaultFileType } from '@lyricistant/common/preferences/PreferencesData';
 
 export class FileManager implements Manager {
   public static SAVE_FILE_DIALOG_TAG = 'save-file';

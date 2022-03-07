@@ -1,7 +1,7 @@
+import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { stubInterface } from 'ts-sinon';
-import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 
 use(sinonChai);
 

@@ -5,6 +5,9 @@ import {
   FullscreenDialogData,
   SelectionDialogData,
 } from '@lyricistant/common/dialogs/Dialog';
+import { Markdown } from '@lyricistant/renderer/markdown/Markdown';
+import { useChannel } from '@lyricistant/renderer/platform/useChannel';
+import { ExpandMore } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -28,12 +31,9 @@ import {
   Select,
   Typography,
 } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { ExpandMore } from '@mui/icons-material';
-import { useChannel } from '@lyricistant/renderer/platform/useChannel';
-import { makeStyles } from '@mui/styles';
-import { Markdown } from '@lyricistant/renderer/markdown/Markdown';
 
 const useAlertDialogStyles = makeStyles({
   dialog: {

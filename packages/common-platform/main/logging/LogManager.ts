@@ -1,8 +1,8 @@
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Manager } from '@lyricistant/common-platform/Manager';
-import { Files } from '@lyricistant/common-platform/files/Files';
 import { Buffers } from '@lyricistant/common-platform/files/Buffers';
+import { Files } from '@lyricistant/common-platform/files/Files';
 import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
+import { Manager } from '@lyricistant/common-platform/Manager';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 
 export class LogManager implements Manager {
   public constructor(

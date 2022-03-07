@@ -1,5 +1,5 @@
-import { SystemTheme } from '@lyricistant/common/theme/SystemTheme';
 import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
+import { SystemTheme } from '@lyricistant/common/theme/SystemTheme';
 
 export class CoreSystemThemeProvider implements SystemThemeProvider {
   public onChange = (listener: (theme: SystemTheme) => void) => {

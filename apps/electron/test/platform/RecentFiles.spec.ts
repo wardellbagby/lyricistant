@@ -1,10 +1,10 @@
-import { expect, use } from 'chai';
-import sinon, { stubInterface } from 'ts-sinon';
-import sinonChai from 'sinon-chai';
-import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import chaiAsPromised from 'chai-as-promised';
 import { ElectronRecentFiles } from '@electron-app/platform/RecentFiles';
+import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import sinonChai from 'sinon-chai';
+import sinon, { stubInterface } from 'ts-sinon';
 
 use(sinonChai);
 use(chaiAsPromised);

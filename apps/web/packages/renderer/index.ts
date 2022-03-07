@@ -1,9 +1,9 @@
-import { expose, proxy, transfer } from 'comlink';
-import { fileOpen, fileSave, FileSystemHandle } from 'browser-fs-access';
-import { Storage } from '@web-common/Storage';
 import { BufferFileSystem } from '@web-common/BufferFileSystem';
-import { platformDelegate } from './PlatformDelegate';
+import { Storage } from '@web-common/Storage';
+import { fileOpen, fileSave, FileSystemHandle } from 'browser-fs-access';
+import { expose, proxy, transfer } from 'comlink';
 import { mainProcessWorker, platform } from './platform';
+import { platformDelegate } from './PlatformDelegate';
 
 window.platformDelegate = platformDelegate;
 window.onerror = () => {

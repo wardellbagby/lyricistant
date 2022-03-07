@@ -1,5 +1,5 @@
-import { wrap } from 'comlink';
 import { Platform } from '@web-common/Platform';
+import { wrap } from 'comlink';
 
 export const mainProcessWorker = new Worker(
   new URL(

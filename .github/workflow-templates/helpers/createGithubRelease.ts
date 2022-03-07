@@ -1,5 +1,5 @@
-import { Step } from './Workflow';
 import { AUTOMATIC_RELEASES, AUTOMATIC_RELEASES_ALT } from './versions';
+import { Step } from './Workflow';
 
 interface Options {
   nightly?: boolean;

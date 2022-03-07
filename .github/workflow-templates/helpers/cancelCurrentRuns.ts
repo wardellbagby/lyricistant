@@ -1,5 +1,5 @@
-import { Job } from './Workflow';
 import { CANCEL_WORKFLOW } from './versions';
+import { Job } from './Workflow';
 
 export const cancelCurrentRuns: Job = {
   name: 'Cancel in-progress Workflow runs',

@@ -1,13 +1,13 @@
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Logger } from '@lyricistant/common/Logger';
+import { FileManager } from '@lyricistant/common-platform/files/FileManager';
+import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
+import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import {
   Manager,
   withDialogSupport,
 } from '@lyricistant/common-platform/Manager';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { YES_NO_BUTTONS } from '@lyricistant/common/dialogs/Dialog';
-import { FileManager } from '@lyricistant/common-platform/files/FileManager';
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
-import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import { Logger } from '@lyricistant/common/Logger';
 
 export class UnsavedDataManager implements Manager {
   public static readonly UNSAVED_LYRICS_KEY = 'unsaved-lyrics-key';

@@ -1,20 +1,5 @@
-import type { Managers } from '@lyricistant/common-platform/Managers';
-import {
-  getCommonManagers,
-  registerCommonPlatform,
-} from '@lyricistant/common-platform/AppComponents';
-import { DIContainer } from '@wessberg/di';
-import {
-  BrowserWindow,
-  Dialog as ElectronDialog,
-  dialog,
-  ipcMain,
-  nativeTheme,
-  NativeTheme,
-} from 'electron';
-import { AppUpdater, autoUpdater } from 'electron-updater';
-import { ElectronRendererDelegate } from '@electron-delegates/Delegates';
 import { AppStore } from '@electron-app/AppStore';
+import { ElectronBuffers } from '@electron-app/platform/Buffers';
 import type { ElectronFiles } from '@electron-app/platform/Files';
 import type { ElectronLogger } from '@electron-app/platform/Logger';
 import type { ElectronPreferences } from '@electron-app/platform/Preferences';
@@ -32,7 +17,22 @@ import type {
   NodeFileSystem,
 } from '@electron-app/wrappers/FileSystem';
 import { AxiosHttpClient, HttpClient } from '@electron-app/wrappers/HttpClient';
-import { ElectronBuffers } from '@electron-app/platform/Buffers';
+import { ElectronRendererDelegate } from '@electron-delegates/Delegates';
+import {
+  getCommonManagers,
+  registerCommonPlatform,
+} from '@lyricistant/common-platform/AppComponents';
+import type { Managers } from '@lyricistant/common-platform/Managers';
+import { DIContainer } from '@wessberg/di';
+import {
+  BrowserWindow,
+  Dialog as ElectronDialog,
+  dialog,
+  ipcMain,
+  nativeTheme,
+  NativeTheme,
+} from 'electron';
+import { AppUpdater, autoUpdater } from 'electron-updater';
 
 const registerElectronFunctionality = (
   component: DIContainer,

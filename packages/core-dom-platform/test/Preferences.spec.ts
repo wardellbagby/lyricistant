@@ -1,8 +1,4 @@
-import { expect, use } from 'chai';
-import sinon from 'ts-sinon';
-import sinonChai from 'sinon-chai';
-import chaiAsPromised from 'chai-as-promised';
-import { CorePreferences } from '@lyricistant/core-dom-platform/platform/Preferences';
+import { Preferences } from '@lyricistant/common-platform//preferences/Preferences';
 import {
   ColorScheme,
   DefaultFileType,
@@ -10,7 +6,11 @@ import {
   PreferencesData,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
-import { Preferences } from '@lyricistant/common-platform//preferences/Preferences';
+import { CorePreferences } from '@lyricistant/core-dom-platform/platform/Preferences';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import sinonChai from 'sinon-chai';
+import sinon from 'ts-sinon';
 
 use(sinonChai);
 use(chaiAsPromised);

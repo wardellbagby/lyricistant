@@ -1,7 +1,7 @@
-import { Job } from './Workflow';
 import { basicSetup } from './basicSetup';
 import { gulp } from './local-tasks';
 import { UPLOAD_ARTIFACT } from './versions';
+import { Job } from './Workflow';
 
 export const test: Job = {
   name: 'Test',

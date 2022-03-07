@@ -1,6 +1,6 @@
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { Manager } from '@lyricistant/common-platform/Manager';
 import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
-import { StatusBar, Style } from '@capacitor/status-bar';
 import { Logger } from '@lyricistant/common/Logger';
 import { ColorScheme } from '@lyricistant/common/preferences/PreferencesData';
 

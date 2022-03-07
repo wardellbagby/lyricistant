@@ -1,17 +1,17 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { promisify } from 'util';
-import { merge } from 'webpack-merge';
-import { series } from 'gulp';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
-import defaultWebpackConfig from '@tooling/default.webpack.config';
 import {
   getOutputDirectory as getOutDir,
   mocha,
 } from '@tooling/common-tasks.gulp';
-import { Configuration, webpack } from 'webpack';
+import defaultWebpackConfig from '@tooling/default.webpack.config';
 import del from 'del';
 import { glob } from 'glob';
+import { series } from 'gulp';
+import { Configuration, webpack } from 'webpack';
+import { merge } from 'webpack-merge';
 
 const outputDir = getOutDir('development', __dirname);
 

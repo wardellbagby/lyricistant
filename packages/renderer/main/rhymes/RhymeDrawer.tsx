@@ -1,9 +1,9 @@
-import { Drawer, Theme, Typography } from '@mui/material';
-import React from 'react';
-import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import { makeStyles } from '@mui/styles';
-import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
+import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
+import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
+import { Drawer, Theme, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import React from 'react';
 
 const useStyles = makeStyles<Theme, { isSmallLayout: boolean }>((theme) => ({
   root: {

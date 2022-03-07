@@ -1,5 +1,5 @@
-import { Step } from './Workflow';
 import { DEPLOY_GH_PAGES } from './versions';
+import { Step } from './Workflow';
 
 export const deployWeb = (
   site: 'lyricistant.app' | 'dev.lyricistant.app'

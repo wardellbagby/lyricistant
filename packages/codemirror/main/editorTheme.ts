@@ -1,6 +1,6 @@
-import { Theme } from '@mui/material';
 import { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { Theme } from '@mui/material';
 
 export const editorTheme = (appTheme: Theme, font: string): Extension =>
   EditorView.theme(

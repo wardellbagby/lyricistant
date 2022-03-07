@@ -1,3 +1,4 @@
+import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import {
   Files as IFiles,
   LYRICS_EXTENSION,
@@ -7,7 +8,6 @@ import {
   PlatformFile,
 } from '@lyricistant/common/files/PlatformFile';
 import { BrowserWindow, Dialog as ElectronDialog } from 'electron';
-import { FileSystem } from '@electron-app/wrappers/FileSystem';
 
 const DOTLESS_LYRICS_EXTENSIONS = LYRICS_EXTENSION.substring(1);
 export class ElectronFiles implements IFiles {

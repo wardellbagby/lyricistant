@@ -1,3 +1,10 @@
+import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
+import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_feather.svg';
+import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
+import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
+import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
+import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
+import { ExpandMore } from '@mui/icons-material';
 import {
   Box,
   IconButton,
@@ -7,6 +14,8 @@ import {
   useTheme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { useMachine } from '@xstate/react';
+import { DotsVertical } from 'mdi-material-ui';
 import React, {
   ReactNode,
   useEffect,
@@ -15,15 +24,6 @@ import React, {
   useState,
 } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
-import { useMachine } from '@xstate/react';
-import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
-import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_feather.svg';
-import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
-import { DotsVertical } from 'mdi-material-ui';
-import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
-import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
-import { ExpandMore } from '@mui/icons-material';
-import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import useResizeObserver from 'use-resize-observer';
 import { Rhyme } from './rhyme';
 

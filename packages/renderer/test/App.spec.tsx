@@ -1,18 +1,18 @@
-import React from 'react';
-import { App as RealApp } from '@lyricistant/renderer/app/App';
-import { waitFor } from '@testing-library/react';
-import { configure, screen } from '@testing-library/dom';
-import { expect } from 'chai';
-import { MemoryRouter } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
 import {
   ColorScheme,
   DefaultFileType,
   Font,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
-import { MockPlatformDelegate } from './MockPlatformDelegate';
+import { App as RealApp } from '@lyricistant/renderer/app/App';
+import { configure, screen } from '@testing-library/dom';
+import { waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { expect } from 'chai';
+import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { MockLogger } from './MockLogger';
+import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { render, wait } from './Wrappers';
 
 describe('App component', () => {

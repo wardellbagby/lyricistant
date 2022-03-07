@@ -1,9 +1,9 @@
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import {
   SystemPalette,
   SystemTheme,
 } from '@lyricistant/common/theme/SystemTheme';
 import { setColorSchemeListener } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
-import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 
 declare global {
   interface Window {

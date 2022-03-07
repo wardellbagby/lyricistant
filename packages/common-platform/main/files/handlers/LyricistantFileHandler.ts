@@ -3,9 +3,9 @@ import {
   FileData,
   LYRICS_EXTENSION,
 } from '@lyricistant/common-platform/files/Files';
+import { FileHandler } from '@lyricistant/common-platform/files/handlers/FileHandler';
 import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import JSZip from 'jszip';
-import { FileHandler } from '@lyricistant/common-platform/files/handlers/FileHandler';
 import { isEqual } from 'lodash-es';
 
 type LyricsArchive = typeof JSZip;

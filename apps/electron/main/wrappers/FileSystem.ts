@@ -7,8 +7,8 @@ import {
   access,
 } from 'fs';
 import path from 'path';
-import { isText } from 'istextorbinary';
 import { app } from 'electron';
+import { isText } from 'istextorbinary';
 
 export interface FileSystem {
   writeFile: typeof fspromises.writeFile;

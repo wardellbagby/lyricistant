@@ -1,7 +1,7 @@
-import { Manager } from '@lyricistant/common-platform/Manager';
 import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
+import { Manager } from '@lyricistant/common-platform/Manager';
 
 export class UnloadManager implements Manager {
   public constructor(

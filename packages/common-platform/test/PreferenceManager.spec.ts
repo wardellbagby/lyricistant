@@ -1,6 +1,6 @@
-import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   ColorScheme,
   DefaultFileType,

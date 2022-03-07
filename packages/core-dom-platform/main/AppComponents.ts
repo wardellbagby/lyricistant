@@ -1,9 +1,10 @@
-import { DIContainer } from '@wessberg/di';
-import { CoreRendererDelegate } from '@lyricistant/core-dom-platform/Delegates';
 import {
-  CoreFileSystem,
-  FileSystem,
-} from '@lyricistant/core-dom-platform/wrappers/FileSystem';
+  getCommonManagers,
+  PlatformDependencies,
+  registerCommonPlatform,
+} from '@lyricistant/common-platform/AppComponents';
+import { CoreRendererDelegate } from '@lyricistant/core-dom-platform/Delegates';
+import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
 import { CoreFiles } from '@lyricistant/core-dom-platform/platform/Files';
 import { CoreLogger } from '@lyricistant/core-dom-platform/platform/Logger';
 import { CorePreferences } from '@lyricistant/core-dom-platform/platform/Preferences';
@@ -14,12 +15,11 @@ import {
   formatTitle,
   provideUiConfig,
 } from '@lyricistant/core-dom-platform/platform/UiConfigProvider';
-import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
 import {
-  getCommonManagers,
-  PlatformDependencies,
-  registerCommonPlatform,
-} from '@lyricistant/common-platform/AppComponents';
+  CoreFileSystem,
+  FileSystem,
+} from '@lyricistant/core-dom-platform/wrappers/FileSystem';
+import { DIContainer } from '@wessberg/di';
 
 export const getCoreDOMManagers = getCommonManagers;
 

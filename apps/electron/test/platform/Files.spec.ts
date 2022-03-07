@@ -1,13 +1,13 @@
 import { TextEncoder } from 'util';
 import { ElectronFiles } from '@electron-app/platform/Files';
-import { expect, use } from 'chai';
-import sinon, { stubInterface } from 'ts-sinon';
-import sinonChai from 'sinon-chai';
-import { BrowserWindow, Dialog } from 'electron';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import { Files, PlatformFile } from '@lyricistant/common/files/Files';
+import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
+import { BrowserWindow, Dialog } from 'electron';
+import sinonChai from 'sinon-chai';
+import sinon, { stubInterface } from 'ts-sinon';
 
 use(sinonChai);
 use(chaiAsPromised);

@@ -1,12 +1,12 @@
-import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { RendererListeners } from '@testing/utilities/Listeners';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
-import { RendererListeners } from '@testing/utilities/Listeners';
 
 use(sinonChai);
 

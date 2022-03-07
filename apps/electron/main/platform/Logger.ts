@@ -1,8 +1,8 @@
 import { dirname, parse } from 'path';
+import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 import AdmZip from 'adm-zip';
 import { BrowserWindow, dialog } from 'electron';
 import log from 'electron-log';
-import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 
 export class ElectronLogger implements PlatformLogger {
   public constructor(private window: BrowserWindow) {}

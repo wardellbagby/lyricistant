@@ -1,15 +1,15 @@
-import { expect, use } from 'chai';
-import sinon, { stubInterface } from 'ts-sinon';
-import sinonChai from 'sinon-chai';
-import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import chaiAsPromised from 'chai-as-promised';
 import { ElectronPreferences } from '@electron-app/platform/Preferences';
+import { FileSystem } from '@electron-app/wrappers/FileSystem';
+import { Preferences } from '@lyricistant/common/preferences/Preferences';
 import {
   PreferencesData,
   RhymeSource,
   ColorScheme,
 } from '@lyricistant/common/preferences/PreferencesData';
-import { Preferences } from '@lyricistant/common/preferences/Preferences';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import sinonChai from 'sinon-chai';
+import sinon, { stubInterface } from 'ts-sinon';
 
 use(sinonChai);
 use(chaiAsPromised);

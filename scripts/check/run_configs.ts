@@ -2,8 +2,8 @@
 import * as fs from 'fs';
 import path from 'path';
 import { capitalCase, snakeCase } from 'change-case';
-import prettier from 'prettier';
 import { Command } from 'commander';
+import prettier from 'prettier';
 import * as gulpFile from '../../gulpfile';
 
 const ideaConfigFileName = (taskName: string) => `${snakeCase(taskName)}.xml`;

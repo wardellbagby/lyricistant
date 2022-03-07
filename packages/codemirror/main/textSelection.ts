@@ -1,6 +1,6 @@
-import { EditorView } from '@codemirror/view';
-import { Text } from '@codemirror/text';
 import { SelectionRange } from '@codemirror/state';
+import { Text } from '@codemirror/text';
+import { EditorView } from '@codemirror/view';
 
 export interface TextSelectionData {
   from: number;

@@ -1,8 +1,8 @@
-import { assign, createMachine, EventObject } from 'xstate';
-import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
-import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
 import { isUnderTest } from '@lyricistant/common/BuildModes';
+import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
+import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
+import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
+import { assign, createMachine, EventObject } from 'xstate';
 
 type generateRhymes =
   typeof import('@lyricistant/rhyme-generator')['rhymeGenerator']['generateRhymes'];

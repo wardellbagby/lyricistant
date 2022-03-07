@@ -1,16 +1,16 @@
-import { promisify } from 'util';
 import path from 'path';
-import { parallel, series } from 'gulp';
-import { glob } from 'glob';
+import { promisify } from 'util';
 import del from 'del';
-import { buildWeb } from './apps/web/web.gulp';
+import { glob } from 'glob';
+import { parallel, series } from 'gulp';
 import { buildElectron } from './apps/electron/electron.gulp';
-import { testWeb } from './apps/web/test/test.gulp';
 import { testElectron } from './apps/electron/test/test.gulp';
+import { testWeb } from './apps/web/test/test.gulp';
+import { buildWeb } from './apps/web/web.gulp';
 import { testCodemirror } from './packages/codemirror/test/test.gulp';
-import { testRenderer } from './packages/renderer/test/test.gulp';
 import { testCommonPlatform } from './packages/common-platform/test/test.gulp';
 import { testCoreDOMPlatform } from './packages/core-dom-platform/test/test.gulp';
+import { testRenderer } from './packages/renderer/test/test.gulp';
 import { testRhymeGenerator } from './packages/rhyme-generator/test/test.gulp';
 
 export * from './apps/web/web.gulp';

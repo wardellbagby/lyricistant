@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 import fs from 'fs';
 import path from 'path';
+import { getOutputDirectory, Mode } from '@tooling/common-tasks.gulp';
 import {
   build as electronBuild,
   createTargets,
   Platform,
 } from 'electron-builder';
-import { getOutputDirectory, Mode } from '@tooling/common-tasks.gulp';
 
 const wantedArtifacts = [
   /lyricistant-.+\.(AppImage|dmg|deb|exe|blockmap|zip)/,

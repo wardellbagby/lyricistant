@@ -1,14 +1,14 @@
-import { expect, use } from 'chai';
-import sinon, { stubInterface } from 'ts-sinon';
-import sinonChai from 'sinon-chai';
-import chaiAsPromised from 'chai-as-promised';
-import { NativeTheme } from 'electron';
 import { ElectronSystemThemeProvider } from '@electron-app/platform/SystemThemeProvider';
 import {
   SystemThemeProvider,
   SystemTheme,
 } from '@lyricistant/common/theme/SystemTheme';
 import { EventListeners } from '@testing/utilities/Listeners';
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import { NativeTheme } from 'electron';
+import sinonChai from 'sinon-chai';
+import sinon, { stubInterface } from 'ts-sinon';
 
 use(sinonChai);
 use(chaiAsPromised);

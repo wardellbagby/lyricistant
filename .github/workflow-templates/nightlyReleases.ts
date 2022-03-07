@@ -1,13 +1,4 @@
-import { Job, Workflow } from './helpers/Workflow';
 import { basicSetup } from './helpers/basicSetup';
-import { gulp } from './helpers/local-tasks';
-import { deployWeb as deployWebStep } from './helpers/deployWeb';
-import { createGithubRelease as createGithubReleaseStep } from './helpers/createGithubRelease';
-import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
-import {
-  buildIOSApp as buildIOSAppJob,
-  downloadIOSApp,
-} from './helpers/buildIOSApp';
 import {
   buildAndroidApp as buildAndroidAppJob,
   downloadAndroidApp,
@@ -16,6 +7,15 @@ import {
   buildElectronApps as buildElectronAppsJob,
   downloadElectronApps,
 } from './helpers/buildElectronApps';
+import {
+  buildIOSApp as buildIOSAppJob,
+  downloadIOSApp,
+} from './helpers/buildIOSApp';
+import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
+import { createGithubRelease as createGithubReleaseStep } from './helpers/createGithubRelease';
+import { deployWeb as deployWebStep } from './helpers/deployWeb';
+import { gulp } from './helpers/local-tasks';
+import { Job, Workflow } from './helpers/Workflow';
 
 const deployWeb: Job = {
   name: 'Deploy Web to dev.lyricistant.app',
