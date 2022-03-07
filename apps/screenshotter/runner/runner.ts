@@ -1,7 +1,7 @@
 import path from 'path';
 import { pathToFileURL } from 'url';
+import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { FileHistory } from '@lyricistant/common/history/FileHistory';
 import {
   ColorScheme,
   Font,

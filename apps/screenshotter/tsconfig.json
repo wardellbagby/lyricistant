@@ -8,6 +8,7 @@
   },
   "references": [
     { "path": "../../packages/common/" },
+    { "path": "../../packages/common-platform/" },
     { "path": "../../packages/renderer/" },
     { "path": "../../packages/core-dom-platform/"}
   ],

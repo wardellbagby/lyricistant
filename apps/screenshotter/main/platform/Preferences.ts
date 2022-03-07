@@ -1,6 +1,7 @@
-import { Preferences } from '@lyricistant/common/preferences/Preferences';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import {
   ColorScheme,
+  DefaultFileType,
   Font,
   PreferencesData,
   RhymeSource,
@@ -13,6 +14,7 @@ export class ScreenshotterPreferences implements Preferences {
       font: Font.Roboto,
       rhymeSource: RhymeSource.Offline,
       textSize: 16,
+      defaultFileType: DefaultFileType.Lyricistant_Lyrics,
     });
   }
 

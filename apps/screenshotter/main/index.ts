@@ -1,8 +1,8 @@
+import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { FileHistory } from '@lyricistant/common/history/FileHistory';
 import { Logger } from '@lyricistant/common/Logger';
-import { Managers } from '@lyricistant/common/Managers';
-import { platformDelegate } from '@lyricistant/core-platform/Delegates';
+import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
 import { appComponent } from '@screenshotter-app/AppComponent';
 
 if (module.hot) {
@@ -24,7 +24,7 @@ window.rendererDelegate = appComponent.get<RendererDelegate>();
 window.fileHistory = appComponent.get<FileHistory>();
 
 new Promise<void>((resolve) => {
-  appComponent.get<Managers>().forEach((manager) => manager().register());
+  appComponent.get<Managers>().forEach((manager) => manager.register());
   resolve();
 })
   .then(async () => {
