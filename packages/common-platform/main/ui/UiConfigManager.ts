@@ -1,7 +1,10 @@
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { Manager } from '@lyricistant/common-platform/Manager';
-import { TitleFormatter, UiConfigProvider } from './UiConfig';
+import {
+  TitleFormatter,
+  UiConfigProvider,
+} from '@lyricistant/common-platform/ui/UiConfigProviders';
 
 export class UiConfigManager implements Manager {
   public constructor(

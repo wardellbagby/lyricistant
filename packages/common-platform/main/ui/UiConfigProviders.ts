@@ -1,8 +1,4 @@
-export interface UiConfig {
-  showDownload: boolean;
-  showOpen: boolean;
-  showBrowserWarning: boolean;
-}
+import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 
 export type UiConfigProvider = () => UiConfig;
 export type TitleFormatter = (filename: string) => string;

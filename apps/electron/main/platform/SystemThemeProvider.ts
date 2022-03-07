@@ -1,10 +1,8 @@
-import {
-  SystemTheme,
-  SystemThemeProvider as ISystemThemeProvider,
-} from '@lyricistant/common/theme/SystemTheme';
+import { SystemTheme } from '@lyricistant/common/theme/SystemTheme';
 import { NativeTheme } from 'electron';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 
-export class ElectronSystemThemeProvider implements ISystemThemeProvider {
+export class ElectronSystemThemeProvider implements SystemThemeProvider {
   public constructor(private nativeTheme: NativeTheme) {}
   public onChange = (listener: (theme: SystemTheme) => void) => {
     listener(this.getSystemTheme());

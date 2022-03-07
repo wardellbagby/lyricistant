@@ -12,9 +12,3 @@ export interface Palette {
 }
 
 export type SystemPalette = Partial<Palette>;
-
-export interface SystemThemeProvider {
-  onChange: (
-    listener: (theme: SystemTheme, palette?: SystemPalette) => void
-  ) => void;
-}

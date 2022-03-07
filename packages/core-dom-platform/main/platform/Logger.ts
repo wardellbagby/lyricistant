@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import { Logger } from '@lyricistant/common/Logger';
 import { DateTime } from 'luxon';
 import { Subject } from 'rxjs';
 import { bufferCount, map } from 'rxjs/operators';
 import { sprintf } from 'sprintf-js';
+import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 
-export class CoreLogger implements Logger {
+export class CoreLogger implements PlatformLogger {
   public debug(message: string, ...args: any[]): void {
     console.debug(message, ...args);
     logMessages.next(['debug', message, args]);

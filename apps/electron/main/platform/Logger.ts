@@ -1,11 +1,12 @@
-import { parse, dirname } from 'path';
-import { Logger } from '@lyricistant/common/Logger';
+import { dirname, parse } from 'path';
 import AdmZip from 'adm-zip';
 import { BrowserWindow, dialog } from 'electron';
 import log from 'electron-log';
+import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 
-export class ElectronLogger implements Logger {
+export class ElectronLogger implements PlatformLogger {
   public constructor(private window: BrowserWindow) {}
+
   public debug(message: string, ...args: any[]): void {
     log.debug(message, ...args);
   }

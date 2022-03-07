@@ -9,7 +9,7 @@ import { FirstLaunchManager } from '@lyricistant/common-platform/firstlaunch/Fir
 import { Logger } from '@lyricistant/common/Logger';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
-import { SystemThemeProvider } from '@lyricistant/common/theme/SystemTheme';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 import { Buffers } from '@lyricistant/common-platform/files/Buffers';
 import {
@@ -23,13 +23,14 @@ import { FileDataExtensions } from '@lyricistant/common-platform/files/extension
 import { FileHandlers } from '@lyricistant/common-platform/files/handlers/FileHandler';
 import { Files } from '@lyricistant/common-platform/files/Files';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 
 export type Provider<T> = () => T;
 
 export interface PlatformDependencies {
   rendererDelegate: Provider<RendererDelegate>;
   files: Provider<Files>;
-  logger: Provider<Logger>;
+  logger: Provider<PlatformLogger>;
   preferences: Provider<Preferences>;
   recentFiles: Provider<RecentFiles>;
   systemThemeProvider: Provider<SystemThemeProvider>;
@@ -54,6 +55,7 @@ export const registerCommonPlatform = (
 ): DIContainer => {
   component.registerTransient<Files>(dependencies.files);
   component.registerTransient<Logger>(dependencies.logger);
+  component.registerTransient<PlatformLogger>(dependencies.logger);
   component.registerTransient<Preferences>(dependencies.preferences);
   component.registerTransient<RecentFiles>(dependencies.recentFiles);
   component.registerTransient<SystemThemeProvider>(

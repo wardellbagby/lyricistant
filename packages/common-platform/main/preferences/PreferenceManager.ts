@@ -3,7 +3,6 @@ import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   SystemPalette,
   SystemTheme,
-  SystemThemeProvider,
 } from '@lyricistant/common/theme/SystemTheme';
 import {
   getPreferencesDataOrDefault,
@@ -14,6 +13,7 @@ import {
   DisplayableColorScheme,
   PreferencesData,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 
 export class PreferenceManager implements Manager {
   private onThemeChangedListeners: Array<

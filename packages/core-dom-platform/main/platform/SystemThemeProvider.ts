@@ -1,9 +1,7 @@
-import {
-  SystemTheme,
-  SystemThemeProvider as ISystemThemeProvider,
-} from '@lyricistant/common/theme/SystemTheme';
+import { SystemTheme } from '@lyricistant/common/theme/SystemTheme';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 
-export class CoreSystemThemeProvider implements ISystemThemeProvider {
+export class CoreSystemThemeProvider implements SystemThemeProvider {
   public onChange = (listener: (theme: SystemTheme) => void) => {
     setColorSchemeListener(listener);
   };

@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
-import { Logger } from '@lyricistant/common/Logger';
 import { DateTime } from 'luxon';
 import { sprintf } from 'sprintf-js';
 import { renderer } from '@web-platform/renderer';
+import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 
 const logFormatTemplate = '[%(date)s] [%(level)s] %(text)s';
 const format = 'yyyy-MM-dd hh:mm.u';
@@ -16,7 +16,7 @@ const formatMessage = (level: string, message: string, ...args: any[]) => {
   });
 };
 
-export class WebLogger implements Logger {
+export class WebLogger implements PlatformLogger {
   private messages: string[] = [];
 
   public debug = (message: string, ...args: any[]): void => {
