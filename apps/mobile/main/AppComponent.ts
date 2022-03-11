@@ -1,6 +1,5 @@
-import type { Managers } from '@lyricistant/common-platform/Managers';
 import {
-  getCoreDOMManagers,
+  registerCoreDOMManagers,
   registerCoreDOMPlatform,
 } from '@lyricistant/core-dom-platform/AppComponents';
 import { BackButtonManager } from '@mobile-app/platform/BackButtonManager';
@@ -31,11 +30,11 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<StatusBarManager>();
   component.registerSingleton<BackButtonManager>();
 
-  component.registerSingleton<Managers>(() => [
-    ...getCoreDOMManagers(component),
+  registerCoreDOMManagers(
+    component,
     component.get<StatusBarManager>(),
-    component.get<BackButtonManager>(),
-  ]);
+    component.get<BackButtonManager>()
+  );
   return component;
 };
 

@@ -1,8 +1,7 @@
 import {
-  getCommonManagers,
+  registerCommonManagers,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
-import type { Managers } from '@lyricistant/common-platform/Managers';
 import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
 import { CoreSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
 import {
@@ -47,10 +46,7 @@ const createComponent = (): DIContainer => {
   );
   component.registerSingleton<UnloadManager>();
 
-  component.registerSingleton<Managers>(() => [
-    ...getCommonManagers(component),
-    component.get<UnloadManager>(),
-  ]);
+  registerCommonManagers(component, component.get<UnloadManager>());
   return component;
 };
 

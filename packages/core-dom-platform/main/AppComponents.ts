@@ -1,5 +1,5 @@
 import {
-  getCommonManagers,
+  registerCommonManagers,
   PlatformDependencies,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
@@ -21,7 +21,7 @@ import {
 } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { DIContainer } from '@wessberg/di';
 
-export const getCoreDOMManagers = getCommonManagers;
+export const registerCoreDOMManagers = registerCommonManagers;
 
 export const registerCoreDOMPlatform = (
   platformDependenciesOverrides: Partial<PlatformDependencies> = {},

@@ -19,10 +19,9 @@ import type {
 import { AxiosHttpClient, HttpClient } from '@electron-app/wrappers/HttpClient';
 import { ElectronRendererDelegate } from '@electron-delegates/Delegates';
 import {
-  getCommonManagers,
+  registerCommonManagers,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
-import type { Managers } from '@lyricistant/common-platform/Managers';
 import { DIContainer } from '@wessberg/di';
 import {
   BrowserWindow,
@@ -77,11 +76,11 @@ const registerManagers = (component: DIContainer) => {
   component.registerSingleton<QuitManager>();
   component.registerSingleton<UpdateManager>();
 
-  component.registerTransient<Managers>(() => [
-    ...getCommonManagers(component),
+  registerCommonManagers(
+    component,
     component.get<QuitManager>(),
-    component.get<UpdateManager>(),
-  ]);
+    component.get<UpdateManager>()
+  );
 };
 
 export const createAppComponent = (window: BrowserWindow): DIContainer => {

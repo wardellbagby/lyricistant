@@ -13,6 +13,8 @@ import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import { FileHistoryManager } from '@lyricistant/common-platform/history/FileHistoryManager';
 import { LogManager } from '@lyricistant/common-platform/logging/LogManager';
 import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
+import { Manager } from '@lyricistant/common-platform/Manager';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
@@ -40,15 +42,41 @@ export interface PlatformDependencies {
   titleFormatter: Provider<TitleFormatter>;
 }
 
-export const getCommonManagers = (component: DIContainer) => [
-  component.get<FileManager>(),
-  component.get<PreferenceManager>(),
-  component.get<UiConfigManager>(),
-  component.get<UnsavedDataManager>(),
-  component.get<LogManager>(),
-  component.get<FileHistoryManager>(),
-  component.get<FirstLaunchManager>(),
-];
+/**
+ * Registers all the common managers plus any extra managers that are passed
+ * in so that they can be retrieved by querying {@param component} for
+ * {@link Managers}.
+ *
+ * Note: This should always be invoked after {@link registerCommonPlatform}.
+ *
+ * @param component The component to register the managers to.
+ * @param extraManagers Extra managers the platform would like to register as
+ * well.
+ */
+export const registerCommonManagers = (
+  component: DIContainer,
+  ...extraManagers: Manager[]
+) => {
+  component.registerSingleton<Managers>(() => [
+    component.get<FileManager>(),
+    component.get<PreferenceManager>(),
+    component.get<UiConfigManager>(),
+    component.get<UnsavedDataManager>(),
+    component.get<LogManager>(),
+    component.get<FileHistoryManager>(),
+    component.get<FirstLaunchManager>(),
+    ...extraManagers,
+  ]);
+};
+
+/**
+ * Register the necessary functionality and the dependencies for that
+ * functionality for the common platform.
+ *
+ * @param dependencies The platform implementations of dependencies the common
+ * platform needs.
+ * @param component The DI container to register to.
+ */
 export const registerCommonPlatform = (
   dependencies: PlatformDependencies,
   component: DIContainer

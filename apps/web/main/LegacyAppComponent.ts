@@ -1,6 +1,5 @@
-import { Managers } from '@lyricistant/common-platform/Managers';
 import {
-  getCoreDOMManagers,
+  registerCoreDOMManagers,
   registerCoreDOMPlatform,
 } from '@lyricistant/core-dom-platform/AppComponents';
 import { UnloadManager } from '@lyricistant/core-dom-platform/platform/UnloadManager';
@@ -16,10 +15,7 @@ export const createComponent = (): DIContainer => {
   registerCoreDOMPlatform({}, component);
   component.registerSingleton<UnloadManager>();
 
-  component.registerSingleton<Managers>(() => [
-    ...getCoreDOMManagers(component),
-    component.get<UnloadManager>(),
-  ]);
+  registerCoreDOMManagers(component, component.get<UnloadManager>());
   return component;
 };
 
