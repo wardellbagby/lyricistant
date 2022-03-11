@@ -1,9 +1,10 @@
-import { UiConfigProvider as IUiConfigProvider } from '@lyricistant/common/ui/UiConfig';
+import { UiConfigProvider } from '@lyricistant/common-platform/ui/UiConfigProviders';
 
-export const provideUiConfig: IUiConfigProvider = () => ({
+export const provideUiConfig: UiConfigProvider = () => ({
   showDownload: false,
   showOpen: true,
   showBrowserWarning: false,
+  promptOnUrlChange: false,
 });
 
 export const formatTitle = (filename: string) => filename ?? 'Untitled';

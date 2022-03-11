@@ -1,12 +1,13 @@
 import {
   TitleFormatter,
-  UiConfigProvider as IUiConfigProvider,
-} from '@lyricistant/common/ui/UiConfig';
+  UiConfigProvider,
+} from '@lyricistant/common-platform/ui/UiConfigProviders';
 
-export const provideUiConfig: IUiConfigProvider = () => ({
+export const provideUiConfig: UiConfigProvider = () => ({
   showDownload: false,
   showOpen: true,
   showBrowserWarning: false,
+  promptOnUrlChange: false,
 });
 
 export const formatTitle: TitleFormatter = (filename: string) =>

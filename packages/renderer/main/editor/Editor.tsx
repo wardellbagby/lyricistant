@@ -4,7 +4,6 @@ import { Font } from '@lyricistant/common/preferences/PreferencesData';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { styled } from '@mui/material';
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { toPlatformFile } from './to-platform-file';
 
 const fontFamily = (font?: Font) => {
@@ -86,11 +85,6 @@ export const Editor: React.FC<EditorProps> = (props) => {
   }, [props.value]);
 
   useTextActionEvents(undo, redo, openFindReplaceDialog);
-  useBeforeUnload(() => {
-    if (isModified) {
-      return "Are you sure you want to leave? Your changes haven't been saved.";
-    }
-  });
   return <EditorContainer ref={editor} />;
 };
 

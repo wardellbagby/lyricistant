@@ -19,12 +19,12 @@ import { PreferenceManager } from '@lyricistant/common-platform/preferences/Pref
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Logger } from '@lyricistant/common/Logger';
 import {
   TitleFormatter,
   UiConfigProvider,
-} from '@lyricistant/common/ui/UiConfig';
+} from '@lyricistant/common-platform/ui/UiConfigProviders';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
 import { DIContainer } from '@wessberg/di';
 
 export type Provider<T> = () => T;

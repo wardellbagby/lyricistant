@@ -3,11 +3,15 @@ import { AppError } from '@lyricistant/renderer/app/AppError';
 import { goTo, Modals } from '@lyricistant/renderer/app/Modals';
 import { Editor, EditorTextData } from '@lyricistant/renderer/editor/Editor';
 import { Menu } from '@lyricistant/renderer/menu/Menu';
-import { useChannel } from '@lyricistant/renderer/platform/useChannel';
+import {
+  useChannel,
+  useChannelData,
+} from '@lyricistant/renderer/platform/useChannel';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { Rhymes } from '@lyricistant/renderer/rhymes/Rhymes';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useHistory } from 'react-router-dom';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
@@ -20,6 +24,7 @@ export function App() {
   const [selectedText, setSelectedText] = useState<TextSelectionData>();
   const [isModified, setIsModified] = useState(false);
   const history = useHistory();
+  const [uiConfig] = useChannelData('ui-config');
 
   const onSaveClicked = useCallback(
     () => platformDelegate.send('save-file-attempt', editorTextData.text),
@@ -54,6 +59,11 @@ export function App() {
   useChannel('app-title-changed', (title) => (document.title = title));
 
   useFileEvents(isModified, onPartialEditorTextDataUpdate);
+  useBeforeUnload(() => {
+    if (uiConfig?.promptOnUrlChange && isModified) {
+      return "Are you sure you want to leave? Your changes haven't been saved.";
+    }
+  });
 
   useEffect(() => {
     const onTextRequested = () => {

@@ -1,10 +1,10 @@
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   TitleFormatter,
   UiConfigProvider,
-} from '@lyricistant/common/ui/UiConfig';
+} from '@lyricistant/common-platform/ui/UiConfigProviders';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { RendererListeners } from '@testing/utilities/Listeners';
 import { expect, use } from 'chai';
 import sinon from 'sinon';

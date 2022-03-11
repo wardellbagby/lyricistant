@@ -2,7 +2,5 @@ export interface UiConfig {
   showDownload: boolean;
   showOpen: boolean;
   showBrowserWarning: boolean;
+  promptOnUrlChange: boolean;
 }
-
-export type UiConfigProvider = () => UiConfig;
-export type TitleFormatter = (filename: string) => string;
