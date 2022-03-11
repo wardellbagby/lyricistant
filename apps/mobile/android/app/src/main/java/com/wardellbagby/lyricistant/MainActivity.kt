@@ -48,13 +48,13 @@ class MainActivity : BridgeActivity() {
 
     val palette = if (isDarkThemeEnabled()) {
       mapOf(
-        "primary" to getColor(android.R.color.system_accent1_500).toHex(),
+        "primary" to getColor(android.R.color.system_accent1_200).toHex(),
         "background" to getColor(android.R.color.system_neutral1_900).toHex(),
         "surface" to getColor(android.R.color.system_neutral2_800).toHex()
       )
     } else {
       mapOf(
-        "primary" to getColor(android.R.color.system_accent1_500).toHex(),
+        "primary" to getColor(android.R.color.system_accent1_700).toHex(),
         "background" to getColor(android.R.color.system_neutral1_100).toHex(),
         "surface" to getColor(android.R.color.system_neutral1_200).toHex()
       )
