@@ -1,3 +1,12 @@
+## [1.3.15](https://github.com/wardellbagby/lyricistant/compare/v1.3.14...v1.3.15) (2022-03-19)
+
+
+### Bug Fixes
+
+* **android:** don't prompt that data will be lost when clicking links ([609ef27](https://github.com/wardellbagby/lyricistant/commit/609ef274562a631a82e3634ee0f3f9094f4e7850))
+
+
+
 ## [1.3.14](https://github.com/wardellbagby/lyricistant/compare/v1.3.13...v1.3.14) (2022-03-07)
 
 
