@@ -62,6 +62,16 @@
       "program": "node_modules/.bin/gulp"
     },
     {
+      "name": "Build Screenshotter",
+      "args": ["buildScreenshotter"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
       "name": "Build Test Electron",
       "args": ["buildTestElectron"],
       "type": "pwa-node",

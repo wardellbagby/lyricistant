@@ -58,7 +58,7 @@ const copyResources = async () => {
   );
 };
 
-const buildScreenshotter = series(
+export const buildScreenshotter = series(
   cleanScreenshotter,
   copyResources,
   bundleScreenshotter

@@ -5,6 +5,7 @@ import { glob } from 'glob';
 import { parallel, series } from 'gulp';
 import { buildElectron } from './apps/electron/electron.gulp';
 import { testElectron } from './apps/electron/test/test.gulp';
+import { buildScreenshotter } from './apps/screenshotter/screenshotter.gulp';
 import { testWeb } from './apps/web/test/test.gulp';
 import { buildWeb } from './apps/web/web.gulp';
 import { testCodemirror } from './packages/codemirror/test/test.gulp';
@@ -39,6 +40,7 @@ export const testAll = series(
   testCoreDOMPlatform,
   testWeb,
   testElectron,
+  buildScreenshotter,
   testCore
 );
 
