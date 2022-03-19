@@ -27,6 +27,19 @@ export const useChannel: <Channel extends RendererChannel>(
   }, deps ?? []);
 };
 
+/**
+ * Returns the latest data that the channel has sent to the renderer.
+ *
+ * Note: This will return an empty array initially, so while destructuring it
+ * will work, all values will be undefined until this channel emits something.
+ *
+ * @param channel Platform channel to listen to changes on.
+ * @param deps The dependencies that will be used to re-register the listener
+ * whenever they change. If not provided, listener will be re-registered
+ * whenever the React component is re-mounted. This differs from useEffect when
+ * no dependency list is provided, as useEffect would re-register on every
+ * render pass.
+ */
 export const useChannelData: <Channel extends RendererChannel>(
   channel: Channel,
   deps?: DependencyList
