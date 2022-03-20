@@ -12,9 +12,10 @@ import {
 import React, { useCallback, useEffect } from 'react';
 
 interface AppErrorProps {
-  error: Error;
+  error: any;
   editorText: string;
 }
+
 export function AppError({ error, editorText }: AppErrorProps) {
   const onClose = useCallback(() => window.location.reload(), []);
   const onCopy = useCallback(
@@ -23,7 +24,7 @@ export function AppError({ error, editorText }: AppErrorProps) {
   );
 
   useEffect(() => {
-    logger.error('Error in renderer', error);
+    logger.error('Error in renderer', error.toString());
   }, [error]);
   return (
     <Dialog onClose={onClose} open>
@@ -51,7 +52,9 @@ export function AppError({ error, editorText }: AppErrorProps) {
               wrap={'soft'}
               maxRows={6}
               readOnly
-              defaultValue={error.stack}
+              defaultValue={
+                error?.stack ?? error?.reason ?? JSON.stringify(error)
+              }
             />
           </Box>
         )}

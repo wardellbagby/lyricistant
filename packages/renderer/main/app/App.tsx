@@ -2,6 +2,10 @@ import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { AppError } from '@lyricistant/renderer/app/AppError';
 import { goTo, Modals } from '@lyricistant/renderer/app/Modals';
 import { Editor, EditorTextData } from '@lyricistant/renderer/editor/Editor';
+import {
+  getRootError,
+  isReportableError,
+} from '@lyricistant/renderer/errors/ErrorHandlers';
 import { Menu } from '@lyricistant/renderer/menu/Menu';
 import {
   useChannel,
@@ -21,6 +25,7 @@ export function App() {
     text: '',
     isTransactional: false,
   });
+  const [error, setError] = useState<any>(null);
   const [selectedText, setSelectedText] = useState<TextSelectionData>();
   const [isModified, setIsModified] = useState(false);
   const history = useHistory();
@@ -75,10 +80,27 @@ export function App() {
     };
   }, [editorTextData.text]);
 
+  useEffect(() => {
+    window.onerror = (message, url, col, line, newError) => {
+      const rootError = getRootError(newError ?? message);
+      if (isReportableError(rootError, url)) {
+        setError(rootError);
+      }
+    };
+    window.onunhandledrejection = window.onerror;
+  }, []);
+
+  if (error) {
+    return <AppError error={error} editorText={editorTextData.text} />;
+  }
+
   return (
     <ErrorBoundary
-      fallbackRender={({ error }) => (
-        <AppError error={error} editorText={editorTextData.text} />
+      fallbackRender={(props) => (
+        <AppError
+          error={getRootError(props.error)}
+          editorText={editorTextData.text}
+        />
       )}
     >
       <ResponsiveMainDetailLayout

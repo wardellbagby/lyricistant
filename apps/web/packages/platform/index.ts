@@ -11,7 +11,13 @@ self.onerror = (error) => {
   const availableLogger = appComponent?.get<Logger>() ?? console;
   availableLogger.error('Web Platform crashed', error);
 
-  renderer.onError(error);
+  if (error instanceof ErrorEvent) {
+    renderer.onError(error.error);
+  } else if (typeof error === 'string') {
+    renderer.onError(error);
+  } else {
+    renderer.onError(error);
+  }
 };
 self.onunhandledrejection = (error) => {
   self.onerror(error.reason);
