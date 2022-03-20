@@ -1,3 +1,13 @@
+## [1.3.16](https://github.com/wardellbagby/lyricistant/compare/v1.3.15+android...v1.3.16) (2022-03-20)
+
+
+### Bug Fixes
+
+* **electron:** support updates when latest release isn't for electron ([fb944e0](https://github.com/wardellbagby/lyricistant/commit/fb944e0dc05ddd3fddd36eb9a557af3dc8dffe9b))
+* keep editor font, background and text size on new file creation ([17f1d8a](https://github.com/wardellbagby/lyricistant/commit/17f1d8a35eda8bc5db480b09dec18d5d4e39fed8))
+
+
+
 ## [1.3.15](https://github.com/wardellbagby/lyricistant/compare/v1.3.14...v1.3.15) (2022-03-19)
 
 
