@@ -186,7 +186,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const resetHistory = useCallback(
     () =>
       view?.setState(EditorState.create({ ...defaultConfig, doc: props.text })),
-    [view, props.text]
+    [view, defaultConfig, props.text]
   );
   const undo = useCallback(() => undoTextChange(view), [view]);
   const redo = useCallback(() => redoTextChange(view), [view]);
