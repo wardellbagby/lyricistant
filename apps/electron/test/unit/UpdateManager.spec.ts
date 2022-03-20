@@ -1,4 +1,5 @@
 import { AppStore } from '@electron-app/AppStore';
+import { ReleaseHelper } from '@electron-app/platform/ReleaseHelper';
 import { UpdateManager } from '@electron-app/platform/UpdateManager';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
@@ -17,6 +18,7 @@ describe('Update Manager', () => {
   let rendererDelegate: StubbedInstance<RendererDelegate>;
   let store: StubbedInstance<AppStore>;
   let appUpdater: StubbedInstance<AppUpdater>;
+  let releaseHelper: StubbedInstance<ReleaseHelper>;
   const rendererListeners = new RendererListeners();
   const appUpdaterListeners = new EventListeners();
 
@@ -36,12 +38,18 @@ describe('Update Manager', () => {
       rendererListeners.set(channel, listener);
       return this;
     });
+    releaseHelper = stubInterface();
+    releaseHelper.getReleaseData.resolves({
+      changelog: 'Hello!',
+      baseDownloadUrl: 'https://example.com/',
+    });
 
     manager = new UpdateManager(
       rendererDelegate,
       store,
       appUpdater,
       stubInterface(),
+      releaseHelper,
       stubInterface()
     );
   });
@@ -67,6 +75,9 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
 
+    expect(appUpdater.setFeedURL).to.have.been.calledWith(
+      'https://example.com/'
+    );
     expect(rendererDelegate.send).to.have.been.calledWith(
       'show-dialog',
       sinon.match({
@@ -74,6 +85,17 @@ describe('Update Manager', () => {
         title: 'Update Available',
       })
     );
+  });
+
+  it('does not check for updates when there is no new release', async () => {
+    manager.register();
+    releaseHelper.getReleaseData.resolves(null);
+
+    await rendererListeners.invoke('ready-for-events');
+
+    expect(appUpdater.checkForUpdates).to.have.not.been.called;
+    expect(appUpdater.setFeedURL).to.have.not.been.called;
+    expect(rendererDelegate.send).to.have.not.been.called;
   });
 
   it('starts downloading an update when user clicks yes', async () => {

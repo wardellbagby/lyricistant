@@ -1,4 +1,5 @@
 import { AppStore } from '@electron-app/AppStore';
+import { ReleaseHelper } from '@electron-app/platform/ReleaseHelper';
 import { HttpClient } from '@electron-app/wrappers/HttpClient';
 import { Manager } from '@lyricistant/common-platform/Manager';
 import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
@@ -20,19 +21,28 @@ export class UpdateManager implements Manager {
     private store: AppStore,
     private appUpdater: AppUpdater,
     private httpClient: HttpClient,
+    private releaseHelper: ReleaseHelper,
     private logger: Logger
   ) {}
 
   public register(): void {
-    this.setupAppUpdater();
     this.rendererDelegate.on('dialog-interaction', this.onDialogInteraction);
-    this.rendererDelegate.on('ready-for-events', this.checkForUpdates);
+    this.rendererDelegate.on('ready-for-events', this.onRendererReady);
   }
 
-  private setupAppUpdater = () => {
-    this.appUpdater.logger = this.logger;
-    this.appUpdater.autoDownload = false;
-    this.appUpdater.autoInstallOnAppQuit = true;
+  private onRendererReady = async () => {
+    const releaseData = await this.releaseHelper.getReleaseData(
+      process.env.APP_VERSION
+    );
+
+    if (releaseData?.baseDownloadUrl) {
+      this.appUpdater.logger = this.logger;
+      this.appUpdater.autoDownload = false;
+      this.appUpdater.autoInstallOnAppQuit = true;
+      this.appUpdater.setFeedURL(releaseData.baseDownloadUrl);
+
+      this.checkForUpdates();
+    }
   };
 
   private checkForUpdates = () => {
@@ -67,6 +77,9 @@ export class UpdateManager implements Manager {
       return;
     }
     this.updateInfo = updateInfo;
+    const releaseData = await this.releaseHelper.getReleaseData(
+      process.env.APP_VERSION
+    );
     this.rendererDelegate.send('show-dialog', {
       tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
       type: 'alert',
@@ -74,7 +87,7 @@ export class UpdateManager implements Manager {
       message: `An update is available to ${updateInfo.version}. Would you like to install it now?`,
       collapsibleMessage: {
         label: 'Changelog',
-        message: await this.getChangelog(updateInfo.releaseName),
+        message: releaseData.changelog,
       },
       buttons: ['Never', 'No', 'Yes'],
     });
@@ -159,16 +172,5 @@ export class UpdateManager implements Manager {
         this.appUpdater.quitAndInstall();
         break;
     }
-  };
-
-  private getChangelog = async (tag: string) => {
-    const url = `https://api.github.com/repos/wardellbagby/lyricistant/releases/tags/${tag}`;
-    const response = await this.httpClient.get<{ body: string }>(url, {
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-      },
-      validateStatus: null,
-    });
-    return response?.data?.body ?? 'Unable to fetch changelog';
   };
 }

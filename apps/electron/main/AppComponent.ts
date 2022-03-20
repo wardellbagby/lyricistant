@@ -5,6 +5,7 @@ import type { ElectronLogger } from '@electron-app/platform/Logger';
 import type { ElectronPreferences } from '@electron-app/platform/Preferences';
 import type { QuitManager } from '@electron-app/platform/QuitManager';
 import type { ElectronRecentFiles } from '@electron-app/platform/RecentFiles';
+import { ReleaseHelper } from '@electron-app/platform/ReleaseHelper';
 import type { ElectronSystemThemeProvider } from '@electron-app/platform/SystemThemeProvider';
 import { ElectronTemporaryFiles } from '@electron-app/platform/TemporaryFiles';
 import {
@@ -44,6 +45,7 @@ const registerElectronFunctionality = (
   component.registerSingleton<FileSystem, NodeFileSystem>();
   component.registerSingleton<HttpClient, AxiosHttpClient>();
   component.registerSingleton<NativeTheme>(() => nativeTheme);
+  component.registerSingleton<ReleaseHelper>();
 };
 
 const registerPlatformFunctionality = (component: DIContainer) => {
