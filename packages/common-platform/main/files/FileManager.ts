@@ -23,6 +23,15 @@ import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import { Logger } from '@lyricistant/common/Logger';
 import { DefaultFileType } from '@lyricistant/common/preferences/PreferencesData';
 
+/**
+ * Represents all the data that {@link FileManager} needs to store for the current
+ * file.
+ */
+interface CurrentFile {
+  path: string;
+  handler: FileHandler;
+}
+
 export class FileManager implements Manager {
   public static SAVE_FILE_DIALOG_TAG = 'save-file';
   public static OPEN_FILE_DIALOG_TAG = 'open-file';
@@ -32,8 +41,7 @@ export class FileManager implements Manager {
 
   public initialFile: PlatformFile | null = null;
 
-  private currentFilePath: string | null = null;
-  private currentFileHandler: FileHandler | null = null;
+  private currentFile: CurrentFile | null = null;
   private fileChangedListeners: Array<
     (currentFilename: string | null, recentFiles: string[]) => void
   > = [];
@@ -105,17 +113,11 @@ export class FileManager implements Manager {
   };
 
   public onSaveFile = (forceSaveAs: boolean) => {
-    this.rendererDelegate.send('show-dialog', {
-      tag: FileManager.SAVE_FILE_DIALOG_TAG,
-      type: 'fullscreen',
-      message: 'Saving file',
-      progress: 'indeterminate',
-      cancelable: true,
-    });
+    this.showLoadingDialog('save');
     const onEditorText = async (text: string) => {
       this.rendererDelegate.removeListener('editor-text', onEditorText);
 
-      let filePath = this.currentFilePath;
+      let filePath = this.currentFile?.path;
       if (forceSaveAs) {
         filePath = null;
       }
@@ -169,7 +171,7 @@ export class FileManager implements Manager {
 
   private onRendererSaveFile = async (text: string) => {
     this.showLoadingDialog('save');
-    await this.saveFileActual(text, this.currentFilePath);
+    await this.saveFileActual(text, this.currentFile?.path);
   };
 
   private saveFileActual = async (lyrics: string, path: string) => {
@@ -194,7 +196,7 @@ export class FileManager implements Manager {
       // current file handler.
       const fileHandler = !path
         ? await this.getDefaultFileHandler()
-        : this.currentFileHandler;
+        : this.currentFile?.handler;
 
       const serializedFileData = await fileHandler.create({
         extensions,
@@ -213,7 +215,10 @@ export class FileManager implements Manager {
       if (newFileMetadata) {
         this.showLoadingDialog('save');
         const fileTitle = newFileMetadata.name ?? newFileMetadata.path;
-        this.currentFilePath = newFileMetadata.path;
+        this.currentFile = {
+          path: newFileMetadata.path,
+          handler: fileHandler,
+        };
         this.rendererDelegate.send('file-opened', undefined, lyrics, true);
         this.addRecentFile(newFileMetadata.path);
         this.fileChangedListeners.forEach((listener) =>
@@ -237,8 +242,11 @@ export class FileManager implements Manager {
     this.showLoadingDialog('open');
     const { handler, fileData } = await this.createFileData(platformFile);
 
-    this.currentFilePath = platformFile?.metadata?.path;
-    this.currentFileHandler = handler;
+    this.currentFile = {
+      path: platformFile.metadata.path,
+      handler,
+    };
+
     this.fileDataExtensions.forEach((extension) => {
       const data = fileData.extensions?.[extension.key];
       if (data?.length > 0) {
@@ -253,7 +261,7 @@ export class FileManager implements Manager {
       fileData?.lyrics ?? '',
       true
     );
-    this.addRecentFile(this.currentFilePath);
+    this.addRecentFile(this.currentFile.path);
     const updatedRecentFiles = this.recentFiles.getRecentFiles();
     this.fileChangedListeners.forEach((listener) =>
       listener(
@@ -264,8 +272,7 @@ export class FileManager implements Manager {
   };
 
   private createNewFile = () => {
-    this.currentFilePath = null;
-    this.currentFileHandler = null;
+    this.currentFile = null;
     this.rendererDelegate.send('new-file-created');
     this.fileDataExtensions.forEach((extension) => extension.deserialize(null));
     this.fileChangedListeners.forEach((listener) =>

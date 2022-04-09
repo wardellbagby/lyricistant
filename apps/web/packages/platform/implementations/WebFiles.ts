@@ -37,11 +37,15 @@ export class WebFiles implements Files {
     defaultFileName: string,
     path?: string
   ): Promise<FileMetadata> => {
-    const { path: savedPath } = await (
+    const handle = await (
       await renderer.getFileSystem()
     ).saveFile(data, defaultFileName, this.handles.get(path));
+    const returnedPath = handle?.name ?? path ?? defaultFileName;
+    if (handle) {
+      this.handles.set(returnedPath, handle);
+    }
     return {
-      path: savedPath,
+      path: returnedPath,
     };
   };
 }

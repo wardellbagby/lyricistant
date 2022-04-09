@@ -32,18 +32,14 @@ declare global {
 
 const getFileSystem: () => BufferFileSystem = () =>
   proxy({
-    saveFile: async (buffer, defaultFileName: string, handle) => {
-      const result = await fileSave(
+    saveFile: async (buffer, defaultFileName: string, handle) =>
+      await fileSave(
         new Blob([buffer]),
         {
           fileName: defaultFileName,
         },
         handle
-      );
-      return {
-        path: result.name,
-      };
-    },
+      ),
     openFile: async () => {
       try {
         const result = await fileOpen({ extensions: ['.lyrics', '.txt'] });

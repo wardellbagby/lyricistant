@@ -577,6 +577,36 @@ describe('File Manager', () => {
     });
   });
 
+  it('saves saved files with the same file handler that saved them', async () => {
+    lyricsFileHandler.canHandle.callsFake((file) => file.type === 'mytype');
+    textFileHandler.canHandle.returns(false);
+    lyricsFileHandler.create.resolves(encode('Hello'));
+    files.saveFile.resolves({ path: 'a/path.lyrics' });
+
+    manager.register();
+
+    await rendererListeners.invoke('save-file-attempt', 'Hello');
+    expect(files.saveFile).to.have.been.calledWith(
+      encode('Hello'),
+      'Lyrics.lyrics'
+    );
+    await rendererListeners.invoke('save-file-attempt', 'Hello');
+    expect(files.saveFile).to.have.been.calledWith(
+      encode('Hello'),
+      'Lyrics.lyrics'
+    );
+
+    expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
+      'Hello'
+    );
+    expect(lyricsFileHandler.create).to.have.been.calledWith({
+      lyrics: 'Hello',
+      extensions: {
+        hello: JSON.stringify(mockExtension.serialize()),
+      },
+    });
+  });
+
   it('prompts the user for their chosen file handler - lyrics', async () => {
     preferences.getPreferences.resolves({
       defaultFileType: DefaultFileType.Always_Ask,
