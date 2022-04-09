@@ -1,3 +1,12 @@
+## [1.3.17](https://github.com/wardellbagby/lyricistant/compare/v1.3.16...v1.3.17) (2022-04-09)
+
+
+### Bug Fixes
+
+* saving a file for the first time will allow re-saves ([7e5c996](https://github.com/wardellbagby/lyricistant/commit/7e5c99632ca8d87eed87a06f092ec2ad3fd8bac5))
+
+
+
 ## [1.3.16](https://github.com/wardellbagby/lyricistant/compare/v1.3.15+android...v1.3.16) (2022-03-20)
 
 
