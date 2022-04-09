@@ -13,7 +13,7 @@ import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
 import { DIContainer } from '@wessberg/di';
-import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
+import { app, BrowserWindow, dialog, Menu, MenuItem, shell } from 'electron';
 import debug from 'electron-debug';
 
 export let mainWindow: BrowserWindow;
@@ -142,6 +142,34 @@ const onAppComponentCreated = () => {
   }
 };
 
+const setupSpellcheck = (window: BrowserWindow) => {
+  window.webContents.on('context-menu', (event, params) => {
+    const menu = new Menu();
+
+    for (const suggestion of params.dictionarySuggestions) {
+      menu.append(
+        new MenuItem({
+          label: suggestion,
+          click: () => window.webContents.replaceMisspelling(suggestion),
+        })
+      );
+    }
+
+    if (params.misspelledWord) {
+      menu.append(new MenuItem({ type: 'separator' }));
+      menu.append(
+        new MenuItem({
+          label: 'Add to dictionary',
+          click: () =>
+            window.webContents.session.addWordToSpellCheckerDictionary(
+              params.misspelledWord
+            ),
+        })
+      );
+    }
+    menu.popup();
+  });
+};
 const createWindow = (): void => {
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -217,6 +245,8 @@ const createWindow = (): void => {
     shell.openExternal(details.url);
     return { action: 'deny' };
   });
+
+  setupSpellcheck(mainWindow);
   setMenu();
 };
 
