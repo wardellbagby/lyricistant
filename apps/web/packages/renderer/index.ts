@@ -1,3 +1,4 @@
+import { SUPPORTED_EXTENSIONS } from '@lyricistant/common-platform/files/Files';
 import { BufferFileSystem } from '@web-common/BufferFileSystem';
 import { Storage } from '@web-common/Storage';
 import { fileOpen, fileSave, FileSystemHandle } from 'browser-fs-access';
@@ -42,7 +43,7 @@ const getFileSystem: () => BufferFileSystem = () =>
       ),
     openFile: async () => {
       try {
-        const result = await fileOpen({ extensions: ['.lyrics', '.txt'] });
+        const result = await fileOpen({ extensions: SUPPORTED_EXTENSIONS });
         const data = await result.arrayBuffer();
         return {
           path: result.name,

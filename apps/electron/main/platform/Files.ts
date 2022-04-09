@@ -49,7 +49,6 @@ export class ElectronFiles implements IFiles {
     } else {
       const result = await this.dialog.showSaveDialog(this.window, {
         defaultPath: defaultFileName,
-        filters: [{ name: 'Lyrics', extensions: [DOTLESS_LYRICS_EXTENSIONS] }],
       });
 
       if (result.filePath) {
