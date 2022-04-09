@@ -83,7 +83,6 @@ describe('Files', () => {
     expect(expected).to.deep.equal(actual);
     expect(dialogs.showSaveDialog).to.have.been.calledWith(window, {
       defaultPath: 'defaultname.txt',
-      filters: [{ name: 'Lyrics', extensions: ['lyrics'] }],
     });
     expect(fs.writeFile).to.have.been.calledWith(
       expected.path,

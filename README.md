@@ -58,7 +58,9 @@ Lyricistant!
 
 ### Documentation
 
-You can take a look at the [current documentation here.](docs/1-getting_started.md)
+It's a little outdated, but here's [a blog post](https://dev.to/wardellbagby/the-architecture-of-an-electron-app-ported-to-web-399e) giving a high-level overview of Lyricistant.
+
+The most up-to-date [documentation is here](docs/1-getting_started.md)
 
 ### Building Lyricistant
 
