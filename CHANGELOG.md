@@ -1,3 +1,17 @@
+## [1.3.18](https://github.com/wardellbagby/lyricistant/compare/v1.3.17...v1.3.18) (2022-04-27)
+
+
+### Bug Fixes
+
+* **electron:** stop saving logs with .lyrics extension ([4ef2428](https://github.com/wardellbagby/lyricistant/commit/4ef24289e3ed8fd4d4bc26058f28efc77917b72a))
+
+
+### Features
+
+* **electron:** enable spell checking ([deaaaa9](https://github.com/wardellbagby/lyricistant/commit/deaaaa97d7e395f9423201a5553a5f33cb03655b))
+
+
+
 ## [1.3.17](https://github.com/wardellbagby/lyricistant/compare/v1.3.16...v1.3.17) (2022-04-09)
 
 
