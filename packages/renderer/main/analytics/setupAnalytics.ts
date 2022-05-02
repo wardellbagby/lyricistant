@@ -20,7 +20,7 @@ export const setupAnalytics = () => {
     );
     document.head.append(analyticsScript);
 
-    const timeout = setInterval(() => {
+    const timeoutId = setTimeout(() => {
       if (!window.goatcounter || !window.goatcounter.count) {
         return;
       }
@@ -34,12 +34,13 @@ export const setupAnalytics = () => {
 
       const path = `${site}/${APP_VERSION}/`;
 
-      clearInterval(timeout);
+      clearTimeout(timeoutId);
 
       window.goatcounter.count({
         path,
+        title: '',
         event: false,
       });
-    }, 5000);
+    }, 10000);
   }
 };
