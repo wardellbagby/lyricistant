@@ -1,3 +1,12 @@
+## [1.3.19](https://github.com/wardellbagby/lyricistant/compare/v1.3.18+electron...v1.3.19) (2022-05-22)
+
+
+### Bug Fixes
+
+* **electron:** stop showing first launch dialog so often ([36dfcca](https://github.com/wardellbagby/lyricistant/commit/36dfcca0f56513e64dc1c389690d38bf0a9c71ca))
+
+
+
 ## [1.3.18](https://github.com/wardellbagby/lyricistant/compare/v1.3.17...v1.3.18) (2022-04-27)
 
 
