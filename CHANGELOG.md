@@ -1,3 +1,7 @@
+## [1.3.20](https://github.com/wardellbagby/lyricistant/compare/v1.3.19...v1.3.20) (2022-05-22)
+
+
+
 ## [1.3.19](https://github.com/wardellbagby/lyricistant/compare/v1.3.18+electron...v1.3.19) (2022-05-22)
 
 
