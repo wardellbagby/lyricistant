@@ -3,11 +3,11 @@ import {
   RendererDelegate,
 } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
-import { CoreLogger } from '@lyricistant/core-dom-platform/platform/Logger';
+import { DOMLogger } from '@lyricistant/core-dom-platform/platform/DOMLogger';
 
-const logger: Logger = new CoreLogger();
+const logger: Logger = new DOMLogger();
 
-class CorePlatformDelegate implements PlatformDelegate {
+class DOMPlatformDelegate implements PlatformDelegate {
   public send(channel: string, ...args: any[]) {
     logger.info('Sending data to platform', { channel, args });
     queue(rendererListeners.getListeners(channel), args);
@@ -30,7 +30,7 @@ class CorePlatformDelegate implements PlatformDelegate {
   }
 }
 
-export class CoreRendererDelegate implements RendererDelegate {
+export class DOMRendererDelegate implements RendererDelegate {
   public send(channel: string, ...args: any[]) {
     logger.info('Sending data to renderer', { channel, args });
     queue(platformListeners.getListeners(channel), args);
@@ -105,4 +105,4 @@ const platformListeners: ListenerManager = new ListenerManager();
 const rendererListeners: ListenerManager = new ListenerManager();
 const newRendererListenerListeners = new Map<string, Array<() => void>>();
 
-export const platformDelegate: PlatformDelegate = new CorePlatformDelegate();
+export const platformDelegate: PlatformDelegate = new DOMPlatformDelegate();

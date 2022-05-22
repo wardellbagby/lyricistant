@@ -1,13 +1,13 @@
 import { AppStore } from '@electron-app/AppStore';
-import { ElectronAppData } from '@electron-app/platform/AppData';
-import { ElectronBuffers } from '@electron-app/platform/Buffers';
-import type { ElectronFiles } from '@electron-app/platform/Files';
-import type { ElectronLogger } from '@electron-app/platform/Logger';
-import type { ElectronPreferences } from '@electron-app/platform/Preferences';
+import { ElectronAppData } from '@electron-app/platform/ElectronAppData';
+import { ElectronBuffers } from '@electron-app/platform/ElectronBuffers';
+import type { ElectronFiles } from '@electron-app/platform/ElectronFiles';
+import type { ElectronLogger } from '@electron-app/platform/ElectronLogger';
+import type { ElectronPreferences } from '@electron-app/platform/ElectronPreferences';
+import type { ElectronRecentFiles } from '@electron-app/platform/ElectronRecentFiles';
+import type { ElectronSystemThemeProvider } from '@electron-app/platform/ElectronSystemThemeProvider';
 import type { QuitManager } from '@electron-app/platform/QuitManager';
-import type { ElectronRecentFiles } from '@electron-app/platform/RecentFiles';
 import { ReleaseHelper } from '@electron-app/platform/ReleaseHelper';
-import type { ElectronSystemThemeProvider } from '@electron-app/platform/SystemThemeProvider';
 import {
   formatTitle,
   provideUiConfig,

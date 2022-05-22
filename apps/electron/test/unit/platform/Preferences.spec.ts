@@ -1,10 +1,12 @@
-import { ElectronPreferences } from '@electron-app/platform/Preferences';
+import { ElectronPreferences } from '@electron-app/platform/ElectronPreferences';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { Preferences } from '@lyricistant/common/preferences/Preferences';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import {
+  ColorScheme,
+  DefaultFileType,
+  Font,
   PreferencesData,
   RhymeSource,
-  ColorScheme,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -29,7 +31,9 @@ describe('Preferences', () => {
     const expected: PreferencesData = {
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: ColorScheme.Dark,
+      colorScheme: ColorScheme.Dark,
+      font: Font.Roboto,
+      defaultFileType: DefaultFileType.Always_Ask,
     };
     fs.existsSync.returns(true);
     fs.readFileSync.returns(JSON.stringify(expected));
@@ -68,7 +72,9 @@ describe('Preferences', () => {
     await preferences.setPreferences({
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: ColorScheme.Dark,
+      colorScheme: ColorScheme.Dark,
+      font: Font.Roboto,
+      defaultFileType: DefaultFileType.Always_Ask,
     });
 
     expect(fs.writeFile).to.have.been.calledWith('user/preferences.json');
@@ -80,7 +86,9 @@ describe('Preferences', () => {
     await preferences.setPreferences({
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
-      theme: ColorScheme.Dark,
+      colorScheme: ColorScheme.Dark,
+      font: Font.Roboto,
+      defaultFileType: DefaultFileType.Always_Ask,
     });
     await preferences.getPreferences();
 

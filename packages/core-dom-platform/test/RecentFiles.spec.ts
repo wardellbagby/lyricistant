@@ -1,5 +1,5 @@
 import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
-import { CoreRecentFiles } from '@lyricistant/core-dom-platform/platform/RecentFiles';
+import { DOMRecentFiles } from '@lyricistant/core-dom-platform/platform/DOMRecentFiles';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinonChai from 'sinon-chai';
@@ -13,7 +13,7 @@ describe('Recent Files', () => {
 
   beforeEach(() => {
     sinon.reset();
-    recentFiles = new CoreRecentFiles();
+    recentFiles = new DOMRecentFiles();
   });
 
   it('round-trip works', () => {

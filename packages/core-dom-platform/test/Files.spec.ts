@@ -7,7 +7,7 @@ import {
   FileMetadata,
   PlatformFile,
 } from '@lyricistant/common/files/PlatformFile';
-import { CoreFiles } from '@lyricistant/core-dom-platform/platform/Files';
+import { DOMFiles } from '@lyricistant/core-dom-platform/platform/DOMFiles';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { FileWithHandle } from 'browser-fs-access';
 import { expect, use } from 'chai';
@@ -32,7 +32,7 @@ describe('Files', () => {
 
   beforeEach(() => {
     sinon.reset();
-    files = new CoreFiles(fs, stubInterface());
+    files = new DOMFiles(fs, stubInterface());
   });
 
   it('shows a dialog to choose a file', async () => {

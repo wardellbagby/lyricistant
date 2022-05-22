@@ -3,9 +3,9 @@ import {
   registerCoreDOMPlatform,
 } from '@lyricistant/core-dom-platform/AppComponents';
 import { BackButtonManager } from '@mobile-app/platform/BackButtonManager';
-import type { MobileFiles } from '@mobile-app/platform/Files';
+import type { MobileFiles } from '@mobile-app/platform/MobileFiles';
+import type { MobileSystemThemeProvider } from '@mobile-app/platform/MobileSystemThemeProvider';
 import { StatusBarManager } from '@mobile-app/platform/StatusBarManager';
-import type { MobileSystemThemeProvider } from '@mobile-app/platform/SystemThemeProvider';
 import {
   formatTitle,
   provideUiConfig,

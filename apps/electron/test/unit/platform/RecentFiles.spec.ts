@@ -1,6 +1,6 @@
-import { ElectronRecentFiles } from '@electron-app/platform/RecentFiles';
+import { ElectronRecentFiles } from '@electron-app/platform/ElectronRecentFiles';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { RecentFiles } from '@lyricistant/common/files/RecentFiles';
+import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinonChai from 'sinon-chai';

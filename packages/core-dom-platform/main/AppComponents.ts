@@ -3,20 +3,20 @@ import {
   PlatformDependencies,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
-import { CoreRendererDelegate } from '@lyricistant/core-dom-platform/Delegates';
-import { CoreAppData } from '@lyricistant/core-dom-platform/platform/AppData';
-import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
-import { CoreFiles } from '@lyricistant/core-dom-platform/platform/Files';
-import { CoreLogger } from '@lyricistant/core-dom-platform/platform/Logger';
-import { CorePreferences } from '@lyricistant/core-dom-platform/platform/Preferences';
-import { CoreRecentFiles } from '@lyricistant/core-dom-platform/platform/RecentFiles';
-import { CoreSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
+import { DOMRendererDelegate } from '@lyricistant/core-dom-platform/Delegates';
+import { DOMAppData } from '@lyricistant/core-dom-platform/platform/DOMAppData';
+import { DOMBuffers } from '@lyricistant/core-dom-platform/platform/DOMBuffers';
+import { DOMFiles } from '@lyricistant/core-dom-platform/platform/DOMFiles';
+import { DOMLogger } from '@lyricistant/core-dom-platform/platform/DOMLogger';
+import { DOMPreferences } from '@lyricistant/core-dom-platform/platform/DOMPreferences';
+import { DOMRecentFiles } from '@lyricistant/core-dom-platform/platform/DOMRecentFiles';
+import { DOMSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/DOMSystemThemeProvider';
 import {
   formatTitle,
   provideUiConfig,
 } from '@lyricistant/core-dom-platform/platform/UiConfigProvider';
 import {
-  CoreFileSystem,
+  DOMFileSystem,
   FileSystem,
 } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { DIContainer } from '@wessberg/di';
@@ -27,28 +27,28 @@ export const registerCoreDOMPlatform = (
   platformDependenciesOverrides: Partial<PlatformDependencies> = {},
   component: DIContainer
 ): DIContainer => {
-  component.registerSingleton<CoreRendererDelegate>();
-  component.registerSingleton<CoreLogger>();
-  component.registerSingleton<CorePreferences>();
-  component.registerSingleton<CoreRecentFiles>();
-  component.registerSingleton<CoreAppData>();
-  component.registerSingleton<CoreFiles>();
-  component.registerSingleton<CoreSystemThemeProvider>();
-  component.registerSingleton<CoreBuffers>();
+  component.registerSingleton<DOMRendererDelegate>();
+  component.registerSingleton<DOMLogger>();
+  component.registerSingleton<DOMPreferences>();
+  component.registerSingleton<DOMRecentFiles>();
+  component.registerSingleton<DOMAppData>();
+  component.registerSingleton<DOMFiles>();
+  component.registerSingleton<DOMSystemThemeProvider>();
+  component.registerSingleton<DOMBuffers>();
 
-  component.registerSingleton<FileSystem, CoreFileSystem>();
+  component.registerSingleton<FileSystem, DOMFileSystem>();
 
   registerCommonPlatform(
     {
-      rendererDelegate: () => component.get<CoreRendererDelegate>(),
-      logger: () => component.get<CoreLogger>(),
-      files: () => component.get<CoreFiles>(),
-      preferences: () => component.get<CorePreferences>(),
+      rendererDelegate: () => component.get<DOMRendererDelegate>(),
+      logger: () => component.get<DOMLogger>(),
+      files: () => component.get<DOMFiles>(),
+      preferences: () => component.get<DOMPreferences>(),
       titleFormatter: () => formatTitle,
-      buffers: () => component.get<CoreBuffers>(),
-      appData: () => component.get<CoreAppData>(),
-      systemThemeProvider: () => component.get<CoreSystemThemeProvider>(),
-      recentFiles: () => component.get<CoreRecentFiles>(),
+      buffers: () => component.get<DOMBuffers>(),
+      appData: () => component.get<DOMAppData>(),
+      systemThemeProvider: () => component.get<DOMSystemThemeProvider>(),
+      recentFiles: () => component.get<DOMRecentFiles>(),
       uiConfigProvider: () => provideUiConfig,
       ...platformDependenciesOverrides,
     },

@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { bufferCount, map } from 'rxjs/operators';
 import { sprintf } from 'sprintf-js';
 
-export class CoreLogger implements PlatformLogger {
+export class DOMLogger implements PlatformLogger {
   public debug(message: string, ...args: any[]): void {
     console.debug(message, ...args);
     logMessages.next(['debug', message, args]);

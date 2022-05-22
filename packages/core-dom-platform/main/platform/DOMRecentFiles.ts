@@ -2,7 +2,7 @@ import { RecentFiles as IRecentFiles } from '@lyricistant/common-platform/files/
 
 const recentFilesKey = 'recent_files';
 
-export class CoreRecentFiles implements IRecentFiles {
+export class DOMRecentFiles implements IRecentFiles {
   public getRecentFiles = (): string[] => {
     const recentFiles = localStorage.getItem(recentFilesKey);
     if (recentFiles) {

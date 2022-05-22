@@ -2,8 +2,8 @@ import {
   registerCommonManagers,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
-import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
-import { CoreSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
+import { DOMBuffers } from '@lyricistant/core-dom-platform/platform/DOMBuffers';
+import { DOMSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/DOMSystemThemeProvider';
 import {
   formatTitle,
   provideUiConfig,
@@ -26,8 +26,8 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<WebRecentFiles>();
   component.registerSingleton<WebAppData>();
   component.registerSingleton<WebFiles>();
-  component.registerSingleton<CoreSystemThemeProvider>();
-  component.registerSingleton<CoreBuffers>();
+  component.registerSingleton<DOMSystemThemeProvider>();
+  component.registerSingleton<DOMBuffers>();
 
   registerCommonPlatform(
     {
@@ -36,9 +36,9 @@ const createComponent = (): DIContainer => {
       files: () => component.get<WebFiles>(),
       preferences: () => component.get<WebPreferences>(),
       titleFormatter: () => formatTitle,
-      buffers: () => component.get<CoreBuffers>(),
+      buffers: () => component.get<DOMBuffers>(),
       appData: () => component.get<WebAppData>(),
-      systemThemeProvider: () => component.get<CoreSystemThemeProvider>(),
+      systemThemeProvider: () => component.get<DOMSystemThemeProvider>(),
       recentFiles: () => component.get<WebRecentFiles>(),
       uiConfigProvider: () => provideUiConfig,
     },

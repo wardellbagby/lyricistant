@@ -12,7 +12,7 @@ import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { FileWithHandle, FileSystemHandle } from 'browser-fs-access';
 
-export class CoreFiles implements IFiles {
+export class DOMFiles implements IFiles {
   /*
     An in-memory mapping of generated IDs to FileSystemHandles. We'd prefer for
     these to be given to the FileManager and fed back to us, but

@@ -3,7 +3,7 @@ import * as path from 'path';
 import { format as formatUrl, URL } from 'url';
 import { createAppMenu } from '@electron-app/app-menu';
 import { createAppComponent } from '@electron-app/AppComponent';
-import { ElectronLogger } from '@electron-app/platform/Logger';
+import { ElectronLogger } from '@electron-app/platform/ElectronLogger';
 import { QuitManager } from '@electron-app/platform/QuitManager';
 import { createRendererDelegate } from '@electron-delegates/Delegates';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';

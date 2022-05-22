@@ -1,7 +1,7 @@
 import { Preferences as IPreferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
 
-export class CorePreferences implements IPreferences {
+export class DOMPreferences implements IPreferences {
   private readonly prefsKey = 'lyricistant_preferences';
   public setPreferences = async (data: PreferencesData) =>
     localStorage.setItem(this.prefsKey, JSON.stringify(data));

@@ -1,4 +1,4 @@
-import { Preferences } from '@lyricistant/common-platform//preferences/Preferences';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import {
   ColorScheme,
   DefaultFileType,
@@ -6,7 +6,7 @@ import {
   PreferencesData,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
-import { CorePreferences } from '@lyricistant/core-dom-platform/platform/Preferences';
+import { DOMPreferences } from '@lyricistant/core-dom-platform/platform/DOMPreferences';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinonChai from 'sinon-chai';
@@ -20,7 +20,7 @@ describe('Preferences', () => {
 
   beforeEach(() => {
     sinon.reset();
-    preferences = new CorePreferences();
+    preferences = new DOMPreferences();
   });
 
   it('round-trip works', () => {

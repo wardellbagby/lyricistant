@@ -11,7 +11,7 @@ export interface FileSystem {
   saveFile: typeof fileSave;
 }
 
-export class CoreFileSystem implements FileSystem {
+export class DOMFileSystem implements FileSystem {
   public openFile = fileOpen;
   public saveFile = fileSave;
 }

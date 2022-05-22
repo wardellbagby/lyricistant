@@ -1,6 +1,6 @@
 import { AppData } from '@lyricistant/common-platform/files/AppData';
 
-export class CoreAppData implements AppData {
+export class DOMAppData implements AppData {
   public set = (key: string, data: string | null) => {
     localStorage.setItem(key, JSON.stringify(data));
   };
