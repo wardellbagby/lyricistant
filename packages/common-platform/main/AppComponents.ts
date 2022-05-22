@@ -1,3 +1,4 @@
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 import { Buffers } from '@lyricistant/common-platform/files/Buffers';
 import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
@@ -6,7 +7,6 @@ import { FileHandlers } from '@lyricistant/common-platform/files/handlers/FileHa
 import { LyricistantFileHandler } from '@lyricistant/common-platform/files/handlers/LyricistantFileHandler';
 import { TextFileHandler } from '@lyricistant/common-platform/files/handlers/TextFileHandler';
 import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { FirstLaunchManager } from '@lyricistant/common-platform/firstlaunch/FirstLaunchManager';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
@@ -36,7 +36,7 @@ export interface PlatformDependencies {
   preferences: Provider<Preferences>;
   recentFiles: Provider<RecentFiles>;
   systemThemeProvider: Provider<SystemThemeProvider>;
-  temporaryFiles: Provider<TemporaryFiles>;
+  appData: Provider<AppData>;
   buffers: Provider<Buffers>;
   uiConfigProvider: Provider<UiConfigProvider>;
   titleFormatter: Provider<TitleFormatter>;
@@ -89,7 +89,7 @@ export const registerCommonPlatform = (
   component.registerTransient<SystemThemeProvider>(
     dependencies.systemThemeProvider
   );
-  component.registerTransient<TemporaryFiles>(dependencies.temporaryFiles);
+  component.registerTransient<AppData>(dependencies.appData);
   component.registerTransient<Buffers>(dependencies.buffers);
   component.registerTransient<UiConfigProvider>(dependencies.uiConfigProvider);
   component.registerTransient<TitleFormatter>(dependencies.titleFormatter);

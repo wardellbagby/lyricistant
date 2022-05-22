@@ -1,7 +1,7 @@
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 import { renderer } from '@web-platform/renderer';
 
-export class WebTemporaryFiles implements TemporaryFiles {
+export class WebAppData implements AppData {
   public set = (key: string, data: string | null) => {
     renderer
       .getLocalStorage()

@@ -1,4 +1,5 @@
 import { AppStore } from '@electron-app/AppStore';
+import { ElectronAppData } from '@electron-app/platform/AppData';
 import { ElectronBuffers } from '@electron-app/platform/Buffers';
 import type { ElectronFiles } from '@electron-app/platform/Files';
 import type { ElectronLogger } from '@electron-app/platform/Logger';
@@ -7,7 +8,6 @@ import type { QuitManager } from '@electron-app/platform/QuitManager';
 import type { ElectronRecentFiles } from '@electron-app/platform/RecentFiles';
 import { ReleaseHelper } from '@electron-app/platform/ReleaseHelper';
 import type { ElectronSystemThemeProvider } from '@electron-app/platform/SystemThemeProvider';
-import { ElectronTemporaryFiles } from '@electron-app/platform/TemporaryFiles';
 import {
   formatTitle,
   provideUiConfig,
@@ -54,7 +54,7 @@ const registerPlatformFunctionality = (component: DIContainer) => {
   component.registerSingleton<ElectronPreferences>();
   component.registerSingleton<ElectronRecentFiles>();
   component.registerSingleton<ElectronSystemThemeProvider>();
-  component.registerSingleton<ElectronTemporaryFiles>();
+  component.registerSingleton<ElectronAppData>();
   component.registerSingleton<ElectronBuffers>();
   registerCommonPlatform(
     {
@@ -65,7 +65,7 @@ const registerPlatformFunctionality = (component: DIContainer) => {
       buffers: () => component.get<ElectronBuffers>(),
       preferences: () => component.get<ElectronPreferences>(),
       recentFiles: () => component.get<ElectronRecentFiles>(),
-      temporaryFiles: () => component.get<ElectronTemporaryFiles>(),
+      appData: () => component.get<ElectronAppData>(),
       systemThemeProvider: () => component.get<ElectronSystemThemeProvider>(),
       titleFormatter: () => formatTitle,
       uiConfigProvider: () => provideUiConfig,

@@ -4,13 +4,13 @@ import {
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
 import { CoreRendererDelegate } from '@lyricistant/core-dom-platform/Delegates';
+import { CoreAppData } from '@lyricistant/core-dom-platform/platform/AppData';
 import { CoreBuffers } from '@lyricistant/core-dom-platform/platform/Buffers';
 import { CoreFiles } from '@lyricistant/core-dom-platform/platform/Files';
 import { CoreLogger } from '@lyricistant/core-dom-platform/platform/Logger';
 import { CorePreferences } from '@lyricistant/core-dom-platform/platform/Preferences';
 import { CoreRecentFiles } from '@lyricistant/core-dom-platform/platform/RecentFiles';
 import { CoreSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/SystemThemeProvider';
-import { CoreTemporaryFiles } from '@lyricistant/core-dom-platform/platform/TemporaryFiles';
 import {
   formatTitle,
   provideUiConfig,
@@ -31,7 +31,7 @@ export const registerCoreDOMPlatform = (
   component.registerSingleton<CoreLogger>();
   component.registerSingleton<CorePreferences>();
   component.registerSingleton<CoreRecentFiles>();
-  component.registerSingleton<CoreTemporaryFiles>();
+  component.registerSingleton<CoreAppData>();
   component.registerSingleton<CoreFiles>();
   component.registerSingleton<CoreSystemThemeProvider>();
   component.registerSingleton<CoreBuffers>();
@@ -46,7 +46,7 @@ export const registerCoreDOMPlatform = (
       preferences: () => component.get<CorePreferences>(),
       titleFormatter: () => formatTitle,
       buffers: () => component.get<CoreBuffers>(),
-      temporaryFiles: () => component.get<CoreTemporaryFiles>(),
+      appData: () => component.get<CoreAppData>(),
       systemThemeProvider: () => component.get<CoreSystemThemeProvider>(),
       recentFiles: () => component.get<CoreRecentFiles>(),
       uiConfigProvider: () => provideUiConfig,

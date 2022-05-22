@@ -1,5 +1,5 @@
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import {
   Manager,
@@ -17,7 +17,7 @@ export class UnsavedDataManager implements Manager {
   public constructor(
     private rendererDelegate: RendererDelegate,
     private fileManager: FileManager,
-    private temporaryFiles: TemporaryFiles,
+    private appData: AppData,
     private fileHistory: FileHistory,
     private logger: Logger
   ) {
@@ -35,14 +35,14 @@ export class UnsavedDataManager implements Manager {
 
   private checkForUnsavedData = async () => {
     this.logger.verbose('Checking for unsaved data...');
-    const hasTemporaryData = await this.temporaryFiles.exists(
+    const hasTemporaryData = await this.appData.exists(
       UnsavedDataManager.UNSAVED_LYRICS_KEY
     );
     const hasUnsavedData =
       hasTemporaryData &&
       this.fileHistory.isNonEmptyHistory(
         JSON.parse(
-          await this.temporaryFiles.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
+          await this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
         )
       );
 
@@ -63,7 +63,7 @@ export class UnsavedDataManager implements Manager {
   private startAutomaticFileSaver = () => {
     setTimeout(this.saveFile, 5000);
     this.fileManager.addOnFileChangedListener(() => {
-      this.temporaryFiles.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
+      this.appData.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
     });
   };
 
@@ -72,7 +72,7 @@ export class UnsavedDataManager implements Manager {
       if (buttonLabel === 'Yes') {
         this.fileHistory.deserialize(
           JSON.parse(
-            await this.temporaryFiles.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
+            await this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
           )
         );
         this.rendererDelegate.send(
@@ -91,7 +91,7 @@ export class UnsavedDataManager implements Manager {
       this.rendererDelegate.removeListener('editor-text', onEditorText);
       this.fileHistory.add(text);
 
-      await this.temporaryFiles.set(
+      await this.appData.set(
         UnsavedDataManager.UNSAVED_LYRICS_KEY,
         JSON.stringify(this.fileHistory.serialize())
       );

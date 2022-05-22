@@ -1,5 +1,5 @@
 import { setTimeout } from 'timers';
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import {
   Manager,
@@ -15,7 +15,7 @@ export class QuitManager implements Manager {
 
   public constructor(
     private rendererDelegate: RendererDelegate,
-    private temporaryFiles: TemporaryFiles,
+    private appData: AppData,
     private logger: Logger,
     private window: BrowserWindow
   ) {}
@@ -44,7 +44,7 @@ export class QuitManager implements Manager {
 
   private onOkayForQuit = () => {
     clearTimeout(this.forceQuitTimeout);
-    this.temporaryFiles.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
+    this.appData.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
     this.window.destroy();
   };
 

@@ -9,11 +9,11 @@ import {
   provideUiConfig,
 } from '@lyricistant/core-dom-platform/platform/UiConfigProvider';
 import { UnloadManager } from '@lyricistant/core-dom-platform/platform/UnloadManager';
+import { WebAppData } from '@web-platform/implementations/WebAppData';
 import { WebFiles } from '@web-platform/implementations/WebFiles';
 import { WebLogger } from '@web-platform/implementations/WebLogger';
 import { WebPreferences } from '@web-platform/implementations/WebPreferences';
 import { WebRecentFiles } from '@web-platform/implementations/WebRecentFiles';
-import { WebTemporaryFiles } from '@web-platform/implementations/WebTemporaryFiles';
 import { DIContainer } from '@wessberg/di';
 import { WebRendererDelegate } from './RendererDelegate';
 
@@ -24,7 +24,7 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<WebLogger>();
   component.registerSingleton<WebPreferences>();
   component.registerSingleton<WebRecentFiles>();
-  component.registerSingleton<WebTemporaryFiles>();
+  component.registerSingleton<WebAppData>();
   component.registerSingleton<WebFiles>();
   component.registerSingleton<CoreSystemThemeProvider>();
   component.registerSingleton<CoreBuffers>();
@@ -37,7 +37,7 @@ const createComponent = (): DIContainer => {
       preferences: () => component.get<WebPreferences>(),
       titleFormatter: () => formatTitle,
       buffers: () => component.get<CoreBuffers>(),
-      temporaryFiles: () => component.get<WebTemporaryFiles>(),
+      appData: () => component.get<WebAppData>(),
       systemThemeProvider: () => component.get<CoreSystemThemeProvider>(),
       recentFiles: () => component.get<WebRecentFiles>(),
       uiConfigProvider: () => provideUiConfig,

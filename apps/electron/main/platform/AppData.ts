@@ -1,44 +1,44 @@
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 import { Logger } from '@lyricistant/common/Logger';
 
-export class ElectronTemporaryFiles implements TemporaryFiles {
+export class ElectronAppData implements AppData {
   public constructor(private fs: FileSystem, private logger: Logger) {}
 
   public set = (key: string, data: string | null) => {
     this.fs
-      .writeFile(this.getTemporaryFile(key), data)
+      .writeFile(this.getAppDataFile(key), data)
       .catch((reason) =>
         this.logger.warn(
-          'Failed to save to temporary file!',
+          'Failed to save app data!',
           reason,
-          this.getTemporaryFile(key)
+          this.getAppDataFile(key)
         )
       );
   };
   public get = async (key: string) =>
-    this.fs.readFile(this.getTemporaryFile(key), { encoding: 'utf8' });
+    this.fs.readFile(this.getAppDataFile(key), { encoding: 'utf8' });
 
   public exists = async (key: string) => {
-    const file = this.getTemporaryFile(key);
+    const file = this.getAppDataFile(key);
     return this.fs.existsSync(file) && (await this.fs.isReadable(file));
   };
 
   public delete = async (key: string) => {
     if (await this.exists(key)) {
       this.fs
-        .unlink(this.getTemporaryFile(key))
+        .unlink(this.getAppDataFile(key))
         .catch((reason) =>
           this.logger.warn(
-            'Failed to delete temporary file!',
+            'Failed to delete app data!',
             reason,
-            this.getTemporaryFile(key)
+            this.getAppDataFile(key)
           )
         );
     }
   };
 
-  private getTemporaryFile = (key: string) =>
+  private getAppDataFile = (key: string) =>
     this.fs.resolve(
       this.fs.getDataDirectory('temp'),
       `${key.replaceAll(/[ #%&{}\\<>*?\/$!'":@]/g, '_')}.json`

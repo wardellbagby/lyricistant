@@ -1,11 +1,11 @@
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 import { Manager } from '@lyricistant/common-platform/Manager';
 
 export class UnloadManager implements Manager {
   public constructor(
-    private temporaryFiles: TemporaryFiles,
+    private appData: AppData,
     private logger: PlatformLogger
   ) {}
 
@@ -15,7 +15,7 @@ export class UnloadManager implements Manager {
       this.logger.flush?.();
 
       // TODO Managers shouldn't creep into each other implementations like this.
-      this.temporaryFiles.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
+      this.appData.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
     });
   };
 }

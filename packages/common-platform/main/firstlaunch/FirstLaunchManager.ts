@@ -1,4 +1,4 @@
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 import { Manager } from '@lyricistant/common-platform/Manager';
 import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
@@ -7,7 +7,7 @@ export class FirstLaunchManager implements Manager {
   private static readonly IS_FIRST_LAUNCH_KEY = 'is-first-launch';
   public constructor(
     private rendererDelegate: RendererDelegate,
-    private temporaryFiles: TemporaryFiles
+    private appData: AppData
   ) {}
 
   public register = () => {
@@ -15,14 +15,14 @@ export class FirstLaunchManager implements Manager {
   };
 
   private onReadyForEvents = async () => {
-    const isFirstLaunch = !(await this.temporaryFiles.exists(
+    const isFirstLaunch = !(await this.appData.exists(
       FirstLaunchManager.IS_FIRST_LAUNCH_KEY
     ));
     if (isFirstLaunch && !isUnderTest) {
       this.rendererDelegate.send('open-about');
     }
 
-    this.temporaryFiles.set(
+    this.appData.set(
       FirstLaunchManager.IS_FIRST_LAUNCH_KEY,
       JSON.stringify(false)
     );

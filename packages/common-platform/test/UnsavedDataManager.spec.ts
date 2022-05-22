@@ -1,5 +1,5 @@
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
@@ -14,7 +14,7 @@ describe('Unsaved Data Manager', () => {
   let manager: UnsavedDataManager;
   let rendererDelegate: StubbedInstance<RendererDelegate>;
   let fileManager: StubbedInstance<FileManager>;
-  let temporaryFiles: StubbedInstance<TemporaryFiles>;
+  let appData: StubbedInstance<AppData>;
   let fileHistory: StubbedInstance<FileHistory>;
   const rendererListeners = new RendererListeners();
   let fileChangedListener: (...args: any[]) => void;
@@ -22,7 +22,7 @@ describe('Unsaved Data Manager', () => {
 
   beforeEach(() => {
     sinon.reset();
-    temporaryFiles = stubInterface<TemporaryFiles>({
+    appData = stubInterface<AppData>({
       get: Promise.resolve('{}'),
     });
     fileHistory = stubInterface<FileHistory>({
@@ -44,7 +44,7 @@ describe('Unsaved Data Manager', () => {
     manager = new UnsavedDataManager(
       rendererDelegate,
       fileManager,
-      temporaryFiles,
+      appData,
       fileHistory,
       stubInterface()
     );
@@ -61,7 +61,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('prompts if unsaved data is found', async () => {
-    temporaryFiles.exists.resolves(true);
+    appData.exists.resolves(true);
     fileHistory.isNonEmptyHistory.returns(true);
 
     manager.register();
@@ -77,7 +77,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('does not prompt if unsaved data is not found', async () => {
-    temporaryFiles.exists.resolves(false);
+    appData.exists.resolves(false);
     fileHistory.isNonEmptyHistory.returns(false);
 
     manager.register();
@@ -87,7 +87,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('does not prompt if unsaved data is found but is not valid', async () => {
-    temporaryFiles.exists.resolves(true);
+    appData.exists.resolves(true);
     fileHistory.isNonEmptyHistory.returns(false);
 
     manager.register();
@@ -97,7 +97,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('loads the unsaved data if user selects to', async () => {
-    temporaryFiles.exists.resolves(true);
+    appData.exists.resolves(true);
 
     manager.register();
     await initialFileLoadedListener();
@@ -116,7 +116,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('does not load the unsaved data if user selects to', async () => {
-    temporaryFiles.exists.resolves(true);
+    appData.exists.resolves(true);
 
     manager.register();
     await initialFileLoadedListener();
@@ -135,17 +135,17 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('deletes the unsaved data on file change', async () => {
-    temporaryFiles.exists.resolves(false);
+    appData.exists.resolves(false);
 
     manager.register();
     await initialFileLoadedListener();
     fileChangedListener();
 
-    expect(temporaryFiles.delete).to.have.been.called;
+    expect(appData.delete).to.have.been.called;
   });
 
   it('deletes the unsaved data on file change after user did not load unsaved data', async () => {
-    temporaryFiles.exists.resolves(true);
+    appData.exists.resolves(true);
 
     manager.register();
     await initialFileLoadedListener();
@@ -157,6 +157,6 @@ describe('Unsaved Data Manager', () => {
 
     fileChangedListener();
 
-    expect(temporaryFiles.delete).to.have.been.called;
+    expect(appData.delete).to.have.been.called;
   });
 });

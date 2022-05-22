@@ -1,6 +1,6 @@
-import { TemporaryFiles } from '@lyricistant/common-platform/files/TemporaryFiles';
+import { AppData } from '@lyricistant/common-platform/files/AppData';
 
-export class CoreTemporaryFiles implements TemporaryFiles {
+export class CoreAppData implements AppData {
   public set = (key: string, data: string | null) => {
     localStorage.setItem(key, JSON.stringify(data));
   };
