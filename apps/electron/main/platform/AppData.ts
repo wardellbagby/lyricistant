@@ -40,7 +40,7 @@ export class ElectronAppData implements AppData {
 
   private getAppDataFile = (key: string) =>
     this.fs.resolve(
-      this.fs.getDataDirectory('temp'),
+      this.fs.getDataDirectory('appData'),
       `${key.replaceAll(/[ #%&{}\\<>*?\/$!'":@]/g, '_')}.json`
     );
 }
