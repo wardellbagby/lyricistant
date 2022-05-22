@@ -82,7 +82,7 @@ jobs:
           external_repository: 'wardellbagby/lyricistant-website'
   buildIOSApp:
     name: 'Build iOS'
-    runs-on: 'macos-10.15'
+    runs-on: 'macos-12'
     steps:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
@@ -193,7 +193,7 @@ jobs:
     if: '${{ contains(github.ref, ''android'') || endsWith(github.ref, ''0'') || endsWith(github.ref, ''1'') || endsWith(github.ref, ''2'') || endsWith(github.ref, ''3'') || endsWith(github.ref, ''4'') || endsWith(github.ref, ''5'') || endsWith(github.ref, ''6'') || endsWith(github.ref, ''7'') || endsWith(github.ref, ''8'') || endsWith(github.ref, ''9'') }}'
   buildElectronApps:
     name: 'Build Electron Apps'
-    runs-on: 'macos-10.15'
+    runs-on: 'macos-12'
     steps:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""

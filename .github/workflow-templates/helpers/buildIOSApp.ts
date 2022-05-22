@@ -1,3 +1,4 @@
+import { defaultMacOsRunner } from '../Runners';
 import { ifTrue } from './addIfTrue';
 import { basicSetup } from './basicSetup';
 import { gulp } from './local-tasks';
@@ -14,7 +15,7 @@ export const buildIOSApp = (options?: Options): Job => {
   const { nightly } = options ?? { nightly: false };
   return {
     name: 'Build iOS',
-    'runs-on': 'macos-10.15',
+    'runs-on': defaultMacOsRunner,
     steps: [
       ...basicSetup({ forMobileBuilds: true }),
       {

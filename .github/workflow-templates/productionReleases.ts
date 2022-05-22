@@ -16,6 +16,7 @@ import { deployWeb as deployWebStep } from './helpers/deployWeb';
 import { gulp } from './helpers/local-tasks';
 import { test } from './helpers/test';
 import { Job, Workflow } from './helpers/Workflow';
+import { defaultRunner } from './Runners';
 
 const tagMatches = (platform: 'ios' | 'android' | 'electron' | 'web') =>
   `\${{ contains(github.ref, '${platform}') ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -24,7 +25,7 @@ const tagMatches = (platform: 'ios' | 'android' | 'electron' | 'web') =>
 
 const deployWeb: Job = {
   name: 'Deploy Web to lyricistant.app',
-  'runs-on': 'ubuntu-20.04',
+  'runs-on': defaultRunner,
   needs: test,
   if: tagMatches('web'),
   steps: [
@@ -53,7 +54,7 @@ const buildElectronApps: Job = {
 };
 const createGithubRelease: Job = {
   name: 'Create Github Release',
-  'runs-on': 'ubuntu-20.04',
+  'runs-on': defaultRunner,
   if: 'always()',
   needs: [buildIOSApp, buildElectronApps, buildAndroidApp],
   steps: [

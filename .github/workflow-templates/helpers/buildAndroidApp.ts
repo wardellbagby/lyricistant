@@ -1,3 +1,4 @@
+import { defaultRunner } from '../Runners';
 import { ifTrue } from './addIfTrue';
 import { basicSetup } from './basicSetup';
 import { gulp } from './local-tasks';
@@ -14,7 +15,7 @@ export const buildAndroidApp = (options?: Options): Job => {
   const { nightly } = options ?? { nightly: false };
   return {
     name: 'Build Android',
-    'runs-on': 'ubuntu-20.04',
+    'runs-on': defaultRunner,
     steps: [
       ...basicSetup({ forMobileBuilds: true }),
       {

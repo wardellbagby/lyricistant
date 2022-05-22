@@ -16,10 +16,11 @@ import { createGithubRelease as createGithubReleaseStep } from './helpers/create
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
 import { gulp } from './helpers/local-tasks';
 import { Job, Workflow } from './helpers/Workflow';
+import { defaultRunner } from './Runners';
 
 const deployWeb: Job = {
   name: 'Deploy Web to dev.lyricistant.app',
-  'runs-on': 'ubuntu-20.04',
+  'runs-on': defaultRunner,
   needs: cancelCurrentRuns,
   steps: [
     ...basicSetup(),
@@ -51,7 +52,7 @@ const buildElectronApps: Job = {
 
 const createGithubRelease: Job = {
   name: 'Create Github Nightly Release',
-  'runs-on': 'ubuntu-20.04',
+  'runs-on': defaultRunner,
   needs: [buildIOSApp, buildElectronApps, buildAndroidApp],
   steps: [
     downloadIOSApp({ path: '/tmp/artifacts' }),

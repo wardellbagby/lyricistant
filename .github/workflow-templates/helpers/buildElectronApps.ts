@@ -1,3 +1,4 @@
+import { defaultMacOsRunner } from '../Runners';
 import { basicSetup } from './basicSetup';
 import { gulp } from './local-tasks';
 import { DOWNLOAD_ARTIFACT, RETRY, UPLOAD_ARTIFACT } from './versions';
@@ -11,7 +12,7 @@ export const buildElectronApps = (options?: Options): Job => {
   const { nightly } = options ?? { nightly: false };
   return {
     name: 'Build Electron Apps',
-    'runs-on': 'macos-10.15',
+    'runs-on': defaultMacOsRunner,
     steps: [
       ...basicSetup(),
       {

@@ -3,10 +3,11 @@ import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
 import { npm } from './helpers/local-tasks';
 import { test } from './helpers/test';
 import { Job, Workflow } from './helpers/Workflow';
+import { defaultRunner } from './Runners';
 
 const lint: Job = {
   name: 'Lint',
-  'runs-on': 'ubuntu-20.04',
+  'runs-on': defaultRunner,
   needs: cancelCurrentRuns,
   steps: [
     ...basicSetup(),

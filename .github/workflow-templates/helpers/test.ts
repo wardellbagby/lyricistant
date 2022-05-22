@@ -1,3 +1,4 @@
+import { defaultRunner } from '../Runners';
 import { basicSetup } from './basicSetup';
 import { gulp } from './local-tasks';
 import { UPLOAD_ARTIFACT } from './versions';
@@ -5,7 +6,7 @@ import { Job } from './Workflow';
 
 export const test: Job = {
   name: 'Test',
-  'runs-on': 'ubuntu-20.04',
+  'runs-on': defaultRunner,
   steps: [
     ...basicSetup({ forTests: true }),
     {

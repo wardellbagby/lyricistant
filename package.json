@@ -28,7 +28,7 @@
     }
   },
   "devDependencies": {
-    "@capacitor/cli": "^3.3.4",
+    "@capacitor/cli": "^3.5.1",
     "@commitlint/cli": "^16.1.0",
     "@commitlint/config-conventional": "^16.0.0",
     "@svgr/webpack": "^6.2.0",
@@ -61,7 +61,7 @@
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
-    "@wardellbagby/gh-workflow-gen": "^0.0.5",
+    "@wardellbagby/gh-workflow-gen": "^0.0.7",
     "@wessberg/di-compiler": "^2.2.6",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -124,13 +124,13 @@
     "yargs-parser": "^21.0.0"
   },
   "dependencies": {
-    "@capacitor/android": "^3.3.4",
-    "@capacitor/app": "^1.1.0",
-    "@capacitor/core": "^3.3.4",
-    "@capacitor/filesystem": "^1.0.7",
-    "@capacitor/ios": "^3.3.4",
-    "@capacitor/keyboard": "^1.2.0",
-    "@capacitor/status-bar": "^1.0.6",
+    "@capacitor/android": "^3.5.1",
+    "@capacitor/app": "^1.1.1",
+    "@capacitor/core": "^3.5.1",
+    "@capacitor/filesystem": "^1.1.0",
+    "@capacitor/ios": "^3.5.1",
+    "@capacitor/keyboard": "^1.2.2",
+    "@capacitor/status-bar": "^1.0.8",
     "@codemirror/commands": "^0.19.8",
     "@codemirror/gutter": "^0.19.9",
     "@codemirror/history": "^0.19.2",

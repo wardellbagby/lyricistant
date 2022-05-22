@@ -1,6 +1,7 @@
 import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
 import { CACHE, CHECKOUT, SETUP_NODE } from './helpers/versions';
 import { Workflow } from './helpers/Workflow';
+import { defaultRunner } from './Runners';
 
 export const generatePronunciations: Workflow = {
   name: 'Regenerate Pronunciations',
@@ -21,7 +22,7 @@ export const generatePronunciations: Workflow = {
     generation: {
       name: 'Generation',
       needs: cancelCurrentRuns,
-      'runs-on': 'ubuntu-20.04',
+      'runs-on': defaultRunner,
       steps: [
         {
           name: 'Checkout the current branch',
