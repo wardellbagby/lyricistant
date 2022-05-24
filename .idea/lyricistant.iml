@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/common-platform/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/rhyme-generator/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/renderer/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/core-dom-platform/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/codemirror/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/screenshotter/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/screenshotter/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/electron/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/electron/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/android/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/android/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/android/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/android/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/android/app/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/ios/DerivedData" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/mobile/ios/App/Pods" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/web/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/web/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/web/packages/renderer/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/web/packages/platform/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/web/packages/common/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/electron/packages/delegates/build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/electron/packages/preload/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
