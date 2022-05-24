@@ -2,6 +2,10 @@
 
 import * as path from 'path';
 import depcheck, { Options, Results } from 'depcheck';
+import { dependencies, devDependencies } from '../../package.json';
+
+// Typesync handles making sure the @types deps are put together, so ignore those.
+const TYPES_MATCH = '@types/*';
 
 const options: Options = {
   skipMissing: false,
@@ -31,15 +35,14 @@ const options: Options = {
     depcheck.special.husky,
   ],
   ignoreMatches: [
+    TYPES_MATCH,
     '@capacitor/android',
     '@capacitor/filesystem',
     '@capacitor/ios',
     '@capacitor/keyboard',
-    '@types/webpack-env',
     'css-loader',
     'eslint-plugin-prettier',
     'file-loader',
-    '@types/mocha',
     'mocha',
     'style-loader',
     'ts-loader',
@@ -47,9 +50,6 @@ const options: Options = {
     '@svgr/webpack',
     'ttypescript',
     'url-loader',
-    'react-devtools',
-    '@types/react-devtools',
-    'react-devtools',
     'tslib',
     '@fontsource/roboto',
     '@fontsource/roboto-mono',
@@ -63,8 +63,7 @@ const options: Options = {
     'karma-chrome-launcher',
     'karma-spec-reporter',
     'karma-viewport',
-    '@types/karma-mocha',
-    '@types/karma-webpack',
+    'typesync',
   ],
 };
 
@@ -90,14 +89,19 @@ const logIfExists = (
 const check = (value: any) => value && Object.keys(value).length > 0;
 
 depcheck(path.resolve(__dirname, '../../'), options).then(
-  ({ dependencies, devDependencies, invalidFiles, invalidDirs }: Results) => {
-    logIfExists('Unused dependencies:', [...dependencies, ...devDependencies]);
+  ({
+    dependencies: unusedDeps,
+    devDependencies: unusedDevDeps,
+    invalidFiles,
+    invalidDirs,
+  }: Results) => {
+    logIfExists('Unused dependencies:', [...unusedDeps, ...unusedDevDeps]);
     logIfExists("Files that couldn't be checked:", invalidFiles);
     logIfExists("Directories that couldn't be checked:", invalidDirs);
 
     if (
-      check(dependencies) ||
-      check(devDependencies) ||
+      check(unusedDeps) ||
+      check(unusedDevDeps) ||
       check(invalidFiles) ||
       check(invalidDirs)
     ) {
@@ -105,3 +109,14 @@ depcheck(path.resolve(__dirname, '../../'), options).then(
     }
   }
 );
+
+options.ignoreMatches.forEach((dep) => {
+  if (dep === TYPES_MATCH) {
+    return;
+  }
+  if (!(dep in dependencies || dep in devDependencies)) {
+    console.log(
+      `"${dep}" is explicitly ignored from dependency checks but is no longer installed. Please remove from "scripts/check/unsued_dependencies.ts"`
+    );
+  }
+});

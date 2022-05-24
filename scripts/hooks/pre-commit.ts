@@ -1,12 +1,19 @@
 #!/usr/bin/env -S node -r ./register-ts-node
 
-import { spawnSync as nodeSpawnSync, SpawnSyncOptions } from 'child_process';
+import {
+  spawnSync as nodeSpawnSync,
+  SpawnSyncOptions,
+  SpawnSyncReturns,
+} from 'child_process';
 import * as path from 'path';
 
 const spawnSync = (
   command: string,
   args?: string[],
-  options?: SpawnSyncOptions
+  options?: SpawnSyncOptions,
+  onError: (result: SpawnSyncReturns<Buffer>) => void = ({ stderr }) => {
+    console.error(stderr.toString());
+  }
 ) => {
   const result = nodeSpawnSync(command, args, {
     cwd: path.resolve(__dirname, '../../'),
@@ -17,7 +24,7 @@ const spawnSync = (
   }
   if (result.status !== 0) {
     console.log(result.stdout.toString());
-    console.error(result.stderr.toString());
+    onError(result);
     process.exit(result.status);
   }
 };
