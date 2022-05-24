@@ -13,12 +13,60 @@ import {
 } from '@lyricistant/renderer/platform/useChannel';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { Rhymes } from '@lyricistant/renderer/rhymes/Rhymes';
+import { LibraryMusic, PlayCircleFilledRounded } from '@mui/icons-material';
+import { Box, IconButton, Slider, Typography } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useHistory } from 'react-router-dom';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
+
+const Player = () => {
+  const theme = useTheme();
+  return (
+    <Box
+      display={'grid'}
+      padding={'16px'}
+      gridTemplateAreas={'"play name replace" "play slider replace"'}
+      gridTemplateColumns={'72px 1fr 72px'}
+      width={'100%'}
+      sx={{
+        background: theme.palette.background.paper,
+      }}
+    >
+      <Typography
+        variant={'subtitle2'}
+        sx={{ gridArea: 'name', textAlign: 'center' }}
+      >
+        I'm Your Santa - Chance the Rapper
+      </Typography>
+      <IconButton sx={{ gridArea: 'play' }}>
+        <PlayCircleFilledRounded />
+      </IconButton>
+      <Box
+        display={'flex'}
+        width={'100%'}
+        flexDirection={'column'}
+        sx={{ gridArea: 'slider' }}
+      >
+        <Slider size={'small'} sx={{ paddingBottom: '0px' }} />
+        <Box
+          display={'flex'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <Typography variant={'overline'}>0:00</Typography>
+          <Typography variant={'overline'}>3:22</Typography>
+        </Box>
+      </Box>
+      <IconButton sx={{ gridArea: 'replace' }}>
+        <LibraryMusic />
+      </IconButton>
+    </Box>
+  );
+};
 
 export function App() {
   const [editorTextData, setEditorTextData] = useState<EditorTextData>({
@@ -129,6 +177,7 @@ export function App() {
         detail={
           <Rhymes query={selectedText?.text} onRhymeClicked={onRhymeClicked} />
         }
+        footer={<Player />}
       />
       <Modals />
     </ErrorBoundary>
