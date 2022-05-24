@@ -23,12 +23,15 @@ export const useChannel: <Channel extends RendererChannel>(
 ) => void = (channel, listener, deps) => {
   useEffect(() => {
     platformDelegate.on(channel, listener);
-    return () => platformDelegate.removeListener(channel, listener);
+    return () => {
+      platformDelegate.removeListener(channel, listener);
+    };
   }, deps ?? []);
 };
 
 /**
- * Returns the latest data that the channel has sent to the renderer.
+ * Returns the most recent data that that has been sent via this channel
+ * to the renderer while this hook was running.
  *
  * Note: This will return an empty array initially, so while destructuring it
  * will work, all values will be undefined until this channel emits something.
@@ -50,7 +53,9 @@ export const useChannelData: <Channel extends RendererChannel>(
       setResult(args);
     };
     platformDelegate.on(channel, listener);
-    return () => platformDelegate.removeListener(channel, listener);
+    return () => {
+      platformDelegate.removeListener(channel, listener);
+    };
   }, deps ?? []);
   return result as any;
 };
