@@ -1,4 +1,3 @@
-import { mocha } from '@tooling/common-tasks.gulp';
+import { jest } from '@tooling/common-tasks.gulp';
 
-export const testRhymeGenerator = () =>
-  mocha('packages/rhyme-generator/test/*.spec.ts');
+export const testRhymeGenerator = () => jest(__dirname);

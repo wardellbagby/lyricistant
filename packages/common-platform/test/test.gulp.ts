@@ -1,3 +1,3 @@
-import { mocha } from '@tooling/common-tasks.gulp';
+import { jest } from '@tooling/common-tasks.gulp';
 
-export const testCommonPlatform = () => mocha(`${__dirname}/**/*.spec.ts`);
+export const testCommonPlatform = () => jest(__dirname);

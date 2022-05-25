@@ -1,5 +1,6 @@
 import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   ColorScheme,
@@ -12,7 +13,6 @@ import {
 import {
   SystemPalette,
   SystemTheme,
-  SystemThemeProvider,
 } from '@lyricistant/common/theme/SystemTheme';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';

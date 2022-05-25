@@ -53,6 +53,7 @@ export const getBaseJestConfig = (options: {
   transform: {
     ...tsjPreset.transform,
   },
+  detectOpenHandles: true,
 });
 
 export const jest = (project: string) =>
