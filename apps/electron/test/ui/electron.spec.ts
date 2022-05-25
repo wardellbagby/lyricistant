@@ -26,16 +26,28 @@ describe('Electron launch', () => {
       ],
     });
 
+    await app.evaluate((electronModule, dir) => {
+      electronModule.app.setPath('appData', dir);
+    }, tempDir);
+
     window = await app.firstWindow();
     await window.waitForLoadState('networkidle');
     const elements = await window.$$('#app > *');
     expect(elements).to.not.be.empty;
   });
 
-  it('shows a single window', () => expect(app.windows().length).to.equal(1));
+  afterEach(async () => {
+    await window.close();
+    await app.close();
+  });
 
-  it('has a title of untitled', () =>
-    expect(window.title()).to.eventually.equal('Untitled'));
+  it('shows a single window', () => {
+    expect(app.windows().length).to.equal(1);
+  });
+
+  it('has a title of untitled', () => {
+    expect(window.title()).to.eventually.equal('Untitled');
+  });
 
   it('shows the basic components', async () => {
     const components = [

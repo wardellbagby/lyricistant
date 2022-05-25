@@ -10,7 +10,7 @@ describe('Webpage launch', () => {
   let browser: BrowserContext;
   let page: Page;
 
-  before(async () => {
+  beforeAll(async () => {
     browser = await chromium.launchPersistentContext('', {
       headless: true,
       args: [
@@ -33,6 +33,11 @@ describe('Webpage launch', () => {
   afterEach(async () => {
     await page.evaluate(() => window.localStorage.clear());
     await page.evaluate(() => window.sessionStorage.clear());
+    await page.close();
+  });
+
+  afterAll(async () => {
+    await browser.close();
   });
 
   it('has a title of Lyricistant - Untitled', () =>

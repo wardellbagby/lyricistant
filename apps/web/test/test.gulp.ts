@@ -1,7 +1,7 @@
-import { mocha } from '@tooling/common-tasks.gulp';
+import { jest } from '@tooling/common-tasks.gulp';
 import { series } from 'gulp';
 import { buildTestWeb } from '../web.gulp';
 
-const testWebMocha = () => mocha('apps/web/test/*.spec.ts');
+const uiTestWeb = () => jest(__dirname);
 
-export const testWeb = series(buildTestWeb, testWebMocha);
+export const testWeb = series(buildTestWeb, uiTestWeb);

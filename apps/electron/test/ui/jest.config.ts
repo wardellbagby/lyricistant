@@ -5,8 +5,8 @@ import { getBaseJestConfig } from '@tooling/common-tasks.gulp';
 
 const config: Config.InitialProjectOptions = {
   ...getBaseJestConfig({
-    name: 'Electron - Platform',
-    type: 'node',
+    name: 'Electron',
+    type: 'browser',
   }),
 };
 

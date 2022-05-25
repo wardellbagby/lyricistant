@@ -35,26 +35,52 @@ const getJestEnv = (type: TestType): string => {
     return type;
   }
 };
+const getLabel = (type: TestType): string => {
+  switch (type) {
+    case 'node':
+    case 'jsdom':
+      return 'Unit';
+    case 'browser':
+      return 'UI';
+    default:
+      throw new Error(`Unknown type: ${type}`);
+  }
+};
 
 export const getBaseJestConfig = (options: {
   name: string;
   type: TestType;
-}): Config.InitialProjectOptions => ({
-  displayName: options.name,
-  rootDir: '.',
-  testEnvironment: getJestEnv(options.type),
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  moduleNameMapper: {
-    '^.+\\.(css|scss)$': 'identity-obj-proxy',
-    'typeface-.+': 'identity-obj-proxy',
-    ...pathsToModuleNameMapper(compilerOptions.paths),
-  },
-  moduleDirectories: ['.', 'node_modules'],
-  transform: {
-    ...tsjPreset.transform,
-  },
-  detectOpenHandles: true,
-});
+}): Config.InitialOptions => {
+  const baseConfig = {
+    displayName: `${getLabel(options.type)} - ${options.name}`,
+    verbose: true,
+    detectOpenHandles: true,
+  };
+  if (options.type === 'browser') {
+    return {
+      ...baseConfig,
+      rootDir: '.',
+      preset: 'jest-playwright-preset',
+      transform: {
+        '^.+\\.ts$': 'ts-jest',
+      },
+    };
+  }
+  return {
+    ...baseConfig,
+    testEnvironment: getJestEnv(options.type),
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+    moduleNameMapper: {
+      '^.+\\.(css|scss)$': 'identity-obj-proxy',
+      'typeface-.+': 'identity-obj-proxy',
+      ...pathsToModuleNameMapper(compilerOptions.paths),
+    },
+    moduleDirectories: ['.', 'node_modules'],
+    transform: {
+      ...tsjPreset.transform,
+    },
+  };
+};
 
 export const jest = (project: string) =>
   spawn('npx', ['jest', '--projects', project]);

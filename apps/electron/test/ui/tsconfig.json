@@ -3,5 +3,5 @@
     "types": ["jest"],
     "lib": ["dom"]
   },
-  "extends": "../../../tsconfig.json"
+  "extends": "../../../../tsconfig.json"
 }

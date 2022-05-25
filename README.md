@@ -100,15 +100,23 @@ You can run all tests in a terminal via:
 
 ```shell
 gulp testAll
+# To allow attaching a debugger
+node --inspect-brk ./node_modules/.bin/gulp testAll
 ```
 
-You can also run the tests natively in your IDE, which will make it easier to attach a debugger.
+There are various other test tasks that are named after the folder the tests are contained in. You can print a list of all test tasks by running:
 
-If you'd like to attach a debugger while testing via terminal:
-
-```shell
-node --inspect-brk ./node_modules/.bin/gulp testAll # Replace testAll with whatever command you'd like.
 ```
+gulp --tasks-simple | grep "test"
+```
+
+If you're using VS Code or a Jetbrains IDE, you can also see the test tasks in your Run/Debug or Run Configurations, respectively.
+
+You can also run _most_ tests natively in your IDE using Jest, which will make it even easier to attach a debugger, as your IDE will do that for you.
+
+It's preferred to use the various `gulp` tasks to invoke tests, as they will handle any necessary prerequisites,
+such as building the app before running the tests. However, feel free to use Jest on the command line or in your IDE for
+better iteration, but make sure to also run the test via Gulp to verify that it works correctly!
 
 ### Updating dependencies
 

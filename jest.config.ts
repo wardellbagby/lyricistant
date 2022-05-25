@@ -8,6 +8,8 @@ const config = async (): Promise<InitialOptionsTsJest> => ({
     'packages/common-platform/test',
     'packages/rhyme-generator/test',
     'apps/electron/test/unit',
+    'apps/electron/test/ui',
+    'apps/web/test/',
   ],
   rootDir: '.',
 });
