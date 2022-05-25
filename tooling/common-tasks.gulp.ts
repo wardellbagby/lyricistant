@@ -1,7 +1,10 @@
 import { ChildProcess, spawn as nodeSpawn, SpawnOptions } from 'child_process';
 import path from 'path';
-import { runCLI } from '@jest/core';
+import { Config } from '@jest/types';
 import del from 'del';
+import { pathsToModuleNameMapper } from 'ts-jest';
+import { defaults as tsjPreset } from 'ts-jest/presets';
+import { compilerOptions } from '../tsconfig.json';
 
 export type Mode = 'development' | 'production' | 'test';
 
@@ -24,23 +27,36 @@ export const mocha = (pattern: string, options?: { bail?: boolean }) => {
   });
 };
 
-export const jest = async (directory: string) => {
-  const { results } = await runCLI({ _: [], $0: 'jest', rootDir: directory }, [
-    directory,
-  ]);
-
-  if (results.numTotalTests === 0) {
-    throw new Error('Jest - No tests ran!');
-  }
-
-  if (results.wasInterrupted) {
-    throw new Error('Jest - Interrupted before finish!');
-  }
-
-  if (!results.success) {
-    throw new Error('Jest reported test failures.');
+type TestType = 'node' | 'jsdom' | 'browser';
+const getJestEnv = (type: TestType): string => {
+  if (type === 'jsdom') {
+    return require.resolve('./jsdom-jest-env');
+  } else {
+    return type;
   }
 };
+
+export const getBaseJestConfig = (options: {
+  name: string;
+  type: TestType;
+}): Config.InitialProjectOptions => ({
+  displayName: options.name,
+  rootDir: '.',
+  testEnvironment: getJestEnv(options.type),
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  moduleNameMapper: {
+    '^.+\\.(css|scss)$': 'identity-obj-proxy',
+    'typeface-.+': 'identity-obj-proxy',
+    ...pathsToModuleNameMapper(compilerOptions.paths),
+  },
+  moduleDirectories: ['.', 'node_modules'],
+  transform: {
+    ...tsjPreset.transform,
+  },
+});
+
+export const jest = (project: string) =>
+  spawn('npx', ['jest', '--projects', project]);
 
 export const spawn = (
   command: string,
