@@ -31,7 +31,6 @@
     "@capacitor/cli": "^3.5.1",
     "@commitlint/cli": "^16.1.0",
     "@commitlint/config-conventional": "^16.0.0",
-    "@jest/globals": "^27.5.1",
     "@jest/types": "^27.5.1",
     "@svgr/webpack": "^6.2.0",
     "@testing-library/dom": "^8.11.3",

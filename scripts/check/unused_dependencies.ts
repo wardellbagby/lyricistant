@@ -64,6 +64,7 @@ const options: Options = {
     'karma-spec-reporter',
     'karma-viewport',
     'typesync',
+    'jest-playwright-preset',
   ],
 };
 
