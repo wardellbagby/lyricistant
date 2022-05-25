@@ -5,6 +5,7 @@ import {
   Manager,
   showRendererDialog,
 } from '@lyricistant/common-platform/Manager';
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
 import { BrowserWindow } from 'electron';
@@ -23,6 +24,11 @@ export class QuitManager implements Manager {
   public register = (): void => undefined;
 
   public attemptQuit() {
+    if (isUnderTest) {
+      this.onOkayForQuit();
+      return;
+    }
+
     const isFileModified = async (modified: boolean) => {
       this.rendererDelegate.removeListener('is-file-modified', isFileModified);
       if (modified) {

@@ -37,7 +37,6 @@ describe('Electron launch', () => {
   });
 
   afterEach(async () => {
-    await window.close();
     await app.close();
   });
 
