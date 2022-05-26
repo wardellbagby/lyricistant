@@ -14,19 +14,6 @@ export const getOutputDirectory = (mode: Mode, appDirectory: string) =>
 export const cleanBuildDirectory = async () =>
   del(path.resolve(__dirname, '..', 'build'));
 
-export const mocha = (pattern: string, options?: { bail?: boolean }) => {
-  const args = [
-    'mocha',
-    '--require',
-    './register-ts-node',
-    options?.bail ? '--bail' : null,
-    pattern,
-  ].filter((it) => !!it);
-  return spawn('npx', args, {
-    cwd: path.resolve(__dirname, '..'),
-  });
-};
-
 type TestType = 'node' | 'jsdom' | 'browser';
 const getJestEnv = (type: TestType): string => {
   if (type === 'jsdom') {

@@ -4,7 +4,7 @@ import { promisify } from 'util';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import {
   getOutputDirectory as getOutDir,
-  mocha,
+  spawn,
 } from '@tooling/common-tasks.gulp';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import del from 'del';
@@ -110,8 +110,17 @@ const exportScreenshots = async () => {
   }
 };
 
+const runScreenshotter = () =>
+  spawn('npx', [
+    'mocha',
+    '--require',
+    './register-ts-node',
+    '--bail',
+    'apps/screenshotter/runner/runner.ts',
+  ]);
+
 export const refreshScreenshots = series(
   buildScreenshotter,
-  () => mocha('apps/screenshotter/runner/runner.ts', { bail: true }),
+  runScreenshotter,
   exportScreenshots
 );
