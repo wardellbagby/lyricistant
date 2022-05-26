@@ -118,6 +118,21 @@ It's preferred to use the various `gulp` tasks to invoke tests, as they will han
 such as building the app before running the tests. However, feel free to use Jest on the command line or in your IDE for
 better iteration, but make sure to also run the test via Gulp to verify that it works correctly!
 
+#### Renderer Tests
+
+The tests located in [packages/renderer/test](packages/renderer/test) are Karma tests, as opposed to the usual Jest 
+tests. They have two special flags to make them easier to deal with:
+
+- `--headless=<true/false>` - Determines whether to show Chrome when running these tests. Defaults to true.
+- `--watch=<true/false>` - Automatically reload and retest on code changes. Defaults to false.
+
+These flags can be used by doing:
+
+```shell
+gulp testRenderer --headless=false --watch=true
+```
+
+
 ### Updating dependencies
 
 There's a helper script at `scripts/install-latest.ts` that can be used to update all dependencies in the project that start with a specific string to a specified version.

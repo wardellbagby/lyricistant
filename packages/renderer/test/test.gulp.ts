@@ -58,10 +58,12 @@ export const testRenderer = async () => {
 
   return new Promise<void>((resolve, reject) => {
     server.on('run_complete', (browsers, results) => {
-      if (results.success) {
-        resolve();
-      } else {
-        reject();
+      if (!watch) {
+        if (results.success) {
+          resolve();
+        } else {
+          reject();
+        }
       }
     });
   });
