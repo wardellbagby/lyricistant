@@ -1,10 +1,14 @@
+import { spawn } from '@tooling/common-tasks.gulp';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
+import { parallel } from 'gulp';
 import { config as KarmaConfig, ConfigOptions, Server } from 'karma';
 import parser from 'yargs-parser';
 
 const argv = parser(process.argv.slice(2), { boolean: ['headless'] });
 
-export const testRenderer = async () => {
+const typecheckRendererTests = () =>
+  spawn('npx', ['tsc', '--build', __dirname]);
+const karmaTestRenderer = async () => {
   const { headless, watch } = { headless: true, watch: false, ...argv };
   const browser = headless ? 'ChromeHeadless' : 'Chrome';
   let timeout;
@@ -68,3 +72,5 @@ export const testRenderer = async () => {
     });
   });
 };
+
+export const testRenderer = parallel(typecheckRendererTests, karmaTestRenderer);

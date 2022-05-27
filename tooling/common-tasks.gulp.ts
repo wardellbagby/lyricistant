@@ -6,6 +6,7 @@ import { pathsToModuleNameMapper } from 'ts-jest';
 import { defaults as tsjPreset } from 'ts-jest/presets';
 import { compilerOptions } from '../tsconfig.json';
 
+export const rootDirectory = path.resolve(__dirname, '..');
 export type Mode = 'development' | 'production' | 'test';
 
 export const getOutputDirectory = (mode: Mode, appDirectory: string) =>
@@ -78,7 +79,7 @@ export const spawn = (
   options?: SpawnOptions
 ): ChildProcess => {
   const optionsWithCwd: SpawnOptions = {
-    cwd: path.resolve(__dirname, '..'),
+    cwd: rootDirectory,
     stdio: 'inherit',
     ...options,
   };

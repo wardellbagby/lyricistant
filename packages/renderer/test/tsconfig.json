@@ -1,16 +1,23 @@
 {
-  "include": ["**/*"],
-  "exclude": ["**/*.gulp.ts"],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["build", "**/*.gulp.ts"],
   "compilerOptions": {
+    "outDir": "build",
+    "lib": ["dom"],
     "types": [
       "mocha",
       "node",
       "../../third-party-types",
       "../../renderer-window",
-      "karma-viewport"
+      "karma-viewport",
+      "karma-mocha"
     ],
     "composite": true
   },
-  "references": [{ "path": "../" }],
-  "extends": "../tsconfig.json"
+  "references": [
+    { "path": "../" },
+    { "path": "../../testing/utilities" },
+    { "path": "../../common" }
+  ],
+  "extends": "../../../tsconfig.json"
 }

@@ -54,6 +54,7 @@ describe('Menu component', () => {
         showOpen: true,
         showDownload: false,
         showBrowserWarning: false,
+        promptOnUrlChange: true,
       })
     );
     const element = await waitFor(() =>
@@ -97,6 +98,7 @@ describe('Menu component', () => {
         showOpen: false,
         showDownload: true,
         showBrowserWarning: false,
+        promptOnUrlChange: true,
       })
     );
 
