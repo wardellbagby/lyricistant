@@ -6,6 +6,7 @@ const config = async (): Promise<InitialOptionsTsJest> => ({
     'packages/codemirror/test',
     'packages/core-dom-platform/test',
     'packages/common-platform/test',
+    'packages/renderer/test',
     'packages/rhyme-generator/test',
     'apps/electron/test/unit',
     'apps/electron/test/ui',

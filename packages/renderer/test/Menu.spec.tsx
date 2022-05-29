@@ -16,7 +16,6 @@ describe('Menu component', () => {
   let platformDelegate: MockPlatformDelegate;
 
   beforeEach(async () => {
-    viewport.set(1200, 1200);
     configure({
       getElementError: (message) => {
         const error = new Error(message);

@@ -8,12 +8,17 @@ import { App as RealApp } from '@lyricistant/renderer/app/App';
 import { configure, screen } from '@testing-library/dom';
 import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { expect } from 'chai';
+import { expect, use } from 'chai';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+import sinonChai from 'sinon-chai';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { render, wait } from './Wrappers';
+
+use(sinonChai);
+
+jest.mock('@lyricistant/rhyme-generator');
 
 describe('App component', () => {
   let platformDelegate: MockPlatformDelegate;

@@ -1,4 +1,3 @@
-import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
 import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
@@ -7,20 +6,10 @@ import { assign, createMachine, EventObject } from 'xstate';
 type generateRhymes =
   typeof import('@lyricistant/rhyme-generator')['rhymeGenerator']['generateRhymes'];
 
-const offlineRhymes = (...args: Parameters<generateRhymes>) => {
-  // TODO Replace with an actual system for mocking out rhymes in ui tests.
-  if (isUnderTest) {
-    return Promise.resolve([
-      { word: 'Test Rhyme 1', score: 100 },
-      { word: 'Test Rhyme 2', score: 99 },
-      { word: 'Test Rhyme 3', score: 98 },
-    ]);
-  } else {
-    return import('@lyricistant/rhyme-generator').then((value) =>
-      value.rhymeGenerator.generateRhymes(...args)
-    );
-  }
-};
+const offlineRhymes = (...args: Parameters<generateRhymes>) =>
+  import('@lyricistant/rhyme-generator').then(({ rhymeGenerator }) =>
+    rhymeGenerator.generateRhymes(...args)
+  );
 
 interface RhymesContext {
   rhymeSource?: RhymeSource;

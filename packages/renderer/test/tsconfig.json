@@ -1,18 +1,15 @@
 {
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["build", "**/*.gulp.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "../main/typings.d.ts"],
+  "exclude": ["build", "**/*.gulp.ts", "*.config.ts"],
   "compilerOptions": {
     "outDir": "build",
     "lib": ["dom"],
     "types": [
-      "mocha",
+      "jest",
       "node",
       "../../third-party-types",
-      "../../renderer-window",
-      "karma-viewport",
-      "karma-mocha"
-    ],
-    "composite": true
+      "../../renderer-window"
+    ]
   },
   "references": [
     { "path": "../" },

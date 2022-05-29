@@ -59,11 +59,10 @@ export const getBaseJestConfig = (options: {
     testEnvironment: getJestEnv(options.type),
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
     moduleNameMapper: {
-      '^.+\\.(css|scss)$': 'identity-obj-proxy',
-      'typeface-.+': 'identity-obj-proxy',
+      '^.+\\.(png|svg|css|scss)$': 'identity-obj-proxy',
       ...pathsToModuleNameMapper(compilerOptions.paths),
     },
-    moduleDirectories: ['.', 'node_modules'],
+    moduleDirectories: [rootDirectory, 'node_modules'],
     transform: {
       ...tsjPreset.transform,
     },

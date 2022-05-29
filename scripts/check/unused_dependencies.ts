@@ -66,6 +66,8 @@ const options: Options = {
     'typesync',
     'jest-playwright-preset',
     'prettier-plugin-jsdoc',
+    'blob-polyfill',
+    'identity-obj-proxy',
   ],
 };
 

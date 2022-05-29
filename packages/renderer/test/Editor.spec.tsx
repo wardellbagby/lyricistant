@@ -1,8 +1,8 @@
-import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import {
   Editor as RealEditor,
   EditorProps,
 } from '@lyricistant/renderer/editor/Editor';
+import { toPlatformFile } from '@lyricistant/renderer/editor/to-platform-file';
 import { configure, fireEvent, screen } from '@testing-library/dom';
 import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -15,12 +15,6 @@ import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { render as render, wait } from './Wrappers';
 
 use(sinonChai);
-
-const droppedFile: PlatformFile = {
-  metadata: { path: 'filename.txt' },
-  type: 'text/plain',
-  data: new TextEncoder().encode('Oh wow!').buffer,
-};
 
 const Editor = (props: Partial<EditorProps>) => (
   <RealEditor
@@ -62,21 +56,23 @@ describe('Editor component', function () {
     const oldDragEvent = window.DragEvent;
     window.DragEvent = undefined;
 
+    const file = new File(['Oh wow!'], 'filename.txt', {
+      type: 'text/plain',
+    });
+    const platformFile = await toPlatformFile(file);
+
     fireEvent.drop(element, {
       dataTransfer: {
-        files: [
-          new File(['Oh wow!'], 'filename.txt', {
-            type: 'text/plain',
-          }),
-        ],
+        files: [file],
       },
     });
     window.DragEvent = oldDragEvent;
 
+    expect(await file.arrayBuffer()).to.eql(platformFile.data);
     await waitFor(() =>
       expect(platformDelegate.send).to.have.been.calledWithMatch(
         'open-file-attempt',
-        droppedFile
+        platformFile
       )
     );
   });
