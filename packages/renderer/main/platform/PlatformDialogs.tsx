@@ -66,6 +66,9 @@ const useFullscreenDialogStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Displays dialogs that the platform has requested to be shown.
+ */
 export function PlatformDialogs() {
   const [dialogData, setDialogData] = useState<DialogData>(null);
   const [closeDialogTag, setCloseDialogTag] = useState<string>(null);

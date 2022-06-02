@@ -1,3 +1,9 @@
+/**
+ * Attempts to get the bottom-most error message in a potential error chain.
+ *
+ * @param message The error to look through.
+ * @return An error, or an error message.
+ */
 export const getRootError = (message: any) => {
   if (!message) {
     return message;
@@ -12,6 +18,13 @@ export const getRootError = (message: any) => {
 
   return current;
 };
+/**
+ * Returns whether an error is something that should stop Lyricistant from
+ * continuing to run or not.
+ *
+ * @param message The error, or error message, to check.
+ * @param url An optional url given by a window.onerror callback.
+ */
 export const isReportableError = (message: any, url?: string) => {
   if (typeof message === 'string' && message.includes('ResizeObserver')) {
     // https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
@@ -23,6 +36,9 @@ export const isReportableError = (message: any, url?: string) => {
     message.includes('Script error')
   );
 };
+/**
+ * Sets an error handler on the current window to handle an errors that happen, wrapping any existing error handler.
+ */
 export const setWindowErrorHandler = () => {
   const oldOnError = window.onerror;
   window.onerror = (message, url, line, col, error) => {

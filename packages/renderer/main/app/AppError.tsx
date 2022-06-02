@@ -16,6 +16,13 @@ interface AppErrorProps {
   editorText: string;
 }
 
+/**
+ * A dialog that displays whenever an unrecoverable error occurs while
+ * Lyricistant is running.
+ *
+ * @param error The error that occured. While display in development build.
+ * @param editorText The text that was in the editor before the error occurred.
+ */
 export function AppError({ error, editorText }: AppErrorProps) {
   const onClose = useCallback(() => window.location.reload(), []);
   const onCopy = useCallback(

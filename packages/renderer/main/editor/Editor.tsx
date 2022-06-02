@@ -21,6 +21,9 @@ const EditorContainer = styled('div')({
 });
 
 export interface EditorTextData {
+  /**
+   * The text to be displayed in the editor.
+   */
   text: string;
   /**
    * Does this represent a change from the last text data, or should this be
@@ -31,10 +34,40 @@ export interface EditorTextData {
   isTransactional?: boolean;
 }
 
+/**
+ * The props for the {@link Editor} component.
+ */
 export interface EditorProps {
+  /**
+   * The value to be represented in the editor.
+   */
   value: EditorTextData;
+  /**
+   * Invoked whenever the text changes.
+   *
+   * @param value The current text data in the editor.
+   */
   onTextChanged: (value: EditorTextData) => void;
+  /**
+   * Invoked whenever the user selects text in the editor.
+   *
+   * "Selecting text" in this scenario means the more obvious action of the user
+   * manually highlighting text and the less obvious action of the user moving
+   * their cursor. In the case whether the user has moved their cursor but
+   * didn't highlight any text, this will instead be the nearest "word" to their
+   * cursor, where word is defined as a sequence of alphabetical characters.
+   *
+   * @param value The text currently selected by the user.
+   */
   onTextSelected: (value: TextSelectionData) => void;
+  /**
+   * Invoked whenever the modification state changes.
+   *
+   * Modification state refers to whether the text in the editor has been changed
+   * or not since the last value update where {@link isTransactional} is false.
+   *
+   * @param isModified Whether the editor has been modified or not.
+   */
   onModificationStateChanged: (isModified: boolean) => void;
 }
 

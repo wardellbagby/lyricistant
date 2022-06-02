@@ -122,12 +122,30 @@ const SelectBox = <T extends string | number>({
   );
 };
 
+/**
+ * The props needed to render {@link Preferences}.
+ */
 interface PreferencesProps {
+  /**
+   * Whether the preferences dialog should show or not.
+   */
   open: boolean;
+  /**
+   * Invoked when the user closes the preferences dialog.
+   */
   onClose: () => void;
+  /**
+   * Invoked when the users wants to go to the About screen.
+   */
   onAboutClicked: () => void;
 }
 
+/**
+ * A dialog that allows users to view and edit their preferences. Also allows
+ * them to link to the About screen.
+ *
+ * @param props The props needed to render this component.
+ */
 export const Preferences = (props: PreferencesProps) => {
   const classes = dialogStyles(undefined);
   const [originalPreferenceData] = useChannelData('prefs-updated', [

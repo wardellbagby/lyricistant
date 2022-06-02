@@ -33,6 +33,11 @@ interface FileHistoryProps {
   onClose: () => void;
 }
 
+/**
+ * A dialog that displays file history from the platform and allows the user to select a file history to apply.
+ *
+ * @param props The props needed to render this component.
+ */
 export function FileHistory(props: FileHistoryProps) {
   const onClose = useCallback(() => {
     setDisplayedHistory(null);

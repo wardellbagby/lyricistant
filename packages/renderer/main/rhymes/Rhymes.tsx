@@ -213,11 +213,28 @@ const HelperText = ({ text }: { text: string }) => {
   );
 };
 
+/**
+ * The props needed to render the {@link Rhymes} component.
+ */
 export interface RhymesProps {
+  /**
+   * The query to find rhymes for.
+   */
   query?: string;
+  /**
+   * Invoked when a rhyme is clicked.
+   *
+   * @param rhyme The rhyme that was clicked.
+   */
   onRhymeClicked: (rhyme: Rhyme) => void;
 }
 
+/**
+ * Given a query, fetches and renders a list of rhymes that can be clicked by
+ * a user.
+ *
+ * @param props The props needed to render this component.
+ */
 export const Rhymes: React.FC<RhymesProps> = (props) => {
   const [state, send] = useMachine(rhymesMachine);
 

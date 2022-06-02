@@ -1,5 +1,5 @@
-import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
+import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import {
   AddCircle,
   FolderOpen,
@@ -158,19 +158,51 @@ const MenuBar = (props: AppBarProps) => {
   );
 };
 
+/**
+ * The props needed to render {@link Menu}.
+ */
 export interface MenuProps {
+  /**
+   * Invoked when the new button is clicked
+   */
   onNewClicked: () => void;
+  /**
+   * Invoked when the open button is clicked
+   */
   onOpenClicked: () => void;
+  /**
+   * Invoked when the save button is clicked
+   */
   onSaveClicked: () => void;
+  /**
+   * Invoked when the preferences button is clicked
+   */
   onPreferencesClicked: () => void;
+  /**
+   * Invoked when the download button is clicked
+   */
   onDownloadClicked: () => void;
+  /**
+   * Invoked when the file history button is clicked
+   */
   onFileHistoryClicked: () => void;
 }
 
+/**
+ * Renders a menu, which is a list of buttons.
+ *
+ * When in small layout, this menu renders horizontally. If there are more than
+ * 3 buttons, it will show the extras in an overflow menu.
+ *
+ * When not in small layout, it renders vertically with spacing between the
+ * first 4 buttons and the rest of the button.
+ *
+ * @param props The props needed to render this component.
+ */
 export const Menu: React.FC<MenuProps> = (props) => {
   const theme = useTheme();
   const classes = useMenuStyles({ isSmallLayout: useSmallLayout() });
-  const [uiConfig, setUiConfig] = useState<UiConfig>(null);
+  const [uiConfig] = useChannelData('ui-config');
   const isSmallLayout = useSmallLayout();
   const direction = isSmallLayout ? 'horizontal' : 'vertical';
 
@@ -216,19 +248,6 @@ export const Menu: React.FC<MenuProps> = (props) => {
       ].filter((value) => !!value),
     [uiConfig, props]
   );
-
-  useEffect(() => {
-    const onConfigChange = (config: UiConfig) => {
-      setUiConfig(config);
-    };
-
-    platformDelegate.on('ui-config', onConfigChange);
-    platformDelegate.send('request-ui-config');
-
-    return () => {
-      platformDelegate.removeListener('ui-config', onConfigChange);
-    };
-  }, []);
 
   return (
     <Box

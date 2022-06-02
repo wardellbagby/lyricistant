@@ -19,32 +19,34 @@ setupAnalytics();
 const container: HTMLElement = document.getElementById('app');
 
 ReactDOM.render(
-  <PlatformEventsReadyHandler>
-    <Themed
-      onThemeChanged={(palette) => {
-        document.body.style.backgroundColor = palette.background;
-        document.body.style.color = palette.primaryText;
-        onThemeUpdated(palette);
-      }}
-      onThemeReady={() => {
-        onPageLoaded();
-        container.style.opacity = '100%';
-      }}
-    >
-      <SnackbarProvider
-        maxSnack={3}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
+  <React.StrictMode>
+    <PlatformEventsReadyHandler>
+      <Themed
+        onThemeChanged={(palette) => {
+          document.body.style.backgroundColor = palette.background;
+          document.body.style.color = palette.primaryText;
+          onThemeUpdated(palette);
+        }}
+        onThemeReady={() => {
+          onPageLoaded();
+          container.style.opacity = '100%';
         }}
       >
-        <SupportedBrowserWarning>
-          <HashRouter hashType={'noslash'}>
-            <App />
-          </HashRouter>
-        </SupportedBrowserWarning>
-      </SnackbarProvider>
-    </Themed>
-  </PlatformEventsReadyHandler>,
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+        >
+          <SupportedBrowserWarning>
+            <HashRouter hashType={'noslash'}>
+              <App />
+            </HashRouter>
+          </SupportedBrowserWarning>
+        </SnackbarProvider>
+      </Themed>
+    </PlatformEventsReadyHandler>
+  </React.StrictMode>,
   container
 );

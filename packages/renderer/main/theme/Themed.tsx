@@ -32,6 +32,14 @@ const loadFont = async (themeData?: ThemeData) => {
       return import('@fontsource/roboto-mono/latin-400.css');
   }
 };
+/**
+ * A component that provides a MUI theme to all of its children, handles loading
+ * fonts, and sets a standard CSS baseline.
+ *
+ * @param onThemeChanged Invoked when the theme changes.
+ * @param onThemeReady Invoked when a theme has been successfully created.
+ * @param children The children of this component.
+ */
 export const Themed: FunctionComponent<
   PropsWithChildren<{
     onThemeChanged: (palette: Palette) => void;

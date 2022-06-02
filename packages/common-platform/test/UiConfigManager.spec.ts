@@ -21,6 +21,7 @@ describe('Ui Config Manager', () => {
   let formatTitle: TitleFormatter;
 
   const rendererListeners = new RendererListeners();
+  const rendererListenersSetListeners: Map<string, () => void> = new Map();
   let fileChangedListener: (filename: string, recents: string[]) => void;
 
   beforeEach(() => {
@@ -29,6 +30,11 @@ describe('Ui Config Manager', () => {
       rendererListeners.set(channel, listener);
       return this;
     });
+    rendererDelegate.addRendererListenerSetListener.callsFake(
+      (channel, onRendererListenerSet) => {
+        rendererListenersSetListeners.set(channel, onRendererListenerSet);
+      }
+    );
     fileManager = stubInterface<FileManager>();
     fileManager.addOnFileChangedListener.callsFake((listener) => {
       fileChangedListener = listener;
@@ -54,13 +60,15 @@ describe('Ui Config Manager', () => {
   it('registers on the renderer delegate the events it cares about', () => {
     manager.register();
 
-    expect(rendererDelegate.on).to.have.been.calledWith('request-ui-config');
+    expect(
+      rendererDelegate.addRendererListenerSetListener
+    ).to.have.been.calledWith('ui-config');
   });
 
   it('sends ui config when requested', () => {
     manager.register();
 
-    rendererListeners.invoke('request-ui-config');
+    rendererListenersSetListeners.get('ui-config')();
 
     expect(rendererDelegate.send).to.have.been.calledWith('ui-config', {
       showDownload: true,

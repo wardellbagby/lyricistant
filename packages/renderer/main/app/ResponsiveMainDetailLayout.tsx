@@ -9,17 +9,26 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface ResponsiveMenuDetailLayout {
+interface ResponsiveMenuDetailLayoutProps {
+  /** The main component that should be displayed. */
   main: ReactNode;
+  /** The detail, secondary, component that should be displayed. */
   detail: ReactNode;
+  /** The menu component that should be displayed.*/
   menu: ReactNode;
 }
 
+/**
+ * A responsive layout with a main, detail, and menu section that changes based
+ * on the screen size.
+ *
+ * @param props The props for this component.
+ */
 export const ResponsiveMainDetailLayout = ({
   main,
   detail,
   menu,
-}: ResponsiveMenuDetailLayout) => {
+}: ResponsiveMenuDetailLayoutProps) => {
   const classes = useStyles();
   const isSmallLayout = useSmallLayout();
   let displayableChildren: ReactNode[];

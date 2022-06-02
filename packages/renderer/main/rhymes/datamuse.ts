@@ -38,6 +38,11 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
   return [];
 };
 
+/**
+ * Fetch rhymes for the given word from the Datamuse rhymes API.
+ *
+ * @param word The word to find rhymes for.
+ */
 export const fetchRhymes = async (word: string): Promise<Rhyme[]> => {
   if (word.length === 0) {
     return [];

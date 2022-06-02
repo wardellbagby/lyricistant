@@ -9,6 +9,11 @@ import {
   Theme,
 } from '@mui/material';
 
+/**
+ * Get a theme palette based on the given theme data.
+ *
+ * @param themeData The optional theme data to generate a palette for.
+ */
 export const getThemePalette = (
   themeData?: ThemeData
 ): { palette: Palette; isDark: boolean } => {
@@ -23,6 +28,11 @@ export const getThemePalette = (
   };
 };
 
+/**
+ * Create a MUI theme from theme data.
+ *
+ * @param themeData The theme data used for generating the MUI theme.
+ */
 export const createTheme = (themeData?: ThemeData): Theme => {
   const { palette, isDark } = getThemePalette(themeData);
 

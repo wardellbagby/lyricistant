@@ -52,11 +52,26 @@ const DividerlessTableCell = (props: TableCellProps) => {
   return <TableCell className={classes.root} {...props} />;
 };
 
+/**
+ * The props needed to render an {@link AboutDialog}.
+ */
 interface AboutDialogProps {
+  /**
+   * Whether this dialog is opened or not.
+   */
   open: boolean;
+  /**
+   * Invoked when the {@link AboutDialog} is closed.
+   */
   onClose: () => void;
 }
 
+/**
+ * A dialog that shows information about Lyricistant, links to the author, a
+ * link to report issues, and a button to download logs.
+ *
+ * @param props The props needed to render this component.
+ */
 export const AboutDialog = (props: AboutDialogProps) => (
   <Dialog
     onClose={props.onClose}

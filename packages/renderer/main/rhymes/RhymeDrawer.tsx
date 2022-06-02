@@ -59,14 +59,39 @@ const useStyles = makeStyles<Theme, { isSmallLayout: boolean }>((theme) => ({
   },
 }));
 
+/**
+ * The props needed to render the {@link RhymeDrawer} component.
+ */
 interface RhymeDrawerProps {
+  /**
+   * Whether to show the drawer or not.
+   */
   open: boolean;
+  /**
+   * Invoked when the drawer is closed.
+   */
   onClose: () => void;
+  /**
+   * The rhymes to display.
+   */
   rhymes: Rhyme[];
+  /**
+   * The query that was entered to fetch the rhymes.
+   */
   query: string;
+  /**
+   * Invoked when a rhyme is clicked.
+   *
+   * @param rhyme The rhyme that was clicked.
+   */
   onRhymeClicked: (rhyme: Rhyme) => void;
 }
 
+/**
+ * Displays a list of rhymes in a drawer that appears from the bottom.
+ *
+ * @param props The props needed to render this component.
+ */
 export const RhymeDrawer = ({
   open,
   rhymes,
