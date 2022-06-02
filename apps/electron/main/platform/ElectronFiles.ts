@@ -1,6 +1,6 @@
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import {
-  Files as IFiles,
+  Files,
   LYRICS_EXTENSION,
 } from '@lyricistant/common-platform/files/Files';
 import {
@@ -10,7 +10,7 @@ import {
 import { BrowserWindow, Dialog as ElectronDialog } from 'electron';
 
 const DOTLESS_LYRICS_EXTENSIONS = LYRICS_EXTENSION.substring(1);
-export class ElectronFiles implements IFiles {
+export class ElectronFiles implements Files {
   public constructor(
     private dialog: ElectronDialog,
     private fs: FileSystem,
