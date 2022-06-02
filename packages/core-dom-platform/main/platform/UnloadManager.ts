@@ -1,4 +1,4 @@
-import { AppData } from '@lyricistant/common-platform/files/AppData';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 import { Manager } from '@lyricistant/common-platform/Manager';

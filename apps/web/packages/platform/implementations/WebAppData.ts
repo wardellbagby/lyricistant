@@ -1,4 +1,4 @@
-import { AppData } from '@lyricistant/common-platform/files/AppData';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { renderer } from '@web-platform/renderer';
 
 export class WebAppData implements AppData {

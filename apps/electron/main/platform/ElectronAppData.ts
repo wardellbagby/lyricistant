@@ -1,5 +1,5 @@
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { AppData } from '@lyricistant/common-platform/files/AppData';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { Logger } from '@lyricistant/common/Logger';
 
 export class ElectronAppData implements AppData {

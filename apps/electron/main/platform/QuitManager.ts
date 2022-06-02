@@ -1,5 +1,5 @@
 import { setTimeout } from 'timers';
-import { AppData } from '@lyricistant/common-platform/files/AppData';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import {
   Manager,

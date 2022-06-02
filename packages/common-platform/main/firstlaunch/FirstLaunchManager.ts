@@ -1,4 +1,4 @@
-import { AppData } from '@lyricistant/common-platform/files/AppData';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { Manager } from '@lyricistant/common-platform/Manager';
 import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';

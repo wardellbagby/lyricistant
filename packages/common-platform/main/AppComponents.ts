@@ -1,4 +1,4 @@
-import { AppData } from '@lyricistant/common-platform/files/AppData';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { Buffers } from '@lyricistant/common-platform/files/Buffers';
 import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';

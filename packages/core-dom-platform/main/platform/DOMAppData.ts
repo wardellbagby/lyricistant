@@ -1,4 +1,4 @@
-import { AppData } from '@lyricistant/common-platform/files/AppData';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 
 export class DOMAppData implements AppData {
   public set = (key: string, data: string | null) => {
