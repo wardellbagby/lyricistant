@@ -60,10 +60,7 @@ const fetchRhymes = async (
   return results.filter((rhyme) => rhyme && rhyme.word && rhyme.score);
 };
 
-/**
- * A State Machine that handles fetching rhymes based on a query and returning
- * a result.
- */
+/** A State Machine that handles fetching rhymes based on a query and returning a result. */
 export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>({
   id: 'rhymes',
   initial: 'inactive',

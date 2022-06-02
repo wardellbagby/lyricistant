@@ -8,8 +8,8 @@ import { setColorSchemeListener } from '@lyricistant/core-dom-platform/platform/
 declare global {
   interface Window {
     /**
-     * Android doesn't support prefers-color-scheme and posting updates when it changes.
-     * It uses this to update the renderer instead.
+     * Android doesn't support prefers-color-scheme and posting updates when it
+     * changes. It uses this to update the renderer instead.
      *
      * @param dark Whether dark theme is enabled.
      */
@@ -17,8 +17,9 @@ declare global {
   }
 
   /**
-   * Similar to [window.onNativeThemeChanged], Android doesn't provide a nice way of immediately getting the dark
-   * theme value, so it'll instead provide this to the renderer.
+   * Similar to [window.onNativeThemeChanged], Android doesn't provide a nice
+   * way of immediately getting the dark theme value, so it'll instead provide
+   * this to the renderer.
    */
   const nativeThemeProvider:
     | { isDarkTheme: () => boolean; getPalette: () => string | null }

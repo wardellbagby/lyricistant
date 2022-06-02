@@ -34,7 +34,8 @@ interface FileHistoryProps {
 }
 
 /**
- * A dialog that displays file history from the platform and allows the user to select a file history to apply.
+ * A dialog that displays file history from the platform and allows the user to
+ * select a file history to apply.
  *
  * @param props The props needed to render this component.
  */

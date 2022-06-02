@@ -11,10 +11,10 @@ import { DependencyList, useEffect, useState } from 'react';
  * @param channel Platform channel to listen to changes on.
  * @param listener Listener that will be invoked.
  * @param deps The dependencies that will be used to re-register the listener
- * whenever they change. If not provided, listener will be re-registered
- * whenever the React component is re-mounted. This differs from useEffect when
- * no dependency list is provided, as useEffect would re-register on every
- * render pass.
+ *   whenever they change. If not provided, listener will be re-registered
+ *   whenever the React component is re-mounted. This differs from useEffect
+ *   when no dependency list is provided, as useEffect would re-register on
+ *   every render pass.
  */
 export const useChannel: <Channel extends RendererChannel>(
   channel: Channel,
@@ -30,18 +30,18 @@ export const useChannel: <Channel extends RendererChannel>(
 };
 
 /**
- * Returns the most recent data that that has been sent via this channel
- * to the renderer while this hook was running.
+ * Returns the most recent data that that has been sent via this channel to the
+ * renderer while this hook was running.
  *
  * Note: This will return an empty array initially, so while destructuring it
  * will work, all values will be undefined until this channel emits something.
  *
  * @param channel Platform channel to listen to changes on.
  * @param deps The dependencies that will be used to re-register the listener
- * whenever they change. If not provided, listener will be re-registered
- * whenever the React component is re-mounted. This differs from useEffect when
- * no dependency list is provided, as useEffect would re-register on every
- * render pass.
+ *   whenever they change. If not provided, listener will be re-registered
+ *   whenever the React component is re-mounted. This differs from useEffect
+ *   when no dependency list is provided, as useEffect would re-register on
+ *   every render pass.
  */
 export const useChannelData: <Channel extends RendererChannel>(
   channel: Channel,

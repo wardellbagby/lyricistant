@@ -5,8 +5,8 @@ import { FileSystemHandle } from 'browser-fs-access';
  * Represents a {@link DataTransferItem} with an optional getAsFileSystemHandle
  * method that will return a FileSystemHandle.
  *
- * That method is not yet generally available, and Typescript's DOM types do
- * not have support for it yet.
+ * That method is not yet generally available, and Typescript's DOM types do not
+ * have support for it yet.
  *
  * https://caniuse.com/mdn-api_datatransferitem_getasfilesystemhandle
  */
@@ -22,10 +22,10 @@ type FSApiDataTransferItem = DataTransferItem & {
 type FileWithPath = File & { path?: string };
 
 /**
- * Convert a {@link File} or a {@link DataTransferItem} to a
- * {@link PlatformFile} that can be sent to the platform.
+ * Convert a {@link File} or a {@link DataTransferItem} to a {@link PlatformFile}
+ * that can be sent to the platform.
  *
- * @param data the File or DataTransferItem to convert.
+ * @param data The File or DataTransferItem to convert.
  */
 export const toPlatformFile = async (
   data: FSApiDataTransferItem | FileWithPath

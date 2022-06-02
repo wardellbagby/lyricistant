@@ -10,9 +10,7 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 
-/**
- * Information that the renderer wants to send to the platform.
- */
+/** Information that the renderer wants to send to the platform. */
 export interface RendererToPlatformListener {
   /**
    * Fired when the renderer has finished initializing and the platform can
@@ -24,11 +22,10 @@ export interface RendererToPlatformListener {
    */
   'ready-for-events': () => void;
   /**
-   * Gives the platform the current text that is stored on the editor when
-   * requested.
+   * Gives the platform the current text that is stored on the editor when requested.
    *
-   * @see request-editor-text
    * @param text The text currently stored in the editor.
+   * @see request-editor-text
    */
   'editor-text': (text: string) => void;
   /**
@@ -45,15 +42,13 @@ export interface RendererToPlatformListener {
    * @param data The PreferencesData to save.
    */
   'save-prefs': (data?: PreferencesData) => void;
-  /**
-   * Fired when the user has requested to create a new file.
-   */
+  /** Fired when the user has requested to create a new file. */
   'new-file-attempt': () => void;
   /**
    * Fired when the user has requested to open a new file.
    *
    * @param file Optionally, the file the user has requested to open. If this
-   * isn't provided, a file picker will be shown. If it is, it will be opened.
+   *   isn't provided, a file picker will be shown. If it is, it will be opened.
    */
   'open-file-attempt': (file?: PlatformFile) => void;
   /**
@@ -62,9 +57,7 @@ export interface RendererToPlatformListener {
    * @param data The current text stored in the editor.
    */
   'save-file-attempt': (data: string) => void;
-  /**
-   * Fired when the user has requested to save their current logs.
-   */
+  /** Fired when the user has requested to save their current logs. */
   'save-logs': () => void;
   /**
    * Fired when the user has interacted with a dialog that was shown via
@@ -98,13 +91,11 @@ export interface RendererToPlatformListener {
   'apply-file-history': (history: ParsedHistoryData) => void;
 }
 
-/**
- * Information that the platform wants to send to the renderer.
- */
+/** Information that the platform wants to send to the renderer. */
 export interface PlatformToRendererListener {
   /**
-   * Fired when the theme has been updated, whether that been explicitly by
-   * the user due to a preferences change or via the system switching themes.
+   * Fired when the theme has been updated, whether that been explicitly by the
+   * user due to a preferences change or via the system switching themes.
    *
    * @param themeData The new theme.
    */
@@ -127,9 +118,7 @@ export interface PlatformToRendererListener {
    * @param currentFilePath The file path of the file that was saved.
    */
   'file-save-ended': (error: Error | null, currentFilePath: string) => void;
-  /**
-   * Fired when the user has requested to open a "find" dialog via the platform.
-   */
+  /** Fired when the user has requested to open a "find" dialog via the platform. */
   find: () => void;
   /**
    * Fired when the user has requested to open a "find and replace" dialog via
@@ -145,33 +134,20 @@ export interface PlatformToRendererListener {
   'check-file-modified': () => void;
   /**
    * Fired when a file has been opened. The renderer should replace whatever
-   * text is currently being displayed with the data specified here without
-   * prompting.
+   * text is currently being displayed with the data specified here without prompting.
    *
    * @param error If there was an error opening the file, the error in question.
    * @param data The new text to display to the user.
    * @param clearHistory Whether to clear the undo/redo stack.
    */
   'file-opened': (error: Error, data: string, clearHistory: boolean) => void;
-  /**
-   * Fired when the platform needs to retrieve the editor text from the
-   * renderer.
-   */
+  /** Fired when the platform needs to retrieve the editor text from the renderer. */
   'request-editor-text': () => void;
-  /**
-   * Fired when the user has requested to undo their last entered text via the
-   * platform.
-   */
+  /** Fired when the user has requested to undo their last entered text via the platform. */
   undo: () => void;
-  /**
-   * Fired when the user has requested to redo their last entered text via the
-   * platform.
-   */
+  /** Fired when the user has requested to redo their last entered text via the platform. */
   redo: () => void;
-  /**
-   * Fired when the user has requested to open the preferences screen via the
-   * platform.
-   */
+  /** Fired when the user has requested to open the preferences screen via the platform. */
   'open-prefs': () => void;
   /**
    * Fired when the renderer starts listening on this channel with the most
@@ -186,10 +162,7 @@ export interface PlatformToRendererListener {
    * @param title The new title of the applicaiton.
    */
   'app-title-changed': (title: string) => void;
-  /**
-   * Fired when the user has requested to open the about screen via the
-   * platform.
-   */
+  /** Fired when the user has requested to open the about screen via the platform. */
   'open-about': () => void;
   /**
    * Fired when the platform needs to show a dialog on the renderer.
@@ -198,8 +171,7 @@ export interface PlatformToRendererListener {
    */
   'show-dialog': (dialog: DialogData) => void;
   /**
-   * Fired when the platform wants to close a dialog that it had previously
-   * shown.
+   * Fired when the platform wants to close a dialog that it had previously shown.
    *
    * @param tag The tag of the previously shown dialog.
    */
@@ -213,18 +185,12 @@ export interface PlatformToRendererListener {
   'file-history': (history: ParsedHistoryData[]) => void;
 }
 
-/**
- * All possible channels that the platform can use to talk to the renderer.
- */
+/** All possible channels that the platform can use to talk to the renderer. */
 export type RendererChannel = Extract<keyof PlatformToRendererListener, string>;
-/**
- * All possible channels that the renderer can use to talk to the platform.
- */
+/** All possible channels that the renderer can use to talk to the platform. */
 export type PlatformChannel = Extract<keyof RendererToPlatformListener, string>;
 
-/**
- * Used by the platform to communicate with the renderer.
- */
+/** Used by the platform to communicate with the renderer. */
 export interface RendererDelegate {
   /**
    * Send data to the renderer.
@@ -242,8 +208,8 @@ export interface RendererDelegate {
    * the given channel.
    *
    * @param channel The channel that the renderer just added a listener to.
-   * @param onRendererListenerSet A function that will be invoked when the renderer adds a
-   * new listener to the given channel.
+   * @param onRendererListenerSet A function that will be invoked when the
+   *   renderer adds a new listener to the given channel.
    */
   addRendererListenerSetListener<Channel extends RendererChannel>(
     channel: Channel,
@@ -262,8 +228,7 @@ export interface RendererDelegate {
   ): this;
 
   /**
-   * Removes an existing listener for data sent from the renderer to the
-   * platform.
+   * Removes an existing listener for data sent from the renderer to the platform.
    *
    * @param channel The channel previously used to register a listener with.
    * @param listener The listener previously used to register a listener with.
@@ -274,9 +239,7 @@ export interface RendererDelegate {
   ): this;
 }
 
-/**
- * Used by the renderer to communicate with the platform.
- */
+/** Used by the renderer to communicate with the platform. */
 export interface PlatformDelegate {
   /**
    * Send data to the platform.
@@ -301,8 +264,7 @@ export interface PlatformDelegate {
   ): this;
 
   /**
-   * Removes an existing listener for data sent from the platform to the
-   * renderer.
+   * Removes an existing listener for data sent from the platform to the renderer.
    *
    * @param channel The channel previously used to register a listener with.
    * @param listener The listener previously used to register a listener with.

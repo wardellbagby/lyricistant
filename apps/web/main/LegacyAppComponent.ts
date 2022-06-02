@@ -6,8 +6,8 @@ import { UnloadManager } from '@lyricistant/core-dom-platform/platform/UnloadMan
 import { DIContainer } from '@wessberg/di';
 
 /**
- * Create an app component that can be used to run the legacy, non Web Worker-based
- * Lyricistant.
+ * Create an app component that can be used to run the legacy, non Web
+ * Worker-based Lyricistant.
  */
 export const createComponent = (): DIContainer => {
   const component = new DIContainer();

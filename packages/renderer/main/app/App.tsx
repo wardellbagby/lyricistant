@@ -27,9 +27,9 @@ import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
  * of Lyricistant must be a child of this component, either directly or
  * indirectly. Components that don't render UI, such as a Router or a
  * ThemeProvider, are allowed to be a parent of this component. Components that
- * potentially gate Lyricistant's ability to run, such as a component that checks
- * whether we're running on a supported browser, would also be allowed to be a
- * parent of this component.
+ * potentially gate Lyricistant's ability to run, such as a component that
+ * checks whether we're running on a supported browser, would also be allowed to
+ * be a parent of this component.
  */
 export function App() {
   const [editorTextData, setEditorTextData] = useState<EditorTextData>({

@@ -1,9 +1,6 @@
 import pronunciationsJson from './pronunciations.json';
 
-/**
- * The data structure used in the Pronunciations JSON that will be keyed by
- * a word.
- */
+/** The data structure used in the Pronunciations JSON that will be keyed by a word. */
 type Pronunciation = [pronunciation: string, popularity?: number];
 
 interface Rhyme {

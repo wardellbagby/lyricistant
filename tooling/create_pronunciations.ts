@@ -6,20 +6,24 @@ import axios from 'axios';
 import popularWordsJson from './popular.json';
 
 /**
- * List of popular words where the index of the word in this list directly relates to its popularity.
+ * List of popular words where the index of the word in this list directly
+ * relates to its popularity.
  *
- * This list is sorted in descending order, so the item at index 0 is the most popular word.
+ * This list is sorted in descending order, so the item at index 0 is the most
+ * popular word.
  */
 const popularWords: string[] = popularWordsJson as string[];
 
 /**
- * The format the pronunciations will be saved as. Should be kept as condensed as possible to reduce the file size.
+ * The format the pronunciations will be saved as. Should be kept as condensed
+ * as possible to reduce the file size.
  */
 interface Output {
   /**
    * A mapping of word to pronunciation and optional popularity.
    *
-   * The first item is the pronunciation; the second is the popularity, which may not exist.
+   * The first item is the pronunciation; the second is the popularity, which
+   * may not exist.
    */
   [word: string]: [pronunciation: string, popularity?: number];
 }
@@ -32,17 +36,16 @@ interface Output {
 type Pronunciations = Array<[string, string]>;
 
 /**
- * Carnegie Mellon University maintains a list of pronunciations on GitHub;
- * pull those and format them for use in Lyricistant.
+ * Carnegie Mellon University maintains a list of pronunciations on GitHub; pull
+ * those and format them for use in Lyricistant.
  *
  * Expected format for cmudict.dict:
  *
- * ```
+ * ```text
  * abduct AE0 B D AH1 K T
  * abducted AE0 B D AH1 K T IH0 D
  * abducted(2) AH0 B D AH1 K T IH0 D
  * ```
- *
  */
 const loadCmuPronunciations = async (): Promise<Pronunciations> => {
   const cmuDictUrl =
@@ -54,20 +57,22 @@ const loadCmuPronunciations = async (): Promise<Pronunciations> => {
 };
 
 /**
- * For words that CMUDict doesn't provide, there's an `additional_pronunciations.dict` file provided with Lyricistant
- * in a very similar format to the CMUDict file. Pull those and format them for use in Lyricistant.
+ * For words that CMUDict doesn't provide, there's an
+ * `additional_pronunciations.dict` file provided with Lyricistant in a very
+ * similar format to the CMUDict file. Pull those and format them for use in Lyricistant.
  *
  * Expected format of `additional_pronunciations.dict`:
  *
- * ```
+ * ```text
  * SWAG  S W AE G
  * BRUH  B R UW
  * FAM  F AE M
  * ```
  *
- * Note: This file sometimes separates words with spaces or tabs, while CMUDict only uses spaces. This is due
- * to the lextool CMU provides that populates the file liking to output results with tabs and those being copy-pasted
- * directly into the file. This logic supports both tabs and spaces due to that.
+ * Note: This file sometimes separates words with spaces or tabs, while CMUDict
+ * only uses spaces. This is due to the lextool CMU provides that populates the
+ * file liking to output results with tabs and those being copy-pasted directly
+ * into the file. This logic supports both tabs and spaces due to that.
  */
 const loadAdditionalPronunciations = async (): Promise<Pronunciations> => {
   const data = await fs.promises.readFile(
@@ -79,20 +84,21 @@ const loadAdditionalPronunciations = async (): Promise<Pronunciations> => {
 };
 
 /**
- * Load pronunciations from a CMUDict-like string, where `data` is a new-line seperated
- * string where every line has a word and a pronunciation, and the word and pronunciation
- * are seperated by a space or a tab.
+ * Load pronunciations from a CMUDict-like string, where `data` is a new-line
+ * seperated string where every line has a word and a pronunciation, and the
+ * word and pronunciation are seperated by a space or a tab.
  *
- * Ignores comments, which are defined as lines beginning with # or any text after # in any
- * line.
- * ```
+ * Ignores comments, which are defined as lines beginning with # or any text
+ * after # in any line.
+ *
+ * ```text
  * # This is a comment that will be stripped.
  * SWAG  S W AE G # This is also a comment that will be striped.
  * BRUH  B R UW
  * FAM  F AE M
  * ```
  *
- * @param data a CMUDict-like string.
+ * @param data A CMUDict-like string.
  */
 const loadFromDictionaryFile = async (data: string): Promise<Pronunciations> =>
   data
@@ -118,7 +124,7 @@ const loadFromDictionaryFile = async (data: string): Promise<Pronunciations> =>
  * Using both the pronunciations and a mapping of words to their popularity,
  * create an object that can be used by Lyricistant to generate rhymes.
  *
- * @param pronunciations a list of [word, pronunciation] lists.
+ * @param pronunciations A list of [word, pronunciation] lists.
  * @param indexedPopularWords
  */
 const writePronunciations = async (
@@ -146,13 +152,13 @@ const writePronunciations = async (
 };
 
 /**
- * Reads `popular.json` and returns a mapping of a word to its popularity in
- * the format of:
+ * Reads `popular.json` and returns a mapping of a word to its popularity in the
+ * format of:
  *
- * ```
+ * ```json
  * {
- *   word: 809,
- *   up: 53
+ *   "word": 809,
+ *   "up": 53
  * }
  * ```
  */
@@ -177,7 +183,7 @@ const createIndexedPopularWords = async () => {
  *
  * I.e., pass this `read(2)` and get back `read`
  *
- * @param word a word read from CMUDict or `additional_pronunciations.dict`
+ * @param word A word read from CMUDict or `additional_pronunciations.dict`
  */
 const getBaseWord = (word: string) => {
   const index = word.indexOf('(');

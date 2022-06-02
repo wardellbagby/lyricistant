@@ -49,10 +49,7 @@ const WarningDialog = ({
   </Dialog>
 );
 
-/**
- * A dialog that displays whenever Lyricistant is running against an unsupported
- * browser.
- */
+/** A dialog that displays whenever Lyricistant is running against an unsupported browser. */
 export function SupportedBrowserWarning({
   children,
 }: PropsWithChildren<Record<never, never>>) {

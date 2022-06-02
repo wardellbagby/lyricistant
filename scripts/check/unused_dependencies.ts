@@ -65,6 +65,7 @@ const options: Options = {
     'karma-viewport',
     'typesync',
     'jest-playwright-preset',
+    'prettier-plugin-jsdoc',
   ],
 };
 

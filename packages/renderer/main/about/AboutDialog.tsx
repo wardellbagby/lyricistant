@@ -52,17 +52,11 @@ const DividerlessTableCell = (props: TableCellProps) => {
   return <TableCell className={classes.root} {...props} />;
 };
 
-/**
- * The props needed to render an {@link AboutDialog}.
- */
+/** The props needed to render an {@link AboutDialog}. */
 interface AboutDialogProps {
-  /**
-   * Whether this dialog is opened or not.
-   */
+  /** Whether this dialog is opened or not. */
   open: boolean;
-  /**
-   * Invoked when the {@link AboutDialog} is closed.
-   */
+  /** Invoked when the {@link AboutDialog} is closed. */
   onClose: () => void;
 }
 

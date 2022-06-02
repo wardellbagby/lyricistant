@@ -21,9 +21,7 @@ const EditorContainer = styled('div')({
 });
 
 export interface EditorTextData {
-  /**
-   * The text to be displayed in the editor.
-   */
+  /** The text to be displayed in the editor. */
   text: string;
   /**
    * Does this represent a change from the last text data, or should this be
@@ -34,13 +32,9 @@ export interface EditorTextData {
   isTransactional?: boolean;
 }
 
-/**
- * The props for the {@link Editor} component.
- */
+/** The props for the {@link Editor} component. */
 export interface EditorProps {
-  /**
-   * The value to be represented in the editor.
-   */
+  /** The value to be represented in the editor. */
   value: EditorTextData;
   /**
    * Invoked whenever the text changes.
@@ -63,8 +57,8 @@ export interface EditorProps {
   /**
    * Invoked whenever the modification state changes.
    *
-   * Modification state refers to whether the text in the editor has been changed
-   * or not since the last value update where {@link isTransactional} is false.
+   * Modification state refers to whether the text in the editor has been
+   * changed or not since the last value update where {@link isTransactional} is false.
    *
    * @param isModified Whether the editor has been modified or not.
    */

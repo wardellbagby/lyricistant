@@ -1,9 +1,9 @@
 import { APP_PLATFORM, APP_VERSION } from '@lyricistant/renderer/globals';
 
 /**
- * When running in production, connects to an analytics server and reports
- * the current version of Lyricistant that is running as well as the platform
- * it is being run on.
+ * When running in production, connects to an analytics server and reports the
+ * current version of Lyricistant that is running as well as the platform it is
+ * being run on.
  */
 export const setupAnalytics = () => {
   if (process.env.NODE_ENV !== 'production') {

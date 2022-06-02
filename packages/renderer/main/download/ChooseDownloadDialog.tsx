@@ -163,10 +163,7 @@ interface ChooseDownloadDialogProps {
   onClose: () => void;
 }
 
-/**
- * A dialog that allows users to select and download different versions of
- * Lyricistant.
- */
+/** A dialog that allows users to select and download different versions of Lyricistant. */
 export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
   const handleReleaseClicked = (url: string) => {
     logger.info(`App download link clicked. Chosen URL: ${url}`);

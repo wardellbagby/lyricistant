@@ -122,21 +122,13 @@ const SelectBox = <T extends string | number>({
   );
 };
 
-/**
- * The props needed to render {@link Preferences}.
- */
+/** The props needed to render {@link Preferences}. */
 interface PreferencesProps {
-  /**
-   * Whether the preferences dialog should show or not.
-   */
+  /** Whether the preferences dialog should show or not. */
   open: boolean;
-  /**
-   * Invoked when the user closes the preferences dialog.
-   */
+  /** Invoked when the user closes the preferences dialog. */
   onClose: () => void;
-  /**
-   * Invoked when the users wants to go to the About screen.
-   */
+  /** Invoked when the users wants to go to the About screen. */
   onAboutClicked: () => void;
 }
 

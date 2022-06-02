@@ -2,10 +2,7 @@ import { ExtensionData } from '@lyricistant/common-platform/files/Files';
 
 export type FileDataExtensionKey = keyof ExtensionData;
 
-/**
- * Represents some serialized data for a file extension that has an associated
- * version.
- */
+/** Represents some serialized data for a file extension that has an associated version. */
 export interface VersionedExtensionData<T> {
   version?: number;
   data?: T;
@@ -31,8 +28,7 @@ export interface VersionedExtensionData<T> {
  * ```
  *
  * If the version of the extension data supplied does not have a handler, or if
- * the extension data does not have a version, then the invalid handler will
- * be called.
+ * the extension data does not have a version, then the invalid handler will be called.
  *
  * @param extensionData The extension data to check
  * @param handlers An object mapping versions to handler functions.
@@ -50,9 +46,7 @@ export const onVersion = <R = void>(
   }
 };
 
-/**
- * Represents an optional extension onto {@link FileData}.
- */
+/** Represents an optional extension onto {@link FileData}. */
 export interface FileDataExtension<
   KeyT extends FileDataExtensionKey = FileDataExtensionKey
 > {

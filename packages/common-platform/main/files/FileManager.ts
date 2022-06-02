@@ -23,10 +23,7 @@ import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import { Logger } from '@lyricistant/common/Logger';
 import { DefaultFileType } from '@lyricistant/common/preferences/PreferencesData';
 
-/**
- * Represents all the data that {@link FileManager} needs to store for the current
- * file.
- */
+/** Represents all the data that {@link FileManager} needs to store for the current file. */
 interface CurrentFile {
   path: string;
   handler: FileHandler;

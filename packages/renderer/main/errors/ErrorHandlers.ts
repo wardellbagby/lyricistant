@@ -2,7 +2,7 @@
  * Attempts to get the bottom-most error message in a potential error chain.
  *
  * @param message The error to look through.
- * @return An error, or an error message.
+ * @returns An error, or an error message.
  */
 export const getRootError = (message: any) => {
   if (!message) {
@@ -37,7 +37,8 @@ export const isReportableError = (message: any, url?: string) => {
   );
 };
 /**
- * Sets an error handler on the current window to handle an errors that happen, wrapping any existing error handler.
+ * Sets an error handler on the current window to handle an errors that happen,
+ * wrapping any existing error handler.
  */
 export const setWindowErrorHandler = () => {
   const oldOnError = window.onerror;

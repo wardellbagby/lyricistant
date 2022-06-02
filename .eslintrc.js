@@ -185,7 +185,8 @@ module.exports = {
       },
     ],
     'jsdoc/check-alignment': 'error',
-    'jsdoc/check-indentation': 'error',
+    // Handled by Prettier
+    'jsdoc/check-indentation': 'off',
     'jsdoc/newline-after-description': 'error',
     'linebreak-style': 'off',
     'max-classes-per-file': 'off',

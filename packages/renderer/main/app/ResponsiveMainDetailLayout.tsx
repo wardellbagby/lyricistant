@@ -14,7 +14,7 @@ interface ResponsiveMenuDetailLayoutProps {
   main: ReactNode;
   /** The detail, secondary, component that should be displayed. */
   detail: ReactNode;
-  /** The menu component that should be displayed.*/
+  /** The menu component that should be displayed. */
   menu: ReactNode;
 }
 

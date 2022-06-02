@@ -1,9 +1,6 @@
 import { Runners } from '@wardellbagby/gh-workflow-gen';
 
-/**
- * The GitHub Actions runner that should be used by the vast majority of
- * actions.
- */
+/** The GitHub Actions runner that should be used by the vast majority of actions. */
 export const defaultRunner: Runners = 'ubuntu-20.04';
 
 /**

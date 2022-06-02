@@ -158,33 +158,19 @@ const MenuBar = (props: AppBarProps) => {
   );
 };
 
-/**
- * The props needed to render {@link Menu}.
- */
+/** The props needed to render {@link Menu}. */
 export interface MenuProps {
-  /**
-   * Invoked when the new button is clicked
-   */
+  /** Invoked when the new button is clicked */
   onNewClicked: () => void;
-  /**
-   * Invoked when the open button is clicked
-   */
+  /** Invoked when the open button is clicked */
   onOpenClicked: () => void;
-  /**
-   * Invoked when the save button is clicked
-   */
+  /** Invoked when the save button is clicked */
   onSaveClicked: () => void;
-  /**
-   * Invoked when the preferences button is clicked
-   */
+  /** Invoked when the preferences button is clicked */
   onPreferencesClicked: () => void;
-  /**
-   * Invoked when the download button is clicked
-   */
+  /** Invoked when the download button is clicked */
   onDownloadClicked: () => void;
-  /**
-   * Invoked when the file history button is clicked
-   */
+  /** Invoked when the file history button is clicked */
   onFileHistoryClicked: () => void;
 }
 

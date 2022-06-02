@@ -43,15 +43,13 @@ export interface PlatformDependencies {
 }
 
 /**
- * Registers all the common managers plus any extra managers that are passed
- * in so that they can be retrieved by querying {@param component} for
- * {@link Managers}.
+ * Registers all the common managers plus any extra managers that are passed in
+ * so that they can be retrieved by querying `component` for {@link Managers}.
  *
  * Note: This should always be invoked after {@link registerCommonPlatform}.
  *
  * @param component The component to register the managers to.
- * @param extraManagers Extra managers the platform would like to register as
- * well.
+ * @param extraManagers Extra managers the platform would like to register as well.
  */
 export const registerCommonManagers = (
   component: DIContainer,
@@ -74,7 +72,7 @@ export const registerCommonManagers = (
  * functionality for the common platform.
  *
  * @param dependencies The platform implementations of dependencies the common
- * platform needs.
+ *   platform needs.
  * @param component The DI container to register to.
  */
 export const registerCommonPlatform = (

@@ -213,13 +213,9 @@ const HelperText = ({ text }: { text: string }) => {
   );
 };
 
-/**
- * The props needed to render the {@link Rhymes} component.
- */
+/** The props needed to render the {@link Rhymes} component. */
 export interface RhymesProps {
-  /**
-   * The query to find rhymes for.
-   */
+  /** The query to find rhymes for. */
   query?: string;
   /**
    * Invoked when a rhyme is clicked.
@@ -230,8 +226,7 @@ export interface RhymesProps {
 }
 
 /**
- * Given a query, fetches and renders a list of rhymes that can be clicked by
- * a user.
+ * Given a query, fetches and renders a list of rhymes that can be clicked by a user.
  *
  * @param props The props needed to render this component.
  */

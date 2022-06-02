@@ -10,9 +10,7 @@ import React, { useCallback, useEffect, ReactNode } from 'react';
 import { RouteChildrenProps } from 'react-router';
 import { Route, useHistory } from 'react-router-dom';
 
-/**
- * The names of the paths that Lyricistant can navigate to.
- */
+/** The names of the paths that Lyricistant can navigate to. */
 type ModalRoutePathNames =
   | 'about'
   | 'download'
@@ -21,9 +19,7 @@ type ModalRoutePathNames =
   | 'privacypolicy'
   | 'settings';
 
-/**
- * The React Router compatible paths that Lyricistant can navigate to.
- */
+/** The React Router compatible paths that Lyricistant can navigate to. */
 type ModalRoutePath<Name extends ModalRoutePathNames = ModalRoutePathNames> =
   `/${Name}`;
 interface ModalRouteProps {
@@ -47,9 +43,7 @@ export const goTo = (history: History, path: ModalRoutePathNames) => {
   history.push(`/${path}`);
 };
 
-/**
- * Displays various models over Lyricistant based on the current router path.
- */
+/** Displays various models over Lyricistant based on the current router path. */
 export function Modals() {
   const history = useHistory();
 

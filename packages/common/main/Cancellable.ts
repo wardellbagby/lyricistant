@@ -1,5 +1,6 @@
 /**
- * Represents an object that can be used to determine whether an action has been cancelled.
+ * Represents an object that can be used to determine whether an action has been
+ * cancelled.
  *
  * Actions can be cancelled via an instance of {@link Cancellable}.
  */
