@@ -1,8 +1,8 @@
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { RecentFiles as IRecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
+import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 import { Logger } from '@lyricistant/common/Logger';
 
-export class ElectronRecentFiles implements IRecentFiles {
+export class ElectronRecentFiles implements RecentFiles {
   private readonly recentFilesFilePath = this.fs.resolve(
     this.fs.getDataDirectory('userData'),
     'recent_files.json'

@@ -1,5 +1,5 @@
 import {
-  Files as IFiles,
+  Files,
   LYRICS_MIME_TYPE,
   SUPPORTED_EXTENSIONS,
   SUPPORTED_MIME_TYPES,
@@ -12,7 +12,7 @@ import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { FileWithHandle, FileSystemHandle } from 'browser-fs-access';
 
-export class DOMFiles implements IFiles {
+export class DOMFiles implements Files {
   /*
     An in-memory mapping of generated IDs to FileSystemHandles. We'd prefer for
     these to be given to the FileManager and fed back to us, but
