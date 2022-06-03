@@ -207,6 +207,23 @@ export interface RendererDelegate {
    * Add a listener to be invoked whenever the renderer adds a new listener for
    * the given channel.
    *
+   * E.g., if you had used this method like so:
+   *
+   * ```javascript
+   * rendererDelegate.addRendererListenerSetListener(
+   *   'my-channel',
+   *   this.onMyChannelListenerAdded
+   * );
+   * ```
+   *
+   * And the renderer then ran this code:
+   *
+   * ```javascript
+   * platformDelegate.on('my-channel', this.myListener);
+   * ```
+   *
+   * That would cause your `onMyChannelListenerAdded` listener would be invoked.
+   *
    * @param channel The channel that the renderer just added a listener to.
    * @param onRendererListenerSet A function that will be invoked when the
    *   renderer adds a new listener to the given channel.

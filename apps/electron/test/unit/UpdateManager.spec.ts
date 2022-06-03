@@ -1,11 +1,8 @@
 import { AppStore } from '@electron-app/AppStore';
 import { ReleaseHelper } from '@electron-app/platform/ReleaseHelper';
 import { UpdateManager } from '@electron-app/platform/UpdateManager';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import {
-  RendererListeners,
-  EventListeners,
-} from '@testing/utilities/Listeners';
+import { EventListeners } from '@testing/utilities/Listeners';
+import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { expect, use } from 'chai';
 import { AppUpdater } from 'electron-updater';
 import sinonChai from 'sinon-chai';
@@ -15,11 +12,10 @@ use(sinonChai);
 
 describe('Update Manager', () => {
   let manager: UpdateManager;
-  let rendererDelegate: StubbedInstance<RendererDelegate>;
   let store: StubbedInstance<AppStore>;
   let appUpdater: StubbedInstance<AppUpdater>;
   let releaseHelper: StubbedInstance<ReleaseHelper>;
-  const rendererListeners = new RendererListeners();
+  const rendererDelegate = new MockRendererDelegate();
   const appUpdaterListeners = new EventListeners();
 
   beforeEach(() => {
@@ -31,11 +27,6 @@ describe('Update Manager', () => {
     appUpdater.downloadUpdate.resolves(null);
     appUpdater.on.callsFake(function (event, listener) {
       appUpdaterListeners.set(event as string, listener);
-      return this;
-    });
-    rendererDelegate = stubInterface();
-    rendererDelegate.on.callsFake(function (channel, listener) {
-      rendererListeners.set(channel, listener);
       return this;
     });
     releaseHelper = stubInterface();
@@ -56,7 +47,7 @@ describe('Update Manager', () => {
 
   afterEach(() => {
     store.get.alwaysCalledWithExactly('ignoredVersions', []);
-    rendererListeners.clear();
+    rendererDelegate.clear();
     appUpdaterListeners.clear();
   });
 
@@ -69,7 +60,7 @@ describe('Update Manager', () => {
   it('checks for update when the renderer is ready', async () => {
     manager.register();
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
@@ -91,7 +82,7 @@ describe('Update Manager', () => {
     manager.register();
     releaseHelper.getReleaseData.resolves(null);
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
 
     expect(appUpdater.checkForUpdates).to.have.not.been.called;
     expect(appUpdater.setFeedURL).to.have.not.been.called;
@@ -101,12 +92,12 @@ describe('Update Manager', () => {
   it('starts downloading an update when user clicks yes', async () => {
     manager.register();
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
     });
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
       { selectedButton: 'Yes' }
@@ -118,12 +109,12 @@ describe('Update Manager', () => {
   it('ignores this version when user clicks never', async () => {
     manager.register();
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
     });
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
       { selectedButton: 'Never' }
@@ -136,12 +127,12 @@ describe('Update Manager', () => {
   it('does nothing when user clicks no', async () => {
     manager.register();
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
     });
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
       { selectedButton: 'No' }
@@ -154,12 +145,12 @@ describe('Update Manager', () => {
   it('shows download progress', async () => {
     manager.register();
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
     });
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
       { selectedButton: 'Yes' }
@@ -192,12 +183,12 @@ describe('Update Manager', () => {
   it('shows update downlaoded dialog', async () => {
     manager.register();
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
     });
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
       { selectedButton: 'Yes' }
@@ -216,18 +207,18 @@ describe('Update Manager', () => {
   it('the app quits and restarts when user clicks restart', async () => {
     manager.register();
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
     });
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
       { selectedButton: 'Yes' }
     );
     await appUpdaterListeners.invoke('update-downloaded');
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).UPDATE_DOWNLOADED_DIALOG_TAG,
       { selectedButton: 'Restart' }
@@ -239,18 +230,18 @@ describe('Update Manager', () => {
   it('the app does nothing when user clicks Later', async () => {
     manager.register();
 
-    await rendererListeners.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events');
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
     });
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
       { selectedButton: 'Yes' }
     );
     await appUpdaterListeners.invoke('update-downloaded');
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UpdateManager as any).UPDATE_DOWNLOADED_DIALOG_TAG,
       { selectedButton: 'Later' }

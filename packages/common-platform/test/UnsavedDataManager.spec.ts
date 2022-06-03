@@ -2,8 +2,7 @@ import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { RendererListeners } from '@testing/utilities/Listeners';
+import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
@@ -12,11 +11,10 @@ use(sinonChai);
 
 describe('Unsaved Data Manager', () => {
   let manager: UnsavedDataManager;
-  let rendererDelegate: StubbedInstance<RendererDelegate>;
   let fileManager: StubbedInstance<FileManager>;
   let appData: StubbedInstance<AppData>;
   let fileHistory: StubbedInstance<FileHistory>;
-  const rendererListeners = new RendererListeners();
+  const rendererDelegate = new MockRendererDelegate();
   let fileChangedListener: (...args: any[]) => void;
   let initialFileLoadedListener: (...args: any[]) => void;
 
@@ -35,11 +33,6 @@ describe('Unsaved Data Manager', () => {
     fileManager.setInitialFileLoadedListener.callsFake((listener) => {
       initialFileLoadedListener = listener;
     });
-    rendererDelegate = stubInterface();
-    rendererDelegate.on.callsFake(function (channel, listener) {
-      rendererListeners.set(channel, listener);
-      return this;
-    });
 
     manager = new UnsavedDataManager(
       rendererDelegate,
@@ -51,7 +44,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   afterEach(() => {
-    rendererListeners.clear();
+    rendererDelegate.clear();
   });
 
   it('sets the initial file loaded listener on the FileManager', async () => {
@@ -101,7 +94,7 @@ describe('Unsaved Data Manager', () => {
 
     manager.register();
     await initialFileLoadedListener();
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
       { selectedButton: 'Yes' }
@@ -120,7 +113,7 @@ describe('Unsaved Data Manager', () => {
 
     manager.register();
     await initialFileLoadedListener();
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
       { selectedButton: 'No' }
@@ -149,7 +142,7 @@ describe('Unsaved Data Manager', () => {
 
     manager.register();
     await initialFileLoadedListener();
-    await rendererListeners.invoke(
+    await rendererDelegate.invoke(
       'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
       { selectedButton: 'No' }

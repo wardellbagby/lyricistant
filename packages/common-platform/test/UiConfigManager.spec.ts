@@ -4,8 +4,7 @@ import {
   TitleFormatter,
   UiConfigProvider,
 } from '@lyricistant/common-platform/ui/UiConfigProviders';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { RendererListeners } from '@testing/utilities/Listeners';
+import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { expect, use } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -15,26 +14,14 @@ use(sinonChai);
 
 describe('Ui Config Manager', () => {
   let manager: UiConfigManager;
-  let rendererDelegate: StubbedInstance<RendererDelegate>;
   let fileManager: StubbedInstance<FileManager>;
   let uiConfigProvider: UiConfigProvider;
   let formatTitle: TitleFormatter;
 
-  const rendererListeners = new RendererListeners();
-  const rendererListenersSetListeners: Map<string, () => void> = new Map();
+  const rendererDelegate = new MockRendererDelegate();
   let fileChangedListener: (filename: string, recents: string[]) => void;
 
   beforeEach(() => {
-    rendererDelegate = stubInterface();
-    rendererDelegate.on.callsFake(function (channel, listener) {
-      rendererListeners.set(channel, listener);
-      return this;
-    });
-    rendererDelegate.addRendererListenerSetListener.callsFake(
-      (channel, onRendererListenerSet) => {
-        rendererListenersSetListeners.set(channel, onRendererListenerSet);
-      }
-    );
     fileManager = stubInterface<FileManager>();
     fileManager.addOnFileChangedListener.callsFake((listener) => {
       fileChangedListener = listener;
@@ -54,7 +41,7 @@ describe('Ui Config Manager', () => {
   });
 
   afterEach(() => {
-    rendererListeners.clear();
+    rendererDelegate.clear();
   });
 
   it('registers on the renderer delegate the events it cares about', () => {
@@ -68,7 +55,7 @@ describe('Ui Config Manager', () => {
   it('sends ui config when requested', () => {
     manager.register();
 
-    rendererListenersSetListeners.get('ui-config')();
+    rendererDelegate.invokeRendererListenerSetListener('ui-config');
 
     expect(rendererDelegate.send).to.have.been.calledWith('ui-config', {
       showDownload: true,

@@ -1,7 +1,6 @@
 import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   ColorScheme,
   DefaultFileType,
@@ -14,6 +13,7 @@ import {
   SystemPalette,
   SystemTheme,
 } from '@lyricistant/common/theme/SystemTheme';
+import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
@@ -22,28 +22,16 @@ use(sinonChai);
 
 describe('Preference Manager', () => {
   let manager: PreferenceManager;
-  let rendererDelegate: StubbedInstance<RendererDelegate>;
   let preferences: StubbedInstance<Preferences>;
   let systemThemeProvider: StubbedInstance<SystemThemeProvider>;
 
-  const rendererListeners: Map<string, (...args: any[]) => void> = new Map();
-  const rendererListenersSetListeners: Map<string, () => void> = new Map();
+  const rendererDelegate = new MockRendererDelegate();
   let systemThemeChangeListener: (
     systemTheme: SystemTheme,
     systemPalette?: SystemPalette
   ) => void;
 
   beforeEach(() => {
-    rendererDelegate = stubInterface();
-    rendererDelegate.on.callsFake(function (channel, listener) {
-      rendererListeners.set(channel, listener);
-      return this;
-    });
-    rendererDelegate.addRendererListenerSetListener.callsFake(
-      (channel, onRendererListenerSet) => {
-        rendererListenersSetListeners.set(channel, onRendererListenerSet);
-      }
-    );
     preferences = stubInterface<Preferences>();
     systemThemeProvider = stubInterface<SystemThemeProvider>();
     systemThemeProvider.onChange.callsFake((listener) => {
@@ -58,7 +46,7 @@ describe('Preference Manager', () => {
   });
 
   afterEach(() => {
-    rendererListeners.clear();
+    rendererDelegate.clear();
   });
 
   it('registers on the renderer delegate the events it cares about', () => {
@@ -76,7 +64,7 @@ describe('Preference Manager', () => {
   it('sends prefs when the renderer registers for updates', async () => {
     manager.register();
 
-    await rendererListenersSetListeners.get('prefs-updated')();
+    await rendererDelegate.invokeRendererListenerSetListener('prefs-updated');
 
     expect(rendererDelegate.send).to.have.been.calledWith('prefs-updated', {
       textSize: 16,
@@ -99,7 +87,7 @@ describe('Preference Manager', () => {
 
     manager.register();
 
-    await rendererListenersSetListeners.get('prefs-updated')();
+    await rendererDelegate.invokeRendererListenerSetListener('prefs-updated');
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'prefs-updated',
@@ -123,7 +111,7 @@ describe('Preference Manager', () => {
 
     manager.register();
 
-    await rendererListeners.get('save-prefs')(prefs);
+    await rendererDelegate.invoke('save-prefs', prefs);
 
     expect(preferences.setPreferences).to.have.been.calledWith(prefs);
     expect(rendererDelegate.send).to.have.been.calledWith(
