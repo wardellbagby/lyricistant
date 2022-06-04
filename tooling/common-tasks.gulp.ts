@@ -59,7 +59,8 @@ export const getBaseJestConfig = (options: {
     testEnvironment: getJestEnv(options.type),
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
     moduleNameMapper: {
-      '^.+\\.(png|svg|css|scss)$': 'identity-obj-proxy',
+      '^.+\\.(png|css|scss)$': 'identity-obj-proxy',
+      '^.+\\.svg$': path.resolve(__dirname, 'jest-svg-mock.js'),
       ...pathsToModuleNameMapper(compilerOptions.paths),
     },
     moduleDirectories: [rootDirectory, 'node_modules'],

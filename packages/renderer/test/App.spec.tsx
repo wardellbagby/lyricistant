@@ -6,7 +6,6 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 import { App as RealApp } from '@lyricistant/renderer/app/App';
 import { configure, screen } from '@testing-library/dom';
-import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { expect, use } from 'chai';
 import React from 'react';
@@ -44,11 +43,7 @@ describe('App component', () => {
   it('updates the document title when the app title changes', async () => {
     render(<App />);
 
-    await waitFor(() =>
-      platformDelegate.invoke('app-title-changed', 'All I Need')
-    );
-
-    await waitFor(() => document.title);
+    await platformDelegate.invoke('app-title-changed', 'All I Need');
 
     expect(document.title).to.equal('All I Need');
   });
@@ -56,13 +51,11 @@ describe('App component', () => {
   it('shows an error when files fail to open', async () => {
     render(<App />);
 
-    await waitFor(() =>
-      platformDelegate.invoke(
-        'file-opened',
-        new Error('oh no!'),
-        undefined,
-        false
-      )
+    await platformDelegate.invoke(
+      'file-opened',
+      new Error('oh no!'),
+      undefined,
+      false
     );
 
     expect(screen.getByText("Couldn't open selected file.")).to.exist;
@@ -89,12 +82,10 @@ describe('App component', () => {
 
     await platformDelegate.invoke('check-file-modified');
 
-    await waitFor(() => {
-      expect(platformDelegate.send).to.have.been.calledWith(
-        'is-file-modified',
-        false
-      );
-    });
+    expect(platformDelegate.send).to.have.been.calledWith(
+      'is-file-modified',
+      false
+    );
   });
 
   it('handles the platform checking if file is modified when user has made edits', async () => {
@@ -103,14 +94,12 @@ describe('App component', () => {
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'oh no the printer jaaaaaaaaaaaaaammmmed');
 
-    await waitFor(() => platformDelegate.invoke('check-file-modified'));
+    await platformDelegate.invoke('check-file-modified');
 
-    await waitFor(() => {
-      expect(platformDelegate.send).to.have.been.calledWith(
-        'is-file-modified',
-        true
-      );
-    });
+    expect(platformDelegate.send).to.have.been.calledWith(
+      'is-file-modified',
+      true
+    );
   });
 
   it('handles the platform having created a new file', async () => {
@@ -119,7 +108,7 @@ describe('App component', () => {
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'my loco pinocchio');
 
-    await expect(screen.findByText('my loco pinocchio')).to.exist;
+    await expect(await screen.findByText('my loco pinocchio')).to.exist;
 
     await platformDelegate.invoke('new-file-created');
 
@@ -169,11 +158,9 @@ describe('App component', () => {
 
     await platformDelegate.invoke('request-editor-text');
 
-    await waitFor(() =>
-      expect(platformDelegate.send).to.have.been.calledWith(
-        'editor-text',
-        'and the oscar goes to...'
-      )
+    expect(platformDelegate.send).to.have.been.calledWith(
+      'editor-text',
+      'and the oscar goes to...'
     );
   });
 

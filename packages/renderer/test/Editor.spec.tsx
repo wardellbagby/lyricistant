@@ -61,19 +61,19 @@ describe('Editor component', function () {
     });
     const platformFile = await toPlatformFile(file);
 
-    fireEvent.drop(element, {
-      dataTransfer: {
-        files: [file],
-      },
+    await waitFor(() => {
+      fireEvent.drop(element, {
+        dataTransfer: {
+          files: [file],
+        },
+      });
+      window.DragEvent = oldDragEvent;
     });
-    window.DragEvent = oldDragEvent;
 
     expect(await file.arrayBuffer()).to.eql(platformFile.data);
-    await waitFor(() =>
-      expect(platformDelegate.send).to.have.been.calledWithMatch(
-        'open-file-attempt',
-        platformFile
-      )
+    expect(platformDelegate.send).to.have.been.calledWithMatch(
+      'open-file-attempt',
+      platformFile
     );
   });
 

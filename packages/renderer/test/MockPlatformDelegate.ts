@@ -3,6 +3,7 @@ import {
   PlatformToRendererListener,
   RendererChannel,
 } from '@lyricistant/common/Delegates';
+import { act } from '@testing-library/react';
 import { PlatformListeners } from '@testing/utilities/Listeners';
 import { stub } from 'sinon';
 
@@ -29,6 +30,8 @@ export class MockPlatformDelegate implements PlatformDelegate {
   public invoke = async <Channel extends RendererChannel>(
     key: Channel,
     ...args: Parameters<PlatformToRendererListener[Channel]>
-  ): Promise<void> => this.listeners.invoke(key, ...args);
+  ): Promise<void> => {
+    await act(() => this.listeners.invoke(key, ...args));
+  };
   public clear = () => this.listeners.clear();
 }

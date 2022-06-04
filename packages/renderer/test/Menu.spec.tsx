@@ -1,6 +1,6 @@
 import { Menu as RealMenu, MenuProps } from '@lyricistant/renderer/menu/Menu';
 import { configure } from '@testing-library/dom';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { expect, use } from 'chai';
 import React from 'react';
@@ -41,72 +41,64 @@ describe('Menu component', () => {
     const element = screen.getByRole('button', { name: 'New File' });
     await userEvent.click(element);
 
-    await waitFor(() => expect(onNewClicked).to.have.been.called);
+    expect(onNewClicked).to.have.been.called;
   });
 
   it('tells the platform when user attempts to open a file', async () => {
     const onOpenClicked = stub();
     render(<Menu onOpenClicked={onOpenClicked} />);
 
-    await waitFor(() =>
-      platformDelegate.invoke('ui-config', {
-        showOpen: true,
-        showDownload: false,
-        showBrowserWarning: false,
-        promptOnUrlChange: true,
-      })
-    );
-    const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Open File' })
-    );
+    await platformDelegate.invoke('ui-config', {
+      showOpen: true,
+      showDownload: false,
+      showBrowserWarning: false,
+      promptOnUrlChange: true,
+    });
+
+    const element = screen.getByRole('button', { name: 'Open File' });
     await userEvent.click(element);
 
-    await waitFor(() => expect(onOpenClicked).to.have.been.called);
+    await expect(onOpenClicked).to.have.been.called;
   });
 
   it('tells the platform when user attempts to save a file', async () => {
     const onSaveClicked = stub();
     render(<Menu onSaveClicked={onSaveClicked} />);
 
-    const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Save File' })
-    );
+    const element = screen.getByRole('button', { name: 'Save File' });
     await userEvent.click(element);
 
-    await waitFor(() => expect(onSaveClicked).to.have.been.called);
+    await expect(onSaveClicked).to.have.been.called;
   });
 
   it('goes to preferences when clicked', async () => {
     const onPreferencesClicked = stub();
 
     render(<Menu onPreferencesClicked={onPreferencesClicked} />);
-    const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Open Preferences' })
-    );
+    const element = screen.getByRole('button', { name: 'Open Preferences' });
     await userEvent.click(element);
 
-    await waitFor(() => expect(onPreferencesClicked).to.have.been.called);
+    await expect(onPreferencesClicked).to.have.been.called;
   });
 
   it('goes to download app when clicked', async () => {
     const onDownloadClicked = stub();
 
     render(<Menu onDownloadClicked={onDownloadClicked} />);
-    await waitFor(() =>
-      platformDelegate.invoke('ui-config', {
-        showOpen: false,
-        showDownload: true,
-        showBrowserWarning: false,
-        promptOnUrlChange: true,
-      })
-    );
 
-    const element = await waitFor(() =>
-      screen.getByRole('button', { name: 'Download Lyricistant' })
-    );
+    await platformDelegate.invoke('ui-config', {
+      showOpen: false,
+      showDownload: true,
+      showBrowserWarning: false,
+      promptOnUrlChange: true,
+    });
+
+    const element = screen.getByRole('button', {
+      name: 'Download Lyricistant',
+    });
     await userEvent.click(element);
 
-    await waitFor(() => expect(onDownloadClicked).to.have.been.called);
+    expect(onDownloadClicked).to.have.been.called;
   });
 
   const Menu = (props: Partial<MenuProps>) => (
