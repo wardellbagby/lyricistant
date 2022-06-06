@@ -28,12 +28,12 @@ Its features include:
 - Automatically updates.
 - _[Android 12+ Only]_ Matching your device's theme colors to effortlessly match Material You.
 - Available on your favorite platforms!
-  - [Mac](https://lyricistant.app/#download)
-  - [Windows](https://lyricistant.app/#download)
-  - [Linux](https://lyricistant.app/#download)
-  - [Web](https://lyricistant.app)
-  - [Android](https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant)
-  - [iOS](https://apps.apple.com/om/app/lyricistant/id1561506174)
+    - [Mac](https://lyricistant.app/#download)
+    - [Windows](https://lyricistant.app/#download)
+    - [Linux](https://lyricistant.app/#download)
+    - [Web](https://lyricistant.app)
+    - [Android](https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant)
+    - [iOS](https://apps.apple.com/om/app/lyricistant/id1561506174)
 
 ## How can I use it?
 
@@ -58,7 +58,9 @@ Lyricistant!
 
 ### Documentation
 
-It's a little outdated, but here's [a blog post](https://dev.to/wardellbagby/the-architecture-of-an-electron-app-ported-to-web-399e) giving a high-level overview of Lyricistant.
+It's a little outdated, but
+here's [a blog post](https://dev.to/wardellbagby/the-architecture-of-an-electron-app-ported-to-web-399e) giving a
+high-level overview of Lyricistant.
 
 The most up-to-date [documentation is here](docs/1-getting_started.md)
 
@@ -66,7 +68,9 @@ The most up-to-date [documentation is here](docs/1-getting_started.md)
 
 This project uses [Gulp](https://gulpjs.com/) to build.
 
-The easiest way to use Gulp is via installing Gulp globally via `npm install -g gulp`, but this isn't required as `Gulp` is included as a dev dependency for this project, and so doing `npm install; node_modules/.bin/gulp <task>` will also work.
+The easiest way to use Gulp is via installing Gulp globally via `npm install -g gulp`, but this isn't required as `Gulp`
+is included as a dev dependency for this project, and so doing `npm install; node_modules/.bin/gulp <task>` will also
+work.
 
 How to check out and run the project:
 
@@ -83,7 +87,9 @@ gulp startAndroid
 gulp startIOS
 ```
 
-If you use a Jetbrains IDE (WebStorm, IntelliJ IDEA, etc) or Visual Studio Code, you can build and attach a debugger for all of these tasks natively in the IDE (via either Run Configurations for Jetbrains products or Run & Debug for Visual Studio Code).
+If you use a Jetbrains IDE (WebStorm, IntelliJ IDEA, etc) or Visual Studio Code, you can build and attach a debugger for
+all of these tasks natively in the IDE (via either Run Configurations for Jetbrains products or Run & Debug for Visual
+Studio Code).
 
 ### Viewing the latest on `main`
 
@@ -104,38 +110,27 @@ gulp testAll
 node --inspect-brk ./node_modules/.bin/gulp testAll
 ```
 
-There are various other test tasks that are named after the folder the tests are contained in. You can print a list of all test tasks by running:
+There are various other test tasks that are named after the folder the tests are contained in. You can print a list of
+all test tasks by running:
 
 ```
 gulp --tasks-simple | grep "test"
 ```
 
-If you're using VS Code or a Jetbrains IDE, you can also see the test tasks in your Run/Debug or Run Configurations, respectively.
+If you're using VS Code or a Jetbrains IDE, you can also see the test tasks in your Run/Debug or Run Configurations,
+respectively.
 
-You can also run _most_ tests natively in your IDE using Jest, which will make it even easier to attach a debugger, as your IDE will do that for you.
+You can also run _most_ tests natively in your IDE using Jest, which will make it even easier to attach a debugger, as
+your IDE will do that for you.
 
 It's preferred to use the various `gulp` tasks to invoke tests, as they will handle any necessary prerequisites,
 such as building the app before running the tests. However, feel free to use Jest on the command line or in your IDE for
 better iteration, but make sure to also run the test via Gulp to verify that it works correctly!
 
-#### Renderer Tests
-
-The tests located in [packages/renderer/test](packages/renderer/test) are Karma tests, as opposed to the usual Jest 
-tests. They have two special flags to make them easier to deal with:
-
-- `--headless=<true/false>` - Determines whether to show Chrome when running these tests. Defaults to true.
-- `--watch=<true/false>` - Automatically reload and retest on code changes. Defaults to false.
-
-These flags can be used by doing:
-
-```shell
-gulp testRenderer --headless=false --watch=true
-```
-
-
 ### Updating dependencies
 
-There's a helper script at `scripts/install-latest.ts` that can be used to update all dependencies in the project that start with a specific string to a specified version.
+There's a helper script at `scripts/install-latest.ts` that can be used to update all dependencies in the project that
+start with a specific string to a specified version.
 
 This is very useful for updating any scoped NPM dependencies that should be updated in lockstep (i.e., `@codemirror`).
 
@@ -147,13 +142,15 @@ Example usage:
 
 ### Committing
 
-This project uses [Commitzen](https://github.com/commitizen/cz-cli) and [Commitlint](https://commitlint.js.org/#/) to enforce a single commit style.
+This project uses [Commitzen](https://github.com/commitizen/cz-cli) and [Commitlint](https://commitlint.js.org/#/) to
+enforce a single commit style.
 
 To create a commit using an interactive wizard that follows the commit standards, run `git cz`
 
 ## Code of Conduct
 
-We aim to be an inclusive and welcoming community. To make that explicit, we have a [code of conduct](CODE_OF_CONDUCT.md) that applies to this project.
+We aim to be an inclusive and welcoming community. To make that explicit, we have
+a [code of conduct](CODE_OF_CONDUCT.md) that applies to this project.
 
 ## License
 
