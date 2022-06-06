@@ -1,3 +1,13 @@
+## [1.3.21](https://github.com/wardellbagby/lyricistant/compare/v1.3.20+ios...v1.3.21) (2022-06-06)
+
+
+### Bug Fixes
+
+* don't crash when failing to load unsaved lyrics ([81edabf](https://github.com/wardellbagby/lyricistant/commit/81edabf9984c3b8768c6e9695872a6e42ae85f50))
+* **electron:** don't crash when starting offline ([b4724c4](https://github.com/wardellbagby/lyricistant/commit/b4724c4bcd8b97e4dd7f76984ed5577532183887))
+
+
+
 ## [1.3.20](https://github.com/wardellbagby/lyricistant/compare/v1.3.19...v1.3.20) (2022-05-22)
 
 
