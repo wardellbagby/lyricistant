@@ -11,6 +11,7 @@ import {
   Page,
 } from 'playwright';
 import { getDocument, getQueriesForElement } from 'playwright-testing-library';
+import waitForExpect from 'wait-for-expect';
 
 use(chaiAsPromised);
 
@@ -66,7 +67,7 @@ const args: Arg[] = viewports
   }, []);
 
 describe.each(args)(
-  'Webpage launch - $viewport - $browser.label',
+  'Webpage launch - $browser.label - ($viewport.width x $viewport.height)',
   ({ viewport, browser }) => {
     let browserContext: BrowserContext;
     let page: Page;
@@ -97,8 +98,11 @@ describe.each(args)(
       await browserContext.close();
     });
 
-    it('has a title of Lyricistant - Untitled', () =>
-      expect(page.title()).to.eventually.equal('Lyricistant - Untitled'));
+    it('has a title of Lyricistant - Untitled', async () => {
+      await waitForExpect(() => {
+        expect(page.title()).to.eventually.equal('Lyricistant - Untitled');
+      });
+    });
 
     it('shows the basic components', async () => {
       const components = [

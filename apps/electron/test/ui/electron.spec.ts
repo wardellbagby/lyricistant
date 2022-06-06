@@ -6,6 +6,7 @@ import chaiAsPromised from 'chai-as-promised';
 import del from 'del';
 import { _electron as electron, ElectronApplication, Page } from 'playwright';
 import { getDocument, getQueriesForElement } from 'playwright-testing-library';
+import waitForExpect from 'wait-for-expect';
 
 use(chaiAsPromised);
 
@@ -66,8 +67,10 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     expect(app.windows().length).to.equal(1);
   });
 
-  it('has a title of untitled', () => {
-    expect(window.title()).to.eventually.equal('Untitled');
+  it('has a title of untitled', async () => {
+    await waitForExpect(() => {
+      expect(window.title()).to.eventually.equal('Untitled');
+    });
   });
 
   it('shows the basic components', async () => {
