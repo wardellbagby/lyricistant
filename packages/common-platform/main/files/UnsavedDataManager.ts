@@ -41,7 +41,7 @@ export class UnsavedDataManager implements Manager {
     const hasUnsavedData =
       hasTemporaryData &&
       this.fileHistory.isNonEmptyHistory(
-        JSON.parse(
+        this.parseOrNull(
           await this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
         )
       );
@@ -71,7 +71,7 @@ export class UnsavedDataManager implements Manager {
     if (tag === UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG) {
       if (buttonLabel === 'Yes') {
         this.fileHistory.deserialize(
-          JSON.parse(
+          this.parseOrNull(
             await this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
           )
         );
@@ -100,5 +100,13 @@ export class UnsavedDataManager implements Manager {
 
     this.rendererDelegate.on('editor-text', onEditorText);
     this.rendererDelegate.send('request-editor-text');
+  };
+
+  private parseOrNull = <T>(text: string): T | null => {
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      return null;
+    }
   };
 }
