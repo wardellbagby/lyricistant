@@ -1,3 +1,4 @@
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { APP_PLATFORM, APP_VERSION } from '@lyricistant/renderer/globals';
 
 /**
@@ -6,7 +7,7 @@ import { APP_PLATFORM, APP_VERSION } from '@lyricistant/renderer/globals';
  * being run on.
  */
 export const setupAnalytics = () => {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' || isUnderTest) {
     return;
   }
 

@@ -43,7 +43,15 @@ export const getBaseJestConfig = (options: {
     displayName: `${getLabel(options.type)} - ${options.name}`,
     verbose: true,
     detectOpenHandles: true,
+    moduleNameMapper: {
+      '^.+\\.(png|css|scss)$': 'identity-obj-proxy',
+      '^.+\\.svg$': path.resolve(__dirname, 'jest-svg-mock.js'),
+      ...pathsToModuleNameMapper(compilerOptions.paths),
+    },
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+    moduleDirectories: [rootDirectory, 'node_modules'],
   };
+
   if (options.type === 'browser') {
     return {
       ...baseConfig,
@@ -57,13 +65,6 @@ export const getBaseJestConfig = (options: {
   return {
     ...baseConfig,
     testEnvironment: getJestEnv(options.type),
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-    moduleNameMapper: {
-      '^.+\\.(png|css|scss)$': 'identity-obj-proxy',
-      '^.+\\.svg$': path.resolve(__dirname, 'jest-svg-mock.js'),
-      ...pathsToModuleNameMapper(compilerOptions.paths),
-    },
-    moduleDirectories: [rootDirectory, 'node_modules'],
     transform: {
       ...tsjPreset.transform,
     },

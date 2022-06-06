@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "types": ["jest"],
+    "lib": ["dom"]
+  },
+  "extends": "../../tsconfig.json"
+}

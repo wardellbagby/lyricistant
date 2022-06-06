@@ -1,13 +1,21 @@
 import os from 'os';
 import path from 'path';
+import addCommonUiTests from '@lyricistant/common-ui-tests';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import del from 'del';
 import { _electron as electron, ElectronApplication, Page } from 'playwright';
+import { getDocument, getQueriesForElement } from 'playwright-testing-library';
 
 use(chaiAsPromised);
 
-describe('Electron launch', () => {
+const viewports = [
+  { label: 'default' },
+  { width: 500, height: 500, label: '500x500' },
+  { width: 1200, height: 1200, label: '1200x1200' },
+] as const;
+
+describe.each(viewports)('Electron launch - $label', (viewport) => {
   let app: ElectronApplication;
   let window: Page;
   let tempDir: string;
@@ -34,10 +42,24 @@ describe('Electron launch', () => {
     await window.waitForLoadState('networkidle');
     const elements = await window.$$('#app > *');
     expect(elements).to.not.be.empty;
+
+    await app.evaluate((electronModule, newViewport) => {
+      const browserWindow = electronModule.BrowserWindow.getFocusedWindow();
+
+      if (newViewport.label === 'default') {
+        return;
+      }
+
+      browserWindow.setSize(newViewport.width, newViewport.height);
+      // Wait a little to let the resize settle.
+      return new Promise((resolve) => setTimeout(resolve, 500));
+    }, viewport);
   });
 
   afterEach(async () => {
     await app.close();
+    app = null;
+    window = null;
   });
 
   it('shows a single window', () => {
@@ -68,4 +90,9 @@ describe('Electron launch', () => {
       'Hello World!'
     );
   });
+
+  addCommonUiTests(async () => ({
+    page: window,
+    screen: getQueriesForElement(await getDocument(window)),
+  }));
 });

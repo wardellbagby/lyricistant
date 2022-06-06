@@ -220,6 +220,7 @@ export const Preferences = (props: PreferencesProps) => {
             color={'inherit'}
             onClick={onPreferencesSaved}
             size="large"
+            aria-label={'Save'}
           >
             <SaveIcon />
           </IconButton>

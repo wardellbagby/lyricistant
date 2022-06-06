@@ -56,7 +56,7 @@ module.exports = {
       },
     },
     {
-      files: ['**/test/**/*'],
+      files: ['**/test/**/*', 'packages/common-ui-tests/index.ts'],
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-unused-expressions': 'off',

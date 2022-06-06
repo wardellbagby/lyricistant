@@ -40,7 +40,8 @@
       "@testing/utilities/*": ["packages/testing/utilities/*"],
       "@web-renderer/*": ["apps/web/packages/renderer/*"],
       "@web-platform/*": ["apps/web/packages/platform/*"],
-      "@web-common/*": ["apps/web/packages/common/*"]
+      "@web-common/*": ["apps/web/packages/common/*"],
+      "@lyricistant/common-ui-tests": ["packages/common-ui-tests/index.ts"]
     }
   }
 }
