@@ -1,4 +1,5 @@
 import path from 'path';
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { Logger } from '@lyricistant/common/Logger';
 import { Octokit, RestEndpointMethodTypes } from '@octokit/rest';
 import semver from 'semver';
@@ -27,6 +28,10 @@ export class ReleaseHelper {
   public getReleaseData = async (
     currentVersion: string
   ): Promise<ReleaseData> => {
+    if (isUnderTest) {
+      return null;
+    }
+
     this.logger.debug('Checking for new GitHub releases', { currentVersion });
     const releases = await this.getGitHubReleases(currentVersion);
 
@@ -53,33 +58,30 @@ export class ReleaseHelper {
       return this.cachedReleases;
     }
 
-    const result = await this.octokit.rest.repos.listReleases(
-      ReleaseHelper.LYRICISTANT_REPO
-    );
+    try {
+      const result = await this.octokit.rest.repos.listReleases(
+        ReleaseHelper.LYRICISTANT_REPO
+      );
 
-    if (result.status >= 400) {
-      this.logger.warn('Failed to load releases', {
-        status: result.status,
-        response: JSON.stringify(result.data),
-      });
+      for (const release of result.data) {
+        // latest tag is always a nightly build; don't upgrade to those.
+        if (release.tag_name === 'latest') {
+          continue;
+        }
+        if (!this.isReleaseNewerThanCurrent(currentVersion, release)) {
+          break;
+        }
+        if (release.assets.some((asset) => asset.name === 'latest.yml')) {
+          this.cachedReleases.push(release);
+        }
+      }
+
+      return this.cachedReleases;
+    } catch (e) {
+      this.logger.warn('Failed to load releases', e);
       this.cachedReleases = [];
       return this.cachedReleases;
     }
-
-    for (const release of result.data) {
-      // latest tag is always a nightly build; don't upgrade to those.
-      if (release.tag_name === 'latest') {
-        continue;
-      }
-      if (!this.isReleaseNewerThanCurrent(currentVersion, release)) {
-        break;
-      }
-      if (release.assets.some((asset) => asset.name === 'latest.yml')) {
-        this.cachedReleases.push(release);
-      }
-    }
-
-    return this.cachedReleases;
   };
 
   private isReleaseNewerThanCurrent = (
