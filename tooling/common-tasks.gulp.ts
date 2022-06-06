@@ -20,9 +20,10 @@ const getJestEnv = (type: TestType): string => {
   if (type === 'jsdom') {
     return require.resolve('./jsdom-jest-env');
   } else {
-    return type;
+    return 'node';
   }
 };
+
 const getLabel = (type: TestType): string => {
   switch (type) {
     case 'node':
@@ -33,6 +34,16 @@ const getLabel = (type: TestType): string => {
     default:
       throw new Error(`Unknown type: ${type}`);
   }
+};
+
+const getBrowserTimeout = (): number => {
+  if (process.env.CI) {
+    return 60_000;
+  }
+  if (process.env.PWDEBUG) {
+    return 999_999_999;
+  }
+  return 15_000;
 };
 
 export const getBaseJestConfig = (options: {
@@ -56,10 +67,10 @@ export const getBaseJestConfig = (options: {
     return {
       ...baseConfig,
       rootDir: '.',
-      preset: 'jest-playwright-preset',
       transform: {
         '^.+\\.ts$': 'ts-jest',
       },
+      testTimeout: getBrowserTimeout(),
     };
   }
   return {

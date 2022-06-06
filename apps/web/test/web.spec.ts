@@ -1,14 +1,18 @@
 import path from 'path';
-import { pathToFileURL } from 'url';
 import addCommonUiTests from '@lyricistant/common-ui-tests';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import {
+  setup as setupServer,
+  teardown as stopServer,
+} from 'jest-process-manager';
 import {
   BrowserContext,
   BrowserType,
   chromium,
   firefox,
   Page,
+  webkit,
 } from 'playwright';
 import { getDocument, getQueriesForElement } from 'playwright-testing-library';
 import waitForExpect from 'wait-for-expect';
@@ -36,6 +40,7 @@ interface Browser {
   args?: string[];
 }
 const browsers: Browser[] = [
+  { type: webkit, label: 'WebKit' },
   { type: firefox, label: 'Firefox' },
   {
     type: chromium,
@@ -66,15 +71,27 @@ const args: Arg[] = viewports
     return total;
   }, []);
 
+const host = 'localhost';
+const port = 8081;
 describe.each(args)(
-  'Webpage launch - $browser.label - ($viewport.width x $viewport.height)',
+  'Web launch - $browser.label - $viewport.width x $viewport.height',
   ({ viewport, browser }) => {
     let browserContext: BrowserContext;
     let page: Page;
 
     beforeAll(async () => {
+      await setupServer({
+        command: `http-server "${path.resolve(
+          'apps',
+          'web',
+          'dist',
+          'test'
+        )}" --port ${port} -a ${host}`,
+        port,
+        usedPortAction: process.env.CI ? 'kill' : 'ask',
+      });
       browserContext = await browser.type.launchPersistentContext('', {
-        headless: false,
+        headless: true,
         viewport,
         args: browser.args,
       });
@@ -82,9 +99,7 @@ describe.each(args)(
 
     beforeEach(async () => {
       page = await browserContext.newPage();
-      await page.goto(
-        pathToFileURL(path.resolve('apps/web/dist/test/index.html')).toString()
-      );
+      await page.goto(`http://${host}:${port}`);
       await page.waitForLoadState('networkidle');
     });
 
@@ -95,13 +110,17 @@ describe.each(args)(
     });
 
     afterAll(async () => {
+      await stopServer();
       await browserContext.close();
     });
 
     it('has a title of Lyricistant - Untitled', async () => {
-      await waitForExpect(() => {
-        expect(page.title()).to.eventually.equal('Lyricistant - Untitled');
-      });
+      await waitForExpect(
+        async () =>
+          await expect(page.title()).to.eventually.equal(
+            'Lyricistant - Untitled'
+          )
+      );
     });
 
     it('shows the basic components', async () => {

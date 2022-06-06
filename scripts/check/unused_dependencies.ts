@@ -64,10 +64,10 @@ const options: Options = {
     'karma-spec-reporter',
     'karma-viewport',
     'typesync',
-    'jest-playwright-preset',
     'prettier-plugin-jsdoc',
     'blob-polyfill',
     'identity-obj-proxy',
+    'http-server',
   ],
 };
 

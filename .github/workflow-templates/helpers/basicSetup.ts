@@ -47,11 +47,6 @@ export const basicSetup = (options?: Options): Step[] => {
       name: 'Install Gulp',
       run: 'npm install -g gulp@4.0.2',
     },
-    ...ifTrue(forTests, {
-      name: 'Set virtual display if Ubuntu',
-      if: "runner.os == 'Linux'",
-      run: 'Xvfb :99 &',
-    }),
     ...ifTrue<Step>(
       forMobileBuilds,
       {
@@ -70,5 +65,17 @@ export const basicSetup = (options?: Options): Step[] => {
       name: 'Install Node modules',
       run: 'npm ci',
     },
+    ...ifTrue(
+      forTests,
+      {
+        name: 'Set virtual display if Ubuntu',
+        if: "runner.os == 'Linux'",
+        run: 'Xvfb :99 &',
+      },
+      {
+        name: 'Setup Playwright dependencies',
+        run: 'sudo npx playwright install-deps',
+      }
+    ),
   ].filter((value) => value);
 };

@@ -12,8 +12,8 @@ use(chaiAsPromised);
 
 const viewports = [
   { label: 'default' },
-  { width: 500, height: 500, label: '500x500' },
-  { width: 1200, height: 1200, label: '1200x1200' },
+  { width: 500, height: 500, label: '500 x 500' },
+  { width: 1200, height: 1200, label: '1200 x 1200' },
 ] as const;
 
 describe.each(viewports)('Electron launch - $label', (viewport) => {
@@ -44,17 +44,18 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     const elements = await window.$$('#app > *');
     expect(elements).to.not.be.empty;
 
-    await app.evaluate((electronModule, newViewport) => {
-      const browserWindow = electronModule.BrowserWindow.getFocusedWindow();
+    await app.evaluate(
+      (electronModule, [newViewport, browserWindow]) => {
+        if (newViewport.label === 'default') {
+          return;
+        }
 
-      if (newViewport.label === 'default') {
-        return;
-      }
-
-      browserWindow.setSize(newViewport.width, newViewport.height);
-      // Wait a little to let the resize settle.
-      return new Promise((resolve) => setTimeout(resolve, 500));
-    }, viewport);
+        browserWindow.setSize(newViewport.width, newViewport.height);
+        // Wait a little to let the resize settle.
+        return new Promise((resolve) => setTimeout(resolve, 500));
+      },
+      [viewport, await app.browserWindow(window)] as const
+    );
   });
 
   afterEach(async () => {
