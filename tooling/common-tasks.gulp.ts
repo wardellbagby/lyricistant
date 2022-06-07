@@ -36,14 +36,21 @@ const getLabel = (type: TestType): string => {
   }
 };
 
-const getBrowserTimeout = (): number => {
+const getTimeout = (type: TestType): number => {
+  if (type === 'browser') {
+    if (process.env.CI) {
+      return 60_000;
+    }
+    if (process.env.PWDEBUG) {
+      return 999_999_999;
+    }
+    return 15_000;
+  }
   if (process.env.CI) {
-    return 60_000;
+    return 30_000;
   }
-  if (process.env.PWDEBUG) {
-    return 999_999_999;
-  }
-  return 15_000;
+
+  return 10_000;
 };
 
 export const getBaseJestConfig = (options: {
@@ -61,6 +68,7 @@ export const getBaseJestConfig = (options: {
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
     moduleDirectories: [rootDirectory, 'node_modules'],
+    testTimeout: getTimeout(options.type),
   };
 
   if (options.type === 'browser') {
@@ -70,7 +78,6 @@ export const getBaseJestConfig = (options: {
       transform: {
         '^.+\\.ts$': 'ts-jest',
       },
-      testTimeout: getBrowserTimeout(),
     };
   }
   return {
