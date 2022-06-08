@@ -28,12 +28,12 @@ Its features include:
 - Automatically updates.
 - _[Android 12+ Only]_ Matching your device's theme colors to effortlessly match Material You.
 - Available on your favorite platforms!
-    - [Mac](https://lyricistant.app/#download)
-    - [Windows](https://lyricistant.app/#download)
-    - [Linux](https://lyricistant.app/#download)
-    - [Web](https://lyricistant.app)
-    - [Android](https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant)
-    - [iOS](https://apps.apple.com/om/app/lyricistant/id1561506174)
+  - [Mac](https://lyricistant.app/#download)
+  - [Windows](https://lyricistant.app/#download)
+  - [Linux](https://lyricistant.app/#download)
+  - [Web](https://lyricistant.app)
+  - [Android](https://play.google.com/store/apps/details?id=com.wardellbagby.lyricistant)
+  - [iOS](https://apps.apple.com/om/app/lyricistant/id1561506174)
 
 ## How can I use it?
 
@@ -120,12 +120,29 @@ gulp --tasks-simple | grep "test"
 If you're using VS Code or a Jetbrains IDE, you can also see the test tasks in your Run/Debug or Run Configurations,
 respectively.
 
-You can also run _most_ tests natively in your IDE using Jest, which will make it even easier to attach a debugger, as
-your IDE will do that for you.
+You can also run tests natively in your IDE using Jest, which will make it even easier to attach a debugger, as your IDE
+will do that for you.
 
 It's preferred to use the various `gulp` tasks to invoke tests, as they will handle any necessary prerequisites,
 such as building the app before running the tests. However, feel free to use Jest on the command line or in your IDE for
 better iteration, but make sure to also run the test via Gulp to verify that it works correctly!
+
+#### UI Tests
+
+When running the UI tests (`gulp testWeb` and `gulp testElectron`), you can set the environment variable `PWDEBUG` to
+`1` in order to open the Playwright Debugger and run the tests visibly.
+
+E.g.,
+
+```shell
+PWDEBUG=1 gulp testWeb
+```
+
+This also works with Jest:
+
+```shell
+PWDEBUG=1 jest --projects apps/web/test
+```
 
 ### Updating dependencies
 

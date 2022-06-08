@@ -1,5 +1,6 @@
 import { Manager } from '@lyricistant/common-platform/Manager';
 import { Managers } from '@lyricistant/common-platform/Managers';
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { Logger } from '@lyricistant/common/Logger';
 import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
 import { createComponent as createLegacyComponent } from '@web-app/LegacyAppComponent';
@@ -35,8 +36,14 @@ const startLegacy = async () => {
     });
 };
 
+const useModernWeb = () => {
+  const params = new URLSearchParams(location.search);
+  const forceLegacy = isUnderTest && !!params.get('forceLegacy');
+  return !forceLegacy && (isChrome || isFirefox);
+};
+
 const start = async () => {
-  if (isChrome || isFirefox) {
+  if (useModernWeb()) {
     return startNew();
   }
   return startLegacy();

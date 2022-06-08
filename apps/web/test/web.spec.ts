@@ -6,6 +6,7 @@ import {
   setup as setupServer,
   teardown as stopServer,
 } from 'jest-process-manager';
+import { flatMap } from 'lodash';
 import {
   BrowserContext,
   BrowserType,
@@ -57,25 +58,24 @@ const browsers: Browser[] = [
 interface Arg {
   viewport: Viewport;
   browser: Browser;
+  forceLegacyWeb: boolean;
 }
 
-const args: Arg[] = viewports
-  .map((viewport): Arg[] =>
-    browsers.map((browser) => ({
+const args: Arg[] = flatMap([true, false], (forceLegacyWeb) =>
+  flatMap(viewports, (viewport) =>
+    flatMap(browsers, (browser) => ({
       viewport,
       browser,
+      forceLegacyWeb,
     }))
   )
-  .reduce((value, total) => {
-    total.push(...value);
-    return total;
-  }, []);
+);
 
 const host = 'localhost';
 const port = 8081;
 describe.each(args)(
-  'Web launch - $browser.label - $viewport.width x $viewport.height',
-  ({ viewport, browser }) => {
+  'Web launch - $browser.label - $viewport.width x $viewport.height - forceLegacyWeb: $forceLegacyWeb',
+  ({ viewport, browser, forceLegacyWeb }) => {
     let browserContext: BrowserContext;
     let page: Page;
 
@@ -91,7 +91,7 @@ describe.each(args)(
         usedPortAction: process.env.CI ? 'kill' : 'ask',
       });
       browserContext = await browser.type.launchPersistentContext('', {
-        headless: true,
+        headless: !!!process.env.PWDEBUG,
         viewport,
         args: browser.args,
       });
@@ -99,7 +99,7 @@ describe.each(args)(
 
     beforeEach(async () => {
       page = await browserContext.newPage();
-      await page.goto(`http://${host}:${port}`);
+      await page.goto(`http://${host}:${port}?forceLegacy=${!forceLegacyWeb}`);
       await page.waitForLoadState('networkidle');
     });
 
