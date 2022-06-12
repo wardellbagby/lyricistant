@@ -1,5 +1,5 @@
-import { lineNumbers } from '@codemirror/gutter';
 import { Extension } from '@codemirror/state';
+import { lineNumbers } from '@codemirror/view';
 import syllable from 'syllable';
 
 export const syllableCounts = (): Extension =>

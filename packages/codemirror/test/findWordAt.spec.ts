@@ -1,5 +1,4 @@
-import { EditorSelection } from '@codemirror/state';
-import { Text } from '@codemirror/text';
+import { EditorSelection, Text } from '@codemirror/state';
 import { findWordAt } from '@lyricistant/codemirror/textSelection';
 import { expect } from 'chai';
 

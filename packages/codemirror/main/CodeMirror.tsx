@@ -1,11 +1,11 @@
-import { defaultKeymap } from '@codemirror/commands';
 import {
+  defaultKeymap,
   history,
   historyKeymap,
   redo as redoTextChange,
   undo as undoTextChange,
   undoDepth,
-} from '@codemirror/history';
+} from '@codemirror/commands';
 import { openSearchPanel, searchKeymap } from '@codemirror/search';
 import {
   Compartment,
