@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import {
   PlatformDelegate,
   PlatformToRendererListener,
@@ -5,10 +6,9 @@ import {
 } from '@lyricistant/common/Delegates';
 import { act } from '@testing-library/react';
 import { PlatformListeners } from '@testing/utilities/Listeners';
-import { stub } from 'sinon';
 
 export class MockPlatformDelegate implements PlatformDelegate {
-  public send: () => void = stub();
+  public send: () => void = jest.fn();
 
   private listeners = new PlatformListeners();
 

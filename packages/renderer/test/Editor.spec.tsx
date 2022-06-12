@@ -1,3 +1,4 @@
+import { expect, jest } from '@jest/globals';
 import {
   Editor as RealEditor,
   EditorProps,
@@ -6,15 +7,11 @@ import { toPlatformFile } from '@lyricistant/renderer/editor/to-platform-file';
 import { configure, fireEvent, screen } from '@testing-library/dom';
 import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { expect, use } from 'chai';
 import React from 'react';
-import { restore, stub } from 'sinon';
-import sinonChai from 'sinon-chai';
+import { restore } from 'sinon';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { render as render, wait } from './Wrappers';
-
-use(sinonChai);
 
 const Editor = (props: Partial<EditorProps>) => (
   <RealEditor
@@ -70,8 +67,8 @@ describe('Editor component', function () {
       window.DragEvent = oldDragEvent;
     });
 
-    expect(await file.arrayBuffer()).to.eql(platformFile.data);
-    expect(platformDelegate.send).to.have.been.calledWithMatch(
+    expect(await file.arrayBuffer()).toEqual(platformFile.data);
+    expect(platformDelegate.send).toHaveBeenCalledWith(
       'open-file-attempt',
       platformFile
     );
@@ -82,13 +79,13 @@ describe('Editor component', function () {
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'you got bamboozled');
-    await expect(screen.getByText('you got bamboozled')).to.exist;
+    await expect(screen.getByText('you got bamboozled')).toBeTruthy();
 
     await wait(1000);
 
     await userEvent.clear(editor);
     await userEvent.type(editor, 'mozambique here');
-    await expect(screen.getByText('mozambique here')).to.exist;
+    await expect(screen.getByText('mozambique here')).toBeTruthy();
 
     await wait(1000);
 
@@ -98,7 +95,7 @@ describe('Editor component', function () {
     await platformDelegate.invoke('undo');
     await platformDelegate.invoke('undo');
 
-    await expect(screen.getByText('you got bamboozled')).to.exist;
+    await expect(screen.getByText('you got bamboozled')).toBeTruthy();
   });
 
   it('handles the platform trying to redo', async () => {
@@ -106,13 +103,13 @@ describe('Editor component', function () {
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'you got bamboozled');
-    await expect(screen.getByText('you got bamboozled')).to.exist;
+    await expect(screen.getByText('you got bamboozled')).toBeTruthy();
 
     await wait(1000);
 
     await userEvent.clear(editor);
     await userEvent.type(editor, 'mozambique here');
-    await expect(screen.getByText('mozambique here')).to.exist;
+    await expect(screen.getByText('mozambique here')).toBeTruthy();
 
     await wait(1000);
 
@@ -122,48 +119,48 @@ describe('Editor component', function () {
     await platformDelegate.invoke('undo');
     await platformDelegate.invoke('undo');
 
-    await expect(screen.getByText('you got bamboozled')).to.exist;
+    await expect(screen.getByText('you got bamboozled')).toBeTruthy();
 
     await platformDelegate.invoke('redo');
     await platformDelegate.invoke('redo');
 
-    expect(screen.getByText('mozambique here')).to.exist;
+    expect(screen.getByText('mozambique here')).toBeTruthy();
   });
 
   it('handles the platform trying to perform a search', async () => {
     render(<Editor />);
 
-    expect(screen.queryByPlaceholderText('Find')).to.not.exist;
-    expect(screen.queryByPlaceholderText('Replace')).to.not.exist;
+    expect(screen.queryByPlaceholderText('Find')).toBeNull();
+    expect(screen.queryByPlaceholderText('Replace')).toBeNull();
 
     await platformDelegate.invoke('find');
 
-    expect(screen.getByPlaceholderText('Find')).to.exist;
-    expect(screen.getByPlaceholderText('Replace')).to.exist;
+    expect(screen.getByPlaceholderText('Find')).toBeTruthy();
+    expect(screen.getByPlaceholderText('Replace')).toBeTruthy();
   });
 
   it('handles the platform trying to perform a replace', async () => {
     render(<Editor />);
 
-    expect(screen.queryByPlaceholderText('Find')).to.not.exist;
-    expect(screen.queryByPlaceholderText('Replace')).to.not.exist;
+    expect(screen.queryByPlaceholderText('Find')).toBeNull();
+    expect(screen.queryByPlaceholderText('Replace')).toBeNull();
 
     await platformDelegate.invoke('replace');
 
-    expect(screen.getByPlaceholderText('Find')).to.exist;
-    expect(screen.getByPlaceholderText('Replace')).to.exist;
+    expect(screen.getByPlaceholderText('Find')).toBeTruthy();
+    expect(screen.getByPlaceholderText('Replace')).toBeTruthy();
   });
 
   it('updates the selected word', async () => {
-    const onWordSelected = stub();
+    const onWordSelected = jest.fn();
 
     render(<Editor onTextSelected={onWordSelected} />);
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'ziplock');
 
-    expect(screen.getByText('ziplock')).to.exist;
-    expect(onWordSelected).to.have.been.calledWith({
+    expect(screen.getByText('ziplock')).toBeTruthy();
+    expect(onWordSelected).toHaveBeenCalledWith({
       from: 0,
       to: 7,
       text: 'ziplock',
@@ -180,6 +177,6 @@ describe('Editor component', function () {
       />
     );
 
-    expect(screen.getByText("I'm willing to bet it all")).to.exist;
+    expect(screen.getByText("I'm willing to bet it all")).toBeTruthy();
   });
 });
