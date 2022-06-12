@@ -57,7 +57,7 @@ export const getBaseJestConfig = (options: {
   name: string;
   type: TestType;
 }): Config.InitialOptions => {
-  const baseConfig = {
+  const baseConfig: Config.InitialOptions = {
     displayName: `${getLabel(options.type)} - ${options.name}`,
     verbose: true,
     detectOpenHandles: true,
@@ -69,6 +69,7 @@ export const getBaseJestConfig = (options: {
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
     moduleDirectories: [rootDirectory, 'node_modules'],
     testTimeout: getTimeout(options.type),
+    setupFilesAfterEnv: ['jest-extended/all'],
   };
 
   if (options.type === 'browser') {

@@ -9,6 +9,7 @@ import {
 } from './utilities';
 
 export type PlaywrightScreen = ReturnType<typeof getQueriesForElement>;
+export * from './utilities';
 
 export default (
   getDependencies: () => Promise<{

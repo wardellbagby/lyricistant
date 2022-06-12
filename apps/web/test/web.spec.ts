@@ -1,7 +1,8 @@
 import path from 'path';
-import addCommonUiTests from '@lyricistant/common-ui-tests';
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import addCommonUiTests, {
+  queryMenuButton,
+  PlaywrightScreen,
+} from '@lyricistant/common-ui-tests';
 import {
   setup as setupServer,
   teardown as stopServer,
@@ -15,15 +16,18 @@ import {
   Page,
   webkit,
 } from 'playwright';
-import { getDocument, getQueriesForElement } from 'playwright-testing-library';
+import {
+  getDocument,
+  getQueriesForElement,
+  waitFor,
+} from 'playwright-testing-library';
 import waitForExpect from 'wait-for-expect';
-
-use(chaiAsPromised);
 
 interface Viewport {
   width: number;
   height: number;
 }
+
 const viewports: Viewport[] = [
   {
     width: 360,
@@ -40,6 +44,7 @@ interface Browser {
   label: string;
   args?: string[];
 }
+
 const browsers: Browser[] = [
   { type: webkit, label: 'WebKit' },
   { type: firefox, label: 'Firefox' },
@@ -78,6 +83,7 @@ describe.each(args)(
   ({ viewport, browser, forceLegacyWeb }) => {
     let browserContext: BrowserContext;
     let page: Page;
+    let screen: PlaywrightScreen;
 
     beforeAll(async () => {
       await setupServer({
@@ -101,6 +107,7 @@ describe.each(args)(
       page = await browserContext.newPage();
       await page.goto(`http://${host}:${port}?forceLegacy=${!forceLegacyWeb}`);
       await page.waitForLoadState('networkidle');
+      screen = getQueriesForElement(await getDocument(page));
     });
 
     afterEach(async () => {
@@ -117,9 +124,7 @@ describe.each(args)(
     it('has a title of Lyricistant - Untitled', async () => {
       await waitForExpect(
         async () =>
-          await expect(page.title()).to.eventually.equal(
-            'Lyricistant - Untitled'
-          )
+          await expect(page.title()).resolves.toEqual('Lyricistant - Untitled')
       );
     });
 
@@ -131,7 +136,7 @@ describe.each(args)(
       ];
 
       for (const component of components) {
-        await expect(component.isVisible()).to.eventually.be.true;
+        await expect(component.isVisible()).resolves.toBeTruthy();
       }
     });
 
@@ -139,14 +144,36 @@ describe.each(args)(
       const editorTextArea = await page.$('.cm-content');
       await editorTextArea.type('Hello World!');
 
-      await expect(editorTextArea.textContent()).to.eventually.equal(
+      await expect(editorTextArea.textContent()).resolves.toEqual(
         'Hello World!'
+      );
+    });
+
+    it('shows downloads', async () => {
+      await expect(
+        screen.queryByText('Download Lyricistant')
+      ).resolves.toBeNull();
+
+      const settings = await queryMenuButton(screen, 'Download Lyricistant');
+      await settings.click();
+
+      await expect(
+        screen.queryAllByText('Download Lyricistant')
+      ).resolves.toBeTruthy();
+
+      const close = await screen.findByRole('button', { name: 'Close' });
+      await close.click();
+
+      await waitFor(async () =>
+        expect(
+          screen.queryAllByText('Download Lyricistant')
+        ).resolves.toBeEmpty()
       );
     });
 
     addCommonUiTests(async () => ({
       page,
-      screen: getQueriesForElement(await getDocument(page)),
+      screen,
     }));
   }
 );

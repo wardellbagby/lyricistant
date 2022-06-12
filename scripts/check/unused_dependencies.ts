@@ -62,6 +62,7 @@ const options: Options = {
     'blob-polyfill',
     'identity-obj-proxy',
     'http-server',
+    'jest-extended',
   ],
 };
 
