@@ -1,3 +1,12 @@
+## [1.3.26](https://github.com/wardellbagby/lyricistant/compare/v1.3.25+web...v1.3.26) (2022-07-15)
+
+
+### Bug Fixes
+
+* **web:** don't show first launch when deep linking ([30fdee9](https://github.com/wardellbagby/lyricistant/commit/30fdee9a6c8376e8d475b96b62a4264ccb1f0efa))
+
+
+
 ## [1.3.25](https://github.com/wardellbagby/lyricistant/compare/v1.3.24...v1.3.25) (2022-07-15)
 
 
