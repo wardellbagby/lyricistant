@@ -1,14 +1,10 @@
 import os from 'os';
 import path from 'path';
 import addCommonUiTests from '@lyricistant/common-ui-tests';
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import del from 'del';
 import { _electron as electron, ElectronApplication, Page } from 'playwright';
 import { getDocument, getQueriesForElement } from 'playwright-testing-library';
 import waitForExpect from 'wait-for-expect';
-
-use(chaiAsPromised);
 
 const viewports = [
   { label: 'default' },
@@ -42,7 +38,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     window = await app.firstWindow();
     await window.waitForLoadState('networkidle');
     const elements = await window.$$('#app > *');
-    expect(elements).to.not.be.empty;
+    expect(elements).not.toBeEmpty();
 
     await app.evaluate(
       (electronModule, [newViewport, browserWindow]) => {
@@ -51,8 +47,10 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
         }
 
         browserWindow.setSize(newViewport.width, newViewport.height);
-        // Wait a little to let the resize settle.
-        return new Promise((resolve) => setTimeout(resolve, 500));
+        // Wait a little to let the resize settle. CI is notoriously slow so wait longer there.
+        return new Promise((resolve) =>
+          setTimeout(resolve, process.env.CI ? 2000 : 500)
+        );
       },
       [viewport, await app.browserWindow(window)] as const
     );
@@ -65,13 +63,13 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
   });
 
   it('shows a single window', () => {
-    expect(app.windows().length).to.equal(1);
+    expect(app.windows()).toHaveLength(1);
   });
 
   it('has a title of untitled', async () => {
-    await waitForExpect(() => {
-      expect(window.title()).to.eventually.equal('Untitled');
-    });
+    await waitForExpect(() =>
+      expect(window.title()).resolves.toEqual('Untitled')
+    );
   });
 
   it('shows the basic components', async () => {
@@ -82,7 +80,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     ];
 
     for (const component of components) {
-      await expect(component.isVisible()).to.eventually.be.true;
+      await expect(component.isVisible()).resolves.toBeTrue();
     }
   });
 
@@ -90,9 +88,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     const editorTextArea = await window.$('.cm-content');
     await editorTextArea.type('Hello World!');
 
-    await expect(editorTextArea.textContent()).to.eventually.equal(
-      'Hello World!'
-    );
+    await expect(editorTextArea.textContent()).resolves.toEqual('Hello World!');
   });
 
   addCommonUiTests(async () => ({
