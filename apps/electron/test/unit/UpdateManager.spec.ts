@@ -60,7 +60,7 @@ describe('Update Manager', () => {
   it('checks for update when the renderer is ready', async () => {
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
@@ -82,7 +82,7 @@ describe('Update Manager', () => {
     manager.register();
     releaseHelper.getLatestDownloadableRelease.resolves(null);
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
 
     expect(appUpdater.checkForUpdates).to.have.not.been.called;
     expect(appUpdater.setFeedURL).to.have.not.been.called;
@@ -92,7 +92,7 @@ describe('Update Manager', () => {
   it('starts downloading an update when user clicks yes', async () => {
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
@@ -109,7 +109,7 @@ describe('Update Manager', () => {
   it('ignores this version when user clicks never', async () => {
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
@@ -127,7 +127,7 @@ describe('Update Manager', () => {
   it('does nothing when user clicks no', async () => {
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
@@ -145,7 +145,7 @@ describe('Update Manager', () => {
   it('shows download progress', async () => {
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
@@ -183,7 +183,7 @@ describe('Update Manager', () => {
   it('shows update downlaoded dialog', async () => {
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
@@ -207,7 +207,7 @@ describe('Update Manager', () => {
   it('the app quits and restarts when user clicks restart', async () => {
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',
@@ -230,7 +230,7 @@ describe('Update Manager', () => {
   it('the app does nothing when user clicks Later', async () => {
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await appUpdaterListeners.invoke('update-available', {
       releaseName: 'v9.9.9',
       version: '9.9.9',

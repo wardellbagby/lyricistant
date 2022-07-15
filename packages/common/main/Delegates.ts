@@ -10,6 +10,9 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 import { UiConfig } from '@lyricistant/common/ui/UiConfig';
 
+export interface RendererInfo {
+  isDeepLink: boolean;
+}
 /** Information that the renderer wants to send to the platform. */
 export interface RendererToPlatformListener {
   /**
@@ -20,7 +23,7 @@ export interface RendererToPlatformListener {
    * {@link addRendererListenerSetListener} to send data to the renderer as soon
    * as its ready rather than listening to this event.
    */
-  'ready-for-events': () => void;
+  'ready-for-events': (info: RendererInfo) => void;
   /**
    * Gives the platform the current text that is stored on the editor when requested.
    *

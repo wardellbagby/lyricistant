@@ -13,6 +13,10 @@ export const PlatformEventsReadyHandler = ({
 }: {
   children: ReactNode;
 }) => {
-  useEffect(() => platformDelegate.send('ready-for-events'), []);
+  useEffect(() => {
+    platformDelegate.send('ready-for-events', {
+      isDeepLink: location.hash.length !== 0,
+    });
+  }, []);
   return <>{children}</>;
 };

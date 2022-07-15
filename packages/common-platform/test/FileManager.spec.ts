@@ -201,7 +201,7 @@ describe('File Manager', () => {
 
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
 
     await manager.onOpenFile();
 
@@ -263,7 +263,7 @@ describe('File Manager', () => {
     );
 
     manager.register();
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await manager.onOpenFile({
       metadata: {
         path: 'whitetuxedo.txt',
@@ -470,7 +470,7 @@ describe('File Manager', () => {
 
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await manager.onOpenFile({
       metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
       data: encode('This water'),
@@ -501,7 +501,7 @@ describe('File Manager', () => {
 
     manager.register();
 
-    await rendererDelegate.invoke('ready-for-events');
+    await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
     await rendererDelegate.invoke('open-file-attempt', {
       metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
       data: encode('This water'),

@@ -1,7 +1,7 @@
 import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { Manager } from '@lyricistant/common-platform/Manager';
 import { isUnderTest } from '@lyricistant/common/BuildModes';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { RendererDelegate, RendererInfo } from '@lyricistant/common/Delegates';
 
 export class FirstLaunchManager implements Manager {
   private static readonly IS_FIRST_LAUNCH_KEY = 'is-first-launch';
@@ -14,7 +14,11 @@ export class FirstLaunchManager implements Manager {
     this.rendererDelegate.on('ready-for-events', this.onReadyForEvents);
   };
 
-  private onReadyForEvents = async () => {
+  private onReadyForEvents = async (info: RendererInfo) => {
+    if (info.isDeepLink) {
+      return;
+    }
+
     const isFirstLaunch = !(await this.appData.exists(
       FirstLaunchManager.IS_FIRST_LAUNCH_KEY
     ));
