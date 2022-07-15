@@ -1,3 +1,12 @@
+## [1.3.25](https://github.com/wardellbagby/lyricistant/compare/v1.3.24...v1.3.25) (2022-07-15)
+
+
+### Bug Fixes
+
+* **web:** allow downloads to the latest available version ([0923492](https://github.com/wardellbagby/lyricistant/commit/092349291ebbfa8ac999b543f04694a8a809cc61))
+
+
+
 ## [1.3.24](https://github.com/wardellbagby/lyricistant/compare/v1.3.23+ios...v1.3.24) (2022-07-15)
 
 
