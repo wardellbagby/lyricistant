@@ -1,3 +1,7 @@
+## [1.3.24](https://github.com/wardellbagby/lyricistant/compare/v1.3.23+ios...v1.3.24) (2022-07-15)
+
+
+
 ## [1.3.23](https://github.com/wardellbagby/lyricistant/compare/v1.3.22...v1.3.23) (2022-06-07)
 
 
