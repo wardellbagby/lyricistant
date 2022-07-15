@@ -1,6 +1,6 @@
 import { AppStore } from '@electron-app/AppStore';
-import { ReleaseHelper } from '@electron-app/platform/ReleaseHelper';
 import { UpdateManager } from '@electron-app/platform/UpdateManager';
+import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import { EventListeners } from '@testing/utilities/Listeners';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { expect, use } from 'chai';
@@ -30,7 +30,7 @@ describe('Update Manager', () => {
       return this;
     });
     releaseHelper = stubInterface();
-    releaseHelper.getReleaseData.resolves({
+    releaseHelper.getLatestDownloadableRelease.resolves({
       changelog: 'Hello!',
       baseDownloadUrl: 'https://example.com/',
     });
@@ -80,7 +80,7 @@ describe('Update Manager', () => {
 
   it('does not check for updates when there is no new release', async () => {
     manager.register();
-    releaseHelper.getReleaseData.resolves(null);
+    releaseHelper.getLatestDownloadableRelease.resolves(null);
 
     await rendererDelegate.invoke('ready-for-events');
 

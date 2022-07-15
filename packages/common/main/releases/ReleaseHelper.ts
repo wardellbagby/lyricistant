@@ -1,4 +1,3 @@
-import path from 'path';
 import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { Logger } from '@lyricistant/common/Logger';
 import { Octokit, RestEndpointMethodTypes } from '@octokit/rest';
@@ -25,15 +24,29 @@ export class ReleaseHelper {
     this.octokit = new Octokit();
   }
 
-  public getReleaseData = async (
-    currentVersion: string
+  /**
+   * Returns the latest release of Lyricistant that can be downloaded. By
+   * default, this will only consider releases newer than the current, but by
+   * setting `options.includeCurrentVersion`, the current release will also be included.
+   *
+   * @param currentVersion The current version of Lyricistant that is running this check.
+   * @param options Options for how to decide what the "latest" release is.
+   */
+  public getLatestDownloadableRelease = async (
+    currentVersion: string,
+    options: { includeCurrentVersion?: boolean } = {
+      includeCurrentVersion: false,
+    }
   ): Promise<ReleaseData> => {
     if (isUnderTest) {
       return null;
     }
 
     this.logger.debug('Checking for new GitHub releases', { currentVersion });
-    const releases = await this.getGitHubReleases(currentVersion);
+    const releases = await this.getGitHubReleases(
+      currentVersion,
+      options.includeCurrentVersion ?? false
+    );
 
     if (releases.length === 0) {
       return null;
@@ -50,7 +63,10 @@ export class ReleaseHelper {
     };
   };
 
-  private getGitHubReleases = async (currentVersion: string) => {
+  private getGitHubReleases = async (
+    currentVersion: string,
+    includeCurrentVersion: boolean
+  ) => {
     if (this.cachedReleases.length > 0) {
       this.logger.debug('Returning cached releases', {
         releases: this.cachedReleases,
@@ -68,7 +84,10 @@ export class ReleaseHelper {
         if (release.tag_name === 'latest') {
           continue;
         }
-        if (!this.isReleaseNewerThanCurrent(currentVersion, release)) {
+        if (
+          !includeCurrentVersion &&
+          !this.isReleaseNewerThanCurrent(currentVersion, release)
+        ) {
           break;
         }
         if (release.assets.some((asset) => asset.name === 'latest.yml')) {
@@ -103,11 +122,7 @@ export class ReleaseHelper {
   };
 
   private getBaseDownloadUrl = (release: GitHubRelease) =>
-    /*
-     Takes a URL in the form of https://example.com/path/file.txt and converts
-     it to https://example.com/path/
-    */
-    path.dirname(release.assets[0].browser_download_url);
+    this.removeFilename(release.assets[0].browser_download_url);
 
   private getChangelog = (releases: GitHubRelease[]) =>
     releases.reduce(
@@ -115,4 +130,11 @@ export class ReleaseHelper {
         `##${release.name}\n\n${release.body}\n\n${changelog}`,
       ''
     );
+
+  /**
+   * Takes a URL in the form of https://example.com/path/file.txt and converts
+   * it to https://example.com/path/
+   */
+  private removeFilename = (url: string): string =>
+    url.substring(0, url.lastIndexOf('/') + 1);
 }

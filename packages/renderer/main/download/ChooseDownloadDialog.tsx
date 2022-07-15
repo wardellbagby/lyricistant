@@ -1,8 +1,6 @@
-import {
-  latestReleaseUrl,
-  Release,
-  supportedReleases,
-} from '@lyricistant/renderer/download';
+import { Release, supportedReleases } from '@lyricistant/renderer/download';
+import { latestReleaseMachine } from '@lyricistant/renderer/download/LatestReleaseMachine';
+import { APP_VERSION } from '@lyricistant/renderer/globals';
 import { Android } from '@mui/icons-material';
 import {
   Accordion,
@@ -10,13 +8,17 @@ import {
   AccordionSummary,
   Box,
   Button,
+  CircularProgress,
   Dialog,
+  DialogContent,
+  DialogContentText,
   DialogTitle,
   Grid,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { useMachine } from '@xstate/react';
 import { Apple, AppleIos, Linux, MicrosoftWindows } from 'mdi-material-ui';
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 const useStyles = (release: Release) =>
   makeStyles(() => ({
@@ -165,11 +167,25 @@ interface ChooseDownloadDialogProps {
 
 /** A dialog that allows users to select and download different versions of Lyricistant. */
 export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
-  const handleReleaseClicked = (url: string) => {
-    logger.info(`App download link clicked. Chosen URL: ${url}`);
-    window.open(url, '_blank');
-    props.onClose();
-  };
+  const [state, send] = useMachine(latestReleaseMachine);
+
+  useEffect(() => {
+    if (props.open) {
+      send({ type: 'INPUT', currentVersion: APP_VERSION });
+    }
+  }, [props.open]);
+
+  const onReleaseClicked = useCallback(
+    (release: Release) => {
+      const url =
+        release.url ??
+        state.context.releaseData.baseDownloadUrl + release.asset;
+      logger.info(`App download link clicked. Chosen URL: ${url}`);
+      window.open(url, '_blank');
+      props.onClose();
+    },
+    [state.context.releaseData?.baseDownloadUrl]
+  );
 
   const releases = useMemo(
     () =>
@@ -190,27 +206,24 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
       <DialogTitle id="choose-download-dialog-title">
         Download Lyricistant
       </DialogTitle>
-      <Box paddingLeft={'16px'} paddingRight={'16px'} paddingBottom={'32px'}>
-        <Grid
-          container
-          spacing={1}
-          alignItems={'center'}
-          justifyContent={'center'}
-        >
-          {[...releases.keys()].map((platform) => (
-            <PlatformDownloadOptions
-              key={platform}
-              platform={platform}
-              releases={releases.get(platform)}
-              onClick={(release) =>
-                handleReleaseClicked(
-                  release.url ?? latestReleaseUrl + release.asset
-                )
-              }
-            />
-          ))}
-        </Grid>
-      </Box>
+      <DialogContent>
+        {state.matches('loading') && (
+          <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+            <CircularProgress size={'64px'} variant={'indeterminate'} />
+          </Box>
+        )}
+        {state.matches('loaded') && (
+          <DownloadButtons
+            releases={releases}
+            onReleaseClicked={onReleaseClicked}
+          />
+        )}
+        {state.matches('error') && (
+          <DialogContentText>
+            Failed to fetch latest download information. Please try again later.
+          </DialogContentText>
+        )}
+      </DialogContent>
       <Button
         size={'large'}
         variant={'contained'}
@@ -222,6 +235,22 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
     </Dialog>
   );
 };
+
+const DownloadButtons = (props: {
+  releases: Map<string, Release[]>;
+  onReleaseClicked: (release: Release) => void;
+}) => (
+  <Grid container spacing={1} alignItems={'center'} justifyContent={'center'}>
+    {[...props.releases.keys()].map((platform) => (
+      <PlatformDownloadOptions
+        key={platform}
+        platform={platform}
+        releases={props.releases.get(platform)}
+        onClick={(release) => props.onReleaseClicked(release)}
+      />
+    ))}
+  </Grid>
+);
 
 const ReleaseIcon = ({ platform }: { platform: string }) => {
   switch (platform) {

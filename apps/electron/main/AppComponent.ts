@@ -7,7 +7,6 @@ import type { ElectronPreferences } from '@electron-app/platform/ElectronPrefere
 import type { ElectronRecentFiles } from '@electron-app/platform/ElectronRecentFiles';
 import type { ElectronSystemThemeProvider } from '@electron-app/platform/ElectronSystemThemeProvider';
 import type { QuitManager } from '@electron-app/platform/QuitManager';
-import { ReleaseHelper } from '@electron-app/platform/ReleaseHelper';
 import {
   formatTitle,
   provideUiConfig,
@@ -23,6 +22,7 @@ import {
   registerCommonManagers,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
+import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import { DIContainer } from '@wessberg/di';
 import {
   BrowserWindow,
