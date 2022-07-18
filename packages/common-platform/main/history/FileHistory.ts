@@ -224,7 +224,7 @@ export class FileHistory implements FileDataExtension<'history'> {
         if (sourceLineIndex < resultLines.length) {
           // If the result has a line at the same index, then we actually
           // changed this line so mark it as being a new line added (since we
-          // currently support "modified" lines).
+          // don't currently support "modified" lines).
           changes.push({
             type: 'added' as const,
             lineNumber: sourceLineIndex,
@@ -316,6 +316,15 @@ export class FileHistory implements FileDataExtension<'history'> {
       return result;
     };
 
+    const lineOrControlCharacters = (
+      line: string
+    ): { line: string; control: boolean } => {
+      if (line === undefined || line.length === 0) {
+        return { line: '<< Empty line >>', control: true };
+      }
+      return { line, control: false };
+    };
+
     // Iterate over all groups and create displayable chunk lines for every chunk.
     return groups.map((group) => {
       // Displayed before any changed lines, if possible.
@@ -330,7 +339,14 @@ export class FileHistory implements FileDataExtension<'history'> {
         // There are some lines we can display before the first group; add them.
         preLines = sourceLines
           .slice(startContextLineNumber, firstChange.lineNumber)
-          .map((line) => ({ type: 'context', line }));
+          .map((line) => {
+            const value = lineOrControlCharacters(line);
+            return {
+              type: 'context',
+              line: value.line,
+              control: value.control,
+            };
+          });
       }
 
       if (lastChange.lineNumber < maxSourceLineIndex) {
@@ -342,7 +358,21 @@ export class FileHistory implements FileDataExtension<'history'> {
         // There are some lines we can display after the last group; add them.
         postLines = sourceLines
           .slice(lastChange.lineNumber + 1, endContextLineNumber)
-          .map((line) => ({ type: 'context', line }));
+          .map((line) => {
+            const value = lineOrControlCharacters(line);
+            return {
+              type: 'context',
+              line: value.line,
+              control: value.control,
+            };
+          });
+      }
+      if (lastChange.lineNumber >= maxSourceLineIndex) {
+        postLines.push({
+          type: 'context',
+          line: '<< End of file >>',
+          control: true,
+        });
       }
 
       const chunkLines: ChunkLine[] = this.intRange(
@@ -350,29 +380,47 @@ export class FileHistory implements FileDataExtension<'history'> {
         lastChange.lineNumber + 1
       )
         .map((originalLineNumber) => {
-          const sourceLine = sourceLines[originalLineNumber];
+          const { line: sourceLine, control: isSourceControl } =
+            lineOrControlCharacters(sourceLines[originalLineNumber]);
           const lineChanges = group.filter(
             (change) => change.lineNumber === originalLineNumber
           );
-          const changedLine = applyToLine(sourceLine, lineChanges);
+          const { line: changedLine, control: isChangedControl } =
+            lineOrControlCharacters(applyToLine(sourceLine, lineChanges));
 
-          if (sourceLine !== changedLine) {
+          if (
+            sourceLine !== changedLine ||
+            (lineChanges.length > 0 && (isSourceControl || isChangedControl))
+          ) {
             // Source line doesn't match the changed line; a modification happened.
-            if (!sourceLine || sourceLine.trim().length === 0) {
+            if (!sourceLine || isSourceControl) {
               // There's no source line, or it was empty so don't bother with
               // an "old" and just return the new line as an addition.
-              return { type: 'new', line: changedLine } as const;
+              return {
+                type: 'new',
+                line: changedLine,
+                control: isChangedControl,
+              } as const;
             }
 
             return [
-              { type: 'old', line: sourceLine } as const,
-              { type: 'new', line: changedLine } as const,
+              {
+                type: 'old',
+                line: sourceLine,
+                control: isSourceControl,
+              } as const,
+              {
+                type: 'new',
+                line: changedLine,
+                control: isChangedControl,
+              } as const,
             ];
           } else {
             // No changes, so this line is just context.
             return {
               type: 'context',
               line: sourceLine,
+              control: isSourceControl,
             } as const;
           }
         })

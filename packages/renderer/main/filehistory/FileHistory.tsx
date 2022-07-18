@@ -8,6 +8,7 @@ import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -56,12 +57,18 @@ const VisualChunkLine = (props: { line: ChunkLine }) => {
     }
     return {};
   }, [theme]);
+  const fontFamily = useMemo(() => {
+    if (props.line.control) {
+      return 'monospace';
+    }
+  }, [props.line.control]);
 
   return (
     <Box
       sx={{
         background: backgroundColor,
         color: foregroundColor,
+        fontFamily,
       }}
     >
       {props.line.line}
@@ -83,6 +90,33 @@ const VisualChunk = (props: { chunk: Chunk }) => (
     ))}
   </Box>
 );
+
+const FileHistoryList = (props: {
+  historyData: ParsedHistoryData[];
+  onFileHistoryClicked: (history: ParsedHistoryData) => void;
+}) => {
+  if (props.historyData?.length === 0) {
+    return <DialogContentText>No file history.</DialogContentText>;
+  }
+  if (!props.historyData) {
+    return <CircularProgress variant={'indeterminate'} />;
+  }
+  return (
+    <List>
+      {props.historyData.map((data, index) => (
+        <React.Fragment key={index}>
+          <FileHistoryItem
+            data={data}
+            onClick={() => {
+              props.onFileHistoryClicked(data);
+            }}
+          />
+          <Divider />
+        </React.Fragment>
+      ))}
+    </List>
+  );
+};
 /**
  * A dialog that displays file history from the platform and allows the user to
  * select a file history to apply.
@@ -95,7 +129,7 @@ export function FileHistory(props: FileHistoryProps) {
     props.onClose();
   }, []);
 
-  const [fileHistory] = useChannelData('file-history', [props.open]);
+  const [historyData] = useChannelData('file-history', [props.open]);
   const [displayedHistory, setDisplayedHistory] =
     useState<ParsedHistoryData>(null);
 
@@ -143,23 +177,10 @@ export function FileHistory(props: FileHistoryProps) {
         <DialogTitle>File History</DialogTitle>
         <Divider />
         <DialogContent>
-          {fileHistory?.length > 0 ? (
-            <List>
-              {fileHistory.map((data, index) => (
-                <React.Fragment key={index}>
-                  <FileHistoryItem
-                    data={data}
-                    onClick={() => {
-                      setDisplayedHistory(data);
-                    }}
-                  />
-                  <Divider />
-                </React.Fragment>
-              ))}
-            </List>
-          ) : (
-            <DialogContentText>No file history.</DialogContentText>
-          )}
+          <FileHistoryList
+            historyData={historyData}
+            onFileHistoryClicked={setDisplayedHistory}
+          />
         </DialogContent>
       </Drawer>
     </>
