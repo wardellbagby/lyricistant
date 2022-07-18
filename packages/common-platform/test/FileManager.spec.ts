@@ -77,7 +77,7 @@ describe('File Manager', () => {
     textFileHandler.extension = 'txt';
     textFileHandler.create.callsFake(async (file) => encode(file.lyrics));
     mockExtension.key = 'hello';
-    mockExtension.serialize.returns({ version: 1, data: 'world' });
+    mockExtension.serialize.resolves({ version: 1, data: 'world' });
 
     manager = new FileManager(
       rendererDelegate,

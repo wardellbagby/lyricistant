@@ -55,7 +55,7 @@ describe('Unsaved Data Manager', () => {
 
   it('prompts if unsaved data is found', async () => {
     appData.exists.resolves(true);
-    fileHistory.isNonEmptyHistory.returns(true);
+    fileHistory.isNonEmptyHistory.resolves(true);
 
     manager.register();
     await initialFileLoadedListener();
@@ -71,7 +71,7 @@ describe('Unsaved Data Manager', () => {
 
   it('does not prompt if unsaved data is not found', async () => {
     appData.exists.resolves(false);
-    fileHistory.isNonEmptyHistory.returns(false);
+    fileHistory.isNonEmptyHistory.resolves(false);
 
     manager.register();
     await initialFileLoadedListener();
@@ -81,7 +81,7 @@ describe('Unsaved Data Manager', () => {
 
   it('does not prompt if unsaved data is found but is not valid', async () => {
     appData.exists.resolves(true);
-    fileHistory.isNonEmptyHistory.returns(false);
+    fileHistory.isNonEmptyHistory.resolves(false);
 
     manager.register();
     await initialFileLoadedListener();

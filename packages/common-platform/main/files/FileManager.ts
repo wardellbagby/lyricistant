@@ -271,7 +271,7 @@ export class FileManager implements Manager {
   private createNewFile = () => {
     this.currentFile = null;
     this.rendererDelegate.send('new-file-created');
-    this.fileDataExtensions.forEach((extension) => extension.deserialize(null));
+    this.fileDataExtensions.forEach((extension) => extension.reset());
     this.fileChangedListeners.forEach((listener) =>
       listener(null, this.recentFiles.getRecentFiles())
     );

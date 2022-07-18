@@ -1,4 +1,5 @@
 import { ExtensionData } from '@lyricistant/common-platform/files/Files';
+import { Logger } from '@lyricistant/common/Logger';
 
 export type FileDataExtensionKey = keyof ExtensionData;
 
@@ -31,16 +32,30 @@ export interface VersionedExtensionData<T> {
  * the extension data does not have a version, then the invalid handler will be called.
  *
  * @param extensionData The extension data to check
+ * @param logger A logger
  * @param handlers An object mapping versions to handler functions.
  */
-export const onVersion = <R = void>(
+export const onVersion = async <R = void>(
   extensionData: VersionedExtensionData<string> | null,
-  handlers: { [version: number]: () => R; invalid: () => R }
-): R => {
+  logger: Logger,
+  handlers: {
+    [version: number]: () => R | Promise<R>;
+    invalid: () => R | Promise<R>;
+  }
+): Promise<R> => {
   const version = extensionData?.version;
 
   if (version && version in handlers) {
-    return handlers[version]();
+    try {
+      return handlers[version]();
+    } catch (e) {
+      logger.warn(
+        'Exception when deserializing extension data',
+        extensionData,
+        e
+      );
+      return handlers.invalid();
+    }
   } else {
     return handlers.invalid();
   }
@@ -52,10 +67,11 @@ export interface FileDataExtension<
 > {
   readonly key: KeyT;
   onBeforeSerialization?: (lyrics: string) => void;
-  serialize: () => VersionedExtensionData<ExtensionData[KeyT]>;
+  serialize: () => Promise<VersionedExtensionData<ExtensionData[KeyT]>>;
   deserialize: (
-    data: VersionedExtensionData<ExtensionData[KeyT]> | null
-  ) => void;
+    data: VersionedExtensionData<ExtensionData[KeyT]>
+  ) => Promise<void>;
+  reset: () => void;
 }
 
 export type FileDataExtensions = FileDataExtension[];

@@ -1,7 +1,12 @@
-import { ParsedHistoryData } from '@lyricistant/common/history/ParsedHistoryData';
+import {
+  Chunk,
+  ChunkLine,
+  ParsedHistoryData,
+} from '@lyricistant/common/history/ParsedHistoryData';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -14,8 +19,10 @@ import {
   ListItem,
   ListItemText,
   SxProps,
+  Theme,
+  useTheme,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 interface FileHistoryItemProps {
   data: ParsedHistoryData;
@@ -33,6 +40,49 @@ interface FileHistoryProps {
   onClose: () => void;
 }
 
+const VisualChunkLine = (props: { line: ChunkLine }) => {
+  const theme = useTheme();
+  const { backgroundColor, foregroundColor } = useMemo(() => {
+    if (props.line.type === 'new') {
+      return {
+        backgroundColor: theme.palette.success.main,
+        foregroundColor: theme.palette.success.contrastText,
+      };
+    } else if (props.line.type === 'old') {
+      return {
+        backgroundColor: theme.palette.error.main,
+        foregroundColor: theme.palette.error.contrastText,
+      };
+    }
+    return {};
+  }, [theme]);
+
+  return (
+    <Box
+      sx={{
+        background: backgroundColor,
+        color: foregroundColor,
+      }}
+    >
+      {props.line.line}
+    </Box>
+  );
+};
+const VisualChunk = (props: { chunk: Chunk }) => (
+  <Box
+    marginBottom={'12px'}
+    padding={'12px'}
+    sx={{
+      border: 2,
+      borderRadius: 1,
+      borderColor: (theme: Theme) => theme.palette.divider,
+    }}
+  >
+    {props.chunk.lines.map((line, index) => (
+      <VisualChunkLine key={index} line={line} />
+    ))}
+  </Box>
+);
 /**
  * A dialog that displays file history from the platform and allows the user to
  * select a file history to apply.
@@ -66,9 +116,9 @@ export function FileHistory(props: FileHistoryProps) {
         <DialogTitle>{displayedHistory?.time}</DialogTitle>
         <Divider />
         <DialogContent>
-          <DialogContentText sx={{ whiteSpace: 'pre-wrap' }}>
-            {displayedHistory?.text}
-          </DialogContentText>
+          {displayedHistory?.chunks.map((chunk, index) => (
+            <VisualChunk key={index} chunk={chunk} />
+          ))}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDisplayedHistory(null)}>Close</Button>
@@ -96,14 +146,15 @@ export function FileHistory(props: FileHistoryProps) {
           {fileHistory?.length > 0 ? (
             <List>
               {fileHistory.map((data, index) => (
-                <>
+                <React.Fragment key={index}>
                   <FileHistoryItem
                     data={data}
-                    key={index}
-                    onClick={() => setDisplayedHistory(data)}
+                    onClick={() => {
+                      setDisplayedHistory(data);
+                    }}
                   />
                   <Divider />
-                </>
+                </React.Fragment>
               ))}
             </List>
           ) : (

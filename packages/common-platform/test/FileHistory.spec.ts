@@ -22,7 +22,7 @@ describe('File History', () => {
       fileHistory.add(`${index}`);
     }
 
-    fileHistory.deserialize(fileHistory.serialize());
+    await fileHistory.deserialize(await fileHistory.serialize());
 
     expect(fileHistory.getParsedHistory()).to.equal(expected);
   });
@@ -33,7 +33,7 @@ describe('File History', () => {
 
     for (let index = 0; index <= max; index++) {
       fileHistory.add(`${index}`);
-      fileHistory.deserialize(fileHistory.serialize());
+      await fileHistory.deserialize(await fileHistory.serialize());
     }
 
     expect(fileHistory.getParsedHistory()).to.equal(expected);
@@ -52,7 +52,7 @@ describe('File History', () => {
     fileHistory.add('Actually, I like this lyric.');
     fileHistory.add(expected);
 
-    fileHistory.deserialize(fileHistory.serialize());
+    await fileHistory.deserialize(await fileHistory.serialize());
 
     expect(fileHistory.getParsedHistory()).to.equal(expected);
   });

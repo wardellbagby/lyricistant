@@ -40,11 +40,11 @@ export class UnsavedDataManager implements Manager {
     );
     const hasUnsavedData =
       hasTemporaryData &&
-      this.fileHistory.isNonEmptyHistory(
+      (await this.fileHistory.isNonEmptyHistory(
         this.parseOrNull(
           await this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
         )
-      );
+      ));
 
     if (hasUnsavedData) {
       this.logger.verbose('Unsaved data found.');

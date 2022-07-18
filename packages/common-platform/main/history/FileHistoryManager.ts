@@ -18,5 +18,5 @@ export class FileHistoryManager implements Manager {
   }
 
   private getIncrementalHistory = () =>
-    this.fileHistory.getIncrementalParsedHistory();
+    this.fileHistory.getIncrementalParsedHistory({ includeChunks: true });
 }
