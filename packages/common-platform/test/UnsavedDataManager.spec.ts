@@ -2,6 +2,7 @@ import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import { Times } from '@lyricistant/common-platform/time/Times';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
@@ -14,17 +15,20 @@ describe('Unsaved Data Manager', () => {
   let fileManager: StubbedInstance<FileManager>;
   let appData: StubbedInstance<AppData>;
   let fileHistory: StubbedInstance<FileHistory>;
+  let times: StubbedInstance<Times>;
   const rendererDelegate = new MockRendererDelegate();
   let fileChangedListener: (...args: any[]) => void;
   let initialFileLoadedListener: (...args: any[]) => void;
 
   beforeEach(() => {
+    jest.useFakeTimers();
     sinon.reset();
     appData = stubInterface<AppData>({
       get: Promise.resolve('{}'),
     });
     fileHistory = stubInterface<FileHistory>({
       getParsedHistory: 'Unsaved data',
+      isNonEmptyHistory: Promise.resolve(true),
     });
     fileManager = stubInterface<FileManager>();
     fileManager.addOnFileChangedListener.callsFake((listener) => {
@@ -39,6 +43,7 @@ describe('Unsaved Data Manager', () => {
       fileManager,
       appData,
       fileHistory,
+      times,
       stubInterface()
     );
   });
@@ -57,6 +62,11 @@ describe('Unsaved Data Manager', () => {
     appData.exists.resolves(true);
     fileHistory.isNonEmptyHistory.resolves(true);
 
+    rendererDelegate.invokeOnSet(
+      'dialog-interaction',
+      UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
+      { selectedButton: 'No' }
+    );
     manager.register();
     await initialFileLoadedListener();
 
@@ -93,12 +103,12 @@ describe('Unsaved Data Manager', () => {
     appData.exists.resolves(true);
 
     manager.register();
-    await initialFileLoadedListener();
-    await rendererDelegate.invoke(
+    rendererDelegate.invokeOnSet(
       'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
       { selectedButton: 'Yes' }
     );
+    await initialFileLoadedListener();
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
@@ -112,12 +122,12 @@ describe('Unsaved Data Manager', () => {
     appData.exists.resolves(true);
 
     manager.register();
-    await initialFileLoadedListener();
-    await rendererDelegate.invoke(
+    rendererDelegate.invokeOnSet(
       'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
       { selectedButton: 'No' }
     );
+    await initialFileLoadedListener();
 
     expect(rendererDelegate.send).to.have.not.been.calledWith(
       'file-opened',
@@ -141,12 +151,12 @@ describe('Unsaved Data Manager', () => {
     appData.exists.resolves(true);
 
     manager.register();
-    await initialFileLoadedListener();
-    await rendererDelegate.invoke(
+    rendererDelegate.invokeOnSet(
       'dialog-interaction',
       (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
       { selectedButton: 'No' }
     );
+    await initialFileLoadedListener();
 
     fileChangedListener();
 

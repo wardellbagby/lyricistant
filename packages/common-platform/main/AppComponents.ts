@@ -18,6 +18,7 @@ import { Managers } from '@lyricistant/common-platform/Managers';
 import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
+import { Times } from '@lyricistant/common-platform/time/Times';
 import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
 import {
   TitleFormatter,
@@ -40,6 +41,7 @@ export interface PlatformDependencies {
   buffers: Provider<Buffers>;
   uiConfigProvider: Provider<UiConfigProvider>;
   titleFormatter: Provider<TitleFormatter>;
+  times: Provider<Times>;
 }
 
 /**
@@ -92,6 +94,7 @@ export const registerCommonPlatform = (
   component.registerTransient<UiConfigProvider>(dependencies.uiConfigProvider);
   component.registerTransient<TitleFormatter>(dependencies.titleFormatter);
   component.registerTransient<RendererDelegate>(dependencies.rendererDelegate);
+  component.registerTransient<Times>(dependencies.times);
 
   component.registerSingleton<FileManager>();
   component.registerSingleton<PreferenceManager>();

@@ -11,6 +11,7 @@ import { DOMLogger } from '@lyricistant/core-dom-platform/platform/DOMLogger';
 import { DOMPreferences } from '@lyricistant/core-dom-platform/platform/DOMPreferences';
 import { DOMRecentFiles } from '@lyricistant/core-dom-platform/platform/DOMRecentFiles';
 import { DOMSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/DOMSystemThemeProvider';
+import { DOMTimes } from '@lyricistant/core-dom-platform/platform/DOMTimes';
 import {
   formatTitle,
   provideUiConfig,
@@ -35,6 +36,7 @@ export const registerCoreDOMPlatform = (
   component.registerSingleton<DOMFiles>();
   component.registerSingleton<DOMSystemThemeProvider>();
   component.registerSingleton<DOMBuffers>();
+  component.registerSingleton<DOMTimes>();
 
   component.registerSingleton<FileSystem, DOMFileSystem>();
 
@@ -50,6 +52,7 @@ export const registerCoreDOMPlatform = (
       systemThemeProvider: () => component.get<DOMSystemThemeProvider>(),
       recentFiles: () => component.get<DOMRecentFiles>(),
       uiConfigProvider: () => provideUiConfig,
+      times: () => component.get<DOMTimes>(),
       ...platformDependenciesOverrides,
     },
     component

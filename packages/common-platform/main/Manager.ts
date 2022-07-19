@@ -59,21 +59,3 @@ export const showRendererDialog = async (
     rendererDelegate.on('dialog-closed', onClose);
     rendererDelegate.send('show-dialog', ...args);
   });
-
-/** @deprecated Use showRendererDialog instead */
-export const withDialogSupport = (
-  manager: Manager,
-  rendererDelegate: RendererDelegate,
-  onDialogClicked: (tag: string, buttonLabel: string) => void,
-  ...tags: string[]
-) => {
-  const register = manager.register;
-  manager.register = () => {
-    register();
-    rendererDelegate.on('dialog-interaction', (dialogTag, interactionData) => {
-      if (tags.indexOf(dialogTag) >= 0) {
-        onDialogClicked(dialogTag, interactionData.selectedButton);
-      }
-    });
-  };
-};

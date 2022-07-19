@@ -6,6 +6,7 @@ import type { ElectronLogger } from '@electron-app/platform/ElectronLogger';
 import type { ElectronPreferences } from '@electron-app/platform/ElectronPreferences';
 import type { ElectronRecentFiles } from '@electron-app/platform/ElectronRecentFiles';
 import type { ElectronSystemThemeProvider } from '@electron-app/platform/ElectronSystemThemeProvider';
+import { ElectronTimes } from '@electron-app/platform/ElectronTimes';
 import type { QuitManager } from '@electron-app/platform/QuitManager';
 import {
   formatTitle,
@@ -56,6 +57,7 @@ const registerPlatformFunctionality = (component: DIContainer) => {
   component.registerSingleton<ElectronSystemThemeProvider>();
   component.registerSingleton<ElectronAppData>();
   component.registerSingleton<ElectronBuffers>();
+  component.registerSingleton<ElectronTimes>();
   registerCommonPlatform(
     {
       rendererDelegate: () =>
@@ -69,6 +71,7 @@ const registerPlatformFunctionality = (component: DIContainer) => {
       systemThemeProvider: () => component.get<ElectronSystemThemeProvider>(),
       titleFormatter: () => formatTitle,
       uiConfigProvider: () => provideUiConfig,
+      times: () => component.get<ElectronTimes>(),
     },
     component
   );

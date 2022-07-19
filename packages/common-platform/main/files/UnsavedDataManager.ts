@@ -3,34 +3,39 @@ import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import {
   Manager,
-  withDialogSupport,
+  showRendererDialog,
 } from '@lyricistant/common-platform/Manager';
+import { Times } from '@lyricistant/common-platform/time/Times';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { YES_NO_BUTTONS } from '@lyricistant/common/dialogs/Dialog';
 import { Logger } from '@lyricistant/common/Logger';
 
 export class UnsavedDataManager implements Manager {
   public static readonly UNSAVED_LYRICS_KEY = 'unsaved-lyrics-key';
-  private static readonly RECOVER_UNSAVED_LYRICS_TAG =
+  public static readonly RECOVER_UNSAVED_LYRICS_TAG =
     'unsaved-data-manager-recover-lyrics';
+  private static readonly MINIMUM_FILE_SAVE_ELAPSED_TIME_MS = 30_000;
+  private static readonly AUTOMATIC_FILE_SAVE_MS = 300_000;
 
+  private lastFileSaveMs: number = null;
+  private hasPromptedUnsavedDataRecovery = false;
   public constructor(
     private rendererDelegate: RendererDelegate,
     private fileManager: FileManager,
     private appData: AppData,
     private fileHistory: FileHistory,
+    private times: Times,
     private logger: Logger
-  ) {
-    withDialogSupport(
-      this,
-      rendererDelegate,
-      this.onDialogClicked,
-      UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG
-    );
-  }
+  ) {}
 
   public register = (): void => {
     this.fileManager.setInitialFileLoadedListener(this.checkForUnsavedData);
+    this.rendererDelegate.on('editor-idle', this.onEditorIdle);
+    this.fileManager.addOnFileChangedListener(() => {
+      if (this.hasPromptedUnsavedDataRecovery) {
+        this.appData.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
+      }
+    });
   };
 
   private checkForUnsavedData = async () => {
@@ -48,29 +53,27 @@ export class UnsavedDataManager implements Manager {
 
     if (hasUnsavedData) {
       this.logger.verbose('Unsaved data found.');
-      this.rendererDelegate.send('show-dialog', {
-        type: 'alert',
-        tag: UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
-        title: 'Recover unsaved lyrics',
-        message: 'Unsaved lyrics found. Would you like to recover them?',
-        buttons: YES_NO_BUTTONS,
-      });
+      const [dialogTag, interactionData] = await showRendererDialog(
+        this.rendererDelegate,
+        {
+          type: 'alert',
+          tag: UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
+          title: 'Recover unsaved lyrics',
+          message: 'Unsaved lyrics found. Would you like to recover them?',
+          buttons: YES_NO_BUTTONS,
+        }
+      );
+      await this.onDialogClicked(dialogTag, interactionData.selectedButton);
     } else {
+      this.hasPromptedUnsavedDataRecovery = true;
       this.startAutomaticFileSaver();
     }
-  };
-
-  private startAutomaticFileSaver = () => {
-    setTimeout(this.saveFile, 5000);
-    this.fileManager.addOnFileChangedListener(() => {
-      this.appData.delete(UnsavedDataManager.UNSAVED_LYRICS_KEY);
-    });
   };
 
   private onDialogClicked = async (tag: string, buttonLabel: string) => {
     if (tag === UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG) {
       if (buttonLabel === 'Yes') {
-        this.fileHistory.deserialize(
+        await this.fileHistory.deserialize(
           this.parseOrNull(
             await this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
           )
@@ -82,25 +85,58 @@ export class UnsavedDataManager implements Manager {
           false
         );
       }
+      this.hasPromptedUnsavedDataRecovery = true;
       this.startAutomaticFileSaver();
     }
   };
 
-  private saveFile = () => {
+  private onEditorIdle = async (text: string) => {
+    if (this.canPerformFileSave()) {
+      this.logger.verbose('Editor is idle; saving unsaved data');
+      await this.performFileSave(text);
+    } else {
+      this.logger.verbose(
+        'Editor is idle but unsaved data save was too recent. Skipping.'
+      );
+    }
+  };
+
+  private startAutomaticFileSaver = () => {
+    setTimeout(
+      this.onAutomaticFileSaveTriggered,
+      UnsavedDataManager.AUTOMATIC_FILE_SAVE_MS
+    );
+  };
+
+  private onAutomaticFileSaveTriggered = () => {
     const onEditorText = async (text: string) => {
       this.rendererDelegate.removeListener('editor-text', onEditorText);
-      this.fileHistory.add(text);
+      await this.performFileSave(text);
 
-      await this.appData.set(
-        UnsavedDataManager.UNSAVED_LYRICS_KEY,
-        JSON.stringify(this.fileHistory.serialize())
+      setTimeout(
+        this.onAutomaticFileSaveTriggered,
+        UnsavedDataManager.AUTOMATIC_FILE_SAVE_MS
       );
-      setTimeout(this.saveFile, 30000);
     };
 
     this.rendererDelegate.on('editor-text', onEditorText);
     this.rendererDelegate.send('request-editor-text');
   };
+
+  private performFileSave = async (text: string) => {
+    this.fileHistory.add(text);
+    await this.appData.set(
+      UnsavedDataManager.UNSAVED_LYRICS_KEY,
+      JSON.stringify(await this.fileHistory.serialize())
+    );
+    this.lastFileSaveMs = this.times.elapsed();
+  };
+
+  private canPerformFileSave = () =>
+    this.hasPromptedUnsavedDataRecovery ||
+    this.lastFileSaveMs == null ||
+    this.times.elapsed() - this.lastFileSaveMs >=
+      UnsavedDataManager.MINIMUM_FILE_SAVE_ELAPSED_TIME_MS;
 
   private parseOrNull = <T>(text: string): T | null => {
     try {

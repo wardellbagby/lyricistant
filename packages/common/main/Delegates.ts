@@ -92,6 +92,14 @@ export interface RendererToPlatformListener {
    * @param history The history to revert to.
    */
   'apply-file-history': (history: ParsedHistoryData) => void;
+  /**
+   * Fired when the editor has been idle for a period of time. Idle here means
+   * that nothing has been typed or deleted; the user might still be interacting
+   * with the rest of the app.
+   *
+   * @param text The current editor text content.
+   */
+  'editor-idle': (text: string) => void;
 }
 
 /** Information that the platform wants to send to the renderer. */

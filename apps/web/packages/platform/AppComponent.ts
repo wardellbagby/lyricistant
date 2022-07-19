@@ -4,6 +4,7 @@ import {
 } from '@lyricistant/common-platform/AppComponents';
 import { DOMBuffers } from '@lyricistant/core-dom-platform/platform/DOMBuffers';
 import { DOMSystemThemeProvider } from '@lyricistant/core-dom-platform/platform/DOMSystemThemeProvider';
+import { DOMTimes } from '@lyricistant/core-dom-platform/platform/DOMTimes';
 import {
   formatTitle,
   provideUiConfig,
@@ -28,6 +29,7 @@ const createComponent = (): DIContainer => {
   component.registerSingleton<WebFiles>();
   component.registerSingleton<DOMSystemThemeProvider>();
   component.registerSingleton<DOMBuffers>();
+  component.registerSingleton<DOMTimes>();
 
   registerCommonPlatform(
     {
@@ -41,6 +43,7 @@ const createComponent = (): DIContainer => {
       systemThemeProvider: () => component.get<DOMSystemThemeProvider>(),
       recentFiles: () => component.get<WebRecentFiles>(),
       uiConfigProvider: () => provideUiConfig,
+      times: () => component.get<DOMTimes>(),
     },
     component
   );

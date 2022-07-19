@@ -20,6 +20,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { useHistory } from 'react-router-dom';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
 
+const MINIMUM_IDLE_TIME = 15_000;
 /**
  * The Lyricistant app.
  *
@@ -105,6 +106,13 @@ export function App() {
   if (error) {
     return <AppError error={error} editorText={editorTextData.text} />;
   }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      platformDelegate.send('editor-idle', editorTextData.text);
+    }, MINIMUM_IDLE_TIME);
+    return () => clearTimeout(timer);
+  }, [editorTextData]);
 
   return (
     <ErrorBoundary

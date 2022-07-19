@@ -65,6 +65,7 @@ export class RendererListeners {
       for (const args of this.delayedInvokes.get(key)) {
         this.invoke(key, ...(args as any));
       }
+      jest.runAllTimers();
       this.delayedInvokes.delete(key);
     }
   };
