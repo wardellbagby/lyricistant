@@ -29,6 +29,7 @@ import {
   LinearProgressProps,
   MenuItem,
   Select,
+  Theme,
   Typography,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -50,7 +51,7 @@ const useAlertDialogStyles = makeStyles({
   },
 });
 
-const useFullscreenDialogStyles = makeStyles((theme) => ({
+const useFullscreenDialogStyles = makeStyles((theme: Theme) => ({
   dialog: {
     overflow: 'none',
   },

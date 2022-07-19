@@ -60,7 +60,6 @@ export const getBaseJestConfig = (options: {
   const baseConfig: Config.InitialOptions = {
     displayName: `${getLabel(options.type)} - ${options.name}`,
     verbose: true,
-    detectOpenHandles: true,
     moduleNameMapper: {
       '^.+\\.(png|css|scss)$': 'identity-obj-proxy',
       '^.+\\.svg$': path.resolve(__dirname, 'jest-svg-mock.js'),
@@ -84,6 +83,10 @@ export const getBaseJestConfig = (options: {
   return {
     ...baseConfig,
     testEnvironment: getJestEnv(options.type),
+    fakeTimers: {
+      advanceTimers: true,
+      enableGlobally: true,
+    },
     transform: {
       ...tsjPreset.transform,
     },
