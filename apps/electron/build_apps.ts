@@ -9,7 +9,7 @@ import {
 } from 'electron-builder';
 
 const wantedArtifacts = [
-  /lyricistant-.+\.(AppImage|dmg|deb|exe|blockmap|zip)/,
+  /lyricistant-.+\.(AppImage|dmg|exe|blockmap|zip)/,
   /latest.*\.yml/,
 ];
 
@@ -79,7 +79,7 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
         target: [
           {
             target: 'AppImage',
-            arch: ['x64', 'ia32', 'armv7l', 'arm64'],
+            arch: ['x64', 'arm64'],
           },
         ],
       },
@@ -87,7 +87,7 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
         target: [
           {
             target: 'nsis',
-            arch: ['x64', 'ia32'],
+            arch: ['x64'],
           },
         ],
       },
