@@ -42,7 +42,7 @@ describe('App component', () => {
 
     await platformDelegate.invoke('app-title-changed', 'All I Need');
 
-    expect(document.title).toEqual('All I Need');
+    expect(document.title).toBe('All I Need');
   });
 
   it('shows an error when files fail to open', async () => {
@@ -182,11 +182,15 @@ describe('App component', () => {
 
     await userEvent.click(screen.getByText('Test Rhyme 1'));
 
-    expect(await screen.findByText('and the oscar goes to Test Rhyme 1...'));
+    expect(
+      await screen.findByText('and the oscar goes to Test Rhyme 1...')
+    ).toBeTruthy();
 
     await userEvent.click(screen.getByText('Test Rhyme 2'));
 
-    expect(await screen.findByText('and the oscar goes to Test Rhyme 2...'));
+    expect(
+      await screen.findByText('and the oscar goes to Test Rhyme 2...')
+    ).toBeTruthy();
   });
 
   const App = () => (

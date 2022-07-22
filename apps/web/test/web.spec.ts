@@ -124,7 +124,7 @@ describe.each(args)(
     it('has a title of Lyricistant - Untitled', async () => {
       await waitForExpect(
         async () =>
-          await expect(page.title()).resolves.toEqual('Lyricistant - Untitled')
+          await expect(page.title()).resolves.toBe('Lyricistant - Untitled')
       );
     });
 
@@ -144,9 +144,7 @@ describe.each(args)(
       const editorTextArea = await page.$('.cm-content');
       await editorTextArea.type('Hello World!');
 
-      await expect(editorTextArea.textContent()).resolves.toEqual(
-        'Hello World!'
-      );
+      await expect(editorTextArea.textContent()).resolves.toBe('Hello World!');
     });
 
     it('shows downloads', async () => {

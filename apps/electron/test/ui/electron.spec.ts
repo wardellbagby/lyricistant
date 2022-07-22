@@ -67,9 +67,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
   });
 
   it('has a title of untitled', async () => {
-    await waitForExpect(() =>
-      expect(window.title()).resolves.toEqual('Untitled')
-    );
+    await waitForExpect(() => expect(window.title()).resolves.toBe('Untitled'));
   });
 
   it('shows the basic components', async () => {
@@ -88,7 +86,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     const editorTextArea = await window.$('.cm-content');
     await editorTextArea.type('Hello World!');
 
-    await expect(editorTextArea.textContent()).resolves.toEqual('Hello World!');
+    await expect(editorTextArea.textContent()).resolves.toBe('Hello World!');
   });
 
   addCommonUiTests(async () => ({

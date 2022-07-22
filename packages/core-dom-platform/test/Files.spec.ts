@@ -10,15 +10,7 @@ import {
 import { DOMFiles } from '@lyricistant/core-dom-platform/platform/DOMFiles';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { FileWithHandle } from 'browser-fs-access';
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import chaiSubset from 'chai-subset';
-import sinonChai from 'sinon-chai';
-import sinon, { stubInterface } from 'ts-sinon';
-
-use(sinonChai);
-use(chaiAsPromised);
-use(chaiSubset);
+import { mock, MockProxy } from 'jest-mock-extended';
 
 type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
@@ -27,12 +19,12 @@ type DeepPartial<T> = {
 const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
 
 describe('Files', () => {
-  const fs = stubInterface<FileSystem>();
+  let fs: MockProxy<FileSystem>;
   let files: Files;
 
   beforeEach(() => {
-    sinon.reset();
-    files = new DOMFiles(fs, stubInterface());
+    fs = mock<FileSystem>();
+    files = new DOMFiles(fs, mock());
   });
 
   it('shows a dialog to choose a file', async () => {
@@ -42,14 +34,16 @@ describe('Files', () => {
       },
       data: encode('Here are lyrics!'),
     };
-    fs.openFile.resolves(
-      new File(['Here are lyrics!'], 'mycoollyrics.txt', { type: 'text/plain' })
+    fs.openFile.mockResolvedValue(
+      new File(['Here are lyrics!'], 'mycoollyrics.txt', {
+        type: 'text/plain',
+      })
     );
 
     const actual = await files.openFile();
 
-    expect(actual).to.containSubset(expected);
-    expect(fs.openFile).to.have.been.calledWith({
+    expect(actual).toMatchObject(expected);
+    expect(fs.openFile).toHaveBeenCalledWith({
       mimeTypes: ['text/plain', LYRICS_MIME_TYPE],
       extensions: ['.txt', LYRICS_EXTENSION],
       multiple: false,
@@ -69,13 +63,19 @@ describe('Files', () => {
       type: 'text/plain',
     });
 
-    expect(actual).to.deep.equal(expected);
-    expect(fs.openFile).to.have.not.been.called;
+    expect(actual).toEqual(expected);
+    expect(fs.openFile).not.toHaveBeenCalled();
   });
 
   it('shows a file picker when saving a file with no file handle', async () => {
+    const data = encode('oh wow!');
     const expected: Partial<FileMetadata> = { name: 'Lyrics.lyrics' };
-    fs.saveFile.resolves({
+    const expectedBuffer = new Uint8Array(
+      await new Blob([data], {
+        type: LYRICS_MIME_TYPE,
+      }).arrayBuffer()
+    );
+    fs.saveFile.mockResolvedValue({
       name: 'Lyrics.lyrics',
       kind: 'file',
       isSameEntry: undefined,
@@ -83,17 +83,19 @@ describe('Files', () => {
       requestPermission: undefined,
     });
 
-    const actual = await files.saveFile(encode('oh wow!'), 'MyLyrics.lyrics');
+    const actual = await files.saveFile(data, 'MyLyrics.lyrics');
+    expect(actual).toMatchObject(expected);
+    expect(fs.saveFile).toHaveBeenCalled();
 
-    expect(actual).to.deep.include(expected);
-    expect(fs.saveFile).to.have.been.calledWith(
-      new Blob([encode('oh wow!')], {
-        type: LYRICS_MIME_TYPE,
-      }),
-      {
-        fileName: 'MyLyrics.lyrics',
-      }
-    );
+    const actualBlob = fs.saveFile.mock.lastCall[0];
+    const actualOptions = fs.saveFile.mock.lastCall[1];
+
+    expect(
+      new Uint8Array(new Uint8Array(await actualBlob.arrayBuffer()))
+    ).toEqual(expectedBuffer);
+    expect(actualOptions).toEqual({
+      fileName: 'MyLyrics.lyrics',
+    });
   });
 
   it('saves the file when saving a file with a file handle', async () => {
@@ -110,7 +112,7 @@ describe('Files', () => {
       type: LYRICS_MIME_TYPE,
     });
     file.handle = handle;
-    fs.openFile.resolves(file);
+    fs.openFile.mockResolvedValue(file);
 
     const openFileResult: PlatformFile = await files.openFile();
 
@@ -118,7 +120,7 @@ describe('Files', () => {
       name: 'mycoollyrics.lyrics',
       path: openFileResult.metadata.path,
     };
-    fs.saveFile.resolves({
+    fs.saveFile.mockResolvedValue({
       name: 'mycoollyrics.lyrics',
       kind: 'file',
       isSameEntry: undefined,
@@ -132,8 +134,8 @@ describe('Files', () => {
       openFileResult.metadata.path
     );
 
-    expect(actual).to.deep.equal(expected);
-    expect(fs.saveFile).to.have.been.calledWith(
+    expect(actual).toEqual(expected);
+    expect(fs.saveFile).toHaveBeenCalledWith(
       new Blob([encode('oh wow!')], {
         type: LYRICS_MIME_TYPE,
       }),

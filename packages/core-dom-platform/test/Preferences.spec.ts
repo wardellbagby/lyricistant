@@ -7,19 +7,11 @@ import {
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { DOMPreferences } from '@lyricistant/core-dom-platform/platform/DOMPreferences';
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import sinonChai from 'sinon-chai';
-import sinon from 'ts-sinon';
-
-use(sinonChai);
-use(chaiAsPromised);
 
 describe('Preferences', () => {
   let preferences: Preferences;
 
   beforeEach(() => {
-    sinon.reset();
     preferences = new DOMPreferences();
   });
 
@@ -36,7 +28,7 @@ describe('Preferences', () => {
 
     const actual = preferences.getPreferences();
 
-    expect(expected).to.deep.equal(actual);
+    expect(expected).toEqual(actual);
   });
 
   it('updates work', () => {
@@ -60,6 +52,6 @@ describe('Preferences', () => {
 
     const actual = preferences.getPreferences();
 
-    expect(expected).to.deep.equal(actual);
+    expect(expected).toEqual(actual);
   });
 });

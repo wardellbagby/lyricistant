@@ -8,6 +8,7 @@ module.exports = {
     '!/.github',
     '**/dist/**/*',
     '**/build/**/*',
+    '**/node_modules/**/*',
     'apps/mobile/android/**/*',
     'apps/mobile/ios/**/*',
   ],
@@ -30,6 +31,34 @@ module.exports = {
     'prettier',
   ],
   overrides: [
+    {
+      files: ['**/test/**/*.spec.{ts,tsx}'],
+      plugins: ['jest'],
+      extends: ['plugin:jest/recommended', 'plugin:jest/style'],
+      rules: {
+        'jest/no-disabled-tests': 'error',
+        'jest/no-focused-tests': 'error',
+        'jest/no-identical-title': 'error',
+        'jest/prefer-to-have-length': 'off',
+        'jest/valid-expect': 'error',
+        'jest/no-standalone-expect': [
+          'error',
+          {
+            additionalTestBlockFunctions: [
+              'beforeEach',
+              'beforeAll',
+              'afterEach',
+              'afterAll',
+            ],
+          },
+        ],
+      },
+    },
+    {
+      // These tests still use Sinon and Chai.
+      files: ['apps/electron/test/unit/**', 'packages/common-platform/test/**'],
+      rules: { 'jest/valid-expect': 'off', 'jest/expect-expect': 'off' },
+    },
     {
       files: ['*.js', 'scripts/**/*.ts', 'tooling/**/*.ts', '.github/**/*.ts'],
       rules: {

@@ -111,14 +111,6 @@ describe('Create Electron App Menu', () => {
     expect(actual[0].submenu).to.containSubset([{ label: 'Quit' }]);
   });
 
-  it('does show about in File when on Windows', () => {
-    const actual = createAppMenu('MyApp', 'linux', handlers);
-
-    expect(actual[0].submenu).to.containSubset([
-      { label: 'About Lyricistant...' },
-    ]);
-  });
-
   it('includes all of the major sections on Mac', () => {
     const expected = [
       { label: 'MyApp' },
