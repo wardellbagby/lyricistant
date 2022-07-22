@@ -1,7 +1,8 @@
+import { ExtensionData } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import {
-  ExtensionData,
   FileData,
   LYRICS_EXTENSION,
+  SerializedExtensions,
 } from '@lyricistant/common-platform/files/Files';
 import { FileHandler } from '@lyricistant/common-platform/files/handlers/FileHandler';
 import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
@@ -91,13 +92,13 @@ const loadV1 = async (archive: LyricsArchive): Promise<FileData> => {
     lyrics: (await archive.file(LYRICS_V1_FILE).async('string')) ?? '',
   };
 
-  const extensions: ExtensionData = {};
+  const extensions: SerializedExtensions = {};
   const extensionDataFiles = archive.folder('extensions').filter(() => true);
   for (const file of extensionDataFiles) {
     const name = file.name
       .replace(`${EXTENSIONS_FOLDER}/`, '')
       .replace('.dat', '');
-    extensions[name] = await file.async('string');
+    extensions[name] = await file.async('arraybuffer');
   }
 
   return {

@@ -1,8 +1,16 @@
 import {
+  Change,
   FileDataExtension,
+  HistoryData,
   onVersion,
   VersionedExtensionData,
 } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
+import {
+  isHistoryData,
+  isHistoryDataV1,
+} from '@lyricistant/common-platform/files/extensions/FileDataExtension.guard';
+import { Clock } from '@lyricistant/common-platform/time/Clock';
+import { MED_WITH_SECONDS } from '@lyricistant/common-platform/time/Formats';
 import {
   Chunk,
   ChunkLine,
@@ -10,34 +18,21 @@ import {
 } from '@lyricistant/common/history/ParsedHistoryData';
 import { Logger } from '@lyricistant/common/Logger';
 import type { patch_obj } from 'diff-match-patch';
-import { DateTime } from 'luxon';
 
 const CURRENT_VERSION = 2;
 
 /** @deprecated Used for the V1 version of File History. Use {@link HistoryData} instead. */
-interface HistoryDataV1 {
+export interface HistoryDataV1 {
   time: string;
   patches: patch_obj[];
 }
-
-interface HistoryData {
-  time: string;
-  changes: Change[];
-}
-
-interface Change {
-  type: 'added' | 'removed';
-  lineNumber: number;
-  value?: string;
-}
-
 export class FileHistory implements FileDataExtension<'history'> {
   public key: 'history' = 'history';
 
   private delta: HistoryData[] = [];
   private lastKnownLyrics = '';
 
-  public constructor(private logger: Logger) {}
+  public constructor(private clock: Clock, private logger: Logger) {}
 
   public onBeforeSerialization = (lyrics: string) => {
     this.add(lyrics);
@@ -45,16 +40,15 @@ export class FileHistory implements FileDataExtension<'history'> {
 
   public serialize = async () => ({
     version: CURRENT_VERSION,
-    data: JSON.stringify(this.delta),
+    data: this.delta,
   });
 
-  public deserialize = async (
-    extensionData: VersionedExtensionData<string>
-  ) => {
+  public deserialize = async (extensionData: any) => {
     this.lastKnownLyrics = '';
-    this.delta = await onVersion<HistoryData[]>(extensionData, this.logger, {
-      1: async () => this.migrateV1ToV2(await this.loadV1(extensionData.data)),
-      2: () => this.loadV2(extensionData.data),
+
+    this.delta = await onVersion(extensionData, this.logger, {
+      1: async (data) => this.migrateV1ToV2(await this.loadV1(data)),
+      2: (data) => this.loadV2(data),
       invalid: () => [],
     });
     this.lastKnownLyrics = this.getParsedHistory();
@@ -97,7 +91,7 @@ export class FileHistory implements FileDataExtension<'history'> {
     const changes = this.createChanges(this.lastKnownLyrics, lyrics);
     this.delta.push({
       changes,
-      time: DateTime.local().toISO(),
+      time: this.clock.now().formatIso(),
     });
     this.lastKnownLyrics = lyrics;
   };
@@ -120,9 +114,7 @@ export class FileHistory implements FileDataExtension<'history'> {
         last = text;
 
         return {
-          time: DateTime.fromISO(data.time).toLocaleString(
-            DateTime.DATETIME_MED_WITH_SECONDS
-          ),
+          time: this.clock.fromIso(data.time).formatLocal(MED_WITH_SECONDS),
           text,
           chunks,
         };
@@ -141,19 +133,34 @@ export class FileHistory implements FileDataExtension<'history'> {
     return this.lastKnownLyrics;
   };
 
-  private loadV1 = async (data: string): Promise<HistoryDataV1[]> => {
+  private loadV1 = async (data: unknown): Promise<HistoryDataV1[]> => {
+    if (typeof data !== 'string') {
+      this.logger.warn('Invalid history data', data);
+      return [];
+    }
+
     if (data.trim().length === 0) {
       return [];
-    } else {
-      return JSON.parse(data);
     }
+
+    // V1 included an extra unnecessary JSON stringify.
+    const historyDataV1 = JSON.parse(data);
+    if (
+      Array.isArray(historyDataV1) &&
+      historyDataV1.every((datum) => !isHistoryDataV1(datum))
+    ) {
+      this.logger.warn('Invalid history data', historyDataV1);
+      return [];
+    }
+    return historyDataV1;
   };
 
-  private loadV2 = async (data: string): Promise<HistoryData[]> => {
-    if (data.trim().length === 0) {
+  private loadV2 = async (data: unknown): Promise<HistoryData[]> => {
+    if (!Array.isArray(data) || !data.every((datum) => isHistoryData(datum))) {
       return [];
     }
-    return JSON.parse(data);
+
+    return data;
   };
 
   private migrateV1ToV2 = async (

@@ -1,4 +1,5 @@
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import { FakeClock } from '@lyricistant/common-platform/time/Clock';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon, { stubInterface } from 'ts-sinon';
@@ -11,7 +12,7 @@ describe('File History', () => {
   beforeEach(() => {
     sinon.reset();
 
-    fileHistory = new FileHistory(stubInterface());
+    fileHistory = new FileHistory(new FakeClock(), stubInterface());
   });
 
   it('always keeps the history in sync with changes', async () => {

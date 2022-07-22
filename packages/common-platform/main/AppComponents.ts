@@ -18,12 +18,18 @@ import { Managers } from '@lyricistant/common-platform/Managers';
 import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
+import {
+  Clock,
+  FakeClock,
+  RealClock,
+} from '@lyricistant/common-platform/time/Clock';
 import { Times } from '@lyricistant/common-platform/time/Times';
 import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
 import {
   TitleFormatter,
   UiConfigProvider,
 } from '@lyricistant/common-platform/ui/UiConfigProviders';
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
 import { DIContainer } from '@wessberg/di';
@@ -103,6 +109,12 @@ export const registerCommonPlatform = (
   component.registerSingleton<LogManager>();
   component.registerSingleton<FileHistoryManager>();
   component.registerSingleton<FirstLaunchManager>();
+
+  if (isUnderTest) {
+    component.registerSingleton<Clock, FakeClock>();
+  } else {
+    component.registerSingleton<Clock, RealClock>();
+  }
 
   component.registerSingleton<LyricistantFileHandler>();
   component.registerSingleton<TextFileHandler>();

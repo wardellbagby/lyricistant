@@ -1,6 +1,3 @@
-export const latestReleaseUrl =
-  'https://github.com/wardellbagby/lyricistant/releases/latest/download/';
-
 export interface Release {
   platform: 'Mac' | 'Windows' | 'Linux' | 'Android' | 'iOS';
   asset?: string;

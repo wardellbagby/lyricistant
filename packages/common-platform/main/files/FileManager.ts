@@ -1,5 +1,9 @@
+import { Buffers } from '@lyricistant/common-platform/files/Buffers';
 import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
-import { ExtensionData, Files } from '@lyricistant/common-platform/files/Files';
+import {
+  Files,
+  SerializedExtensions,
+} from '@lyricistant/common-platform/files/Files';
 import {
   FileHandler,
   FileHandlers,
@@ -48,6 +52,7 @@ export class FileManager implements Manager {
   public constructor(
     private rendererDelegate: RendererDelegate,
     private files: Files,
+    private buffers: Buffers,
     private recentFiles: RecentFiles,
     private fileHandlers: FileHandlers,
     private fileDataExtensions: FileDataExtensions,
@@ -178,13 +183,12 @@ export class FileManager implements Manager {
       this.fileDataExtensions.forEach((extension) =>
         extension.onBeforeSerialization?.(lyrics)
       );
-      const extensions = this.fileDataExtensions.reduce(
-        (data: Partial<ExtensionData>, extension) => {
-          data[extension.key] = JSON.stringify(extension.serialize());
-          return data;
-        },
-        {}
-      );
+      const extensions: SerializedExtensions = {};
+      for (const extension of this.fileDataExtensions) {
+        extensions[extension.key] = this.buffers.stringToBuffer(
+          JSON.stringify(await extension.serialize())
+        );
+      }
 
       // We check based off the path instead of the current file handler being null
       // for the case where we're doing a "Save As", so the current file handler is
@@ -244,14 +248,16 @@ export class FileManager implements Manager {
       handler,
     };
 
-    this.fileDataExtensions.forEach((extension) => {
-      const data = fileData.extensions?.[extension.key];
+    for (const extension of this.fileDataExtensions) {
+      const data = this.buffers.bufferToString(
+        fileData.extensions?.[extension.key]
+      );
       if (data?.length > 0) {
-        extension.deserialize(JSON.parse(fileData.extensions?.[extension.key]));
+        await extension.deserialize(JSON.parse(data));
       } else {
-        extension.deserialize(null);
+        extension.reset();
       }
-    });
+    }
     this.rendererDelegate.send(
       'file-opened',
       undefined,

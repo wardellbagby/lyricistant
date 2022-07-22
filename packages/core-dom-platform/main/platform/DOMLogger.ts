@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { bufferCount, map } from 'rxjs/operators';
 import { sprintf } from 'sprintf-js';
 
+// TODO Stop storing log messages in global state like this and migrate to Clock.
 export class DOMLogger implements PlatformLogger {
   public debug(message: string, ...args: any[]): void {
     console.debug(message, ...args);

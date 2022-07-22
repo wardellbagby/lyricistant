@@ -1,4 +1,5 @@
 import { TextDecoder, TextEncoder } from 'util';
+import { Buffers } from '@lyricistant/common-platform/files/Buffers';
 import { FileDataExtension } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { Files } from '@lyricistant/common-platform/files/Files';
@@ -33,9 +34,9 @@ describe('File Manager', () => {
   let lyricsFileHandler: StubbedInstance<FileHandler>;
   let textFileHandler: StubbedInstance<FileHandler>;
   let preferences: StubbedInstance<Preferences>;
+  let buffers: StubbedInstance<Buffers>;
+  let mockExtension: StubbedInstance<Writable<FileDataExtension>>;
   const rendererDelegate = new MockRendererDelegate();
-  const mockExtension: StubbedInstance<Writable<FileDataExtension>> =
-    stubInterface<FileDataExtension>();
 
   beforeEach(() => {
     sinon.reset();
@@ -50,16 +51,20 @@ describe('File Manager', () => {
       }),
       saveFile: Promise.resolve({ path: '/path/test2' }),
     });
+
     recentFiles = stubInterface<RecentFiles>({
       setRecentFiles: undefined,
       getRecentFiles: ['1', '2', '3'],
     });
+
     lyricsFileHandler = stubInterface<FileHandler>({
       canHandle: true,
     });
+
     textFileHandler = stubInterface<LyricistantFileHandler>({
       canHandle: true,
     });
+
     preferences = stubInterface();
     preferences.getPreferences.resolves({
       defaultFileType: DefaultFileType.Lyricistant_Lyrics,
@@ -69,19 +74,27 @@ describe('File Manager', () => {
       rhymeSource: RhymeSource.Offline,
     });
 
+    buffers = stubInterface();
+    buffers.stringToBuffer.callsFake(encode);
+    buffers.bufferToString.callsFake(decode);
+
     lyricsFileHandler.extension = 'lyrics';
     lyricsFileHandler.load.callsFake(async (file) => ({
       lyrics: decode(file.data),
     }));
     lyricsFileHandler.create.callsFake(async (file) => encode(file.lyrics));
+
     textFileHandler.extension = 'txt';
     textFileHandler.create.callsFake(async (file) => encode(file.lyrics));
+
+    mockExtension = stubInterface<FileDataExtension>();
     mockExtension.key = 'hello';
     mockExtension.serialize.resolves({ version: 1, data: 'world' });
 
     manager = new FileManager(
       rendererDelegate,
       files,
+      buffers,
       recentFiles,
       [lyricsFileHandler, textFileHandler],
       [mockExtension],
@@ -224,6 +237,7 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('is-file-modified', true);
 
     expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
+    expect(mockExtension.reset).to.have.been.called;
   });
 
   it("does nothing when prompt dialog doesn't say yes was chosen", async () => {
@@ -552,7 +566,7 @@ describe('File Manager', () => {
     expect(lyricsFileHandler.create).to.have.been.calledWith({
       lyrics: 'Cherry Red Chariot',
       extensions: {
-        hello: JSON.stringify(mockExtension.serialize()),
+        hello: encode(JSON.stringify(await mockExtension.serialize())),
       },
     });
   });
@@ -582,7 +596,7 @@ describe('File Manager', () => {
     expect(lyricsFileHandler.create).to.have.been.calledWith({
       lyrics: 'Hello',
       extensions: {
-        hello: JSON.stringify(mockExtension.serialize()),
+        hello: encode(JSON.stringify(await mockExtension.serialize())),
       },
     });
   });
@@ -610,7 +624,7 @@ describe('File Manager', () => {
     expect(lyricsFileHandler.create).to.have.been.calledWith({
       lyrics: 'Hiiipower',
       extensions: {
-        hello: JSON.stringify(mockExtension.serialize()),
+        hello: encode(JSON.stringify(await mockExtension.serialize())),
       },
     });
   });
@@ -637,7 +651,7 @@ describe('File Manager', () => {
     expect(textFileHandler.create).to.have.been.calledWith({
       lyrics: 'Hiiipower',
       extensions: {
-        hello: JSON.stringify(mockExtension.serialize()),
+        hello: encode(JSON.stringify(await mockExtension.serialize())),
       },
     });
   });

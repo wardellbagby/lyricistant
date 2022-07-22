@@ -1,12 +1,47 @@
-import { ExtensionData } from '@lyricistant/common-platform/files/Files';
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+import { isVersionedExtensionData } from '@lyricistant/common-platform/files/extensions/FileDataExtension.guard';
 import { Logger } from '@lyricistant/common/Logger';
 
+type Serializable =
+  | boolean
+  | number
+  | string
+  | null
+  | Serializable[]
+  | { [key: string]: Serializable | undefined };
+
+export type HistoryData = {
+  time: string;
+  changes: Change[];
+};
+
+export type Change = {
+  type: 'added' | 'removed';
+  lineNumber: number;
+  value?: string;
+};
+
+/**
+ * Extensions are defined as optional data for secondary functionality in
+ * Lyricistant, such as the history of changes within the represented file (like
+ * the File History feature).
+ *
+ * When adding a new extension, create a new key here, create a new
+ * implementation of {@link FileDataExtension} for your new key, and provide your
+ * new implementation as a {@link FileDataExtensions} in {@link registerCommonPlatform}.
+ */
+export interface ExtensionData extends Record<string, Serializable> {
+  history?: HistoryData[];
+}
 export type FileDataExtensionKey = keyof ExtensionData;
 
 /** Represents some serialized data for a file extension that has an associated version. */
-export interface VersionedExtensionData<T> {
-  version?: number;
-  data?: T;
+export interface VersionedExtensionData<
+  KeyT extends FileDataExtensionKey,
+  DataT = ExtensionData[KeyT]
+> {
+  version: number;
+  data?: DataT;
 }
 
 /**
@@ -36,27 +71,34 @@ export interface VersionedExtensionData<T> {
  * @param handlers An object mapping versions to handler functions.
  */
 export const onVersion = async <R = void>(
-  extensionData: VersionedExtensionData<string> | null,
+  extensionData: any,
   logger: Logger,
   handlers: {
-    [version: number]: () => R | Promise<R>;
+    [version: number]: (data: unknown) => R | Promise<R>;
     invalid: () => R | Promise<R>;
   }
 ): Promise<R> => {
+  if (!isVersionedExtensionData(extensionData)) {
+    logger.warn(
+      "Tried to load extension data that didn't conform to the VersionedExtensionData type.",
+      extensionData
+    );
+    return handlers.invalid();
+  }
   const version = extensionData?.version;
 
   if (version && version in handlers) {
     try {
-      return handlers[version]();
+      return handlers[version](extensionData.data);
     } catch (e) {
-      logger.warn(
-        'Exception when deserializing extension data',
-        extensionData,
-        e
-      );
+      logger.warn('Exception when handling extension data', extensionData, e);
       return handlers.invalid();
     }
   } else {
+    logger.warn(
+      'No handler registered to handle extension data',
+      extensionData
+    );
     return handlers.invalid();
   }
 };
@@ -66,11 +108,38 @@ export interface FileDataExtension<
   KeyT extends FileDataExtensionKey = FileDataExtensionKey
 > {
   readonly key: KeyT;
+  /**
+   * Calls right before {@link serialize} will be called to give the extension a
+   * change to prepare itself.
+   *
+   * @param lyrics The current lyrics the user has edited.
+   */
   onBeforeSerialization?: (lyrics: string) => void;
-  serialize: () => Promise<VersionedExtensionData<ExtensionData[KeyT]>>;
-  deserialize: (
-    data: VersionedExtensionData<ExtensionData[KeyT]>
-  ) => Promise<void>;
+
+  /**
+   * Serialize this extension's state to in a JSON-compatible format such that
+   * when {@link deserialize} is called with the data returned from this
+   * function, this extension will have the same state as before.
+   */
+  serialize: () => Promise<VersionedExtensionData<KeyT>>;
+
+  /**
+   * Deserialize and restore the state of this extension from the provided {@link data}
+   *
+   * It is possible that this data isn't the same as what was previously
+   * returned from {@link serialize} (in the case where a user has manually
+   * modified the data on their platform), so take care to validate that it
+   * matches your expectation.
+   *
+   * This is allowed to throw an exception in exceptional cases, but prefer to
+   * instead restore to some empty state, as throwing will cause the file to
+   * completely to load.
+   *
+   * @param data The result of a previous {@link serialize} call.
+   */
+  deserialize: (data: unknown) => Promise<void>;
+
+  /** Reset this extension back to its default state. */
   reset: () => void;
 }
 

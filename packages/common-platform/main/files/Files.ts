@@ -1,26 +1,17 @@
+import { ExtensionData } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import {
   FileMetadata,
   PlatformFile,
 } from '@lyricistant/common/files/PlatformFile';
 
-/**
- * Extensions are defined as optional data for secondary functionality in
- * Lyricistant, such as the history of changes within the represented file (like
- * the File History feature).
- *
- * When adding a new extension, create a new key here, create a new
- * implementation of {@link FileDataExtension} for your new key, and provide your
- * new implementation as a {@link FileDataExtensions} in {@link registerCommonPlatform}.
- */
-export interface ExtensionData extends Record<string, string> {
-  history?: string;
-}
-
+export type SerializedExtensions = {
+  [extensionKey in keyof ExtensionData]?: ArrayBuffer;
+};
 export interface FileData {
   /** The data contained with this file. * */
   lyrics: string;
   /** Potential extensions that exist on this file data. */
-  extensions?: Partial<ExtensionData>;
+  extensions?: SerializedExtensions;
 }
 
 /** The mime type for the Lyrics file format. */

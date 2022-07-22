@@ -10,6 +10,7 @@ interface DroppableFile {
 }
 const resourcesDir = path.resolve(__dirname, 'resources');
 
+/** A plain text file with the text "Hello World!" */
 export const HELLO_WORLD_PLAIN_TEXT_FILE: DroppableFile = {
   metadata: {
     path: 'helloworld.txt',
@@ -17,12 +18,47 @@ export const HELLO_WORLD_PLAIN_TEXT_FILE: DroppableFile = {
   data: 'Hello World!',
 };
 
+/** A Lyrics file with the text "Hello World!" */
 export const HELLO_WORLD_LYRICS_V1_FILE: DroppableFile = {
   metadata: {
     path: 'helloworld.lyrics',
   },
-  data: readFileSync(path.resolve(resourcesDir, 'helloworld.lyrics')).buffer,
+  data: readFileSync(path.resolve(resourcesDir, 'helloworld.lyrics')),
 };
+
+/**
+ * A Lyrics file that uses the legacy V1 File History format.
+ *
+ * Contains at least two file history, with the second most recent change being
+ * a change that changes the first line to match
+ * {@link BURY_ME_LOOSE_PRE_LYRICS}, but otherwise will match {@link BURY_ME_LOOSE_LYRICS}
+ */
+export const BURY_ME_LOOSE_V1_FILE_HISTORY: DroppableFile = {
+  metadata: {
+    path: 'burymeloose-v1filehistory.lyrics',
+  },
+  data: readFileSync(
+    path.resolve(resourcesDir, 'burymeloose-v1filehistory.lyrics')
+  ),
+};
+/**
+ * A Lyrics file that uses the V2 File History format.
+ *
+ * Contains at least two file history, with the second most recent change being
+ * a change that changes the first line to match
+ * {@link BURY_ME_LOOSE_PRE_LYRICS}, but otherwise will match {@link BURY_ME_LOOSE_LYRICS}
+ */
+export const BURY_ME_LOOSE_V2_FILE_HISTORY: DroppableFile = {
+  metadata: {
+    path: 'burymeloose-v2filehistory.lyrics',
+  },
+  data: readFileSync(
+    path.resolve(resourcesDir, 'burymeloose-v2filehistory.lyrics')
+  ),
+};
+
+export const BURY_ME_LOOSE_LYRICS = "Tell 'em bury me loose";
+export const BURY_ME_LOOSE_PRE_LYRICS = 'Bury me loose';
 
 export const getEditor = async (screen: PlaywrightScreen) =>
   await screen.findByRole('textbox');
@@ -84,4 +120,5 @@ export const dropFile = async (
   );
 
   await editor.dispatchEvent('drop', { dataTransfer });
+  await (await screen.findByText('Opening file')).waitForElementState('hidden');
 };
