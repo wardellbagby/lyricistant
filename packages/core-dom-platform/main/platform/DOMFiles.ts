@@ -12,6 +12,30 @@ import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
 import { FileWithHandle, FileSystemHandle } from 'browser-fs-access';
 
+/**
+ * Runs the specified block but catch and ignore any AbortErrors, which are
+ * generally fired when the user cancels an open or save dialog box.
+ *
+ * @param logger The logger to use to log information.
+ * @param block The block of code to run.
+ */
+export const runIgnoringAbortErrors = async <R>(
+  logger: Logger,
+  block: () => R | Promise<R>
+) => {
+  try {
+    return await block();
+  } catch (e) {
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      logger.verbose(
+        'Swallowing exception since user closed the open file picker',
+        e
+      );
+    } else {
+      throw e;
+    }
+  }
+};
 export class DOMFiles implements Files {
   /*
     An in-memory mapping of generated IDs to FileSystemHandles. We'd prefer for
@@ -29,23 +53,15 @@ export class DOMFiles implements Files {
       return file;
     }
 
-    let result: FileWithHandle;
-    try {
-      result = await this.fs.openFile({
-        mimeTypes: SUPPORTED_MIME_TYPES,
-        extensions: SUPPORTED_EXTENSIONS,
-        multiple: false,
-      });
-    } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') {
-        this.logger.verbose(
-          'Swallowing exception since user closed the open file picker',
-          e
-        );
-      } else {
-        throw e;
-      }
-    }
+    const result: FileWithHandle = await runIgnoringAbortErrors(
+      this.logger,
+      () =>
+        this.fs.openFile({
+          mimeTypes: SUPPORTED_MIME_TYPES,
+          extensions: SUPPORTED_EXTENSIONS,
+          multiple: false,
+        })
+    );
 
     if (result) {
       const handleId = this.generateFileHandleId();
@@ -66,8 +82,8 @@ export class DOMFiles implements Files {
     fileHandleId?: string
   ): Promise<FileMetadata> => {
     const fileHandle = this.fileHandles.get(fileHandleId);
-    try {
-      const result = await this.fs.saveFile(
+    const result = await runIgnoringAbortErrors(this.logger, () =>
+      this.fs.saveFile(
         new Blob([data], {
           type: LYRICS_MIME_TYPE,
         }),
@@ -75,20 +91,11 @@ export class DOMFiles implements Files {
           fileName: defaultFilename,
         },
         fileHandle
-      );
-      const handleId = fileHandleId ?? this.generateFileHandleId();
-      this.fileHandles.set(handleId, result);
-      return { path: handleId, name: result.name ?? defaultFilename };
-    } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') {
-        this.logger.verbose(
-          'Swallowing exception since user closed the save file picker',
-          e
-        );
-      } else {
-        throw e;
-      }
-    }
+      )
+    );
+    const handleId = fileHandleId ?? this.generateFileHandleId();
+    this.fileHandles.set(handleId, result);
+    return { path: handleId, name: result.name ?? defaultFilename };
   };
 
   private generateFileHandleId(): string {

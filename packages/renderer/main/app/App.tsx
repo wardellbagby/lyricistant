@@ -103,16 +103,16 @@ export function App() {
     window.onunhandledrejection = window.onerror;
   }, []);
 
-  if (error) {
-    return <AppError error={error} editorText={editorTextData.text} />;
-  }
-
   useEffect(() => {
     const timer = setTimeout(() => {
       platformDelegate.send('editor-idle', editorTextData.text);
     }, MINIMUM_IDLE_TIME);
     return () => clearTimeout(timer);
   }, [editorTextData]);
+
+  if (error) {
+    return <AppError error={error} editorText={editorTextData.text} />;
+  }
 
   return (
     <ErrorBoundary

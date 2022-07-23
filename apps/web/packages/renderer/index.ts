@@ -1,4 +1,5 @@
 import { SUPPORTED_EXTENSIONS } from '@lyricistant/common-platform/files/Files';
+import { runIgnoringAbortErrors } from '@lyricistant/core-dom-platform/platform/DOMFiles';
 import { BufferFileSystem } from '@web-common/BufferFileSystem';
 import { Storage } from '@web-common/Storage';
 import { fileOpen, fileSave, FileSystemHandle } from 'browser-fs-access';
@@ -34,32 +35,25 @@ declare global {
 const getFileSystem: () => BufferFileSystem = () =>
   proxy({
     saveFile: async (buffer, defaultFileName: string, handle) =>
-      await fileSave(
-        new Blob([buffer]),
-        {
-          fileName: defaultFileName,
-        },
-        handle
+      await runIgnoringAbortErrors(logger, () =>
+        fileSave(
+          new Blob([buffer]),
+          {
+            fileName: defaultFileName,
+          },
+          handle
+        )
       ),
     openFile: async () => {
-      try {
-        const result = await fileOpen({ extensions: SUPPORTED_EXTENSIONS });
-        const data = await result.arrayBuffer();
-        return {
-          path: result.name,
-          data: transfer(data, [data]),
-          handle: result.handle,
-        };
-      } catch (e) {
-        if (e instanceof DOMException && e.name === 'AbortError') {
-          logger.verbose(
-            'Swallowing exception since user closed the open file picker',
-            e
-          );
-        } else {
-          throw e;
-        }
-      }
+      const result = await runIgnoringAbortErrors(logger, () =>
+        fileOpen({ extensions: SUPPORTED_EXTENSIONS })
+      );
+      const data = await result.arrayBuffer();
+      return {
+        path: result.name,
+        data: transfer(data, [data]),
+        handle: result.handle,
+      };
     },
   });
 
