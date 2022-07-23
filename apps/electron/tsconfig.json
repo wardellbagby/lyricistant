@@ -2,7 +2,7 @@
   "include": ["main/**/*"],
   "compilerOptions": {
     "outDir": "build",
-    "lib": ["es6"],
+    "lib": ["es2021"],
     "types": ["node"],
     "composite": true
   },

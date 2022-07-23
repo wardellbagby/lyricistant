@@ -48,7 +48,7 @@ const MenuIcon: FunctionComponent<{
   debounce?: boolean;
   sx?: SxProps;
 }> = ({ onClick, ariaLabel, debounce, sx, children }) => {
-  const [debouncedClick] = useDebouncedCallback(onClick, 200);
+  const debouncedClick = useDebouncedCallback(onClick, 200);
 
   return (
     <Box
