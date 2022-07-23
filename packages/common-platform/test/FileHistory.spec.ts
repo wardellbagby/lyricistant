@@ -15,12 +15,30 @@ describe('File History', () => {
     fileHistory = new FileHistory(new FakeClock(), stubInterface());
   });
 
-  it('always keeps the history in sync with changes', async () => {
+  it('always keeps the history in sync with additions', async () => {
     const max = 10_000;
     const expected = `${max}`;
 
     for (let index = 0; index <= max; index++) {
       fileHistory.add(`${index}`);
+    }
+
+    await fileHistory.deserialize(await fileHistory.serialize());
+
+    expect(fileHistory.getParsedHistory()).to.equal(expected);
+  });
+
+  it('always keeps the history in sync with changes', async () => {
+    const alpha = 'abcdefghijklmnopqrstuvwxyz';
+    const expected = alpha.split('').join('\n');
+
+    for (let index = 0; index < 1_014; index++) {
+      const lyrics = alpha
+        .slice(0, (index % alpha.length) + 1)
+        .split('')
+        .join('\n');
+
+      fileHistory.add(lyrics);
     }
 
     await fileHistory.deserialize(await fileHistory.serialize());

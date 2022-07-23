@@ -26,6 +26,7 @@ export interface HistoryDataV1 {
   patches: patch_obj[];
 }
 export class FileHistory implements FileDataExtension<'history'> {
+  private static readonly MAX_DELTA_SIZE = 100;
   public key: 'history' = 'history';
 
   private delta: HistoryData[] = [];
@@ -72,6 +73,16 @@ export class FileHistory implements FileDataExtension<'history'> {
       changes,
       time: this.clock.now().formatIso(),
     });
+
+    if (this.delta.length > FileHistory.MAX_DELTA_SIZE) {
+      const first = this.applyChanges('', this.delta[0].changes);
+      const second = this.applyChanges(first, this.delta[1].changes);
+      const newChanges = this.createChanges('', second);
+      this.delta.splice(0, 2, {
+        changes: newChanges,
+        time: this.delta[1].time,
+      });
+    }
     this.lastKnownLyrics = lyrics;
   };
 
