@@ -8,9 +8,19 @@ export type HistoryData = {
   changes: Change[];
 };
 
+/**
+ * Represents a change to a line in text.
+ *
+ * Make sure that any changes made here are also reflected in the
+ * {@link isChange} method as well, since that is used to validate if an object
+ * is a change or not.
+ */
 export type Change = {
-  type: 'added' | 'removed';
-  lineNumber: number;
+  /** The type of the change. -1 is removed, 0 is modified, and 1 is added. */
+  type: -1 | 0 | 1;
+  /** The line number this change is for. */
+  line: number;
+  /** The new value of the line. Only available when {@link type} is 0 or 1. * */
   value?: string;
 };
 

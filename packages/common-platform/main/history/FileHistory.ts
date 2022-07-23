@@ -200,30 +200,30 @@ export class FileHistory implements FileDataExtension<'history'> {
       if (resultIndex >= 0) {
         // We've found the source line in the result. Everything in between must
         // be additions.
-        const additions = resultLines
-          .slice(sourceLineIndex, resultIndex)
-          .map((line, additionIndex) => ({
-            type: 'added' as const,
-            lineNumber: sourceLineIndex + additionIndex,
+        const additions = resultLines.slice(sourceLineIndex, resultIndex).map(
+          (line, additionIndex): Change => ({
+            type: 1,
+            line: sourceLineIndex + additionIndex,
             value: line,
-          }));
+          })
+        );
         changes.push(...additions);
         expectedOffset += additions.length;
       } else {
-        // We weren't able to find the source like in the result, so it must
-        // have been removed.
-        changes.push({
-          type: 'removed' as const,
-          lineNumber: sourceLineIndex,
-        });
         if (sourceLineIndex < resultLines.length) {
           // If the result has a line at the same index, then we actually
-          // changed this line so mark it as being a new line added (since we
-          // don't currently support "modified" lines).
+          // changed this line so mark it as being modified.
           changes.push({
-            type: 'added' as const,
-            lineNumber: sourceLineIndex,
+            type: 0,
+            line: sourceLineIndex,
             value: resultLines[sourceLineIndex],
+          });
+        } else {
+          // We weren't able to find the source like in the result and there's
+          // no change at the same line, so the source must have been removed.
+          changes.push({
+            type: -1,
+            line: sourceLineIndex,
           });
         }
       }
@@ -232,13 +232,13 @@ export class FileHistory implements FileDataExtension<'history'> {
     // Any lines left over in result that occur after where source ends
     // (factoring in the offset) must all be additions, so add those here.
     changes.push(
-      ...resultLines
-        .slice(sourceLines.length + expectedOffset)
-        .map((line, additionIndex) => ({
-          type: 'added' as const,
-          lineNumber: sourceLines.length + additionIndex + expectedOffset,
+      ...resultLines.slice(sourceLines.length + expectedOffset).map(
+        (line, additionIndex): Change => ({
+          type: 1,
+          line: sourceLines.length + additionIndex + expectedOffset,
           value: line,
-        }))
+        })
+      )
     );
 
     return changes;
@@ -248,21 +248,23 @@ export class FileHistory implements FileDataExtension<'history'> {
     const sourceLines = source.split('\n');
 
     changes.forEach((change) => {
-      if (change.type === 'added') {
+      if (change.type === 1) {
         if (
-          change.lineNumber < sourceLines.length &&
-          sourceLines[change.lineNumber] == null
+          change.line < sourceLines.length &&
+          sourceLines[change.line] == null
         ) {
           // Instead of unnecessarily resizing the array, just replace any nulls
           // in the same line with the added value.
-          sourceLines[change.lineNumber] = change.value;
+          sourceLines[change.line] = change.value;
         } else {
           // Add the line to the source by shifting the array down to make room.
-          sourceLines.splice(change.lineNumber, 0, change.value);
+          sourceLines.splice(change.line, 0, change.value);
         }
-      } else if (change.type === 'removed') {
-        // Mark it as null instead of forcing an array resize; it'll be removed later.
-        sourceLines[change.lineNumber] = null;
+      } else {
+        // For removals and modifications, we change the line directly. Removals
+        // are marked as null instead of forcing an array resize; it'll be
+        // removed later.
+        sourceLines[change.line] = change.type === 0 ? change.value : null;
       }
     });
 
@@ -277,7 +279,7 @@ export class FileHistory implements FileDataExtension<'history'> {
 
     // Group changes that are close together, so they can be displayed in the same chunk.
     changes
-      .sort((a, b) => a.lineNumber - b.lineNumber)
+      .sort((a, b) => a.line - b.line)
       .forEach((change, index) => {
         if (index === 0) {
           groups[groupIndex] = [change];
@@ -286,7 +288,7 @@ export class FileHistory implements FileDataExtension<'history'> {
 
         const lastChange = changes[index - 1];
 
-        if (change.lineNumber - lastChange.lineNumber < 3) {
+        if (change.line - lastChange.line < 3) {
           groups[groupIndex].push(change);
         } else {
           groupIndex += 1;
@@ -302,9 +304,9 @@ export class FileHistory implements FileDataExtension<'history'> {
     const applyToLine = (line: string, lineChanges: Change[]): string => {
       let result = line;
       lineChanges.forEach((change) => {
-        if (change.type === 'removed') {
+        if (change.type === -1) {
           result = '';
-        } else if (change.type === 'added') {
+        } else {
           result = change.value;
         }
       });
@@ -329,11 +331,11 @@ export class FileHistory implements FileDataExtension<'history'> {
       const firstChange = group[0];
       const lastChange = group[group.length - 1];
 
-      if (firstChange.lineNumber > 0) {
-        const startContextLineNumber = Math.max(firstChange.lineNumber - 2, 0);
+      if (firstChange.line > 0) {
+        const startContextLineNumber = Math.max(firstChange.line - 2, 0);
         // There are some lines we can display before the first group; add them.
         preLines = sourceLines
-          .slice(startContextLineNumber, firstChange.lineNumber)
+          .slice(startContextLineNumber, firstChange.line)
           .map((line) => {
             const value = lineOrControlCharacters(line);
             return {
@@ -344,15 +346,15 @@ export class FileHistory implements FileDataExtension<'history'> {
           });
       }
 
-      if (lastChange.lineNumber < maxSourceLineIndex) {
+      if (lastChange.line < maxSourceLineIndex) {
         const endContextLineNumber = Math.min(
-          lastChange.lineNumber + 2,
+          lastChange.line + 2,
           maxSourceLineIndex
         );
 
         // There are some lines we can display after the last group; add them.
         postLines = sourceLines
-          .slice(lastChange.lineNumber + 1, endContextLineNumber)
+          .slice(lastChange.line + 1, endContextLineNumber)
           .map((line) => {
             const value = lineOrControlCharacters(line);
             return {
@@ -362,7 +364,7 @@ export class FileHistory implements FileDataExtension<'history'> {
             };
           });
       }
-      if (lastChange.lineNumber >= maxSourceLineIndex) {
+      if (lastChange.line >= maxSourceLineIndex) {
         postLines.push({
           type: 'context',
           line: '<< End of file >>',
@@ -371,14 +373,14 @@ export class FileHistory implements FileDataExtension<'history'> {
       }
 
       const chunkLines: ChunkLine[] = this.intRange(
-        firstChange.lineNumber,
-        lastChange.lineNumber + 1
+        firstChange.line,
+        lastChange.line + 1
       )
         .map((originalLineNumber) => {
           const { line: sourceLine, control: isSourceControl } =
             lineOrControlCharacters(sourceLines[originalLineNumber]);
           const lineChanges = group.filter(
-            (change) => change.lineNumber === originalLineNumber
+            (change) => change.line === originalLineNumber
           );
           const { line: changedLine, control: isChangedControl } =
             lineOrControlCharacters(applyToLine(sourceLine, lineChanges));

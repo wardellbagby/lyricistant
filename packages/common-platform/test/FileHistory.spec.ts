@@ -87,4 +87,53 @@ describe('File History', () => {
 
     expect(fileHistory.getParsedHistory()).to.equal(expected);
   });
+
+  it('handles complete removals correctly', async () => {
+    const expected = "I'm brand new...";
+
+    fileHistory.add("It's your guy!");
+    fileHistory.add("It's your guy\nMr. Doctor.");
+    fileHistory.add("It's your guy\n\nMr. Doctor.");
+    fileHistory.add("It's your guy\nIt's your man!\nMr. Doctor.");
+    fileHistory.add("It's your guy\nIt's your man!\nMr. Doctor. Professor!");
+    fileHistory.add(expected);
+
+    await fileHistory.deserialize(await fileHistory.serialize());
+
+    expect(fileHistory.getParsedHistory()).to.equal(expected);
+  });
+
+  it('handles line removals correctly removals.', async () => {
+    const expected = "It's your boy!\n\nMr. Doctor. Professor!";
+
+    fileHistory.add("It's your boy!");
+    fileHistory.add("It's your boy\nMr. Doctor.");
+    fileHistory.add("It's your boy\n\nMr. Doctor.");
+    fileHistory.add(
+      "It's your boy\n\nIt's your guy!\nIt's your man!\nMr. Doctor."
+    );
+    fileHistory.add(
+      "It's your boy\n\nIt's your guy!\nIt's your man!\nMr. Doctor. Professor!"
+    );
+    fileHistory.add(expected);
+
+    await fileHistory.deserialize(await fileHistory.serialize());
+
+    expect(fileHistory.getParsedHistory()).to.equal(expected);
+  });
+
+  it('handles modifications correctly', async () => {
+    const expected =
+      'The MC\nThe Soup\nThe Breeze (Cool)\nThe Friends N Strangers';
+
+    fileHistory.add('The MC');
+    fileHistory.add('The MC\nThe Soup');
+    fileHistory.add('The MC\nThe Soup\nThe Breeze');
+    fileHistory.add('The MC\nThe Soup\nThe Breeze\nThe Friends N Strangers');
+    fileHistory.add(expected);
+
+    await fileHistory.deserialize(await fileHistory.serialize());
+
+    expect(fileHistory.getParsedHistory()).to.equal(expected);
+  });
 });

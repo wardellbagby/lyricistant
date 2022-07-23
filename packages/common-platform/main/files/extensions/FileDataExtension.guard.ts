@@ -9,8 +9,8 @@ import {
 
 export const isChange = (obj: any): obj is Change =>
   ((obj !== null && typeof obj === 'object') || typeof obj === 'function') &&
-  (obj.type === 'added' || obj.type === 'removed') &&
-  typeof obj.lineNumber === 'number' &&
+  (obj.type === -1 || obj.type === 0 || obj.type === 1) &&
+  typeof obj.line === 'number' &&
   (typeof obj.value === 'string' || typeof obj.value === 'undefined');
 
 export const isHistoryData = (obj: any): obj is HistoryData =>

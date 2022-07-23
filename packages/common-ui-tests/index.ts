@@ -129,7 +129,7 @@ export default (
 
   it('loads v2 file history', async () => {
     const { screen, page } = await getDependencies();
-    const firstLineChangeLabel = 'Jul 20, 2022, 5:15:41 PM';
+    const firstLineChangeLabel = 'Jul 23, 2022, 11:02:41 AM';
 
     await dropFile(page, screen, BURY_ME_LOOSE_V2_FILE_HISTORY);
 
@@ -140,10 +140,10 @@ export default (
 
     await expect(screen.findByText('File History')).resolves.toBeTruthy();
     await expect(
-      screen.findByText('Jul 20, 2022, 5:15:50 PM')
+      screen.findByText('Jul 23, 2022, 11:02:27 AM')
     ).resolves.toBeTruthy();
     await expect(
-      screen.findByText('Jul 20, 2022, 5:14:55 PM')
+      screen.findByText('Jul 23, 2022, 11:03:28 AM')
     ).resolves.toBeTruthy();
 
     const firstLineChangeFileHistory = await screen.findByText(
