@@ -9,7 +9,7 @@ export class WebAppData implements AppData {
   };
   public get = async (key: string) => {
     if (!(await this.exists(key))) {
-      return '';
+      return undefined;
     }
     const storage = await renderer.getLocalStorage();
     return JSON.parse(await storage.getItem(key));

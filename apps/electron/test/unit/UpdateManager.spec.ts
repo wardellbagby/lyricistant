@@ -1,5 +1,5 @@
-import { AppStore } from '@electron-app/AppStore';
 import { UpdateManager } from '@electron-app/platform/UpdateManager';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import { EventListeners } from '@testing/utilities/Listeners';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
@@ -12,7 +12,7 @@ use(sinonChai);
 
 describe('Update Manager', () => {
   let manager: UpdateManager;
-  let store: StubbedInstance<AppStore>;
+  let appData: StubbedInstance<AppData>;
   let appUpdater: StubbedInstance<AppUpdater>;
   let releaseHelper: StubbedInstance<ReleaseHelper>;
   const rendererDelegate = new MockRendererDelegate();
@@ -20,8 +20,8 @@ describe('Update Manager', () => {
 
   beforeEach(() => {
     sinon.reset();
-    store = stubInterface<AppStore>();
-    store.get.returns([]);
+    appData = stubInterface<AppData>();
+    appData.get.withArgs(UpdateManager.IGNORED_VERSIONS_KEY).resolves(null);
     appUpdater = stubInterface();
     appUpdater.checkForUpdates.resolves(null);
     appUpdater.downloadUpdate.resolves(null);
@@ -37,7 +37,7 @@ describe('Update Manager', () => {
 
     manager = new UpdateManager(
       rendererDelegate,
-      store,
+      appData,
       appUpdater,
       stubInterface(),
       releaseHelper,
@@ -46,7 +46,6 @@ describe('Update Manager', () => {
   });
 
   afterEach(() => {
-    store.get.alwaysCalledWithExactly('ignoredVersions', []);
     rendererDelegate.clear();
     appUpdaterListeners.clear();
   });
@@ -121,7 +120,10 @@ describe('Update Manager', () => {
     );
 
     expect(appUpdater.downloadUpdate).to.have.not.been.called;
-    expect(store.set).to.have.been.calledWith('ignoredVersions', ['9.9.9']);
+    expect(appData.set).to.have.been.calledWith(
+      UpdateManager.IGNORED_VERSIONS_KEY,
+      JSON.stringify(['9.9.9'])
+    );
   });
 
   it('does nothing when user clicks no', async () => {
@@ -139,7 +141,7 @@ describe('Update Manager', () => {
     );
 
     expect(appUpdater.downloadUpdate).to.have.not.been.called;
-    expect(store.set).to.have.not.been.called;
+    expect(appData.set).to.have.not.been.called;
   });
 
   it('shows download progress', async () => {

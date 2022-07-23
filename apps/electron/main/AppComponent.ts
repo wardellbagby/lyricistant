@@ -1,4 +1,3 @@
-import { AppStore } from '@electron-app/AppStore';
 import { ElectronAppData } from '@electron-app/platform/ElectronAppData';
 import { ElectronBuffers } from '@electron-app/platform/ElectronBuffers';
 import type { ElectronFiles } from '@electron-app/platform/ElectronFiles';
@@ -40,7 +39,6 @@ const registerElectronFunctionality = (
   window: BrowserWindow
 ) => {
   component.registerSingleton<BrowserWindow>(() => window);
-  component.registerSingleton<AppStore>();
   component.registerSingleton<AppUpdater>(() => autoUpdater);
   component.registerSingleton<ElectronDialog>(() => dialog);
   component.registerSingleton<FileSystem, NodeFileSystem>();

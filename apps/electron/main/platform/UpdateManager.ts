@@ -1,5 +1,5 @@
-import { AppStore } from '@electron-app/AppStore';
 import { HttpClient } from '@electron-app/wrappers/HttpClient';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { Manager } from '@lyricistant/common-platform/Manager';
 import { isDevelopment, isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
@@ -9,6 +9,7 @@ import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
 
 export class UpdateManager implements Manager {
+  public static readonly IGNORED_VERSIONS_KEY = 'ignored-electron-versions';
   private static readonly INSTALL_UPDATE_DIALOG_TAG =
     'update-manager-update-dialog';
   private static readonly UPDATE_DOWNLOADED_DIALOG_TAG =
@@ -18,7 +19,7 @@ export class UpdateManager implements Manager {
 
   public constructor(
     private rendererDelegate: RendererDelegate,
-    private store: AppStore,
+    private appData: AppData,
     private appUpdater: AppUpdater,
     private httpClient: HttpClient,
     private releaseHelper: ReleaseHelper,
@@ -69,7 +70,7 @@ export class UpdateManager implements Manager {
       this.logger.warn("Couldn't update the app as update info was null");
       return;
     }
-    const ignoredVersions = this.store.get('ignoredVersions', []);
+    const ignoredVersions = await this.getIgnoredVersionsOrDefault();
     if (ignoredVersions.includes(updateInfo.version)) {
       this.logger.info(
         `Ignoring update to ${updateInfo.version} since user requested not to update to it.`
@@ -135,13 +136,15 @@ export class UpdateManager implements Manager {
     });
   };
 
-  private onDialogInteraction = (
+  private onDialogInteraction = async (
     dialogTag: string,
     interactionData: DialogInteractionData
   ) => {
     switch (dialogTag) {
       case UpdateManager.INSTALL_UPDATE_DIALOG_TAG:
-        this.onUpdateAvailableDialogClicked(interactionData.selectedButton);
+        await this.onUpdateAvailableDialogClicked(
+          interactionData.selectedButton
+        );
         break;
       case UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG:
         this.onUpdateDownloadedDialogClicked(interactionData.selectedButton);
@@ -149,7 +152,7 @@ export class UpdateManager implements Manager {
     }
   };
 
-  private onUpdateAvailableDialogClicked = (buttonLabel: string) => {
+  private onUpdateAvailableDialogClicked = async (buttonLabel: string) => {
     switch (buttonLabel) {
       case 'Yes':
         this.appUpdater
@@ -159,9 +162,12 @@ export class UpdateManager implements Manager {
           );
         break;
       case 'Never':
-        const ignoredVersions: string[] = this.store.get('ignoredVersion', []);
+        const ignoredVersions = await this.getIgnoredVersionsOrDefault();
         ignoredVersions.push(this.updateInfo.version);
-        this.store.set('ignoredVersions', ignoredVersions);
+        this.appData.set(
+          UpdateManager.IGNORED_VERSIONS_KEY,
+          JSON.stringify(ignoredVersions)
+        );
         break;
     }
   };
@@ -172,5 +178,17 @@ export class UpdateManager implements Manager {
         this.appUpdater.quitAndInstall();
         break;
     }
+  };
+
+  private getIgnoredVersionsOrDefault = async (): Promise<string[]> => {
+    if (!(await this.appData.exists(UpdateManager.IGNORED_VERSIONS_KEY))) {
+      return [];
+    }
+
+    const result = await this.appData.get(UpdateManager.IGNORED_VERSIONS_KEY);
+    if (!result || result.trim().length === 0) {
+      return [];
+    }
+    return JSON.parse(result);
   };
 }

@@ -16,8 +16,15 @@ export class ElectronAppData implements AppData {
         )
       );
   };
-  public get = async (key: string) =>
-    this.fs.readFile(this.getAppDataFile(key), { encoding: 'utf8' });
+  public get = async (key: string) => {
+    try {
+      return await this.fs.readFile(this.getAppDataFile(key), {
+        encoding: 'utf8',
+      });
+    } catch (e) {
+      this.logger.warn('Error when attempting to retrieve data', { key }, e);
+    }
+  };
 
   public exists = async (key: string) => {
     const file = this.getAppDataFile(key);

@@ -6,7 +6,7 @@ export class DOMAppData implements AppData {
   };
   public get = async (key: string) => {
     if (!(await this.exists(key))) {
-      return '';
+      return undefined;
     }
     return JSON.parse(localStorage.getItem(key));
   };
