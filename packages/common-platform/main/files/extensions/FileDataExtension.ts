@@ -1,14 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { isVersionedExtensionData } from '@lyricistant/common-platform/files/extensions/FileDataExtension.guard';
 import { Logger } from '@lyricistant/common/Logger';
-
-type Serializable =
-  | boolean
-  | number
-  | string
-  | null
-  | Serializable[]
-  | { [key: string]: Serializable | undefined };
+import { Serializable } from '@lyricistant/common/Serializable';
 
 export type HistoryData = {
   time: string;

@@ -26,9 +26,6 @@ export class FirstLaunchManager implements Manager {
       this.rendererDelegate.send('open-about');
     }
 
-    this.appData.set(
-      FirstLaunchManager.IS_FIRST_LAUNCH_KEY,
-      JSON.stringify(false)
-    );
+    this.appData.set(FirstLaunchManager.IS_FIRST_LAUNCH_KEY, false);
   };
 }

@@ -45,11 +45,7 @@ export class UnsavedDataManager implements Manager {
     );
     const hasUnsavedData =
       hasTemporaryData &&
-      (await this.fileHistory.isNonEmptyHistory(
-        this.parseOrNull(
-          await this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
-        )
-      ));
+      (await this.fileHistory.isNonEmptyHistory(await this.getUnsavedData()));
 
     if (hasUnsavedData) {
       this.logger.verbose('Unsaved data found.');
@@ -73,11 +69,7 @@ export class UnsavedDataManager implements Manager {
   private onDialogClicked = async (tag: string, buttonLabel: string) => {
     if (tag === UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG) {
       if (buttonLabel === 'Yes') {
-        await this.fileHistory.deserialize(
-          this.parseOrNull(
-            await this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY)
-          )
-        );
+        await this.fileHistory.deserialize(await this.getUnsavedData());
         this.rendererDelegate.send(
           'file-opened',
           undefined,
@@ -127,7 +119,7 @@ export class UnsavedDataManager implements Manager {
     this.fileHistory.add(text);
     await this.appData.set(
       UnsavedDataManager.UNSAVED_LYRICS_KEY,
-      JSON.stringify(await this.fileHistory.serialize())
+      await this.fileHistory.serialize()
     );
     this.lastFileSaveMs = this.times.elapsed();
   };
@@ -138,11 +130,6 @@ export class UnsavedDataManager implements Manager {
     this.times.elapsed() - this.lastFileSaveMs >=
       UnsavedDataManager.MINIMUM_FILE_SAVE_ELAPSED_TIME_MS;
 
-  private parseOrNull = <T>(text: string): T | null => {
-    try {
-      return JSON.parse(text);
-    } catch (e) {
-      return null;
-    }
-  };
+  private getUnsavedData = (): Promise<any> =>
+    this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY);
 }

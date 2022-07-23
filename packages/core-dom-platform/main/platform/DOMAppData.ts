@@ -1,7 +1,8 @@
 import { AppData } from '@lyricistant/common-platform/appdata/AppData';
+import { Serializable } from '@lyricistant/common/Serializable';
 
 export class DOMAppData implements AppData {
-  public set = (key: string, data: string | null) => {
+  public set = (key: string, data: Serializable) => {
     localStorage.setItem(key, JSON.stringify(data));
   };
   public get = async (key: string) => {

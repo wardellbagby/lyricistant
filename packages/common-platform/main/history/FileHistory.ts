@@ -3,7 +3,6 @@ import {
   FileDataExtension,
   HistoryData,
   onVersion,
-  VersionedExtensionData,
 } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import {
   isHistoryData,
@@ -46,11 +45,7 @@ export class FileHistory implements FileDataExtension<'history'> {
   public deserialize = async (extensionData: any) => {
     this.lastKnownLyrics = '';
 
-    this.delta = await onVersion(extensionData, this.logger, {
-      1: async (data) => this.migrateV1ToV2(await this.loadV1(data)),
-      2: (data) => this.loadV2(data),
-      invalid: () => [],
-    });
+    this.delta = await this.loadFromSerialized(extensionData);
     this.lastKnownLyrics = this.getParsedHistory();
   };
 
@@ -59,24 +54,8 @@ export class FileHistory implements FileDataExtension<'history'> {
     this.delta = [];
   };
 
-  public isNonEmptyHistory = async (
-    extensionData: VersionedExtensionData<string> | null
-  ): Promise<boolean> =>
-    onVersion(extensionData, this.logger, {
-      1: async () => {
-        const history = await this.loadV1(extensionData.data);
-        return (
-          history.length > 0 && history.some((data) => data.patches.length > 0)
-        );
-      },
-      2: async () => {
-        const history = await this.loadV2(extensionData.data);
-        return (
-          history.length > 0 && history.some((data) => data.changes.length > 0)
-        );
-      },
-      invalid: () => false,
-    });
+  public isNonEmptyHistory = async (extensionData: any): Promise<boolean> =>
+    (await this.loadFromSerialized(extensionData)).length > 0;
 
   public add = (lyrics: string) => {
     if (lyrics.trim() === this.lastKnownLyrics || lyrics.trim().length === 0) {
@@ -132,6 +111,15 @@ export class FileHistory implements FileDataExtension<'history'> {
 
     return this.lastKnownLyrics;
   };
+
+  private loadFromSerialized = async (
+    extensionData: unknown
+  ): Promise<HistoryData[]> =>
+    await onVersion(extensionData, this.logger, {
+      1: async (data) => this.migrateV1ToV2(await this.loadV1(data)),
+      2: (data) => this.loadV2(data),
+      invalid: () => [],
+    });
 
   private loadV1 = async (data: unknown): Promise<HistoryDataV1[]> => {
     if (typeof data !== 'string') {

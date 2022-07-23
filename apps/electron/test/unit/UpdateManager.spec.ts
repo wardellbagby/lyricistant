@@ -122,7 +122,7 @@ describe('Update Manager', () => {
     expect(appUpdater.downloadUpdate).to.have.not.been.called;
     expect(appData.set).to.have.been.calledWith(
       UpdateManager.IGNORED_VERSIONS_KEY,
-      JSON.stringify(['9.9.9'])
+      ['9.9.9']
     );
   });
 

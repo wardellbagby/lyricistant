@@ -6,6 +6,7 @@ import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { DialogInteractionData } from '@lyricistant/common/dialogs/Dialog';
 import { Logger } from '@lyricistant/common/Logger';
 import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
+import { Serializable } from '@lyricistant/common/Serializable';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
 
 export class UpdateManager implements Manager {
@@ -164,10 +165,7 @@ export class UpdateManager implements Manager {
       case 'Never':
         const ignoredVersions = await this.getIgnoredVersionsOrDefault();
         ignoredVersions.push(this.updateInfo.version);
-        this.appData.set(
-          UpdateManager.IGNORED_VERSIONS_KEY,
-          JSON.stringify(ignoredVersions)
-        );
+        this.appData.set(UpdateManager.IGNORED_VERSIONS_KEY, ignoredVersions);
         break;
     }
   };
@@ -185,10 +183,18 @@ export class UpdateManager implements Manager {
       return [];
     }
 
-    const result = await this.appData.get(UpdateManager.IGNORED_VERSIONS_KEY);
-    if (!result || result.trim().length === 0) {
+    const result: Serializable = await this.appData.get(
+      UpdateManager.IGNORED_VERSIONS_KEY
+    );
+
+    if (
+      !result ||
+      !Array.isArray(result) ||
+      !result.every((value) => typeof value === 'string')
+    ) {
       return [];
     }
-    return JSON.parse(result);
+
+    return result as string[];
   };
 }
