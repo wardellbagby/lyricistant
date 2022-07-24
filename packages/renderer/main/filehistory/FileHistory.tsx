@@ -129,7 +129,7 @@ export function FileHistory(props: FileHistoryProps) {
     props.onClose();
   }, []);
 
-  const [historyData] = useChannelData('file-history', [props.open]);
+  const [historyData] = useChannelData('file-history', props.open);
   const [displayedHistory, setDisplayedHistory] =
     useState<ParsedHistoryData>(null);
 

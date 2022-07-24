@@ -140,9 +140,7 @@ interface PreferencesProps {
  */
 export const Preferences = (props: PreferencesProps) => {
   const classes = dialogStyles(undefined);
-  const [originalPreferenceData] = useChannelData('prefs-updated', [
-    props.open,
-  ]);
+  const [originalPreferenceData] = useChannelData('prefs-updated', props.open);
   const [preferencesData, setPreferencesData] = useState(
     originalPreferenceData
   );

@@ -37,18 +37,23 @@ export const useChannel: <Channel extends RendererChannel>(
  * will work, all values will be undefined until this channel emits something.
  *
  * @param channel Platform channel to listen to changes on.
- * @param deps The dependencies that will be used to re-register the listener
- *   whenever they change. If not provided, listener will be re-registered
- *   whenever the React component is re-mounted. This differs from useEffect
- *   when no dependency list is provided, as useEffect would re-register on
- *   every render pass.
+ * @param shouldRegister When this is true, will attempt to register. If this is
+ *   false, it won't register. Useful for when the change of a dependency should
+ *   re-register a listener on the platform, but only in certain situations,
+ *   like to only register when a dialog is open.
  */
 export const useChannelData: <Channel extends RendererChannel>(
   channel: Channel,
-  deps?: DependencyList
-) => Parameters<PlatformToRendererListener[Channel]> = (channel, deps) => {
+  shouldRegister?: boolean
+) => Parameters<PlatformToRendererListener[Channel]> = (
+  channel,
+  shouldRegister
+) => {
   const [result, setResult] = useState([]);
   useEffect(() => {
+    if (shouldRegister === false) {
+      return;
+    }
     const listener = (...args: unknown[]) => {
       setResult(args);
     };
@@ -56,6 +61,6 @@ export const useChannelData: <Channel extends RendererChannel>(
     return () => {
       platformDelegate.removeListener(channel, listener);
     };
-  }, deps ?? []);
+  }, [shouldRegister]);
   return result as any;
 };
