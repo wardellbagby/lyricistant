@@ -4,7 +4,7 @@
     "outDir": "build",
     "lib": ["es6", "dom"],
     "types": ["../../packages/renderer-window", "webpack-env"],
-    "composite": true
+    "declaration": false
   },
   "references": [{ "path": "./packages/renderer" }],
   "extends": "../../tsconfig.json"

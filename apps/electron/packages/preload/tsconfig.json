@@ -7,5 +7,5 @@
     "types": ["../../../../packages/renderer-window", "node", "electron"]
   },
   "references": [{ "path": "../delegates" }],
-  "extends": "../../tsconfig.json"
+  "extends": "../../../../tsconfig.json"
 }

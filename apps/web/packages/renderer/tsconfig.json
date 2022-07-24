@@ -11,7 +11,7 @@
     { "path": "../../packages/common" },
     { "path": "../../../../packages/common/" },
     { "path": "../../../../packages/renderer/" },
-    { "path": "../../../../packages/core-dom-platform/"}
+    { "path": "../../../../packages/core-dom-platform/" }
   ],
   "extends": "../../../../tsconfig.json"
 }

@@ -20,20 +20,14 @@ const startLegacy = async () => {
       .get<Managers>()
       .forEach((manager: Manager) => manager.register());
     resolve();
-  })
-    .then(async () => {
-      logger.info('Platform information', {
-        appPlatform: 'Web - Legacy',
-        version:
-          (await import('@lyricistant/renderer/globals')).APP_VERSION ??
-          'Error',
-        userAgent: navigator.userAgent,
-      });
-    })
-    .then(() => import('@lyricistant/renderer/index'))
-    .catch((reason) => {
-      throw Error(`Could not load the renderer page: ${reason}`);
+  }).then(async () => {
+    logger.info('Platform information', {
+      appPlatform: 'Web - Legacy',
+      version:
+        (await import('@lyricistant/renderer/globals')).APP_VERSION ?? 'Error',
+      userAgent: navigator.userAgent,
     });
+  });
 };
 
 const useModernWeb = () => {
@@ -44,9 +38,11 @@ const useModernWeb = () => {
 
 const start = async () => {
   if (useModernWeb()) {
-    return startNew();
+    await startNew();
+  } else {
+    await startLegacy();
   }
-  return startLegacy();
+  await import('@lyricistant/renderer/index');
 };
 
 start().catch((reason: any) => {

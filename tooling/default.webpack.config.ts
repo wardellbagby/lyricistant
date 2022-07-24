@@ -71,17 +71,20 @@ export default (
           },
         },
         {
-          test: /\.m?js/,
-          resolve: {
-            fullySpecified: false,
-          },
+          test: /\.css$/,
+          include: [/@mui\/.+/, /@fontsource\/.+/],
+          use: ['style-loader', 'css-loader'],
         },
-        { test: /\.css$/, use: ['style-loader', 'css-loader'] },
         {
           test: /\.(woff|woff2|eot|ttf|png)$/,
+          include: [/@mui\/.+/, /@fontsource\/.+/, /packages\/renderer\/main/],
           loader: 'file-loader',
         },
-        { test: /\.svg$/, use: ['@svgr/webpack', 'raw-loader'] },
+        {
+          test: /\.svg$/,
+          include: [/packages\/renderer\/main/],
+          use: ['@svgr/webpack', 'raw-loader'],
+        },
       ],
     },
     plugins: [

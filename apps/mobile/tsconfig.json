@@ -3,11 +3,12 @@
   "compilerOptions": {
     "outDir": "build",
     "lib": ["dom", "es6"],
-    "types": ["../../packages/renderer-window", "webpack-env"]
+    "types": ["../../packages/renderer-window", "webpack-env"],
+    "declaration": false
   },
   "references": [
     { "path": "../../packages/common" },
-    { "path": "../../packages/core-dom-platform"},
+    { "path": "../../packages/core-dom-platform" },
     { "path": "../../packages/renderer/" }
   ],
   "extends": "../../tsconfig.json"

@@ -1,3 +1,4 @@
+import appIcon from '@lyricistant/renderer/about/app_icon.png';
 import { APP_HOMEPAGE, APP_VERSION } from '@lyricistant/renderer/globals';
 import {
   Box,
@@ -17,7 +18,6 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { ReactChild } from 'react';
-import appIcon from './app_icon.png';
 
 const aboutInfo: Record<string, ReactChild> = {
   Homepage: (

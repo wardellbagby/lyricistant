@@ -1,6 +1,6 @@
 import { Palette } from '@lyricistant/common/theme/SystemTheme';
+import feather from '@lyricistant/renderer/lyricistant_feather.svg';
 import { getThemePalette } from '@lyricistant/renderer/theme';
-import feather from './lyricistant_feather.svg';
 
 onThemeUpdated(getThemePalette().palette);
 

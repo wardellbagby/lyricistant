@@ -4,7 +4,7 @@
     "outDir": "build",
     "lib": ["es2021"],
     "types": ["node"],
-    "composite": true
+    "declaration": false
   },
   "references": [
     { "path": "../../packages/common" },

@@ -86,5 +86,4 @@ export const start = async () => {
   });
 
   await platform.start();
-  await import('@lyricistant/renderer/index');
 };
