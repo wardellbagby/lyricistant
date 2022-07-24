@@ -1,5 +1,5 @@
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
-import { Manager } from '@lyricistant/common-platform/Manager';
+import { getEditorText, Manager } from '@lyricistant/common-platform/Manager';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 
 export class FileHistoryManager implements Manager {
@@ -12,11 +12,19 @@ export class FileHistoryManager implements Manager {
       this.fileHistory.add(history.text);
       this.rendererDelegate.send('file-opened', undefined, history.text, false);
     });
-    this.rendererDelegate.addRendererListenerSetListener('file-history', () => {
-      this.rendererDelegate.send('file-history', this.getIncrementalHistory());
-    });
+    this.rendererDelegate.addRendererListenerSetListener(
+      'file-history',
+      async () => {
+        this.rendererDelegate.send(
+          'file-history',
+          await this.getIncrementalHistory()
+        );
+      }
+    );
   }
 
-  private getIncrementalHistory = () =>
-    this.fileHistory.getIncrementalParsedHistory({ includeChunks: true }) ?? [];
+  private getIncrementalHistory = async () =>
+    this.fileHistory.getIncrementalParsedHistory({
+      includeChunks: { base: await getEditorText(this.rendererDelegate) },
+    }) ?? [];
 }

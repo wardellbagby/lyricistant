@@ -30,6 +30,18 @@ export interface Manager {
   register(): void;
 }
 
+/** Fetches the current editor text from the renderer. */
+export const getEditorText = async (
+  rendererDelegate: RendererDelegate
+): Promise<string> =>
+  new Promise((resolve) => {
+    const onEditorText = (text: string) => {
+      rendererDelegate.removeListener('editor-text', onEditorText);
+      resolve(text);
+    };
+    rendererDelegate.on('editor-text', onEditorText);
+    rendererDelegate.send('request-editor-text');
+  });
 /**
  * Show a dialog on the renderer and wait for the dialog to be interacted with.
  *

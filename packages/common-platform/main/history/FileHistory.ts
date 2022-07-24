@@ -8,11 +8,11 @@ import {
   isHistoryData,
   isHistoryDataV1,
 } from '@lyricistant/common-platform/files/extensions/FileDataExtension.guard';
+import { createChunks } from '@lyricistant/common-platform/history/ChunkCreation';
 import { Clock } from '@lyricistant/common-platform/time/Clock';
 import { MED_WITH_SECONDS } from '@lyricistant/common-platform/time/Formats';
 import {
   Chunk,
-  ChunkLine,
   ParsedHistoryData,
 } from '@lyricistant/common/history/ParsedHistoryData';
 import { Logger } from '@lyricistant/common/Logger';
@@ -87,8 +87,11 @@ export class FileHistory implements FileDataExtension<'history'> {
   };
 
   public getIncrementalParsedHistory = (options?: {
-    /** Whether to include chunk generation, which can be very expensive. */
-    includeChunks?: boolean;
+    /**
+     * Whether to include chunk generation, which can be very expensive.
+     * {@link base} will be used to compare all chunks against when showing changes.
+     */
+    includeChunks?: { base: string };
   }): ParsedHistoryData[] => {
     let last = '';
 
@@ -97,7 +100,10 @@ export class FileHistory implements FileDataExtension<'history'> {
         const text = this.applyChanges(last, data.changes);
         let chunks: Chunk[];
         if (options?.includeChunks) {
-          chunks = this.createChunks(last, data.changes);
+          chunks = createChunks(
+            options.includeChunks.base,
+            this.createChanges(options.includeChunks.base, text)
+          );
         } else {
           chunks = [];
         }
@@ -281,176 +287,4 @@ export class FileHistory implements FileDataExtension<'history'> {
 
     return sourceLines.filter((line) => typeof line === 'string').join('\n');
   };
-
-  private createChunks = (source: string, changes: Change[]): Chunk[] => {
-    const sourceLines = source.split('\n');
-
-    const groups: Change[][] = [];
-    let groupIndex = 0;
-
-    // Group changes that are close together, so they can be displayed in the same chunk.
-    changes
-      .sort((a, b) => a.line - b.line)
-      .forEach((change, index) => {
-        if (index === 0) {
-          groups[groupIndex] = [change];
-          return;
-        }
-
-        const lastChange = changes[index - 1];
-
-        if (change.line - lastChange.line < 3) {
-          groups[groupIndex].push(change);
-        } else {
-          groupIndex += 1;
-          groups[groupIndex] = [change];
-        }
-      });
-
-    const maxSourceLineIndex = sourceLines.length - 1;
-
-    // Quick and dirty "apply" that naively applies all changes to this line,
-    // even if they don't match since we can trust that the changes given here
-    // are valid.
-    const applyToLine = (line: string, lineChanges: Change[]): string => {
-      let result = line;
-      lineChanges.forEach((change) => {
-        if (change.type === -1) {
-          result = '';
-        } else {
-          result = change.value;
-        }
-      });
-      return result;
-    };
-
-    const lineOrControlCharacters = (
-      line: string
-    ): { line: string; control: boolean } => {
-      if (line === undefined || line.length === 0) {
-        return { line: '<< Empty line >>', control: true };
-      }
-      return { line, control: false };
-    };
-
-    // Iterate over all groups and create displayable chunk lines for every chunk.
-    return groups.map((group) => {
-      // Displayed before any changed lines, if possible.
-      let preLines: ChunkLine[] = [];
-      // Displayed after any changed lines, if possible.
-      let postLines: ChunkLine[] = [];
-      const firstChange = group[0];
-      const lastChange = group[group.length - 1];
-
-      if (firstChange.line > 0) {
-        const startContextLineNumber = Math.max(firstChange.line - 2, 0);
-        // There are some lines we can display before the first group; add them.
-        preLines = sourceLines
-          .slice(startContextLineNumber, firstChange.line)
-          .map((line) => {
-            const value = lineOrControlCharacters(line);
-            return {
-              type: 'context',
-              line: value.line,
-              control: value.control,
-            };
-          });
-      }
-
-      if (lastChange.line < maxSourceLineIndex) {
-        const endContextLineNumber = Math.min(
-          lastChange.line + 2,
-          maxSourceLineIndex
-        );
-
-        // There are some lines we can display after the last group; add them.
-        postLines = sourceLines
-          .slice(lastChange.line + 1, endContextLineNumber)
-          .map((line) => {
-            const value = lineOrControlCharacters(line);
-            return {
-              type: 'context',
-              line: value.line,
-              control: value.control,
-            };
-          });
-      }
-      if (lastChange.line >= maxSourceLineIndex) {
-        postLines.push({
-          type: 'context',
-          line: '<< End of file >>',
-          control: true,
-        });
-      }
-
-      const chunkLines: ChunkLine[] = this.intRange(
-        firstChange.line,
-        lastChange.line + 1
-      )
-        .map((originalLineNumber) => {
-          const { line: sourceLine, control: isSourceControl } =
-            lineOrControlCharacters(sourceLines[originalLineNumber]);
-          const lineChanges = group.filter(
-            (change) => change.line === originalLineNumber
-          );
-          const { line: changedLine, control: isChangedControl } =
-            lineOrControlCharacters(applyToLine(sourceLine, lineChanges));
-
-          if (
-            sourceLine !== changedLine ||
-            (lineChanges.length > 0 && (isSourceControl || isChangedControl))
-          ) {
-            // Source line doesn't match the changed line; a modification happened.
-            if (!sourceLine || isSourceControl) {
-              // There's no source line, or it was empty so don't bother with
-              // an "old" and just return the new line as an addition.
-              return {
-                type: 'new',
-                line: changedLine,
-                control: isChangedControl,
-              } as const;
-            }
-
-            return [
-              {
-                type: 'old',
-                line: sourceLine,
-                control: isSourceControl,
-              } as const,
-              {
-                type: 'new',
-                line: changedLine,
-                control: isChangedControl,
-              } as const,
-            ];
-          } else {
-            // No changes, so this line is just context.
-            return {
-              type: 'context',
-              line: sourceLine,
-              control: isSourceControl,
-            } as const;
-          }
-        })
-        .reduce((total: ChunkLine[], curr) => {
-          // Flatten nested arrays.
-          if (Array.isArray(curr)) {
-            total.push(...curr);
-            return total;
-          }
-          total.push(curr);
-          return total;
-        }, []);
-
-      const lines = [...preLines, ...chunkLines, ...postLines];
-
-      return {
-        lines,
-      };
-    });
-  };
-
-  private intRange(start: number, end: number): number[] {
-    return [...Array(end - start).keys()].map((i) => i + start);
-  }
 }
