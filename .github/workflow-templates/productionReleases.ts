@@ -61,7 +61,7 @@ const createGithubRelease: Job = {
     ...basicSetup({ forMobileBuilds: false, forTests: false }),
     {
       name: 'Create Github release notes',
-      run: './scripts/create_app_store_safe_changelog.ts all release.txt',
+      run: './scripts/create_release_changelog.ts all release.txt',
     },
     {
       ...downloadIOSApp({ path: '/tmp/artifacts' }),

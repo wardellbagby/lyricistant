@@ -1,0 +1,7 @@
+{
+  "include": ["*.ts"],
+  "compilerOptions": {
+    "target": "es2017"
+  },
+  "extends": "../tsconfig.json"
+}
