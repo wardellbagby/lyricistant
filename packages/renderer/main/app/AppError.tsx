@@ -29,6 +29,9 @@ export function AppError({ error, editorText }: AppErrorProps) {
     () => window.navigator.clipboard.writeText(editorText),
     []
   );
+  const onDownloadLogs = useCallback(() => {
+    platformDelegate.send('save-logs');
+  }, []);
 
   useEffect(() => {
     logger.error('Error in renderer', error.toString());
@@ -38,11 +41,12 @@ export function AppError({ error, editorText }: AppErrorProps) {
       <DialogTitle>Application Error</DialogTitle>
       <Box paddingLeft={'32px'} paddingRight={'32px'} paddingBottom={'24px'}>
         <Typography paragraph>
-          Sorry, an error has occurred in Lyricistant. Please reload the page to
-          continue. You can copy your current lyrics to the clipboard.
+          Sorry, an error has occurred in Lyricistant. Press reload to continue,
+          but any unsaved data may be lost. You can also copy your current
+          lyrics to the clipboard, and attempt to download logs.
         </Typography>
         <Link
-          href={'https://github.com/wardellbagby/lyricistant/issues/new'}
+          href={'https://github.com/wardellbagby/lyricistant/issues/new/choose'}
           rel="noopener"
           variant={'body1'}
         >
@@ -67,10 +71,13 @@ export function AppError({ error, editorText }: AppErrorProps) {
         )}
       </Box>
       <DialogActions>
-        <Button variant={'contained'} onClick={onCopy}>
-          Copy Lyrics
+        <Button variant={'text'} onClick={onDownloadLogs}>
+          Download logs
         </Button>
-        <Button variant={'contained'} onClick={onClose}>
+        <Button variant={'text'} onClick={onCopy}>
+          Copy lyrics
+        </Button>
+        <Button variant={'text'} color={'warning'} onClick={onClose}>
           Reload
         </Button>
       </DialogActions>

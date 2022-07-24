@@ -16,8 +16,7 @@ type ModalRoutePathNames =
   | 'download'
   | 'file-history'
   | 'preferences'
-  | 'privacypolicy'
-  | 'settings';
+  | 'privacypolicy';
 
 /** The React Router compatible paths that Lyricistant can navigate to. */
 type ModalRoutePath<Name extends ModalRoutePathNames = ModalRoutePathNames> =
