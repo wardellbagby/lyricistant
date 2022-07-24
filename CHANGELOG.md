@@ -1,3 +1,33 @@
+# [1.4.0](https://github.com/wardellbagby/lyricistant/compare/v1.3.26+web...v1.4.0) (2022-07-24)
+
+
+### Bug Fixes
+
+* put max cap on file history to avoid history being lost ([030f7d9](https://github.com/wardellbagby/lyricistant/commit/030f7d9c42e77755767e6a2c56bd5c176b5ffe7b))
+* stop crashing when cancelling download logs dialog ([300a123](https://github.com/wardellbagby/lyricistant/commit/300a12354d91ce26bebf01c8580162a77d9eef59))
+
+
+### Build System
+
+* **electron:** stop doing i386 and armv7l builds ([b321bf3](https://github.com/wardellbagby/lyricistant/commit/b321bf341f05b14abdac0fcb8e7727dc79268730))
+
+
+### Features
+
+* add ability to download logs during crashes ([a4b5370](https://github.com/wardellbagby/lyricistant/commit/a4b537060a5ce1e86abe690256b5e104f06d2709))
+* compare file history changes to the current editor text ([8ecc14f](https://github.com/wardellbagby/lyricistant/commit/8ecc14f945be61186af34751af16eab7d75e8707))
+* save file history when idle instead of every 30 seconds ([861ef18](https://github.com/wardellbagby/lyricistant/commit/861ef18e14fa63927836675feabcdfe0e8bfd211))
+* show changed lines when viewing file history ([5a7617c](https://github.com/wardellbagby/lyricistant/commit/5a7617ca953eb1b58a8384a16df9f60bfac9073d))
+* show empty lines and end of file in file history ([a0a32e6](https://github.com/wardellbagby/lyricistant/commit/a0a32e628612615eb5c6c597a5eb760833cfc205))
+
+
+### BREAKING CHANGES
+
+* **electron:** Users will no longer be able to download or upgrade to
+32bit versions of Lyricistant.
+
+
+
 ## [1.3.26](https://github.com/wardellbagby/lyricistant/compare/v1.3.25+web...v1.3.26) (2022-07-15)
 
 
