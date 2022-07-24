@@ -99,7 +99,16 @@ const FileHistoryList = (props: {
     return <DialogContentText>No file history.</DialogContentText>;
   }
   if (!props.historyData) {
-    return <CircularProgress variant={'indeterminate'} />;
+    return (
+      <Box
+        width={'100%'}
+        display={'flex'}
+        justifyContent={'center'}
+        alignItems={'center'}
+      >
+        <CircularProgress size={'48px'} variant={'indeterminate'} />
+      </Box>
+    );
   }
   return (
     <List>
