@@ -125,6 +125,12 @@ const questions: inquirer.QuestionCollection = [
   },
   {
     type: 'confirm',
+    name: 'screenshots',
+    message: 'Refresh screenshots?',
+    default: true,
+  },
+  {
+    type: 'confirm',
     name: 'push',
     message: 'Push the new version now?',
   },
@@ -212,8 +218,10 @@ inquirer.prompt(questions).then(async (answers) => {
   runPrePushChecks();
   console.log(`Pre-push checks passed successfully.`);
 
-  refreshScreenshots();
-  console.log(`Screenshots updated!`);
+  if (answers['screenshots']) {
+    refreshScreenshots();
+    console.log(`Screenshots updated!`);
+  }
 
   console.log('Updating package.json with new version');
   const setNpmVersion = spawnSync('npm', [
