@@ -308,7 +308,9 @@ const groupSameTypeLines = (lines: ChunkLine[]): ChunkLine[] => {
 
   for (const line of lines) {
     if (line.type === 'context') {
-      endGrouping();
+      if (currentGroup != null) {
+        endGrouping();
+      }
       result.push(line);
       continue;
     }
