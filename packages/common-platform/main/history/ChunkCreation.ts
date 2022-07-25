@@ -92,8 +92,8 @@ export const createChunks = (source: string, changes: Change[]): Chunk[] => {
           // No changes, so this line is just context.
           return {
             type: 'context',
-            line: sourceLineData.line,
-            control: sourceLineData.control,
+            line: sourceLineData?.line ?? '<< Empty line >>',
+            control: sourceLineData?.control ?? true,
           };
         }
       })
