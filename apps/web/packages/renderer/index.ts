@@ -48,12 +48,14 @@ const getFileSystem: () => BufferFileSystem = () =>
       const result = await runIgnoringAbortErrors(logger, () =>
         fileOpen({ extensions: SUPPORTED_EXTENSIONS })
       );
-      const data = await result.arrayBuffer();
-      return {
-        path: result.name,
-        data: transfer(data, [data]),
-        handle: result.handle,
-      };
+      if (result) {
+        const data = await result.arrayBuffer();
+        return {
+          path: result.name,
+          data: transfer(data, [data]),
+          handle: result.handle,
+        };
+      }
     },
   });
 
