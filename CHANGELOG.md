@@ -1,3 +1,15 @@
+## [1.4.1](https://github.com/wardellbagby/lyricistant/compare/v1.4.0...v1.4.1) (2022-07-25)
+
+
+### Bug Fixes
+
+* don't crash when a context line doesn't exist ([581a540](https://github.com/wardellbagby/lyricistant/commit/581a54068c2cb79c6c656426f1782eb0536deafb))
+* don't crash when attempting to create chunks after multiple context lines ([b0bf1de](https://github.com/wardellbagby/lyricistant/commit/b0bf1deaf5ea96a8b24637cce36def5d723f1f39))
+* don't crash when opening new files after modifying text ([17cd5eb](https://github.com/wardellbagby/lyricistant/commit/17cd5ebe2cf5dffaa59630a05cc2e979360939fc))
+* **web:** stop showing "couldn't open file" on file open cancel ([7459dfe](https://github.com/wardellbagby/lyricistant/commit/7459dfe8ac2607d118a6115d283be261122b9128))
+
+
+
 # [1.4.0](https://github.com/wardellbagby/lyricistant/compare/v1.3.26+web...v1.4.0) (2022-07-24)
 
 
