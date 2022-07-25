@@ -55,7 +55,7 @@ const useReconfigurableExtension = (
     view.dispatch({
       effects: compartment.reconfigure(extension),
     });
-  }, [view, compartment, extension]);
+  }, [view?.dispatch, compartment, extension]);
 };
 
 export interface CodeMirrorEditorProps {

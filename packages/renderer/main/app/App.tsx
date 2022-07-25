@@ -74,6 +74,15 @@ export function App() {
     [selectedText, editorTextData]
   );
 
+  const onTextSelected = useCallback(
+    (value) => {
+      if (value && value.text) {
+        setSelectedText(value);
+      }
+    },
+    [setSelectedText]
+  );
+
   useChannel('app-title-changed', (title) => (document.title = title));
 
   useFileEvents(isModified, onPartialEditorTextDataUpdate);
@@ -138,11 +147,7 @@ export function App() {
           <Editor
             value={editorTextData}
             onTextChanged={setEditorTextData}
-            onTextSelected={(value) => {
-              if (value && value.text) {
-                setSelectedText(value);
-              }
-            }}
+            onTextSelected={onTextSelected}
             onModificationStateChanged={setIsModified}
           />
         }

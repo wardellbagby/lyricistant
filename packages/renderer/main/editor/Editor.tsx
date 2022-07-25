@@ -77,12 +77,15 @@ export const Editor: React.FC<EditorProps> = (props) => {
       });
   }, []);
 
-  const onTextChanged = useCallback((text: string) => {
-    props.onTextChanged({
-      text,
-      isTransactional: true,
-    });
-  }, []);
+  const onTextChanged = useCallback(
+    (text: string) => {
+      props.onTextChanged({
+        text,
+        isTransactional: true,
+      });
+    },
+    [props.onTextChanged]
+  );
   const {
     isModified,
     resetHistory,
