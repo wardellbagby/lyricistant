@@ -74,6 +74,10 @@ export const getBaseJestConfig = (options: {
   if (options.type === 'browser') {
     return {
       ...baseConfig,
+      setupFilesAfterEnv: [
+        ...baseConfig.setupFilesAfterEnv,
+        path.resolve(__dirname, 'browser-test-setup.js'),
+      ],
       rootDir: '.',
       transform: {
         '^.+\\.ts$': 'ts-jest',
