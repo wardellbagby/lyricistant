@@ -9,7 +9,7 @@ import {
   getEditor,
   HELLO_WORLD_LYRICS_V1_FILE,
   HELLO_WORLD_PLAIN_TEXT_FILE,
-  queryMenuButton,
+  findMenuButton,
 } from './utilities';
 
 export type PlaywrightScreen = ReturnType<typeof getQueriesForElement>;
@@ -19,6 +19,7 @@ export default (
   getDependencies: () => Promise<{
     screen: PlaywrightScreen;
     page: Page;
+    isSmallLayout: boolean;
   }>
 ) => {
   it('shows a prompt when creating a new file with changes', async () => {
@@ -37,7 +38,7 @@ export default (
     await newFileButton.click();
 
     await expect(
-      screen.queryByText('Discard unsaved changes?')
+      screen.findByText('Discard unsaved changes?')
     ).resolves.toBeTruthy();
   });
 
@@ -54,8 +55,8 @@ export default (
     await newFileButton.click();
 
     await expect(
-      screen.queryByText('Discard unsaved changes?')
-    ).resolves.toBeNull();
+      screen.findByText('Discard unsaved changes?')
+    ).rejects.toBeTruthy();
   });
 
   it('does not show a prompt when creating a new file after loading a lyrics file', async () => {
@@ -71,37 +72,47 @@ export default (
     await newFileButton.click();
 
     await expect(
-      screen.queryByText('Discard unsaved changes?')
-    ).resolves.toBeNull();
+      screen.findByText('Discard unsaved changes?')
+    ).rejects.toBeTruthy();
   });
 
   it('shows preferences', async () => {
-    const { screen } = await getDependencies();
+    const { screen, isSmallLayout } = await getDependencies();
 
-    const settings = await queryMenuButton(screen, 'Open Preferences');
+    const settings = await findMenuButton(
+      screen,
+      'Open Preferences',
+      isSmallLayout
+    );
     await settings.click();
 
-    await expect(screen.queryByText('Preferences')).resolves.toBeTruthy();
-    await expect(screen.queryByText('About Lyricistant')).resolves.toBeTruthy();
+    await expect(screen.findByText('Preferences')).resolves.toBeTruthy();
+    await expect(screen.findByText('About Lyricistant')).resolves.toBeTruthy();
 
     const save = await screen.findByRole('button', { name: 'Save' });
     await save.click();
 
     await waitFor(async () => {
-      await expect(screen.queryByText('Preferences')).resolves.toBeNull();
-      await expect(screen.queryByText('About Lyricistant')).resolves.toBeNull();
+      await expect(screen.findByText('Preferences')).rejects.toBeDefined();
+      await expect(
+        screen.findByText('About Lyricistant')
+      ).rejects.toBeDefined();
     });
   });
 
   it('loads v1 file history', async () => {
-    const { screen, page } = await getDependencies();
+    const { screen, page, isSmallLayout } = await getDependencies();
     const firstLineChangeLabel = 'Jul 20, 2022, 5:28:49 PM';
 
     await dropFile(page, screen, BURY_ME_LOOSE_V1_FILE_HISTORY);
 
     await expect(screen.findByText(BURY_ME_LOOSE_LYRICS)).resolves.toBeTruthy();
 
-    const fileHistory = await queryMenuButton(screen, 'View file history');
+    const fileHistory = await findMenuButton(
+      screen,
+      'View file history',
+      isSmallLayout
+    );
     await fileHistory.click();
 
     await expect(screen.findByText('File History')).resolves.toBeTruthy();
@@ -128,14 +139,18 @@ export default (
   });
 
   it('loads v2 file history', async () => {
-    const { screen, page } = await getDependencies();
+    const { screen, page, isSmallLayout } = await getDependencies();
     const firstLineChangeLabel = 'Jul 23, 2022, 11:02:41 AM';
 
     await dropFile(page, screen, BURY_ME_LOOSE_V2_FILE_HISTORY);
 
     await expect(screen.findByText(BURY_ME_LOOSE_LYRICS)).resolves.toBeTruthy();
 
-    const fileHistory = await queryMenuButton(screen, 'View file history');
+    const fileHistory = await findMenuButton(
+      screen,
+      'View file history',
+      isSmallLayout
+    );
     await fileHistory.click();
 
     await expect(screen.findByText('File History')).resolves.toBeTruthy();

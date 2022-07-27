@@ -63,24 +63,23 @@ export const BURY_ME_LOOSE_PRE_LYRICS = 'Bury me loose';
 export const getEditor = async (screen: PlaywrightScreen) =>
   await screen.findByRole('textbox');
 
-export const queryMenuButton = async (
+export const findMenuButton = async (
   screen: PlaywrightScreen,
-  name: string
+  name: string,
+  isSmallLayout: boolean
 ) => {
-  const button = await screen.queryByRole('button', {
-    name,
-  });
-
-  if (button) {
-    return button;
-  } else {
+  if (isSmallLayout) {
     // Assume its hiding in the overflow menu.
-    const overflowButton = await screen.queryByRole('button', {
+    const overflowButton = await screen.findByRole('button', {
       name: 'Additional Menu Buttons',
     });
-    await overflowButton?.click();
+    await overflowButton.click();
 
-    return await screen.queryByRole('menuitem', {
+    return screen.findByRole('menuitem', {
+      name,
+    });
+  } else {
+    return screen.findByRole('button', {
       name,
     });
   }

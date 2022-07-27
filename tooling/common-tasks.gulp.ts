@@ -61,8 +61,6 @@ export const getBaseJestConfig = (options: {
     displayName: `${getLabel(options.type)} - ${options.name}`,
     verbose: true,
     moduleNameMapper: {
-      '^.+\\.(png|css|scss)$': 'identity-obj-proxy',
-      '^.+\\.svg$': path.resolve(__dirname, 'jest-svg-mock.js'),
       ...pathsToModuleNameMapper(compilerOptions.paths),
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
@@ -86,6 +84,12 @@ export const getBaseJestConfig = (options: {
   }
   return {
     ...baseConfig,
+    moduleNameMapper: {
+      // The order here matters. First match is always picked.
+      '^.+\\.(png|css|scss)$': 'identity-obj-proxy',
+      '^.+\\.svg$': path.resolve(__dirname, 'jest-svg-mock.js'),
+      ...baseConfig.moduleNameMapper,
+    },
     testEnvironment: getJestEnv(options.type),
     fakeTimers: {
       advanceTimers: true,

@@ -7,9 +7,9 @@ import { getDocument, getQueriesForElement } from 'playwright-testing-library';
 import waitForExpect from 'wait-for-expect';
 
 const viewports = [
-  { label: 'default' },
-  { width: 500, height: 500, label: '500 x 500' },
-  { width: 1200, height: 1200, label: '1200 x 1200' },
+  { label: 'default', isSmallLayout: false },
+  { width: 500, height: 500, label: '500 x 500', isSmallLayout: true },
+  { width: 1200, height: 1200, label: '1200 x 1200', isSmallLayout: false },
 ] as const;
 
 describe.each(viewports)('Electron launch - $label', (viewport) => {
@@ -92,5 +92,6 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
   addCommonUiTests(async () => ({
     page: window,
     screen: getQueriesForElement(await getDocument(window)),
+    isSmallLayout: viewport.isSmallLayout,
   }));
 });

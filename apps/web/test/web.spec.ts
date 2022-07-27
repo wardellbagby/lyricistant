@@ -1,6 +1,6 @@
 import path from 'path';
 import addCommonUiTests, {
-  queryMenuButton,
+  findMenuButton,
   PlaywrightScreen,
 } from '@lyricistant/common-ui-tests';
 import {
@@ -26,24 +26,27 @@ import waitForExpect from 'wait-for-expect';
 interface Viewport {
   width: number;
   height: number;
+  isSmallLayout: boolean;
 }
-
-const viewports: Viewport[] = [
-  {
-    width: 360,
-    height: 780,
-  },
-  {
-    width: 1200,
-    height: 1200,
-  },
-];
 
 interface Browser {
   type: BrowserType;
   label: string;
   args?: string[];
 }
+
+const viewports: Viewport[] = [
+  {
+    width: 360,
+    height: 780,
+    isSmallLayout: true,
+  },
+  {
+    width: 1200,
+    height: 1200,
+    isSmallLayout: false,
+  },
+];
 
 const browsers: Browser[] = [
   { type: webkit, label: 'WebKit' },
@@ -60,13 +63,15 @@ const browsers: Browser[] = [
   },
 ];
 
+const forceLegacyWebs = [false, true];
+
 interface Arg {
   viewport: Viewport;
   browser: Browser;
   forceLegacyWeb: boolean;
 }
 
-const args: Arg[] = flatMap([true, false], (forceLegacyWeb) =>
+const args: Arg[] = flatMap(forceLegacyWebs, (forceLegacyWeb) =>
   flatMap(viewports, (viewport) =>
     flatMap(browsers, (browser) => ({
       viewport,
@@ -152,7 +157,11 @@ describe.each(args)(
         screen.queryByText('Download Lyricistant')
       ).resolves.toBeNull();
 
-      const settings = await queryMenuButton(screen, 'Download Lyricistant');
+      const settings = await findMenuButton(
+        screen,
+        'Download Lyricistant',
+        viewport.isSmallLayout
+      );
       await settings.click();
 
       await expect(
@@ -172,6 +181,7 @@ describe.each(args)(
     addCommonUiTests(async () => ({
       page,
       screen,
+      isSmallLayout: viewport.isSmallLayout,
     }));
   }
 );
