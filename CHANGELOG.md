@@ -1,3 +1,12 @@
+## [1.4.2](https://github.com/wardellbagby/lyricistant/compare/v1.4.1...v1.4.2) (2022-07-31)
+
+
+### Bug Fixes
+
+* **electron:** fix issue with loading v1 lyrics in electron ([00a97cf](https://github.com/wardellbagby/lyricistant/commit/00a97cf79f29988de1af9e62bec2166443beb408))
+
+
+
 ## [1.4.1](https://github.com/wardellbagby/lyricistant/compare/v1.4.0...v1.4.1) (2022-07-25)
 
 
