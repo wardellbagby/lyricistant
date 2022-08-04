@@ -2,12 +2,9 @@ import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_feather.svg';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { RhymeButton } from '@lyricistant/renderer/rhymes/RhymeButton';
-import { RhymeDrawer } from '@lyricistant/renderer/rhymes/RhymeDrawer';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
-import { ExpandMore } from '@mui/icons-material';
 import {
   Box,
-  IconButton,
   LinearProgress,
   Theme,
   Typography,
@@ -15,137 +12,35 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useMachine } from '@xstate/react';
-import { DotsVertical } from 'mdi-material-ui';
-import React, {
-  ReactNode,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
-import useResizeObserver from 'use-resize-observer';
 import { Rhyme } from './rhyme';
-
-const useRhymeListStyles = makeStyles<
-  Theme,
-  { listDirection: 'row' | 'column'; isSmallLayout: boolean }
->((theme: Theme) => ({
-  rhyme: {
-    'text-align': 'center',
-    overflow: 'hidden',
-    '&:hover': {
-      background: theme.palette.background.paper,
-    },
-    padding: '12px',
-    margin: '0px',
-  },
-  listContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: ({ listDirection }) => listDirection,
-    height: ({ isSmallLayout }) => (isSmallLayout ? 'auto' : '100%'),
-    flexGrow: 1,
-    width: '100%',
-    overflow: 'hidden',
-    color: theme.palette.text.disabled,
-    '&:hover': {
-      color: theme.palette.text.primary,
-    },
-  },
-}));
 
 interface RhymesListProps {
   rhymes: Rhyme[];
-  postItemComponent?: ReactNode;
   onRhymeClicked: (rhyme: Rhyme) => void;
-  onMoreRhymes: (hasMoreRhymes: boolean) => void;
 }
 
-const RhymesList = ({
-  rhymes,
-  onRhymeClicked,
-  onMoreRhymes,
-  postItemComponent,
-}: RhymesListProps) => {
-  const isSmallLayout = useSmallLayout();
-  const flexDirection = useMemo(
-    () => (isSmallLayout ? 'row' : 'column'),
-    [isSmallLayout]
-  );
-
-  const classes = useRhymeListStyles({
-    listDirection: flexDirection,
-    isSmallLayout,
-  });
-  const {
-    ref,
-    width: containerWidth = 0,
-    height: containerHeight = 0,
-  } = useResizeObserver<HTMLDivElement>();
-
-  const rhymeHeight = useRhymeComponentHeight();
-  const rhymeWidth = useRhymeComponentWidth();
-
-  const children = useMemo(() => {
-    let containerDimension;
-    let rhymeDimension: number;
-
-    if (isSmallLayout) {
-      rhymeDimension = rhymeWidth as number;
-      containerDimension = containerWidth;
-    } else {
-      rhymeDimension = rhymeHeight as number;
-      containerDimension = containerHeight;
-    }
-
-    const displayableChildrenCount = Math.floor(
-      (containerDimension - 1) / rhymeDimension
-    );
-    const displayableRhymes = rhymes.slice(
-      0,
-      Math.min(displayableChildrenCount, rhymes.length)
-    );
-
-    return displayableRhymes.map((rhyme) => (
+const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => (
+  <Box
+    display={'flex'}
+    flexWrap={'wrap'}
+    gap={'4px'}
+    height={'100%'}
+    width={'100%'}
+    alignContent={'start'}
+    flexDirection={'row'}
+    overflow={'auto'}
+  >
+    {rhymes.map((rhyme) => (
       <RhymeButton
         rhyme={rhyme}
         key={rhyme.word}
-        height={rhymeHeight}
-        width={rhymeWidth}
-        className={classes.rhyme}
         onClick={() => onRhymeClicked(rhyme)}
       />
-    ));
-  }, [
-    containerWidth,
-    containerHeight,
-    rhymeHeight,
-    rhymeWidth,
-    rhymes,
-    isSmallLayout,
-    onRhymeClicked,
-  ]);
-
-  useEffect(() => {
-    onMoreRhymes(rhymes.length > children.length);
-  }, [onMoreRhymes, rhymes, children]);
-
-  return (
-    <Box
-      display={'flex'}
-      flexWrap={'nowrap'}
-      height={!isSmallLayout ? '100%' : undefined}
-      width={'100%'}
-      flexDirection={flexDirection}
-    >
-      <div ref={ref} className={classes.listContainer}>
-        {children}
-      </div>
-      {postItemComponent}
-    </Box>
-  );
-};
+    ))}
+  </Box>
+);
 
 const useLoadingIndicatorStyles = makeStyles<Theme, { display: boolean }>(
   (theme: Theme) => ({
@@ -156,7 +51,7 @@ const useLoadingIndicatorStyles = makeStyles<Theme, { display: boolean }>(
       backgroundColor: theme.palette.action.disabled,
     },
     progressBarBackground: {
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: '#00000000',
     },
   })
 );
@@ -234,8 +129,6 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
   const [state, send] = useMachine(rhymesMachine);
 
   const handleError = useErrorHandler();
-  const [hasMoreRhymes, setHasMoreRhymes] = useState(false);
-  const [showMoreRhymes, setShowMoreRhymes] = useState(false);
 
   const [preferences] = useChannelData('prefs-updated');
 
@@ -259,7 +152,7 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
   const rhymes: Rhyme[] = state.context.rhymes;
 
   return (
-    <Box display={'flex'} flexDirection={'column'}>
+    <Box display={'flex'} flexDirection={'column'} height={'100%'}>
       <LoadingIndicator display={state.matches('loading')} />
 
       {state.matches('inactive') && <HelperText text={'Waiting for lyrics'} />}
@@ -267,70 +160,8 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
       {state.matches('no-results') && <HelperText text={'No rhymes found'} />}
 
       {rhymes.length > 0 && (
-        <RhymesList
-          rhymes={rhymes}
-          onMoreRhymes={setHasMoreRhymes}
-          postItemComponent={
-            hasMoreRhymes &&
-            rhymes.length > 0 && (
-              <ShowAllButton
-                onClick={() => {
-                  setShowMoreRhymes(true);
-                }}
-              />
-            )
-          }
-          onRhymeClicked={props.onRhymeClicked}
-        />
+        <RhymesList rhymes={rhymes} onRhymeClicked={props.onRhymeClicked} />
       )}
-      <RhymeDrawer
-        open={showMoreRhymes}
-        rhymes={rhymes}
-        query={props.query}
-        onClose={() => setShowMoreRhymes(false)}
-        onRhymeClicked={(rhyme) => {
-          setShowMoreRhymes(false);
-          props.onRhymeClicked(rhyme);
-        }}
-      />
     </Box>
   );
-};
-
-const useShowAllButtonStyles = makeStyles((theme: Theme) => ({
-  button: {
-    color: theme.palette.text.disabled,
-  },
-}));
-const ShowAllButton = ({ onClick }: { onClick: () => void }) => {
-  const { button } = useShowAllButtonStyles();
-  const isSmallLayout = useSmallLayout();
-
-  return (
-    <IconButton
-      className={button}
-      style={{ height: isSmallLayout ? '100%' : undefined }}
-      onClick={onClick}
-      size="large"
-      aria-label={'Show All Rhymes'}
-    >
-      {isSmallLayout ? <DotsVertical /> : <ExpandMore />}
-    </IconButton>
-  );
-};
-
-const useRhymeComponentHeight = () => {
-  if (useSmallLayout()) {
-    return 'auto';
-  } else {
-    return 80;
-  }
-};
-
-const useRhymeComponentWidth = () => {
-  if (useSmallLayout()) {
-    return 150;
-  } else {
-    return '100%';
-  }
 };

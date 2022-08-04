@@ -46,7 +46,9 @@ const fetchRhymes = async (
       break;
   }
 
-  return results.filter((rhyme) => rhyme && rhyme.word && rhyme.score);
+  return results
+    .filter((rhyme) => rhyme && rhyme.word && rhyme.score)
+    .slice(0, 50);
 };
 
 /** A State Machine that handles fetching rhymes based on a query and returning a result. */

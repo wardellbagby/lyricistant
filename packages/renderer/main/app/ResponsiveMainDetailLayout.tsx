@@ -1,13 +1,6 @@
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
-import { Box, Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Box, Paper } from '@mui/material';
 import React, { ReactNode, useEffect } from 'react';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  divider: {
-    background: theme.palette.background.paper,
-  },
-}));
 
 interface ResponsiveMenuDetailLayoutProps {
   /** The main component that should be displayed. */
@@ -17,6 +10,15 @@ interface ResponsiveMenuDetailLayoutProps {
   /** The menu component that should be displayed. */
   menu: ReactNode;
 }
+
+const DetailPaper = ({ children }: { children: ReactNode }) => (
+  <Paper
+    elevation={1}
+    sx={{ padding: '8px', margin: '16px', maxHeight: '100%' }}
+  >
+    {children}
+  </Paper>
+);
 
 /**
  * A responsive layout with a main, detail, and menu section that changes based
@@ -29,21 +31,19 @@ export const ResponsiveMainDetailLayout = ({
   detail,
   menu,
 }: ResponsiveMenuDetailLayoutProps) => {
-  const classes = useStyles();
   const isSmallLayout = useSmallLayout();
   let displayableChildren: ReactNode[];
   if (isSmallLayout) {
     displayableChildren = [
       <React.Fragment key={'menu'}>{menu}</React.Fragment>,
       <React.Fragment key={'main'}>{main}</React.Fragment>,
-      <div key={'main-detail-divider'} className={classes.divider} />,
-      <React.Fragment key={'detail'}>{detail}</React.Fragment>,
+      <DetailPaper key={'detail'}>{detail}</DetailPaper>,
     ];
   } else {
     displayableChildren = [
       <React.Fragment key={'menu'}>{menu}</React.Fragment>,
       <React.Fragment key={'main'}>{main}</React.Fragment>,
-      <React.Fragment key={'detail'}>{detail}</React.Fragment>,
+      <DetailPaper key={'detail'}>{detail}</DetailPaper>,
     ];
   }
 
@@ -69,7 +69,7 @@ export const ResponsiveMainDetailLayout = ({
 
 const createGridTemplateRows = (isSmallLayout: boolean) => {
   if (isSmallLayout) {
-    return `auto minmax(200px, 1fr) 4px auto`;
+    return `auto minmax(200px, 1fr) minmax(auto, 35%)`;
   } else {
     return `100%`;
   }
@@ -79,6 +79,6 @@ const createGridTemplateColumns = (isSmallLayout: boolean) => {
   if (isSmallLayout) {
     return `100%`;
   } else {
-    return `auto minmax(200px, 1fr) minmax(25%, auto)`;
+    return `auto minmax(200px, 1fr) 25%`;
   }
 };

@@ -181,7 +181,6 @@
     "syllable": "^4.1.0",
     "tslib": "^2.4.0",
     "use-debounce": "^8.0.2",
-    "use-resize-observer": "^9.0.2",
     "xstate": "^4.32.1"
   },
   "config": {
