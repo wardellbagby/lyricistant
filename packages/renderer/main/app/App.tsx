@@ -1,7 +1,7 @@
 import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { AppError } from '@lyricistant/renderer/app/AppError';
 import { goTo, Modals } from '@lyricistant/renderer/app/Modals';
-import { TabbedPane } from '@lyricistant/renderer/detail/TabbedPane';
+import { DetailPane } from '@lyricistant/renderer/detail/DetailPane';
 import { Editor, EditorTextData } from '@lyricistant/renderer/editor/Editor';
 import {
   getRootError,
@@ -12,9 +12,6 @@ import {
   useChannel,
   useChannelData,
 } from '@lyricistant/renderer/platform/useChannel';
-import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import { Rhymes } from '@lyricistant/renderer/rhymes/Rhymes';
-import { ScriptOutline } from 'mdi-material-ui';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
@@ -23,6 +20,7 @@ import { useHistory } from 'react-router-dom';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
 
 const MINIMUM_IDLE_TIME = 15_000;
+
 /**
  * The Lyricistant app.
  *
@@ -58,19 +56,19 @@ export function App() {
     },
     [editorTextData]
   );
-  const onRhymeClicked = useCallback(
-    (rhyme: Rhyme) => {
+  const onTextReplacement = useCallback(
+    (text: string) => {
       const prefix = editorTextData.text.substring(0, selectedText.from);
       const suffix = editorTextData.text.substring(selectedText.to);
 
       setEditorTextData({
-        text: prefix + rhyme.word + suffix,
+        text: prefix + text + suffix,
         isTransactional: true,
       });
       setSelectedText({
-        text: rhyme.word,
+        text,
         from: selectedText.from,
-        to: selectedText.from + rhyme.word.length,
+        to: selectedText.from + text.length,
       });
     },
     [selectedText, editorTextData]
@@ -154,18 +152,15 @@ export function App() {
           />
         }
         detail={
-          <TabbedPane
-            tabs={[
-              {
-                icon: <ScriptOutline />,
-                child: (
-                  <Rhymes
-                    query={selectedText?.text}
-                    onRhymeClicked={onRhymeClicked}
-                  />
-                ),
-              },
-            ]}
+          <DetailPane
+            rhymeProps={{
+              onRhymeClicked: (rhyme) => onTextReplacement(rhyme.word),
+              query: selectedText?.text,
+            }}
+            dictionaryProps={{
+              onRelatedTextClicked: onTextReplacement,
+              query: selectedText?.text,
+            }}
           />
         }
       />

@@ -79,7 +79,7 @@ export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>({
       states: {
         debouncing: {
           after: {
-            400: 'active',
+            1000: 'active',
           },
         },
         active: {

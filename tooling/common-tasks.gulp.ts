@@ -62,6 +62,7 @@ export const getBaseJestConfig = (options: {
     verbose: true,
     moduleNameMapper: {
       ...pathsToModuleNameMapper(compilerOptions.paths),
+      '^lodash-es$': 'lodash',
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
     moduleDirectories: [rootDirectory, 'node_modules'],
