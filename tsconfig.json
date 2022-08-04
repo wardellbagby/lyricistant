@@ -17,6 +17,7 @@
     "baseUrl": "./",
     "rootDir": "./",
     "importHelpers": true,
+    "preserveValueImports": true,
     "plugins": [
       { "transform": "ts-react-display-name" },
       { "transform": "./di-ts-transformer.js" }
