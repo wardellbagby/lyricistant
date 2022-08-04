@@ -26,8 +26,6 @@ const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => (
     display={'flex'}
     flexWrap={'wrap'}
     gap={'4px'}
-    height={'100%'}
-    width={'100%'}
     alignContent={'start'}
     flexDirection={'row'}
     overflow={'auto'}
@@ -152,7 +150,12 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
   const rhymes: Rhyme[] = state.context.rhymes;
 
   return (
-    <Box display={'flex'} flexDirection={'column'} height={'100%'}>
+    <Box
+      display={'flex'}
+      flexDirection={'column'}
+      flex={'1 0 auto'}
+      gap={'8px'}
+    >
       <LoadingIndicator display={state.matches('loading')} />
 
       {state.matches('inactive') && <HelperText text={'Waiting for lyrics'} />}

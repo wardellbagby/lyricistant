@@ -1,6 +1,7 @@
 import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { AppError } from '@lyricistant/renderer/app/AppError';
 import { goTo, Modals } from '@lyricistant/renderer/app/Modals';
+import { TabbedPane } from '@lyricistant/renderer/detail/TabbedPane';
 import { Editor, EditorTextData } from '@lyricistant/renderer/editor/Editor';
 import {
   getRootError,
@@ -13,6 +14,7 @@ import {
 } from '@lyricistant/renderer/platform/useChannel';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { Rhymes } from '@lyricistant/renderer/rhymes/Rhymes';
+import { ScriptOutline } from 'mdi-material-ui';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
@@ -152,7 +154,19 @@ export function App() {
           />
         }
         detail={
-          <Rhymes query={selectedText?.text} onRhymeClicked={onRhymeClicked} />
+          <TabbedPane
+            tabs={[
+              {
+                icon: <ScriptOutline />,
+                child: (
+                  <Rhymes
+                    query={selectedText?.text}
+                    onRhymeClicked={onRhymeClicked}
+                  />
+                ),
+              },
+            ]}
+          />
         }
       />
       <Modals />
