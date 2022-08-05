@@ -10,5 +10,9 @@ export const provideUiConfig: UiConfigProvider = () => ({
   promptOnUrlChange: true,
 });
 
-export const formatTitle: TitleFormatter = (filename: string) =>
-  `Lyricistant - ${filename ?? 'Untitled'}`;
+export const formatTitle: TitleFormatter = (filename: string) => {
+  if (filename && filename.trim().length > 0) {
+    return `Lyricistant - ${filename}`;
+  }
+  return 'Lyricistant';
+};

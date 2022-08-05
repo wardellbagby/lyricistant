@@ -126,10 +126,9 @@ describe.each(args)(
       await browserContext.close();
     });
 
-    it('has a title of Lyricistant - Untitled', async () => {
+    it('has a title of Lyricistant', async () => {
       await waitForExpect(
-        async () =>
-          await expect(page.title()).resolves.toBe('Lyricistant - Untitled')
+        async () => await expect(page.title()).resolves.toBe('Lyricistant')
       );
     });
 
