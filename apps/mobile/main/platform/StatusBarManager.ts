@@ -17,11 +17,11 @@ export class StatusBarManager implements Manager {
       switch (theme) {
         case ColorScheme.Light:
           style = Style.Light;
-          color = systemPalette?.surface ?? '#E0E0E0';
+          color = systemPalette?.background ?? '#fafafa';
           break;
         case ColorScheme.Dark:
           style = Style.Dark;
-          color = systemPalette?.surface ?? '#232323';
+          color = systemPalette?.background ?? '#141414';
           break;
         case ColorScheme.System:
           style = Style.Default;

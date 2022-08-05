@@ -239,9 +239,9 @@ export const Menu: React.FC<MenuProps> = (props) => {
     <Box
       marginBottom={isSmallLayout ? '8px' : 'inherit'}
       marginRight={isSmallLayout ? 'inherit' : '8px'}
-      boxShadow={1}
+      padding={'8px'}
     >
-      <Paper square className={classes.menu} color={theme.palette.primary.main}>
+      <Paper className={classes.menu} color={theme.palette.primary.main}>
         <MenuBar
           direction={direction}
           leading={leadingIcons}

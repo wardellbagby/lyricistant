@@ -15,6 +15,7 @@ import {
   SystemTheme,
 } from '@lyricistant/common/theme/SystemTheme';
 
+// TODO Make this manage the renderer palette as well & update StatusBarManager to take advantage.
 export class PreferenceManager implements Manager {
   private onThemeChangedListeners: Array<
     (theme: ColorScheme, systemPalette: SystemPalette) => void
