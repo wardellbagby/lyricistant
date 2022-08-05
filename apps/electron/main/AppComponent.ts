@@ -1,21 +1,18 @@
 import { ElectronAppData } from '@electron-app/platform/ElectronAppData';
 import { ElectronBuffers } from '@electron-app/platform/ElectronBuffers';
-import type { ElectronFiles } from '@electron-app/platform/ElectronFiles';
-import type { ElectronLogger } from '@electron-app/platform/ElectronLogger';
-import type { ElectronPreferences } from '@electron-app/platform/ElectronPreferences';
-import type { ElectronRecentFiles } from '@electron-app/platform/ElectronRecentFiles';
-import type { ElectronSystemThemeProvider } from '@electron-app/platform/ElectronSystemThemeProvider';
+import { ElectronFiles } from '@electron-app/platform/ElectronFiles';
+import { ElectronLogger } from '@electron-app/platform/ElectronLogger';
+import { ElectronPreferences } from '@electron-app/platform/ElectronPreferences';
+import { ElectronRecentFiles } from '@electron-app/platform/ElectronRecentFiles';
+import { ElectronSystemThemeProvider } from '@electron-app/platform/ElectronSystemThemeProvider';
 import { ElectronTimes } from '@electron-app/platform/ElectronTimes';
-import type { QuitManager } from '@electron-app/platform/QuitManager';
+import { QuitManager } from '@electron-app/platform/QuitManager';
 import {
   formatTitle,
   provideUiConfig,
 } from '@electron-app/platform/UiConfigProvider';
 import { UpdateManager } from '@electron-app/platform/UpdateManager';
-import type {
-  FileSystem,
-  NodeFileSystem,
-} from '@electron-app/wrappers/FileSystem';
+import { FileSystem, NodeFileSystem } from '@electron-app/wrappers/FileSystem';
 import { AxiosHttpClient, HttpClient } from '@electron-app/wrappers/HttpClient';
 import { ElectronRendererDelegate } from '@electron-delegates/Delegates';
 import {

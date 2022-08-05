@@ -2,7 +2,7 @@ import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { FileHistoryManager } from '@lyricistant/common-platform/history/FileHistoryManager';
 import { LogManager } from '@lyricistant/common-platform/logging/LogManager';
-import type { Managers } from '@lyricistant/common-platform/Managers';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
 import { registerCoreDOMPlatform } from '@lyricistant/core-dom-platform/AppComponents';

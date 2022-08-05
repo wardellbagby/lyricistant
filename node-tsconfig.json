@@ -6,8 +6,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "allowJs": true,
-    "preserveValueImports": false
+    "allowJs": true
   },
   "extends": "./tsconfig.json"
 }
