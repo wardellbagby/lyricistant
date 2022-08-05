@@ -11,20 +11,22 @@ import { useMachine } from '@xstate/react';
 import React, { useEffect, useMemo } from 'react';
 
 export interface DictionaryProps {
-  query: string;
+  query?: string;
   onRelatedTextClicked: (text: string) => void;
+  loadOnQueryChange: boolean;
 }
 export const Dictionary = ({
   query,
   onRelatedTextClicked,
+  loadOnQueryChange,
 }: DictionaryProps) => {
   const [state, send] = useMachine(dictionaryMachine);
 
   useEffect(() => {
-    if (query) {
+    if (loadOnQueryChange && query) {
       send({ type: 'INPUT', input: query });
     }
-  }, [query]);
+  }, [query, loadOnQueryChange]);
 
   const meanings: Meaning[] = state.context.result;
 
@@ -36,7 +38,7 @@ export const Dictionary = ({
       height={'100%'}
       width={'100%'}
     >
-      <LoadingIndicator display={state.matches('loading.active')} />
+      <LoadingIndicator display={state.matches('loading')} />
 
       {state.matches('waiting') && (
         <NullStateText text={'Waiting for lyrics'} />

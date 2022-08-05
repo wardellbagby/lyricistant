@@ -45,6 +45,11 @@ export interface RhymesProps {
    * @param rhyme The rhyme that was clicked.
    */
   onRhymeClicked: (rhyme: Rhyme) => void;
+  /**
+   * When true, attempts to load new rhymes when the query changes. When false,
+   * does nothing on query change.
+   */
+  loadOnQueryChange: boolean;
 }
 
 /**
@@ -60,7 +65,7 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
   const [preferences] = useChannelData('prefs-updated');
 
   useLayoutEffect(() => {
-    if (!props.query || !preferences) {
+    if (!props.loadOnQueryChange || !props.query || !preferences) {
       return;
     }
     send({
@@ -68,7 +73,7 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
       input: props.query,
       rhymeSource: preferences.rhymeSource,
     });
-  }, [props.query, preferences]);
+  }, [props.query, props.loadOnQueryChange, preferences]);
 
   useEffect(() => {
     if (state.matches('error')) {
@@ -86,7 +91,7 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
       height={'100%'}
       width={'100%'}
     >
-      <LoadingIndicator display={state.matches('loading.active')} />
+      <LoadingIndicator display={state.matches('loading')} />
 
       {state.matches('inactive') && (
         <NullStateText text={'Waiting for lyrics'} />

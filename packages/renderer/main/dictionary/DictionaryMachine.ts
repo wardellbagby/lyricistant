@@ -92,12 +92,6 @@ export const dictionaryMachine = createMachine<
           input: (context, event) => event.input,
         }),
       },
-      {
-        target: 'no-results',
-        actions: assign({
-          result: [],
-        }),
-      },
     ],
   },
   states: {
