@@ -69,7 +69,7 @@ export const ResponsiveMainDetailLayout = ({
 
 const createGridTemplateRows = (isSmallLayout: boolean) => {
   if (isSmallLayout) {
-    return `auto minmax(200px, 1fr) minmax(auto, 35%)`;
+    return `auto minmax(200px, 1fr) minmax(auto, 45%)`;
   } else {
     return `100%`;
   }

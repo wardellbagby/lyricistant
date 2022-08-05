@@ -144,7 +144,7 @@ export function FileHistory(props: FileHistoryProps) {
 
   const anchor = useSmallLayout() ? 'bottom' : 'right';
 
-  const drawerStyles: SxProps =
+  const paperBounds: SxProps =
     anchor === 'right'
       ? { width: '35%', maxWidth: '400px' }
       : { height: '50%', maxHeight: '500px' };
@@ -179,9 +179,8 @@ export function FileHistory(props: FileHistoryProps) {
       <Drawer
         onClose={onClose}
         open={props.open}
-        className={'paper'}
         anchor={anchor}
-        PaperProps={{ sx: drawerStyles }}
+        PaperProps={{ sx: paperBounds }}
       >
         <DialogTitle>File History</DialogTitle>
         <Divider />

@@ -22,6 +22,8 @@ const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => (
     alignContent={'start'}
     flexDirection={'row'}
     overflow={'auto'}
+    paddingLeft={'16px'}
+    paddingRight={'16px'}
   >
     {rhymes.map((rhyme) => (
       <WordChip
@@ -84,7 +86,7 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
       height={'100%'}
       width={'100%'}
     >
-      <LoadingIndicator display={state.matches('loading')} />
+      <LoadingIndicator display={state.matches('loading.active')} />
 
       {state.matches('inactive') && (
         <NullStateText text={'Waiting for lyrics'} />

@@ -36,7 +36,7 @@ export const Dictionary = ({
       height={'100%'}
       width={'100%'}
     >
-      <LoadingIndicator display={state.matches('loading')} />
+      <LoadingIndicator display={state.matches('loading.active')} />
 
       {state.matches('waiting') && (
         <NullStateText text={'Waiting for lyrics'} />
@@ -62,7 +62,7 @@ const MeaningList = (props: {
   meanings: Meaning[];
   onRelatedTextClicked: (word: string) => void;
 }) => (
-  <Box sx={{ overflow: 'auto' }}>
+  <Box sx={{ overflow: 'auto', paddingLeft: '16px', paddingRight: '16px' }}>
     <Typography variant={'h5'}>{props.query}</Typography>
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {props.meanings.map((meaning, index) => (

@@ -5,8 +5,20 @@ import {
 import { Rhymes, RhymesProps } from '@lyricistant/renderer/rhymes/Rhymes';
 import { Box, Tab, Tabs } from '@mui/material';
 import { BookAlphabet, ScriptOutline } from 'mdi-material-ui';
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 
+const Panel = ({
+  currentTabIndex,
+  index,
+  children,
+}: PropsWithChildren<{
+  currentTabIndex: number;
+  index: number;
+}>) => (
+  <Box display={currentTabIndex !== index ? 'none' : undefined} minHeight={0}>
+    {children}
+  </Box>
+);
 interface DetailPaneProps {
   rhymeProps: RhymesProps;
   dictionaryProps: DictionaryProps;
@@ -32,12 +44,12 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
         <Tab icon={<ScriptOutline />} />
         <Tab icon={<BookAlphabet />} />
       </Tabs>
-      <Box display={tabIndex !== 0 ? 'none' : undefined} minHeight={0}>
+      <Panel currentTabIndex={tabIndex} index={0}>
         <Rhymes {...props.rhymeProps} />
-      </Box>
-      <Box display={tabIndex !== 1 ? 'none' : undefined} minHeight={0}>
+      </Panel>
+      <Panel currentTabIndex={tabIndex} index={1}>
         <Dictionary {...props.dictionaryProps} />
-      </Box>
+      </Panel>
     </Box>
   );
 };
