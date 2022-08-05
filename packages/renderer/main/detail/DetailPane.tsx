@@ -4,7 +4,7 @@ import {
 } from '@lyricistant/renderer/dictionary/Dictionary';
 import { Rhymes, RhymesProps } from '@lyricistant/renderer/rhymes/Rhymes';
 import { Box, Tab, Tabs } from '@mui/material';
-import { BookSearch, ScriptOutline } from 'mdi-material-ui';
+import { BookAlphabet, ScriptOutline } from 'mdi-material-ui';
 import React, { useState } from 'react';
 
 interface DetailPaneProps {
@@ -30,7 +30,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
         sx={{ flex: '0 0 auto' }}
       >
         <Tab icon={<ScriptOutline />} />
-        <Tab icon={<BookSearch />} />
+        <Tab icon={<BookAlphabet />} />
       </Tabs>
       <Box display={tabIndex !== 0 ? 'none' : undefined} minHeight={0}>
         <Rhymes {...props.rhymeProps} />
