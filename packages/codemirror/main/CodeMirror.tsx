@@ -15,11 +15,29 @@ import {
 } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { useTheme } from '@mui/material';
+import { sample } from 'lodash-es';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
-import { TextSelectionData, textSelection } from './textSelection';
+import { textSelection, TextSelectionData } from './textSelection';
 
+const placeholders = [
+  'Type your lyrics...',
+  'Write your epic...',
+  'Show me your poetry...',
+  'Jot down your thoughts...',
+  'Input musings here...',
+  'Pen your next masterpiece...',
+  "Let's write some rhymes...",
+  "Let's start your song...",
+  'Tell me your story...',
+  'Speak (err, write?) your mind...',
+  'Let me assist your lyrics...',
+  'Create your next classic...',
+  "Let's make your magnum opus...",
+  'What do you want to write today?',
+  'Put your feelings to words...',
+];
 const textChanged = (onTextChanged: (text: string) => void) =>
   EditorView.updateListener.of((update) => {
     if (update.docChanged) {
@@ -69,6 +87,7 @@ export interface CodeMirrorEditorProps {
 export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const [view, setView] = useState<EditorView>(null);
   const [container, setContainer] = useState<HTMLDivElement>(null);
+  const [resetCount, setResetCount] = useState(0);
 
   const appTheme = useTheme();
   const themeCompartment = useMemo(() => new Compartment(), []);
@@ -110,7 +129,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         syllableCounts(),
         history(),
         EditorView.lineWrapping,
-        placeholder('Type out some lyrics...'),
+        placeholder(sample(placeholders)),
         themeCompartment.of(themeExtension),
         textCompartment.of(textChangedExtension),
         selectionCompartment.of(selectionExtension),
@@ -124,6 +143,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       textChangedExtension,
       selectionExtension,
       fileDroppedExtension,
+      resetCount,
     ]
   );
 
@@ -183,11 +203,12 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     );
   }, [container]);
 
-  const resetHistory = useCallback(
-    () =>
-      view?.setState(EditorState.create({ ...defaultConfig, doc: props.text })),
-    [view, defaultConfig, props.text]
-  );
+  const resetHistory = useCallback(() => {
+    setResetCount((count) => count + 1);
+    return view?.setState(
+      EditorState.create({ ...defaultConfig, doc: props.text })
+    );
+  }, [view, defaultConfig, props.text]);
   const undo = useCallback(() => undoTextChange(view), [view]);
   const redo = useCallback(() => redoTextChange(view), [view]);
   const openFindReplaceDialog = useCallback(
