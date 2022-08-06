@@ -1,3 +1,4 @@
+import { Text } from '@lyricistant/codemirror/CodeMirror';
 import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { AppError } from '@lyricistant/renderer/app/AppError';
 import { goTo, Modals } from '@lyricistant/renderer/app/Modals';
@@ -12,6 +13,7 @@ import {
   useChannel,
   useChannelData,
 } from '@lyricistant/renderer/platform/useChannel';
+import { useEventCallback } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
@@ -34,7 +36,7 @@ const MINIMUM_IDLE_TIME = 15_000;
  */
 export function App() {
   const [editorTextData, setEditorTextData] = useState<EditorTextData>({
-    text: '',
+    text: Text.empty,
     isTransactional: false,
   });
   const [error, setError] = useState<any>(null);
@@ -43,26 +45,23 @@ export function App() {
   const history = useHistory();
   const [uiConfig] = useChannelData('ui-config');
 
-  const onSaveClicked = useCallback(
-    () => platformDelegate.send('save-file-attempt', editorTextData.text),
-    [editorTextData]
+  const onSaveClicked = useEventCallback(() =>
+    platformDelegate.send('save-file-attempt', editorTextData.text.toString())
   );
 
-  // TODO Migrate this to useEvent whenever that lands
-  //  https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
   const onPartialEditorTextDataUpdate = useCallback(
     (data: Partial<EditorTextData>) => {
-      setEditorTextData({ ...editorTextData, ...data });
+      setEditorTextData((textData) => ({ ...textData, ...data }));
     },
-    [editorTextData]
+    [setEditorTextData]
   );
   const onTextReplacement = useCallback(
     (text: string) => {
-      const prefix = editorTextData.text.substring(0, selectedText.from);
-      const suffix = editorTextData.text.substring(selectedText.to);
+      const prefix = editorTextData.text.sliceString(0, selectedText.from);
+      const suffix = editorTextData.text.sliceString(selectedText.to);
 
       setEditorTextData({
-        text: prefix + text + suffix,
+        text: Text.of((prefix + text + suffix).split('\n')),
         isTransactional: true,
       });
       setSelectedText({
@@ -74,18 +73,17 @@ export function App() {
     [selectedText, editorTextData]
   );
 
-  const onTextSelected = useCallback(
-    (value) => {
-      if (value && value.text) {
-        setSelectedText(value);
-      }
-    },
-    [setSelectedText]
-  );
+  const onTextSelected = useEventCallback((value: TextSelectionData) => {
+    if (value && value.text) {
+      setSelectedText(value);
+    }
+  });
 
   useChannel('app-title-changed', (title) => (document.title = title));
 
-  useFileEvents(isModified, onPartialEditorTextDataUpdate);
+  useFileEvents(isModified, onPartialEditorTextDataUpdate, () =>
+    setSelectedText(null)
+  );
   useBeforeUnload(() => {
     if (uiConfig?.promptOnUrlChange && isModified) {
       return "Are you sure you want to leave? Your changes haven't been saved.";
@@ -94,7 +92,7 @@ export function App() {
 
   useEffect(() => {
     const onTextRequested = () => {
-      platformDelegate.send('editor-text', editorTextData.text);
+      platformDelegate.send('editor-text', editorTextData.text.toString());
     };
     platformDelegate.on('request-editor-text', onTextRequested);
     return () => {
@@ -114,13 +112,15 @@ export function App() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      platformDelegate.send('editor-idle', editorTextData.text);
+      platformDelegate.send('editor-idle', editorTextData.text.toString());
     }, MINIMUM_IDLE_TIME);
     return () => clearTimeout(timer);
   }, [editorTextData]);
 
   if (error) {
-    return <AppError error={error} editorText={editorTextData.text} />;
+    return (
+      <AppError error={error} editorText={editorTextData.text.toString()} />
+    );
   }
 
   return (
@@ -128,7 +128,7 @@ export function App() {
       fallbackRender={(props) => (
         <AppError
           error={getRootError(props.error)}
-          editorText={editorTextData.text}
+          editorText={editorTextData.text.toString()}
         />
       )}
     >
@@ -171,7 +171,8 @@ export function App() {
 
 const useFileEvents = (
   isModified: boolean,
-  setEditorText: (text: Partial<EditorTextData>) => void
+  setEditorText: (text: Partial<EditorTextData>) => void,
+  resetTextSelection: () => void
 ) => {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -191,7 +192,8 @@ const useFileEvents = (
     platformDelegate.on('file-save-ended', onFileSaveEnded);
 
     const onNewFileCreated = () => {
-      setEditorText({ text: '', isTransactional: false });
+      resetTextSelection();
+      setEditorText({ text: Text.empty, isTransactional: false });
     };
     platformDelegate.on('new-file-created', onNewFileCreated);
 
@@ -205,8 +207,9 @@ const useFileEvents = (
           variant: 'error',
         });
       } else {
+        resetTextSelection();
         setEditorText({
-          text: fileContents,
+          text: Text.of(fileContents.split('\n')),
           isTransactional: !clearHistory,
         });
       }

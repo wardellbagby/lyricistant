@@ -1,4 +1,4 @@
-import { useCodeMirror } from '@lyricistant/codemirror/CodeMirror';
+import { useCodeMirror, Text } from '@lyricistant/codemirror/CodeMirror';
 import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { Font } from '@lyricistant/common/preferences/PreferencesData';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
@@ -22,7 +22,7 @@ const EditorContainer = styled('div')({
 
 export interface EditorTextData {
   /** The text to be displayed in the editor. */
-  text: string;
+  text: Text;
   /**
    * Does this represent a change from the last text data, or should this be
    * considered brand new?
@@ -78,7 +78,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   }, []);
 
   const onTextChanged = useCallback(
-    (text: string) => {
+    (text: Text) => {
       props.onTextChanged({
         text,
         isTransactional: true,

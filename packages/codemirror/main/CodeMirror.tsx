@@ -12,6 +12,7 @@ import {
   EditorState,
   EditorStateConfig,
   Extension,
+  Text,
 } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { useTheme } from '@mui/material';
@@ -20,6 +21,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
 import { textSelection, TextSelectionData } from './textSelection';
+export { Text };
 
 const placeholders = [
   'Type your lyrics...',
@@ -38,10 +40,10 @@ const placeholders = [
   'What do you want to write today?',
   'Put your feelings to words...',
 ];
-const textChanged = (onTextChanged: (text: string) => void) =>
+const textChanged = (onTextChanged: (text: Text) => void) =>
   EditorView.updateListener.of((update) => {
     if (update.docChanged) {
-      onTextChanged(update.state.doc.toString());
+      onTextChanged(update.state.doc);
     }
   });
 
@@ -77,10 +79,10 @@ const useReconfigurableExtension = (
 };
 
 export interface CodeMirrorEditorProps {
-  text: string;
+  text: Text;
   font: string;
   onWordSelected: (word: TextSelectionData) => void;
-  onTextChanged: (text: string) => void;
+  onTextChanged: (text: Text) => void;
   onFileDropped: (item: DataTransferItem | File) => void;
 }
 
@@ -172,10 +174,14 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   }, [container]);
 
   useEffect(() => {
-    const currentText = view ? view.state.doc.toString() : '';
-    if (view && props.text !== currentText) {
+    const currentText = view ? view.state.doc : Text.empty;
+    if (view && !props.text.eq(currentText)) {
       view.dispatch({
-        changes: { from: 0, to: currentText.length, insert: props.text || '' },
+        changes: {
+          from: 0,
+          to: currentText.length,
+          insert: props.text ?? Text.empty,
+        },
       });
     }
   }, [props.text, view]);

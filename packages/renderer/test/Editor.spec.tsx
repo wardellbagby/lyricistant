@@ -1,4 +1,5 @@
 import { expect, jest } from '@jest/globals';
+import { Text } from '@lyricistant/codemirror/CodeMirror';
 import {
   Editor as RealEditor,
   EditorProps,
@@ -18,7 +19,7 @@ const Editor = (props: Partial<EditorProps>) => (
     onTextSelected={() => undefined}
     onModificationStateChanged={() => undefined}
     onTextChanged={() => undefined}
-    value={{ isTransactional: false, text: '' }}
+    value={{ isTransactional: false, text: Text.empty }}
     {...props}
   />
 );
@@ -171,7 +172,7 @@ describe('Editor component', function () {
     render(
       <Editor
         value={{
-          text: "I'm willing to bet it all",
+          text: Text.of(["I'm willing to bet it all"]),
           isTransactional: false,
         }}
       />
