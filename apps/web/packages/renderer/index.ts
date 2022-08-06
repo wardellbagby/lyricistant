@@ -35,14 +35,12 @@ declare global {
 const getFileSystem: () => BufferFileSystem = () =>
   proxy({
     saveFile: async (buffer, defaultFileName: string, handle) =>
-      await runIgnoringAbortErrors(logger, () =>
-        fileSave(
-          new Blob([buffer]),
-          {
-            fileName: defaultFileName,
-          },
-          handle
-        )
+      await fileSave(
+        new Blob([buffer]),
+        {
+          fileName: defaultFileName,
+        },
+        handle
       ),
     openFile: async () => {
       const result = await runIgnoringAbortErrors(logger, () =>

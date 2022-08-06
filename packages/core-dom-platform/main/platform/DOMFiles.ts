@@ -82,16 +82,14 @@ export class DOMFiles implements Files {
     fileHandleId?: string
   ): Promise<FileMetadata> => {
     const fileHandle = this.fileHandles.get(fileHandleId);
-    const result = await runIgnoringAbortErrors(this.logger, () =>
-      this.fs.saveFile(
-        new Blob([data], {
-          type: LYRICS_MIME_TYPE,
-        }),
-        {
-          fileName: defaultFilename,
-        },
-        fileHandle
-      )
+    const result = await this.fs.saveFile(
+      new Blob([data], {
+        type: LYRICS_MIME_TYPE,
+      }),
+      {
+        fileName: defaultFilename,
+      },
+      fileHandle
     );
     const handleId = fileHandleId ?? this.generateFileHandleId();
     this.fileHandles.set(handleId, result);
