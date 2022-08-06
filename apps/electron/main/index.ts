@@ -174,14 +174,16 @@ const createWindow = (): void => {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
-    minWidth: 600,
-    minHeight: 400,
+    // Dimens of an iPhone SE, which is the smallest size Lyricistant looks comfortable on.
+    minWidth: 375,
+    minHeight: 667,
     backgroundColor: '#00000000',
     show: false,
     webPreferences: {
       nodeIntegration: isUnderTest,
       contextIsolation: false,
       preload: path.resolve(__dirname, 'preload.js'),
+      sandbox: false,
       disableBlinkFeatures: 'FileSystemAccess',
     },
   });
