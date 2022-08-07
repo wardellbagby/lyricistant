@@ -1,4 +1,5 @@
-import { LoadingIndicator } from '@lyricistant/renderer/detail/LoadingIndicator';
+import { DetailPaneChildProps } from '@lyricistant/renderer/detail/DetailPane';
+import { ListSpacer } from '@lyricistant/renderer/detail/ListSpacer';
 import { NullStateText } from '@lyricistant/renderer/detail/NullStateText';
 import { WordChip } from '@lyricistant/renderer/detail/WordChip';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
@@ -25,6 +26,7 @@ const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => (
     paddingLeft={'16px'}
     paddingRight={'16px'}
   >
+    <ListSpacer />
     {rhymes.map((rhyme) => (
       <WordChip
         word={rhyme.word}
@@ -32,11 +34,12 @@ const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => (
         onClick={() => onRhymeClicked(rhyme)}
       />
     ))}
+    <ListSpacer />
   </Box>
 );
 
 /** The props needed to render the {@link Rhymes} component. */
-export interface RhymesProps {
+export interface RhymesProps extends DetailPaneChildProps {
   /** The query to find rhymes for. */
   query?: string;
   /**
@@ -45,11 +48,6 @@ export interface RhymesProps {
    * @param rhyme The rhyme that was clicked.
    */
   onRhymeClicked: (rhyme: Rhyme) => void;
-  /**
-   * When true, attempts to load new rhymes when the query changes. When false,
-   * does nothing on query change.
-   */
-  loadOnQueryChange: boolean;
 }
 
 /**
@@ -65,7 +63,7 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
   const [preferences] = useChannelData('prefs-updated');
 
   useLayoutEffect(() => {
-    if (!props.loadOnQueryChange || !props.query || !preferences) {
+    if (!props.isVisible || !props.query || !preferences) {
       return;
     }
     send({
@@ -73,13 +71,17 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
       input: props.query,
       rhymeSource: preferences.rhymeSource,
     });
-  }, [props.query, props.loadOnQueryChange, preferences]);
+  }, [props.query, props.isVisible, preferences]);
 
   useEffect(() => {
     if (state.matches('error')) {
       handleError(state.context.error);
     }
   }, [handleError, state]);
+
+  useEffect(() => {
+    props.onLoadingChanged?.(state.matches('loading.active'));
+  }, [state.matches('loading.active')]);
 
   const rhymes: Rhyme[] = state.context.rhymes;
 
@@ -91,8 +93,6 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
       height={'100%'}
       width={'100%'}
     >
-      <LoadingIndicator display={state.matches('loading')} />
-
       {state.matches('inactive') && (
         <NullStateText text={'Waiting for lyrics'} />
       )}

@@ -12,10 +12,7 @@ interface ResponsiveMenuDetailLayoutProps {
 }
 
 const DetailPaper = ({ children }: { children: ReactNode }) => (
-  <Paper
-    elevation={1}
-    sx={{ padding: '8px', margin: '16px', maxHeight: '100%' }}
-  >
+  <Paper elevation={1} sx={{ margin: '16px', maxHeight: '100%' }}>
     {children}
   </Paper>
 );

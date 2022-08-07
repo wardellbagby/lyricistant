@@ -1,4 +1,5 @@
-import { LoadingIndicator } from '@lyricistant/renderer/detail/LoadingIndicator';
+import { DetailPaneChildProps } from '@lyricistant/renderer/detail/DetailPane';
+import { ListSpacer } from '@lyricistant/renderer/detail/ListSpacer';
 import { NullStateText } from '@lyricistant/renderer/detail/NullStateText';
 import { WordChip } from '@lyricistant/renderer/detail/WordChip';
 import {
@@ -10,23 +11,27 @@ import { Box, Divider, Typography } from '@mui/material';
 import { useMachine } from '@xstate/react';
 import React, { useEffect, useMemo } from 'react';
 
-export interface DictionaryProps {
+export interface DictionaryProps extends DetailPaneChildProps {
   query?: string;
   onRelatedTextClicked: (text: string) => void;
-  loadOnQueryChange: boolean;
 }
 export const Dictionary = ({
   query,
   onRelatedTextClicked,
-  loadOnQueryChange,
+  isVisible,
+  onLoadingChanged,
 }: DictionaryProps) => {
   const [state, send] = useMachine(dictionaryMachine);
 
   useEffect(() => {
-    if (loadOnQueryChange && query) {
+    if (isVisible && query) {
       send({ type: 'INPUT', input: query });
     }
-  }, [query, loadOnQueryChange]);
+  }, [query, isVisible]);
+
+  useEffect(() => {
+    onLoadingChanged?.(state.matches('loading.active'));
+  }, [state.matches('loading.active')]);
 
   const meanings: Meaning[] = state.context.result;
 
@@ -38,8 +43,6 @@ export const Dictionary = ({
       height={'100%'}
       width={'100%'}
     >
-      <LoadingIndicator display={state.matches('loading')} />
-
       {state.matches('waiting') && (
         <NullStateText text={'Waiting for lyrics'} />
       )}
@@ -65,6 +68,7 @@ const MeaningList = (props: {
   onRelatedTextClicked: (word: string) => void;
 }) => (
   <Box sx={{ overflow: 'auto', paddingLeft: '16px', paddingRight: '16px' }}>
+    <ListSpacer />
     <Typography variant={'h5'}>{props.query}</Typography>
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {props.meanings.map((meaning, index) => (
@@ -79,6 +83,7 @@ const MeaningList = (props: {
         </React.Fragment>
       ))}
     </Box>
+    <ListSpacer />
   </Box>
 );
 
