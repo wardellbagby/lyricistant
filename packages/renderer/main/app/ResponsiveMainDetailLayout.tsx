@@ -79,6 +79,6 @@ const createGridTemplateColumns = (isSmallLayout: boolean) => {
   if (isSmallLayout) {
     return `100%`;
   } else {
-    return `auto minmax(200px, 1fr) max(25%, 300px)`;
+    return `auto minmax(200px, 1fr) 400px`;
   }
 };
