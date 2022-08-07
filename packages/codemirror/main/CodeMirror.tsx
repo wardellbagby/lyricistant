@@ -21,6 +21,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
 import { textSelection, TextSelectionData } from './textSelection';
+
 export { Text };
 
 const placeholders = [
@@ -80,6 +81,7 @@ const useReconfigurableExtension = (
 
 export interface CodeMirrorEditorProps {
   text: Text;
+  cursorPosition?: number;
   font: string;
   onWordSelected: (word: TextSelectionData) => void;
   onTextChanged: (text: Text) => void;
@@ -185,6 +187,20 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       });
     }
   }, [props.text, view]);
+
+  useEffect(() => {
+    if (
+      view &&
+      props.cursorPosition !== undefined &&
+      view.state.selection.main.anchor !== props.cursorPosition
+    ) {
+      view.dispatch({
+        selection: {
+          anchor: props.cursorPosition,
+        },
+      });
+    }
+  }, [props.cursorPosition, view]);
 
   useReconfigurableExtension(view, themeCompartment, themeExtension);
   useReconfigurableExtension(view, textCompartment, textChangedExtension);

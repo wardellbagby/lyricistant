@@ -63,6 +63,7 @@ export function App() {
       setEditorTextData({
         text: Text.of((prefix + text + suffix).split('\n')),
         isTransactional: true,
+        cursorPosition: selectedText.from + text.length,
       });
       setSelectedText({
         text,
@@ -82,7 +83,7 @@ export function App() {
   useChannel('app-title-changed', (title) => (document.title = title));
 
   useFileEvents(isModified, onPartialEditorTextDataUpdate, () =>
-    setSelectedText(null)
+    setSelectedText({ from: 0, to: 0, text: '' })
   );
   useBeforeUnload(() => {
     if (uiConfig?.promptOnUrlChange && isModified) {

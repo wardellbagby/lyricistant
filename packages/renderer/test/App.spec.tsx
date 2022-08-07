@@ -189,7 +189,9 @@ describe('App component', () => {
     await userEvent.click(screen.getByText('Test Rhyme 2'));
 
     expect(
-      await screen.findByText('and the oscar goes to Test Rhyme 2...')
+      await screen.findByText(
+        'and the oscar goes to Test Rhyme Test Rhyme 2...'
+      )
     ).toBeTruthy();
   });
 

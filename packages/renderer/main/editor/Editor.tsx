@@ -30,6 +30,7 @@ export interface EditorTextData {
    * TODO This cannot be a good name...
    */
   isTransactional?: boolean;
+  cursorPosition?: number;
 }
 
 /** The props for the {@link Editor} component. */
@@ -95,6 +96,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     setContainer,
   } = useCodeMirror({
     text: props.value.text,
+    cursorPosition: props.value.cursorPosition,
     onTextChanged,
     onFileDropped,
     onWordSelected: props.onTextSelected,
