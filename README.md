@@ -20,13 +20,14 @@ Its features include:
 
 - Showing the amount of syllables per line.
 - Contextually displaying rhymes as you type or select words.
+- Allowing easy lookups of definitions for words, with support for synonyms and antonyms.
 - Easily saving and reopening lyrics that you've made.
 - Showing you the history of your file.
-- Drag and Drop support for quickly reopening lyrics.
-- _[Desktop Only]_ Remembering your recently opened lyrics to help you continue where you left off.
+- _[Desktop and Web]_ Drag and Drop support for quickly reopening lyrics.
+- _[Desktop only]_ Remembering your recently opened lyrics to help you continue where you left off.
 - Both a light and dark theme that it can automatically switch between.
-- Automatically updates.
-- _[Android 12+ Only]_ Matching your device's theme colors to effortlessly match Material You.
+- Automatically updating!
+- _[Android 12+ only]_ Matching your device's theme colors to effortlessly match Material You.
 - Available on your favorite platforms!
   - [Mac](https://lyricistant.app/#download)
   - [Windows](https://lyricistant.app/#download)

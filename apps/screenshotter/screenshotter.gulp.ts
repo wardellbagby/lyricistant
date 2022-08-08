@@ -95,7 +95,7 @@ const exportScreenshots = async () => {
         location = path.resolve(androidTabletDir, `${index}_en-US.png`);
       }
     } else if (device.toLowerCase().includes('electron')) {
-      if (index === '2') {
+      if (index === '1') {
         location = path.resolve('lyricistant.png');
       } else {
         continue;

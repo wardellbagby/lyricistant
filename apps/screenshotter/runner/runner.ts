@@ -82,8 +82,12 @@ const devices: Device[] = [
   },
 ];
 
-const lyrics =
-  "Bury me loose.\nI ain't ever been about the views;\nTell 'em bury me loose.\nAnd don't let 'em give you no excuse.\nJust tell 'em, tell 'em bury me loose.";
+const lyrics = [
+  "I've been helpless to your loving.",
+  'Got me restless for your touch.',
+  "And it's been you since",
+  'Before I knew, I knew.',
+].join('\n');
 const expectedLyrics = lyrics.replaceAll('\n', '');
 
 const screenshotDate = DateTime.local(2019, 7, 22, 9, 0, 0, 0);
@@ -141,29 +145,6 @@ devices.forEach((device) => {
       await browser.close();
     });
 
-    it('screenshots light mode with lyrics', async () => {
-      await rendererDelegate.evaluate(
-        (delegate, themeData) => {
-          delegate.send('theme-updated', themeData);
-        },
-        {
-          colorScheme: ColorScheme.Light,
-          font: Font.Roboto,
-          textSize: 16,
-        } as ThemeData
-      );
-
-      const editorTextArea = await page.$('.cm-content');
-      await editorTextArea.type(lyrics);
-      await page.waitForTimeout(2000);
-
-      await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics
-      );
-
-      await screenshot(1);
-    });
-
     it('screenshots dark mode with lyrics!', async () => {
       await rendererDelegate.evaluate(
         (delegate, themeData) => {
@@ -184,10 +165,21 @@ devices.forEach((device) => {
         expectedLyrics
       );
 
-      await screenshot(2);
+      await screenshot(1);
     });
 
-    it('screenshots showing more lyrics', async () => {
+    it('screenshots light mode with lyrics', async () => {
+      await rendererDelegate.evaluate(
+        (delegate, themeData) => {
+          delegate.send('theme-updated', themeData);
+        },
+        {
+          colorScheme: ColorScheme.Light,
+          font: Font.Roboto,
+          textSize: 16,
+        } as ThemeData
+      );
+
       const editorTextArea = await page.$('.cm-content');
       await editorTextArea.type(lyrics);
       await page.waitForTimeout(2000);
@@ -196,8 +188,20 @@ devices.forEach((device) => {
         expectedLyrics
       );
 
-      await page.click("[aria-label='Show All Rhymes']");
-      await page.waitForTimeout(1000);
+      await screenshot(2);
+    });
+
+    it('screenshots showing dictionary', async () => {
+      const editorTextArea = await page.$('.cm-content');
+      await editorTextArea.type(lyrics);
+      await page.waitForTimeout(2000);
+
+      await expect(editorTextArea.textContent()).to.eventually.equal(
+        expectedLyrics
+      );
+
+      await page.click("[aria-label='Dictionary Tab']");
+      await page.waitForTimeout(2000);
 
       await screenshot(3);
     });
@@ -271,7 +275,7 @@ devices.forEach((device) => {
         await overflowMenuButton.click();
       }
 
-      await page.click("[aria-label='Open Preferences']");
+      await page.click("[aria-label='Open preferences']");
       await page.waitForTimeout(2000);
 
       await screenshot(5);

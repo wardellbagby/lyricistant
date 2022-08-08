@@ -47,8 +47,8 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
           ) : undefined,
         }}
       >
-        <Tab icon={<ScriptOutline />} />
-        <Tab icon={<BookAlphabet />} />
+        <Tab aria-label={'Rhymes Tab'} icon={<ScriptOutline />} />
+        <Tab aria-label={'Dictionary Tab'} icon={<BookAlphabet />} />
       </Tabs>
       <SwipeableViews
         index={tabIndex}
