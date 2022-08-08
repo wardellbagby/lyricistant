@@ -1,3 +1,25 @@
+# [2.0.0](https://github.com/wardellbagby/lyricistant/compare/v1.4.2+electron...v2.0.0) (2022-08-08)
+
+
+### Bug Fixes
+
+* **web:** stop assuming files were saved when Save Dialog is closed ([32a5bcb](https://github.com/wardellbagby/lyricistant/commit/32a5bcb280d263d9e3e71be748893f2dbd1fa399))
+
+
+### Features
+
+* add in dictionary look-ups when typing lyrics ([007bb5d](https://github.com/wardellbagby/lyricistant/commit/007bb5daafdd1b18457693f909b22039266fb298))
+* add more interesting placeholder text ([868cef4](https://github.com/wardellbagby/lyricistant/commit/868cef4171a130980fb7718350f25ec66bcccf66))
+* change the menu bar to match the new rhymes & dictionary designs ([f85185e](https://github.com/wardellbagby/lyricistant/commit/f85185e803fbdc2ceec976d0d9255b4af8d01e42))
+* revamp rhymes to have a more condensed display ([6a8bcd7](https://github.com/wardellbagby/lyricistant/commit/6a8bcd743887b304a0b01822360458f04b3ad724))
+
+
+### Performance Improvements
+
+* improve fps when actively typing ([35259b9](https://github.com/wardellbagby/lyricistant/commit/35259b92e591b32580cf8d99cb210039de44cc19))
+
+
+
 ## [1.4.2](https://github.com/wardellbagby/lyricistant/compare/v1.4.1...v1.4.2) (2022-07-31)
 
 
