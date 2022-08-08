@@ -196,17 +196,17 @@ export const Menu: React.FC<MenuProps> = (props) => {
     () =>
       [
         {
-          label: 'New File',
+          label: 'New file',
           icon: AddCircle,
           onClick: props.onNewClicked,
         },
         uiConfig?.showOpen && {
-          label: 'Open File',
+          label: 'Open file',
           icon: FolderOpen,
           onClick: props.onOpenClicked,
         },
         {
-          label: 'Save File',
+          label: 'Save file',
           icon: Save,
           onClick: props.onSaveClicked,
         },
@@ -227,7 +227,7 @@ export const Menu: React.FC<MenuProps> = (props) => {
           onClick: props.onDownloadClicked,
         },
         {
-          label: 'Open Preferences',
+          label: 'Open preferences',
           icon: Settings,
           onClick: props.onPreferencesClicked,
         },

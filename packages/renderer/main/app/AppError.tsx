@@ -38,7 +38,7 @@ export function AppError({ error, editorText }: AppErrorProps) {
   }, [error]);
   return (
     <Dialog onClose={onClose} open>
-      <DialogTitle>Application Error</DialogTitle>
+      <DialogTitle>Application error</DialogTitle>
       <Box paddingLeft={'32px'} paddingRight={'32px'} paddingBottom={'24px'}>
         <Typography paragraph>
           Sorry, an error has occurred in Lyricistant. Press reload to continue,

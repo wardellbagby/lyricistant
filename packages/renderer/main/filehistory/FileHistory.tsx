@@ -182,7 +182,7 @@ export function FileHistory(props: FileHistoryProps) {
         anchor={anchor}
         PaperProps={{ sx: paperBounds }}
       >
-        <DialogTitle>File History</DialogTitle>
+        <DialogTitle>File history</DialogTitle>
         <Divider />
         <DialogContent>
           <FileHistoryList

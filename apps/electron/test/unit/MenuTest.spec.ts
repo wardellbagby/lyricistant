@@ -146,7 +146,7 @@ describe('Create Electron App Menu', () => {
   it("doesn't show recent files when there aren't any", () => {
     const fileMenu = createAppMenu('MyApp', 'linux', handlers)[0];
     const recents = (fileMenu.submenu as MenuItemConstructorOptions[]).find(
-      ({ label }) => label === 'Open Recent'
+      ({ label }) => label === 'Open recent'
     );
 
     expect(recents).to.exist;
@@ -162,7 +162,7 @@ describe('Create Electron App Menu', () => {
     const recentFiles = ['myfile', 'myfile2'];
     const fileMenu = createAppMenu('MyApp', 'linux', handlers, recentFiles)[0];
     const recents = (fileMenu.submenu as MenuItemConstructorOptions[]).find(
-      ({ label }) => label === 'Open Recent'
+      ({ label }) => label === 'Open recent'
     );
 
     expect(recents).to.exist;

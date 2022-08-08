@@ -30,7 +30,7 @@ const WarningDialog = ({
   open: boolean;
 }) => (
   <Dialog open={open}>
-    <DialogTitle>Unsupported Browser</DialogTitle>
+    <DialogTitle>Unsupported browser</DialogTitle>
     <DialogContent>
       <DialogContentText>
         Lyricistant doesn't currently support your browser. You might experience
@@ -40,7 +40,7 @@ const WarningDialog = ({
 
     <DialogActions>
       <Button key="no" onClick={() => window.history.back()} color="primary">
-        Go Back
+        Go back
       </Button>
       <Button key="yes" onClick={onContinue} color="primary">
         Continue

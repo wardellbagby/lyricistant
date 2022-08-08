@@ -22,12 +22,12 @@ export class ElectronFiles implements Files {
     }
 
     const result = await this.dialog.showOpenDialog(this.window, {
-      title: 'Choose Lyrics',
+      title: 'Choose lyrics',
       properties: ['openFile'],
       filters: [
         { extensions: [DOTLESS_LYRICS_EXTENSIONS], name: 'Lyrics' },
         { extensions: ['txt'], name: 'Text files' },
-        { extensions: ['*'], name: 'All Files' },
+        { extensions: ['*'], name: 'All files' },
       ],
     });
 

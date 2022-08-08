@@ -13,7 +13,7 @@ interface PrivacyPolicyProps {
 
 export const PrivacyPolicy = (props: PrivacyPolicyProps) => (
   <Dialog onClose={props.onClose} open={props.open} className={'paper'}>
-    <DialogTitle>Privacy Policy</DialogTitle>
+    <DialogTitle>Privacy policy</DialogTitle>
     <DialogContent>
       <DialogContentText>
         Lyricistant doesn't collect or store any data from you. Nothing. Nada.

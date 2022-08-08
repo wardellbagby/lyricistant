@@ -33,7 +33,7 @@ export default (
     ).toBeTruthy();
 
     const newFileButton = await screen.findByRole('button', {
-      name: 'New File',
+      name: 'New file',
     });
     await newFileButton.click();
 
@@ -50,7 +50,7 @@ export default (
     await expect(screen.findByText('Hello World!')).resolves.toBeTruthy();
 
     const newFileButton = await screen.findByRole('button', {
-      name: 'New File',
+      name: 'New file',
     });
     await newFileButton.click();
 
@@ -67,7 +67,7 @@ export default (
     await expect(screen.findByText('Hello World!')).resolves.toBeTruthy();
 
     const newFileButton = await screen.findByRole('button', {
-      name: 'New File',
+      name: 'New file',
     });
     await newFileButton.click();
 
@@ -81,7 +81,7 @@ export default (
 
     const settings = await findMenuButton(
       screen,
-      'Open Preferences',
+      'Open preferences',
       isSmallLayout
     );
     await settings.click();
@@ -115,7 +115,7 @@ export default (
     );
     await fileHistory.click();
 
-    await expect(screen.findByText('File History')).resolves.toBeTruthy();
+    await expect(screen.findByText('File history')).resolves.toBeTruthy();
     await expect(
       screen.findByText('Jul 20, 2022, 5:29:12 PM')
     ).resolves.toBeTruthy();
@@ -153,7 +153,7 @@ export default (
     );
     await fileHistory.click();
 
-    await expect(screen.findByText('File History')).resolves.toBeTruthy();
+    await expect(screen.findByText('File history')).resolves.toBeTruthy();
     await expect(
       screen.findByText('Jul 23, 2022, 11:02:27 AM')
     ).resolves.toBeTruthy();

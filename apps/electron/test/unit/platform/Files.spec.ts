@@ -50,7 +50,7 @@ describe('Files', () => {
         filters: [
           { extensions: ['lyrics'], name: 'Lyrics' },
           { extensions: ['txt'], name: 'Text files' },
-          { extensions: ['*'], name: 'All Files' },
+          { extensions: ['*'], name: 'All files' },
         ],
       })
     );

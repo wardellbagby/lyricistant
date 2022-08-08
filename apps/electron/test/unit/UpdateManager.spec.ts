@@ -72,7 +72,7 @@ describe('Update Manager', () => {
       'show-dialog',
       sinon.match({
         tag: (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-        title: 'Update Available',
+        title: 'Update available',
       })
     );
   });
@@ -164,7 +164,7 @@ describe('Update Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'show-dialog',
       sinon.match({
-        title: 'Downloading Update',
+        title: 'Downloading update',
         progress: 1,
       })
     );
@@ -176,7 +176,7 @@ describe('Update Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'show-dialog',
       sinon.match({
-        title: 'Downloading Update',
+        title: 'Downloading update',
         progress: 80,
       })
     );
@@ -201,7 +201,7 @@ describe('Update Manager', () => {
       'show-dialog',
       sinon.match({
         tag: (UpdateManager as any).UPDATE_DOWNLOADED_DIALOG_TAG,
-        title: 'Update Downloaded',
+        title: 'Update downloaded',
       })
     );
   });

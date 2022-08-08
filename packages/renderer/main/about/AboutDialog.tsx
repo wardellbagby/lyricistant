@@ -20,12 +20,12 @@ import { makeStyles } from '@mui/styles';
 import React, { ReactChild } from 'react';
 
 const aboutInfo: Record<string, ReactChild> = {
-  Homepage: (
+  'Code repository': (
     <Link target="_blank" rel="noopener" href={APP_HOMEPAGE}>
       GitHub
     </Link>
   ),
-  'Author Website': (
+  'My website': (
     <Link target="_blank" rel="noopener" href={'https://wardellbagby.com'}>
       wardellbagby.com
     </Link>
@@ -144,7 +144,7 @@ export const AboutDialog = (props: AboutDialogProps) => (
             variant={'outlined'}
             onClick={() => platformDelegate.send('save-logs')}
           >
-            Download Logs
+            Download logs
           </Button>
         </Grid>
       </Grid>

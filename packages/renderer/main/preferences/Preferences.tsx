@@ -233,7 +233,7 @@ export const Preferences = (props: PreferencesProps) => {
               value={preferencesData.font}
               onChange={onFontChanged}
               items={[
-                { value: Font.Roboto_Mono, label: 'Roboto Monospace' },
+                { value: Font.Roboto_Mono, label: 'Roboto monospace' },
                 { value: Font.Roboto, label: 'Roboto' },
               ]}
               label={'Font'}
@@ -250,7 +250,7 @@ export const Preferences = (props: PreferencesProps) => {
                 { value: 24, label: '24' },
                 { value: 28, label: '28' },
               ]}
-              label={'Text Size'}
+              label={'Text size'}
             />
 
             <SelectBox
@@ -261,10 +261,10 @@ export const Preferences = (props: PreferencesProps) => {
                 { value: LyricistantTheme.Dark, label: 'Dark' },
                 {
                   value: LyricistantTheme.System,
-                  label: 'Use Device Color Scheme',
+                  label: 'Use device color scheme',
                 },
               ]}
-              label={'Color Scheme'}
+              label={'Color scheme'}
             />
 
             <Header label={'Other'} />
@@ -276,7 +276,7 @@ export const Preferences = (props: PreferencesProps) => {
                 { value: RhymeSource.Offline, label: 'Offline (alpha)' },
                 { value: RhymeSource.Datamuse, label: 'Datamuse' },
               ]}
-              label={'Rhyme Source'}
+              label={'Rhyme source'}
             />
 
             <SelectBox
@@ -285,7 +285,7 @@ export const Preferences = (props: PreferencesProps) => {
               items={[
                 {
                   value: DefaultFileType.Always_Ask,
-                  label: 'Always Ask',
+                  label: 'Always ask',
                 },
                 {
                   value: DefaultFileType.Lyricistant_Lyrics,
@@ -293,10 +293,10 @@ export const Preferences = (props: PreferencesProps) => {
                 },
                 {
                   value: DefaultFileType.Plain_Text,
-                  label: 'Plain Text (.txt)',
+                  label: 'Plain text (.txt)',
                 },
               ]}
-              label={'Default File Type'}
+              label={'Default file type'}
             />
             <Button
               variant={'text'}

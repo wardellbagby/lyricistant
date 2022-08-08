@@ -98,7 +98,7 @@ const createFileMenu = (
         accelerator: 'CmdOrCtrl+O',
       },
       {
-        label: 'Open Recent',
+        label: 'Open recent',
         submenu: createRecentFilesSubmenu(handlers, recentFiles),
       },
       { type: 'separator' },
@@ -108,7 +108,7 @@ const createFileMenu = (
         accelerator: 'CmdOrCtrl+S',
       },
       {
-        label: 'Save As...',
+        label: 'Save as...',
         click: handlers.onSaveAsClicked,
         accelerator: 'Shift+CmdOrCtrl+S',
       },

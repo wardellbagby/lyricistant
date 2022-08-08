@@ -34,7 +34,7 @@ describe('Menu component', () => {
     const onNewClicked = jest.fn();
     render(<Menu onNewClicked={onNewClicked} />);
 
-    const element = screen.getByRole('button', { name: 'New File' });
+    const element = screen.getByRole('button', { name: 'New file' });
     await userEvent.click(element);
 
     expect(onNewClicked).toHaveBeenCalled();
@@ -51,7 +51,7 @@ describe('Menu component', () => {
       promptOnUrlChange: true,
     });
 
-    const element = screen.getByRole('button', { name: 'Open File' });
+    const element = screen.getByRole('button', { name: 'Open file' });
     await userEvent.click(element);
 
     await expect(onOpenClicked).toHaveBeenCalled();
@@ -61,7 +61,7 @@ describe('Menu component', () => {
     const onSaveClicked = jest.fn();
     render(<Menu onSaveClicked={onSaveClicked} />);
 
-    const element = screen.getByRole('button', { name: 'Save File' });
+    const element = screen.getByRole('button', { name: 'Save file' });
     await userEvent.click(element);
 
     await expect(onSaveClicked).toHaveBeenCalled();
@@ -71,7 +71,7 @@ describe('Menu component', () => {
     const onPreferencesClicked = jest.fn();
 
     render(<Menu onPreferencesClicked={onPreferencesClicked} />);
-    const element = screen.getByRole('button', { name: 'Open Preferences' });
+    const element = screen.getByRole('button', { name: 'Open preferences' });
     await userEvent.click(element);
 
     await expect(onPreferencesClicked).toHaveBeenCalled();

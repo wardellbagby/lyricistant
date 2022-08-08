@@ -229,7 +229,7 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CONFIRM_NEW_FILE_TAG,
-      { selectedButton: 'Create New File' }
+      { selectedButton: 'Create new file' }
     );
 
     manager.register();
@@ -273,7 +273,7 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CONFIRM_OPEN_FILE_TAG,
-      { selectedButton: 'Open File' }
+      { selectedButton: 'Open file' }
     );
 
     manager.register();
@@ -639,7 +639,7 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CHOOSE_FILE_HANDLER_TAG,
-      { selectedButton: 'Confirm', selectedOption: 'Plain Text (.txt)' }
+      { selectedButton: 'Confirm', selectedOption: 'Plain text (.txt)' }
     );
 
     manager.register();
@@ -668,9 +668,9 @@ describe('File Manager', () => {
       FileManager.CHOOSE_FILE_HANDLER_TAG,
       {
         selectedButton: 'Confirm',
-        selectedOption: 'Plain Text (.txt)',
+        selectedOption: 'Plain text (.txt)',
         checkboxes: {
-          'Never Ask Again': true,
+          'Never ask again': true,
         },
       }
     );
