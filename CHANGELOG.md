@@ -1,3 +1,12 @@
+## [2.0.1](https://github.com/wardellbagby/lyricistant/compare/v2.0.0...v2.0.1) (2022-08-11)
+
+
+### Bug Fixes
+
+* **web:** don't leave app when pressing close on About dialog on Safari ([6138cf8](https://github.com/wardellbagby/lyricistant/commit/6138cf8df0f8ccabf7bee1629935ddafe7464f6e))
+
+
+
 # [2.0.0](https://github.com/wardellbagby/lyricistant/compare/v1.4.2+electron...v2.0.0) (2022-08-08)
 
 
