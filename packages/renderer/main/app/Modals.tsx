@@ -6,7 +6,7 @@ import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import { Preferences } from '@lyricistant/renderer/preferences/Preferences';
 import { PrivacyPolicy } from '@lyricistant/renderer/privacy/PrivacyPolicy';
 import { History } from 'history';
-import React, { useCallback, useEffect, ReactNode } from 'react';
+import React, { ReactNode, useCallback, useEffect } from 'react';
 import { RouteChildrenProps } from 'react-router';
 import { Route, useHistory } from 'react-router-dom';
 
@@ -39,7 +39,7 @@ const ModalRoute = ({ path, render }: ModalRouteProps) => (
  * @param path The path to navigate to.
  */
 export const goTo = (history: History, path: ModalRoutePathNames) => {
-  history.push(`/${path}`);
+  history.push(`/${path}`, { isChildPath: true });
 };
 
 /** Displays various models over Lyricistant based on the current router path. */
@@ -48,9 +48,17 @@ export function Modals() {
 
   const goAbout = useCallback(() => history.push('/about'), [history]);
   const goBack = useCallback(() => {
-    if (history.length > 1) {
+    const locationState = history.location.state;
+    const isChildPath: boolean =
+      typeof locationState === 'object' &&
+      'isChildPath' in locationState &&
+      (locationState as any).isChildPath;
+
+    if (isChildPath && history.location.pathname !== '/') {
       history.goBack();
     } else {
+      // We never set "isChildPath" when navigating to the root so that we'll
+      // call the browser's goBack so that users can leave the app.
       history.replace('/');
     }
   }, [history]);
