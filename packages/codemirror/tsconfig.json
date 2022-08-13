@@ -1,5 +1,5 @@
 {
-  "include": ["main/**/*"],
+  "include": ["main/**/*", "main/**/*.json"],
   "compilerOptions": {
     "outDir": "build",
     "lib": ["dom", "es6"],

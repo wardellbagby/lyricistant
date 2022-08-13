@@ -3,6 +3,7 @@
 import fs, { writeFileSync } from 'fs';
 import path from 'path';
 import axios from 'axios';
+import { uniq, startCase } from 'lodash';
 import popularWordsJson from './popular.json';
 
 /**
@@ -121,6 +122,35 @@ const loadFromDictionaryFile = async (data: string): Promise<Pronunciations> =>
     ]);
 
 /**
+ * Words used by the "inspire?" feature in the CodeMirror editor. Writes those
+ * words to a file that can be read by that feature. These words should be
+ * popular words that we also have offline rhymes for, in order to make sure we
+ * only have mostly normal words.
+ *
+ * @param pronunciations A list of [word, pronunciation] lists.
+ */
+const writeSupportedWords = async (pronunciations: Pronunciations) => {
+  // Use a set for quick lookups.
+  const wordsWithPronunciations = new Set(pronunciations.map(([word]) => word));
+
+  // Get rid of any potential duplicates after we've filtered out words we don't have words for.
+  const output = uniq(
+    popularWords.filter((word) => wordsWithPronunciations.has(word))
+  )
+    // Filter out any word that is less than 3 letters after getting rid of common symbols.
+    .filter((word) => word.trim().replace(/['."-]/, '').length > 3)
+    // Take the 5000 most popular words after we've done the filtering.
+    .filter((word, index) => index < 5000)
+    .map(startCase)
+    .sort((left, right) => left.localeCompare(right));
+
+  writeFileSync(
+    'packages/codemirror/main/inspiration_words.json',
+    JSON.stringify(output)
+  );
+};
+
+/**
  * Using both the pronunciations and a mapping of words to their popularity,
  * create an object that can be used by Lyricistant to generate rhymes.
  *
@@ -204,7 +234,12 @@ const start = async () => {
   const indexedPopularWords = await createIndexedPopularWords();
   console.log('Created popular words');
 
+  console.log('Writing pronunciations for rhyme-generator');
   await writePronunciations(pronunciations, indexedPopularWords);
+
+  console.log('Writing random words for CodeMirror');
+  await writeSupportedWords(pronunciations);
+
   console.log('Finished!');
 };
 

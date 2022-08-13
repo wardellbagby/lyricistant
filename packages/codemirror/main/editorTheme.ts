@@ -17,6 +17,10 @@ export const editorTheme = (appTheme: Theme, font: string): Extension =>
         outline_fallback: 'none !important',
         outline: 'none !important',
       },
+      '.cm-line-widget': {
+        color: appTheme.palette.text.disabled,
+        borderColor: appTheme.palette.text.disabled,
+      },
       '.cm-line': {
         color: appTheme.palette.text.primary,
         '&::selection': {

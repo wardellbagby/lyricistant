@@ -7,6 +7,7 @@ import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import { createTheme, getThemePalette } from '@lyricistant/renderer/theme';
 import {
   CssBaseline,
+  GlobalStyles,
   StyledEngineProvider,
   ThemeProvider,
 } from '@mui/material';
@@ -69,10 +70,18 @@ export const Themed: FunctionComponent<
   }, [palette, onThemeChanged]);
 
   return (
-    <CssBaseline>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
-      </StyledEngineProvider>
-    </CssBaseline>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles
+          styles={{
+            '.random-button': {
+              color: theme.palette.primary.main,
+              backgroundColor: theme.palette.background.default,
+            },
+          }}
+        />
+        <CssBaseline>{children} </CssBaseline>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };

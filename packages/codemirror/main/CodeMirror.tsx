@@ -15,9 +15,16 @@ import {
   Text,
 } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
+import { inspirationButton } from '@lyricistant/codemirror/inspirationButton';
 import { useTheme } from '@mui/material';
-import { sample } from 'lodash-es';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { differenceWith, isEqual, sample } from 'lodash-es';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { editorTheme } from './editorTheme';
 import { syllableCounts } from './syllableCounts';
 import { textSelection, TextSelectionData } from './textSelection';
@@ -64,19 +71,31 @@ const fileDropped = (onFileDropped: (item: DataTransferItem | File) => void) =>
     },
   });
 
+interface ReconfigurableExtension {
+  compartment: Compartment;
+  extension: Extension;
+}
 const useReconfigurableExtension = (
   view: EditorView,
-  compartment: Compartment,
-  extension: Extension
+  configs: ReconfigurableExtension[]
 ) => {
-  useEffect(() => {
+  const [lastConfigs, setLastConfigs] = useState<ReconfigurableExtension[]>([]);
+  useLayoutEffect(() => {
     if (!view) {
       return;
     }
-    view.dispatch({
-      effects: compartment.reconfigure(extension),
-    });
-  }, [view?.dispatch, compartment, extension]);
+
+    const changedConfigs = differenceWith(configs, lastConfigs, isEqual);
+
+    if (changedConfigs.length > 0) {
+      view.dispatch({
+        effects: changedConfigs.map(({ compartment, extension }) =>
+          compartment.reconfigure(extension)
+        ),
+      });
+      setLastConfigs(configs);
+    }
+  }, configs);
 };
 
 export interface CodeMirrorEditorProps {
@@ -98,10 +117,11 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const textCompartment = useMemo(() => new Compartment(), []);
   const selectionCompartment = useMemo(() => new Compartment(), []);
   const fileDroppedCompartment = useMemo(() => new Compartment(), []);
+  const inspirationButtonCompartment = useMemo(() => new Compartment(), []);
 
   const themeExtension = useMemo(
     () => editorTheme(appTheme, props.font),
-    [appTheme, props.font]
+    [appTheme.palette, appTheme.typography, props.font]
   );
   const textChangedExtension = useMemo(
     () => textChanged(props.onTextChanged),
@@ -115,6 +135,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     () => fileDropped(props.onFileDropped),
     [props.onFileDropped]
   );
+  const inspirationButtonExtension = useMemo(() => inspirationButton(), []);
 
   /*
   When the view gets its state set explicitly set (like it does when its first
@@ -139,6 +160,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         selectionCompartment.of(selectionExtension),
         fileDroppedCompartment.of(fileDroppedExtension),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
+        inspirationButtonCompartment.of(inspirationButtonExtension),
       ],
     }),
     [
@@ -148,6 +170,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       selectionExtension,
       fileDroppedExtension,
       resetCount,
+      inspirationButtonExtension,
     ]
   );
 
@@ -202,14 +225,43 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     }
   }, [props.cursorPosition, view]);
 
-  useReconfigurableExtension(view, themeCompartment, themeExtension);
-  useReconfigurableExtension(view, textCompartment, textChangedExtension);
-  useReconfigurableExtension(view, selectionCompartment, selectionExtension);
-  useReconfigurableExtension(
-    view,
-    fileDroppedCompartment,
-    fileDroppedExtension
+  const reconfigurableExtensions = useMemo(
+    () => [
+      {
+        compartment: themeCompartment,
+        extension: themeExtension,
+      },
+      {
+        compartment: inspirationButtonCompartment,
+        extension: inspirationButtonExtension,
+      },
+      {
+        compartment: textCompartment,
+        extension: textChangedExtension,
+      },
+      {
+        compartment: selectionCompartment,
+        extension: selectionExtension,
+      },
+      {
+        compartment: fileDroppedCompartment,
+        extension: fileDroppedExtension,
+      },
+    ],
+    [
+      themeCompartment,
+      themeExtension,
+      inspirationButtonCompartment,
+      inspirationButtonExtension,
+      textCompartment,
+      textChangedExtension,
+      selectionCompartment,
+      selectionExtension,
+      fileDroppedCompartment,
+      fileDroppedExtension,
+    ]
   );
+  useReconfigurableExtension(view, reconfigurableExtensions);
 
   useEffect(() => {
     if (!container) {
