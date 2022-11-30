@@ -26,7 +26,7 @@ export const buildElectronApps = (options?: Options): Job => {
           NIGHTLY: nightly,
         },
         with: {
-          timeout_minutes: 20,
+          timeout_minutes: 60,
           max_attempts: 3,
           command: gulp('buildAllElectronApps'),
         },

@@ -227,7 +227,7 @@ jobs:
           APPLE_ID_PASSWORD: '${{ secrets.APPLE_ID_PASSWORD }}'
           NIGHTLY: false
         with:
-          timeout_minutes: 20
+          timeout_minutes: 60
           max_attempts: 3
           command: 'gulp buildAllElectronApps --max-old-space-size=8192'
       - name: 'Upload Electron apps'
