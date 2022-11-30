@@ -36,9 +36,7 @@ const options: Options = {
   ignoreMatches: [
     TYPES_MATCH,
     '@capacitor/android',
-    '@capacitor/filesystem',
     '@capacitor/ios',
-    '@capacitor/keyboard',
     'css-loader',
     'eslint-plugin-prettier',
     'file-loader',

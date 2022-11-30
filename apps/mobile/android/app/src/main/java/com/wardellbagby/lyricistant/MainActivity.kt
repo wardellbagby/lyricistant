@@ -10,8 +10,8 @@ import com.wardellbagby.lyricistant.plugins.FilesPlugin
 
 class MainActivity : BridgeActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
     registerPlugin(FilesPlugin::class.java)
+    super.onCreate(savedInstanceState)
   }
 
   override fun onStart() {

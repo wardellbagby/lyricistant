@@ -104,9 +104,8 @@ const buildAndroidApp = series(
     await del(androidDist);
     await fs.mkdir(androidDist);
     await fs.copyFile(
-      // Says its unsigned, but it isn't; Gradle names it that because signing configs are created after evaluation.
       path.resolve(
-        'apps/mobile/android/app/build/outputs/apk/release/app-release-unsigned.apk'
+        'apps/mobile/android/app/build/outputs/apk/release/app-release.apk'
       ),
       path.resolve(androidDist, 'lyricistant.apk')
     );

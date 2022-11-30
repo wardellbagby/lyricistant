@@ -22,6 +22,16 @@ android {
   }
   signingConfigs {
     release {
+      def propsFile = rootProject.file('keystore.properties')
+
+      if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        storeFile = file(props['storeFile'])
+        storePassword = props['storePassword']
+        keyAlias = props['keyAlias']
+        keyPassword = props['keyPassword']
+      }
     }
   }
   buildTypes {
@@ -41,6 +51,8 @@ repositories {
 }
 
 dependencies {
+  implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+  implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
   implementation project(':capacitor-android')
@@ -50,7 +62,13 @@ dependencies {
   implementation project(':capacitor-cordova-android-plugins')
   implementation "androidx.core:core-ktx:1.6.0"
   implementation 'androidx.webkit:webkit:1.4.0'
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    jvmTarget = "11"
+  }
 }
 
 apply from: 'capacitor.build.gradle'
@@ -64,17 +82,4 @@ try {
   logger.
       warn(
           "google-services.json not found, google-services plugin not applied. Push Notifications won't work")
-}
-
-afterEvaluate { project ->
-    def propsFile = rootProject.file('keystore.properties')
-
-    if (propsFile.exists()) {
-        def props = new Properties()
-        props.load(new FileInputStream(propsFile))
-        android.signingConfigs['release'].storeFile = file(props['storeFile'])
-        android.signingConfigs['release'].storePassword = props['storePassword']
-        android.signingConfigs['release'].keyAlias = props['keyAlias']
-        android.signingConfigs['release'].keyPassword = props['keyPassword']
-    }
 }
