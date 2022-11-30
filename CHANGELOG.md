@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/wardellbagby/lyricistant/compare/v2.0.1+web...v2.1.0) (2022-11-30)
+
+
+### Features
+
+* add "Inspire?" button to show random words if the user is idle on an empty line ([de02559](https://github.com/wardellbagby/lyricistant/commit/de02559c8d8be7091a3e9689fd124f0fd8da9b1e))
+
+
+
 ## [2.0.1](https://github.com/wardellbagby/lyricistant/compare/v2.0.0...v2.0.1) (2022-08-11)
 
 
