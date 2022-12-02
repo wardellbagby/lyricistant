@@ -5,8 +5,7 @@ import {
 import { Rhymes, RhymesProps } from '@lyricistant/renderer/rhymes/Rhymes';
 import { Box, LinearProgress, Tab, Tabs } from '@mui/material';
 import { BookAlphabet, ScriptOutline } from 'mdi-material-ui';
-import React, { useEffect, useState } from 'react';
-import SwipeableViews from 'react-swipeable-views';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 
 interface DetailPaneProps {
   rhymeProps: Omit<RhymesProps, keyof DetailPaneChildProps>;
@@ -17,6 +16,22 @@ export interface DetailPaneChildProps {
   isVisible?: boolean;
   onLoadingChanged?: (isLoading: boolean) => void;
 }
+
+type TabbedItemProps = PropsWithChildren<{
+  index: number;
+  selectedIndex: number;
+}>;
+const TabbedItem = ({ index, selectedIndex, children }: TabbedItemProps) => (
+  <Box
+    sx={{
+      display: index === selectedIndex ? 'block' : 'none',
+      flex: '1 1 auto',
+      overflow: 'auto',
+    }}
+  >
+    {children}
+  </Box>
+);
 
 export const DetailPane: React.FC<DetailPaneProps> = (props) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -50,23 +65,20 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
         <Tab aria-label={'Rhymes Tab'} icon={<ScriptOutline />} />
         <Tab aria-label={'Dictionary Tab'} icon={<BookAlphabet />} />
       </Tabs>
-      <SwipeableViews
-        index={tabIndex}
-        onChangeIndex={setTabIndex}
-        style={{ flex: '1 1 auto' }}
-        containerStyle={{ height: '100%', width: '100%', minHeight: 0 }}
-      >
+      <TabbedItem index={0} selectedIndex={tabIndex}>
         <Rhymes
           {...props.rhymeProps}
           isVisible={tabIndex === 0}
           onLoadingChanged={setLoading}
         />
+      </TabbedItem>
+      <TabbedItem index={1} selectedIndex={tabIndex}>
         <Dictionary
           {...props.dictionaryProps}
           isVisible={tabIndex === 1}
           onLoadingChanged={setLoading}
         />
-      </SwipeableViews>
+      </TabbedItem>
     </Box>
   );
 };
