@@ -15,19 +15,9 @@ import {
   DialogTitle,
   Grid,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import { useMachine } from '@xstate/react';
 import { Apple, AppleIos, Linux, MicrosoftWindows } from 'mdi-material-ui';
 import React, { useCallback, useEffect, useMemo } from 'react';
-
-const useStyles = (release: Release) =>
-  makeStyles(() => ({
-    root: {
-      background: releaseColor(release),
-      color: releaseTextColor(release),
-      textTransform: 'none',
-    },
-  }))();
 
 const releaseColor = ({ platform }: Release) => {
   switch (platform) {
@@ -142,12 +132,15 @@ const releaseTextColor = ({ platform }: Release) => {
 
 const DownloadButton = (props: { release: Release; onClick?: () => void }) => {
   const { release, onClick } = props;
-  const classes = useStyles(release);
 
   return (
     <Box padding={'8px'}>
       <Button
-        className={classes.root}
+        sx={{
+          background: releaseColor(release),
+          color: releaseTextColor(release),
+          textTransform: 'none',
+        }}
         variant={'contained'}
         fullWidth
         startIcon={<ReleaseIcon {...release} />}

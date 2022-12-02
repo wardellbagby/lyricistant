@@ -16,7 +16,6 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import React, { ReactChild } from 'react';
 
 const aboutInfo: Record<string, ReactChild> = {
@@ -41,16 +40,9 @@ const aboutInfo: Record<string, ReactChild> = {
   ),
 };
 
-const useTableCellStyles = makeStyles({
-  root: {
-    borderBottom: 'none',
-  },
-});
-
-const DividerlessTableCell = (props: TableCellProps) => {
-  const classes = useTableCellStyles();
-  return <TableCell className={classes.root} {...props} />;
-};
+const DividerlessTableCell = (props: TableCellProps) => (
+  <TableCell sx={{ borderBottom: 'none' }} {...props} />
+);
 
 /** The props needed to render an {@link AboutDialog}. */
 interface AboutDialogProps {

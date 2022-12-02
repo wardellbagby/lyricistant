@@ -19,10 +19,8 @@ import {
   MenuItem,
   Paper,
   SxProps,
-  Theme,
   useTheme,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import React, {
   FunctionComponent,
   MouseEvent,
@@ -31,16 +29,6 @@ import React, {
   useState,
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-
-const useMenuStyles = makeStyles<Theme, { isSmallLayout: boolean }>(
-  (theme: Theme) => ({
-    menu: {
-      backgroundColor: theme.palette.background.paper,
-      height: (props) => (props.isSmallLayout ? 'auto' : '100%'),
-      width: (props) => (props.isSmallLayout ? '100%' : 'auto'),
-    },
-  })
-);
 
 const MenuIcon: FunctionComponent<{
   onClick: (event: MouseEvent) => void;
@@ -187,7 +175,6 @@ export interface MenuProps {
  */
 export const Menu: React.FC<MenuProps> = (props) => {
   const theme = useTheme();
-  const classes = useMenuStyles({ isSmallLayout: useSmallLayout() });
   const [uiConfig] = useChannelData('ui-config');
   const isSmallLayout = useSmallLayout();
   const direction = isSmallLayout ? 'horizontal' : 'vertical';
@@ -241,7 +228,14 @@ export const Menu: React.FC<MenuProps> = (props) => {
       marginRight={isSmallLayout ? 'inherit' : '8px'}
       padding={'8px'}
     >
-      <Paper className={classes.menu} color={theme.palette.primary.main}>
+      <Paper
+        color={theme.palette.primary.main}
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          height: isSmallLayout ? 'auto' : '100%',
+          width: isSmallLayout ? '100%' : 'auto',
+        }}
+      >
         <MenuBar
           direction={direction}
           leading={leadingIcons}

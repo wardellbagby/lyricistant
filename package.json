@@ -151,7 +151,6 @@
     "@fontsource/roboto-mono": "^4.4.5",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.3",
-    "@mui/styles": "^5.9.3",
     "@octokit/rest": "^19.0.3",
     "@wessberg/di": "^2.1.0",
     "@xstate/react": "^3.0.0",

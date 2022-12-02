@@ -26,11 +26,9 @@ import {
   Select,
   Slide,
   SlideProps,
-  Theme,
   Toolbar,
   Typography,
 } from '@mui/material';
-import { createStyles, makeStyles } from '@mui/styles';
 import React, { useEffect, useState } from 'react';
 
 const DialogTransition = React.forwardRef<unknown, SlideProps>(
@@ -38,51 +36,15 @@ const DialogTransition = React.forwardRef<unknown, SlideProps>(
     return <Slide direction="up" ref={ref} {...props} />;
   }
 );
-const dialogStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    root: {
-      color: theme.palette.primary.contrastText,
-    },
-    container: {
-      height: '100%',
-    },
-    divider: {
-      marginTop: '2px',
-    },
-    dialogPaper: {
-      background: theme.palette.background.default,
-    },
-    paper: {
-      paddingTop: '32px',
-      paddingBottom: '32px',
-      paddingLeft: '32px',
-      paddingRight: '32px',
-    },
-    header: {
-      fontWeight: 'bolder',
-    },
-    select: {
-      marginLeft: '16px',
-      marginRight: '16px',
-    },
-  })
-);
 
-const Header = ({ label }: { label: string }) => {
-  const classes = dialogStyles(undefined);
-  return (
-    <div>
-      <Typography className={classes.header} variant={'h6'}>
-        {label}
-      </Typography>
-      <Divider className={classes.divider} />
-    </div>
-  );
-};
+const Header = ({ label }: { label: string }) => (
+  <div>
+    <Typography sx={{ fontWeight: 'bolder' }} variant={'h6'}>
+      {label}
+    </Typography>
+    <Divider sx={{ marginTop: '2px' }} />
+  </div>
+);
 
 interface LabeledValue<T> {
   label: string;
@@ -101,26 +63,25 @@ const SelectBox = <T extends string | number>({
   onChange,
   items,
   label,
-}: SelectBoxProps<T>) => {
-  const classes = dialogStyles(undefined);
-  return (
-    <FormControl variant="outlined" fullWidth>
-      <InputLabel className={classes.select}>{label}</InputLabel>
-      <Select
-        className={classes.select}
-        value={value}
-        onChange={(e) => onChange(e.target.value as T)}
-        label={label}
-      >
-        {items.map(({ label: itemLabel, value: itemValue }) => (
-          <MenuItem key={itemLabel} value={itemValue}>
-            {itemLabel}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-};
+}: SelectBoxProps<T>) => (
+  <FormControl variant="outlined" fullWidth>
+    <InputLabel sx={{ marginLeft: '16px', marginRight: '16px' }}>
+      {label}
+    </InputLabel>
+    <Select
+      sx={{ marginLeft: '16px', marginRight: '16px' }}
+      value={value}
+      onChange={(e) => onChange(e.target.value as T)}
+      label={label}
+    >
+      {items.map(({ label: itemLabel, value: itemValue }) => (
+        <MenuItem key={itemLabel} value={itemValue}>
+          {itemLabel}
+        </MenuItem>
+      ))}
+    </Select>
+  </FormControl>
+);
 
 /** The props needed to render {@link Preferences}. */
 interface PreferencesProps {
@@ -139,7 +100,6 @@ interface PreferencesProps {
  * @param props The props needed to render this component.
  */
 export const Preferences = (props: PreferencesProps) => {
-  const classes = dialogStyles(undefined);
   const [originalPreferenceData] = useChannelData('prefs-updated', props.open);
   const [preferencesData, setPreferencesData] = useState(
     originalPreferenceData
@@ -196,10 +156,14 @@ export const Preferences = (props: PreferencesProps) => {
   return (
     <Dialog
       fullScreen
-      className={classes.root}
+      sx={{
+        color: (theme) => theme.palette.primary.contrastText,
+      }}
       open={props.open}
       TransitionComponent={DialogTransition}
-      PaperProps={{ className: classes.dialogPaper }}
+      PaperProps={{
+        sx: { background: (theme) => theme.palette.background.default },
+      }}
     >
       <AppBar color={'primary'} position="sticky" enableColorOnDark>
         <Toolbar>
@@ -211,7 +175,10 @@ export const Preferences = (props: PreferencesProps) => {
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography
+            variant="h6"
+            sx={{ marginLeft: (theme) => theme.spacing(2), flex: 1 }}
+          >
             Preferences
           </Typography>
           <IconButton
@@ -224,8 +191,15 @@ export const Preferences = (props: PreferencesProps) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Container maxWidth={'md'} className={classes.container}>
-        <Paper className={classes.paper}>
+      <Container maxWidth={'md'} sx={{ height: '100%' }}>
+        <Paper
+          sx={{
+            paddingTop: '32px',
+            paddingBottom: '32px',
+            paddingLeft: '32px',
+            paddingRight: '32px',
+          }}
+        >
           <Box display={'flex'} flexDirection={'column'} gap={'24px'}>
             <Header label={'Display'} />
 
