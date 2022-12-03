@@ -2,21 +2,22 @@ import {
   Decoration,
   DecorationSet,
   EditorView,
+  PluginValue,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
-  PluginValue,
 } from '@codemirror/view';
 import { Chip, Fade } from '@mui/material';
 import { sample } from 'lodash-es';
 import { AutoFix } from 'mdi-material-ui';
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 
 interface InspirationButtonProps {
   showImmediately: boolean;
   onClick: () => void;
 }
+
 const InspirationButton = (props: InspirationButtonProps) => {
   const [fadeIn, setFadeIn] = useState(props.showImmediately);
   useEffect(() => {
@@ -42,7 +43,10 @@ interface InspirationWidgetConfig
   extends Omit<InspirationButtonProps, 'onClick'> {
   onClick: (target: HTMLElement) => void;
 }
+
 class InspirationButtonWidget extends WidgetType {
+  private root: ReactDOMClient.Root | null = null;
+
   public constructor(private config: InspirationWidgetConfig) {
     super();
   }
@@ -52,22 +56,27 @@ class InspirationButtonWidget extends WidgetType {
   }
 
   public toDOM() {
-    const root = document.createElement('span');
-    root.style.display = 'inline-flex';
-    root.style.verticalAlign = 'middle';
-    root.style.position = 'absolute';
-    root.style.paddingLeft = '8px';
-    root.style.paddingRight = '8px';
+    if (this.root != null) {
+      this.root.unmount();
+    }
 
-    ReactDOM.render(
+    const container = document.createElement('span');
+    container.style.display = 'inline-flex';
+    container.style.verticalAlign = 'middle';
+    container.style.position = 'absolute';
+    container.style.paddingLeft = '8px';
+    container.style.paddingRight = '8px';
+
+    this.root = ReactDOMClient.createRoot(container);
+
+    this.root.render(
       <InspirationButton
         {...this.config}
-        onClick={() => this.config.onClick(root)}
-      />,
-      root
+        onClick={() => this.config.onClick(container)}
+      />
     );
 
-    return root;
+    return container;
   }
 
   public ignoreEvent() {
@@ -76,7 +85,8 @@ class InspirationButtonWidget extends WidgetType {
 
   public destroy(dom: HTMLElement) {
     super.destroy(dom);
-    ReactDOM.unmountComponentAtNode(dom);
+    this.root?.unmount();
+    this.root = null;
   }
 }
 

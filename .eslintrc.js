@@ -201,6 +201,7 @@ module.exports = {
           '**/images/**',
           '@testing-library/jest-dom/*',
           '@fontsource/**/*',
+          'react-dom/*',
         ],
       },
     ],

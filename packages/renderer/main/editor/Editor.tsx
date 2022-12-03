@@ -109,7 +109,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
     }
   }, [editor.current]);
 
-  useEffect(() => props.onModificationStateChanged(isModified), [isModified]);
+  useEffect(() => {
+    props.onModificationStateChanged(isModified);
+  }, [isModified]);
   useEffect(() => {
     if (!props.value.isTransactional) {
       resetHistory();

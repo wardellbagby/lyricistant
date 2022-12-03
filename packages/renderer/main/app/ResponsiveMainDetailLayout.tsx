@@ -44,10 +44,9 @@ export const ResponsiveMainDetailLayout = ({
     ];
   }
 
-  useEffect(
-    () => logger.info(`Switching layout. isSmallLayout: ${isSmallLayout}`),
-    [isSmallLayout]
-  );
+  useEffect(() => {
+    logger.info(`Switching layout. isSmallLayout: ${isSmallLayout}`);
+  }, [isSmallLayout]);
   return (
     <Box
       height={'100%'}

@@ -7,7 +7,7 @@ import { onPageLoaded, onThemeUpdated } from '@lyricistant/renderer/preload';
 import { Themed } from '@lyricistant/renderer/theme/Themed';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 
 if (module.hot) {
@@ -17,8 +17,9 @@ if (module.hot) {
 setWindowErrorHandler();
 setupAnalytics();
 const container: HTMLElement = document.getElementById('app');
+const root = ReactDOM.createRoot(container);
 
-ReactDOM.render(
+root.render(
   <React.StrictMode>
     <PlatformEventsReadyHandler>
       <Themed
@@ -47,6 +48,5 @@ ReactDOM.render(
         </SnackbarProvider>
       </Themed>
     </PlatformEventsReadyHandler>
-  </React.StrictMode>,
-  container
+  </React.StrictMode>
 );

@@ -93,7 +93,9 @@ const MenuBar = (props: AppBarProps) => {
     return props.trailing;
   }, [props.leading, props.trailing, shouldTrim]);
 
-  useEffect(() => setAnchor(null), [isHorizontal]);
+  useEffect(() => {
+    setAnchor(null);
+  }, [isHorizontal]);
 
   return (
     <Box
