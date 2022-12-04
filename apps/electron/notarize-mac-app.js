@@ -2,7 +2,7 @@ require('dotenv').config({
   path: require('path').resolve('apps', 'electron', 'notarize-mac-app.env'),
   debug: true,
 });
-const { notarize } = require('electron-notarize');
+const { notarize } = require('@electron/notarize');
 
 exports.default = async (context) => {
   const { electronPlatformName, appOutDir } = context;
