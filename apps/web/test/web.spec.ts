@@ -146,7 +146,7 @@ describe.each(args)(
 
     it('allows you to type in the editor', async () => {
       const editorTextArea = await page.$('.cm-content');
-      await editorTextArea.type('Hello World!');
+      await editorTextArea.type('Hello World!', { delay: 10 });
 
       await expect(editorTextArea.textContent()).resolves.toBe('Hello World!');
     });

@@ -158,7 +158,7 @@ devices.forEach((device) => {
       );
 
       const editorTextArea = await page.$('.cm-content');
-      await editorTextArea.type(lyrics);
+      await editorTextArea.type(lyrics, { delay: 10 });
       await page.waitForTimeout(2000);
 
       await expect(editorTextArea.textContent()).to.eventually.equal(
@@ -181,7 +181,7 @@ devices.forEach((device) => {
       );
 
       const editorTextArea = await page.$('.cm-content');
-      await editorTextArea.type(lyrics);
+      await editorTextArea.type(lyrics, { delay: 10 });
       await page.waitForTimeout(2000);
 
       await expect(editorTextArea.textContent()).to.eventually.equal(
@@ -193,7 +193,7 @@ devices.forEach((device) => {
 
     it('screenshots showing dictionary', async () => {
       const editorTextArea = await page.$('.cm-content');
-      await editorTextArea.type(lyrics);
+      await editorTextArea.type(lyrics, { delay: 10 });
       await page.waitForTimeout(2000);
 
       await expect(editorTextArea.textContent()).to.eventually.equal(
@@ -208,7 +208,7 @@ devices.forEach((device) => {
 
     it('screenshots file history', async () => {
       const editorTextArea = await page.$('.cm-content');
-      await editorTextArea.type(lyrics);
+      await editorTextArea.type(lyrics, { delay: 10 });
       await page.waitForTimeout(2000);
 
       await expect(editorTextArea.textContent()).to.eventually.equal(

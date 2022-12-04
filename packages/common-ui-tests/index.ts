@@ -24,13 +24,14 @@ export default (
 ) => {
   it('shows a prompt when creating a new file with changes', async () => {
     const { screen } = await getDependencies();
+    const text = 'The Soul';
 
     const editor = await getEditor(screen);
-    await editor.type("It's snot yours like nose running.");
 
-    expect(
-      await screen.getByText("It's snot yours like nose running.")
-    ).toBeTruthy();
+    await editor.type(text, { delay: 10 });
+
+    await expect(editor.textContent()).resolves.toEqual(text);
+    await expect(screen.findByText(text)).resolves.toBeTruthy();
 
     const newFileButton = await screen.findByRole('button', {
       name: 'New file',
