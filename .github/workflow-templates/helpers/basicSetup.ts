@@ -27,10 +27,10 @@ export const basicSetup = (options?: Options): Step[] => {
       },
     } as Step,
     {
-      name: 'Setup Node.js - 15.x.x',
+      name: 'Setup Node.js - 18',
       uses: SETUP_NODE,
       with: {
-        'node-version': '>=15.10',
+        'node-version': '>=18',
         cache: 'npm',
       },
     } as Step,

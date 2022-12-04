@@ -1,38 +1,23 @@
-import { AUTOMATIC_RELEASES, AUTOMATIC_RELEASES_ALT } from './versions';
+import { AUTOMATIC_RELEASES } from './versions';
 import { Step } from './Workflow';
 
 interface Options {
   nightly?: boolean;
   files: string;
+  bodyPath: string;
 }
 export const createGithubRelease = (options: Options): Step => {
-  const { nightly, files } = { nightly: false, ...options };
+  const { files, bodyPath, nightly } = { nightly: false, ...options };
   return {
     name: `Create ${nightly ? 'Nightly ' : ''}Github release`,
     uses: AUTOMATIC_RELEASES,
     with: {
-      repo_token: '${{ secrets.GITHUB_TOKEN }}',
-      automatic_release_tag: nightly ? 'latest' : undefined,
-      prerelease: nightly,
-      title: nightly ? 'Lyricistant - Nightly' : undefined,
-      files,
-    },
-  };
-};
-
-interface OptionsAlt {
-  files: string;
-  bodyPath: string;
-}
-export const createGithubReleaseAlt = (options: OptionsAlt): Step => {
-  const { files, bodyPath } = options;
-  return {
-    name: 'Create Github release',
-    uses: AUTOMATIC_RELEASES_ALT,
-    with: {
       token: '${{ secrets.GITHUB_TOKEN }}',
       body_path: bodyPath,
       files,
+      name: nightly ? 'Lyricistant - Nightly' : undefined,
+      tag_name: nightly ? 'latest' : undefined,
+      prerelease: nightly,
     },
   };
 };

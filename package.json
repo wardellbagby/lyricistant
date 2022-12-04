@@ -19,7 +19,7 @@
     "lint-fix": "eslint -c .eslintrc.js . --fix && scripts/check/run_configs.ts --fix && typesync"
   },
   "engines": {
-    "node": ">= 14.15.3"
+    "node": ">= 16"
   },
   "husky": {
     "hooks": {

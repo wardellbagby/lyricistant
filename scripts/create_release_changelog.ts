@@ -2,7 +2,8 @@
 import { writeFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import stringify from 'json-stringify-safe';
-import standardChangelog from 'standard-changelog';
+import standardChangelog, { RawCommit } from 'standard-changelog';
+import { version } from '../package.json';
 
 const APP_SCOPES = ['android', 'electron', 'web', 'ios', 'all'] as const;
 type App = typeof APP_SCOPES[number];
@@ -26,16 +27,68 @@ interface ReleaseData {
   commitGroups: CommitGroup[];
 }
 
-const getReleaseData = async (app: App): Promise<ReleaseData> => {
+const isSupportedCommitType = (commit: RawCommit): boolean =>
+  ['feat', 'fix', 'perf'].includes(commit.type);
+
+const getDisplayableCommitType = (commit: RawCommit): string => {
+  if (commit.type === 'feat') {
+    return 'Features';
+  } else if (commit.type === 'fix') {
+    return 'Bug Fixes';
+  } else if (commit.type === 'perf') {
+    return 'Performance Improvements';
+  } else if (commit.type === 'revert' || commit.revert) {
+    return 'Reverts';
+  } else if (commit.type === 'docs') {
+    return 'Documentation';
+  } else if (commit.type === 'style') {
+    return 'Styles';
+  } else if (commit.type === 'refactor') {
+    return 'Code Refactoring';
+  } else if (commit.type === 'test') {
+    return 'Tests';
+  } else if (commit.type === 'build') {
+    return 'Build System';
+  } else if (commit.type === 'ci') {
+    return 'Continuous Integration';
+  } else if (commit.type === 'chore') {
+    return 'Chore';
+  }
+  return 'Other';
+};
+const createCommitTransformer =
+  (includeAllCommits: boolean) =>
+  (commit: RawCommit): RawCommit | null => {
+    if (!commit.type) {
+      return null;
+    }
+
+    if (!isSupportedCommitType(commit) && !includeAllCommits) {
+      return null;
+    }
+    return {
+      ...commit,
+      type: getDisplayableCommitType(commit),
+    };
+  };
+const getReleaseData = async (
+  app: App,
+  outputUnreleased: boolean
+): Promise<ReleaseData> => {
   const stream = standardChangelog(
     {
       releaseCount: 0,
+      outputUnreleased,
+      context: outputUnreleased && {
+        release: version,
+      },
     },
     null,
     null,
     null,
     {
       mainTemplate: '{{toJSON @root}}',
+      transform: createCommitTransformer(outputUnreleased),
     }
   );
 
@@ -171,6 +224,7 @@ const formatRelease = (app: App, data: ReleaseData): string => {
 (async () => {
   const app = process.argv[2] as App;
   const output = process.argv[3];
+  const outputUnreleased = process.argv[4] === 'unreleased';
 
   if (!APP_SCOPES.includes(app)) {
     console.error(`"${app}" is not a supported Lyricistant app.`);
@@ -180,7 +234,7 @@ const formatRelease = (app: App, data: ReleaseData): string => {
     console.error('No output directory given.');
   }
 
-  const releaseData = await getReleaseData(app);
+  const releaseData = await getReleaseData(app, outputUnreleased);
   const changelog = formatRelease(app, releaseData).trim();
   console.log(changelog);
   writeFileSync(output, changelog);

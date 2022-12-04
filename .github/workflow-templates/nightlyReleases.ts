@@ -55,10 +55,19 @@ const createGithubRelease: Job = {
   'runs-on': defaultRunner,
   needs: [buildIOSApp, buildElectronApps, buildAndroidApp],
   steps: [
+    ...basicSetup({ forMobileBuilds: false, forTests: false }),
+    {
+      name: 'Create Github release notes',
+      run: './scripts/create_release_changelog.ts all release.txt unreleased',
+    },
     downloadIOSApp({ path: '/tmp/artifacts' }),
     downloadElectronApps({ path: '/tmp/artifacts' }),
     downloadAndroidApp({ path: '/tmp/artifacts' }),
-    createGithubReleaseStep({ nightly: true, files: '/tmp/artifacts/*.*' }),
+    createGithubReleaseStep({
+      nightly: true,
+      files: '/tmp/artifacts/*.*',
+      bodyPath: 'release.txt',
+    }),
   ],
 };
 export const nightlyReleases: Workflow = {

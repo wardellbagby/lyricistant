@@ -11,7 +11,7 @@ import {
   buildIOSApp as buildIOSAppJob,
   downloadIOSApp,
 } from './helpers/buildIOSApp';
-import { createGithubReleaseAlt as createGithubReleaseStep } from './helpers/createGithubRelease';
+import { createGithubRelease as createGithubReleaseStep } from './helpers/createGithubRelease';
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
 import { gulp } from './helpers/local-tasks';
 import { test } from './helpers/test';
