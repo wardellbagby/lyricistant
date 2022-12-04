@@ -1,3 +1,12 @@
+## [2.1.1](https://github.com/wardellbagby/lyricistant/compare/v2.1.0...v2.1.1) (2022-12-04)
+
+
+### Performance Improvements
+
+* improve performance when typing by reducing work on every keypress ([a981ac4](https://github.com/wardellbagby/lyricistant/commit/a981ac42a214daf4160c358f12e59dac578afbfc))
+
+
+
 # [2.1.0](https://github.com/wardellbagby/lyricistant/compare/v2.0.1+web...v2.1.0) (2022-11-30)
 
 
