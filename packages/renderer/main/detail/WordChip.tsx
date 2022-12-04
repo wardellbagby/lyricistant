@@ -15,5 +15,5 @@ interface WordChipProps {
  * @param props The props needed to render {@link WordChip}
  */
 export const WordChip = ({ word, onClick }: WordChipProps) => (
-  <Chip sx={{ flex: '1 1 auto' }} onClick={onClick} label={word} />
+  <Chip style={{ flex: '1 1 auto' }} onClick={onClick} label={word} />
 );

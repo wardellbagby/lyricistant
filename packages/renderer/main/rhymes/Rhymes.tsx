@@ -6,7 +6,7 @@ import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
 import { Box } from '@mui/material';
 import { useMachine } from '@xstate/react';
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { Rhyme } from './rhyme';
 
@@ -15,7 +15,19 @@ interface RhymesListProps {
   onRhymeClicked: (rhyme: Rhyme) => void;
 }
 
-const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => (
+const RhymesListItem = ({
+  rhyme,
+  onRhymeClicked,
+}: {
+  rhyme: Rhyme;
+  onRhymeClicked: (rhyme: Rhyme) => void;
+}) => {
+  const onClick = useCallback(() => {
+    onRhymeClicked(rhyme);
+  }, [rhyme, onRhymeClicked]);
+  return <WordChip word={rhyme.word} key={rhyme.word} onClick={onClick} />;
+};
+const RhymesList = React.memo(({ rhymes, onRhymeClicked }: RhymesListProps) => (
   <Box
     display={'flex'}
     flexWrap={'wrap'}
@@ -28,15 +40,15 @@ const RhymesList = ({ rhymes, onRhymeClicked }: RhymesListProps) => (
   >
     <ListSpacer />
     {rhymes.map((rhyme) => (
-      <WordChip
-        word={rhyme.word}
+      <RhymesListItem
+        rhyme={rhyme}
         key={rhyme.word}
-        onClick={() => onRhymeClicked(rhyme)}
+        onRhymeClicked={onRhymeClicked}
       />
     ))}
     <ListSpacer />
   </Box>
-);
+));
 
 /** The props needed to render the {@link Rhymes} component. */
 export interface RhymesProps extends DetailPaneChildProps {
@@ -93,17 +105,17 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
       height={'100%'}
       width={'100%'}
     >
-      {state.matches('inactive') && (
-        <NullStateText text={'Waiting for lyrics'} />
-      )}
+      <NullStateText
+        visible={state.matches('inactive')}
+        text={'Waiting for lyrics'}
+      />
 
-      {state.matches('no-results') && (
-        <NullStateText text={'No rhymes found'} />
-      )}
+      <NullStateText
+        visible={state.matches('no-results')}
+        text={'No rhymes found'}
+      />
 
-      {rhymes.length > 0 && (
-        <RhymesList rhymes={rhymes} onRhymeClicked={props.onRhymeClicked} />
-      )}
+      <RhymesList rhymes={rhymes} onRhymeClicked={props.onRhymeClicked} />
     </Box>
   );
 };

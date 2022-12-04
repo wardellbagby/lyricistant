@@ -43,48 +43,52 @@ export const Dictionary = ({
       height={'100%'}
       width={'100%'}
     >
-      {state.matches('waiting') && (
-        <NullStateText text={'Waiting for lyrics'} />
-      )}
+      <NullStateText
+        visible={state.matches('waiting')}
+        text={'Waiting for lyrics'}
+      />
 
       {state.matches('no-results') && (
-        <NullStateText text={'No definition found'} />
-      )}
-
-      {meanings.length > 0 && (
-        <MeaningList
-          query={state.context.inputForResult}
-          meanings={meanings}
-          onRelatedTextClicked={onRelatedTextClicked}
+        <NullStateText
+          visible={state.matches('no-results')}
+          text={'No definition found'}
         />
       )}
+
+      <MeaningList
+        query={state.context.inputForResult}
+        meanings={meanings}
+        onRelatedTextClicked={onRelatedTextClicked}
+      />
     </Box>
   );
 };
 
-const MeaningList = (props: {
-  query: string;
-  meanings: Meaning[];
-  onRelatedTextClicked: (word: string) => void;
-}) => (
-  <Box sx={{ overflow: 'auto', paddingLeft: '16px', paddingRight: '16px' }}>
-    <ListSpacer />
-    <Typography variant={'h5'}>{props.query}</Typography>
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      {props.meanings.map((meaning, index) => (
-        <React.Fragment key={JSON.stringify(meaning)}>
-          <VisualMeaning
-            meaning={meaning}
-            onRelatedTextClicked={props.onRelatedTextClicked}
-          />
-          {index < props.meanings.length - 1 && (
-            <Divider variant={'fullWidth'} />
-          )}
-        </React.Fragment>
-      ))}
+const MeaningList = React.memo(
+  (props: {
+    query: string;
+    meanings: Meaning[];
+    onRelatedTextClicked: (word: string) => void;
+  }) => (
+    <Box sx={{ overflow: 'auto', paddingLeft: '16px', paddingRight: '16px' }}>
+      <ListSpacer />
+      <Typography variant={'h5'}>{props.query}</Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {props.meanings.map((meaning, index) => (
+          <React.Fragment key={JSON.stringify(meaning)}>
+            <VisualMeaning
+              meaning={meaning}
+              onRelatedTextClicked={props.onRelatedTextClicked}
+            />
+            {index < props.meanings.length - 1 && (
+              <Divider variant={'fullWidth'} />
+            )}
+          </React.Fragment>
+        ))}
+      </Box>
+      <ListSpacer />
     </Box>
-    <ListSpacer />
-  </Box>
+  )
 );
 
 const VisualMeaning = (props: {

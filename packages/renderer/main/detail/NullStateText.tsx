@@ -2,7 +2,25 @@ import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_fea
 import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 
-export const NullStateText = ({ text }: { text: string }) => {
+/**
+ * Displays a "null state text" showing a message that should be displayed when
+ * loading has failed or otherwise couldn't start.
+ *
+ * Displays the text and the icon of Lyricistant.
+ *
+ * @param text The text to display.
+ * @param visible Whether this should be displayed. Useful for performance
+ *   optimization; if this is meant to be displayed as a replacement for a list
+ *   that could be expensive to render, having this always be rendered but
+ *   hidden can help prevent re-renders.
+ */
+export const NullStateText = ({
+  text,
+  visible,
+}: {
+  text: string;
+  visible: boolean;
+}) => {
   const theme = useTheme();
 
   return (
@@ -13,7 +31,7 @@ export const NullStateText = ({ text }: { text: string }) => {
       textOverflow={'ellipsis'}
       fontStyle={'italic'}
       p={'16px'}
-      display={'flex'}
+      display={visible === true ? 'flex' : 'none'}
       flexWrap={'wrap-reverse'}
       gap={'12px'}
       alignItems={'center'}

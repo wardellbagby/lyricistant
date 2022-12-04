@@ -13,11 +13,12 @@ import {
   useChannel,
   useChannelData,
 } from '@lyricistant/renderer/platform/useChannel';
+import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { useEventCallback } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
-import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { useHistory } from 'react-router-dom';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
 
@@ -45,8 +46,13 @@ export function App() {
   const history = useHistory();
   const [uiConfig] = useChannelData('ui-config');
 
-  const onSaveClicked = useEventCallback(() =>
-    platformDelegate.send('save-file-attempt', editorTextData.text.toString())
+  const onSaveClicked = useCallback(
+    () =>
+      platformDelegate.send(
+        'save-file-attempt',
+        editorTextData.text.toString()
+      ),
+    [editorTextData.text]
   );
 
   const onPartialEditorTextDataUpdate = useCallback(
@@ -55,24 +61,21 @@ export function App() {
     },
     [setEditorTextData]
   );
-  const onTextReplacement = useCallback(
-    (text: string) => {
-      const prefix = editorTextData.text.sliceString(0, selectedText.from);
-      const suffix = editorTextData.text.sliceString(selectedText.to);
+  const onTextReplacement = useEventCallback((text: string) => {
+    const prefix = editorTextData.text.sliceString(0, selectedText.from);
+    const suffix = editorTextData.text.sliceString(selectedText.to);
 
-      setEditorTextData({
-        text: Text.of((prefix + text + suffix).split('\n')),
-        isTransactional: true,
-        cursorPosition: selectedText.from + text.length,
-      });
-      setSelectedText({
-        text,
-        from: selectedText.from,
-        to: selectedText.from + text.length,
-      });
-    },
-    [selectedText, editorTextData]
-  );
+    setEditorTextData({
+      text: Text.of((prefix + text + suffix).split('\n')),
+      isTransactional: true,
+      cursorPosition: selectedText.from + text.length,
+    });
+    setSelectedText({
+      text,
+      from: selectedText.from,
+      to: selectedText.from + text.length,
+    });
+  });
 
   const onTextSelected = useEventCallback((value: TextSelectionData) => {
     if (value && value.text) {
@@ -118,6 +121,33 @@ export function App() {
     return () => clearTimeout(timer);
   }, [editorTextData]);
 
+  const fallbackErrorRendering = useCallback(
+    (props: FallbackProps) => (
+      <AppError
+        error={getRootError(props.error)}
+        editorText={editorTextData.text.toString()}
+      />
+    ),
+    [editorTextData.text]
+  );
+
+  const onDownloadClicked = useEventCallback(() => goTo(history, 'download'));
+  const onFileHistoryClicked = useEventCallback(() =>
+    goTo(history, 'file-history')
+  );
+  const onPreferencesClicked = useEventCallback(() =>
+    goTo(history, 'preferences')
+  );
+  const onNewClicked = useEventCallback(() =>
+    platformDelegate.send('new-file-attempt')
+  );
+  const onOpenClicked = useEventCallback(() =>
+    platformDelegate.send('open-file-attempt')
+  );
+  const onRhymeClicked = useEventCallback((rhyme: Rhyme) =>
+    onTextReplacement(rhyme.word)
+  );
+
   if (error) {
     return (
       <AppError error={error} editorText={editorTextData.text.toString()} />
@@ -125,22 +155,15 @@ export function App() {
   }
 
   return (
-    <ErrorBoundary
-      fallbackRender={(props) => (
-        <AppError
-          error={getRootError(props.error)}
-          editorText={editorTextData.text.toString()}
-        />
-      )}
-    >
+    <ErrorBoundary fallbackRender={fallbackErrorRendering}>
       <ResponsiveMainDetailLayout
         menu={
           <Menu
-            onDownloadClicked={() => goTo(history, 'download')}
-            onFileHistoryClicked={() => goTo(history, 'file-history')}
-            onPreferencesClicked={() => goTo(history, 'preferences')}
-            onNewClicked={() => platformDelegate.send('new-file-attempt')}
-            onOpenClicked={() => platformDelegate.send('open-file-attempt')}
+            onDownloadClicked={onDownloadClicked}
+            onFileHistoryClicked={onFileHistoryClicked}
+            onPreferencesClicked={onPreferencesClicked}
+            onNewClicked={onNewClicked}
+            onOpenClicked={onOpenClicked}
             onSaveClicked={onSaveClicked}
           />
         }
@@ -155,7 +178,7 @@ export function App() {
         detail={
           <DetailPane
             rhymeProps={{
-              onRhymeClicked: (rhyme) => onTextReplacement(rhyme.word),
+              onRhymeClicked,
               query: selectedText?.text,
             }}
             dictionaryProps={{
