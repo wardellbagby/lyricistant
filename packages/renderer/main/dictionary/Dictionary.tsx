@@ -55,11 +55,13 @@ export const Dictionary = ({
         />
       )}
 
-      <MeaningList
-        query={state.context.inputForResult}
-        meanings={meanings}
-        onRelatedTextClicked={onRelatedTextClicked}
-      />
+      {meanings.length > 0 && (
+        <MeaningList
+          query={state.context.inputForResult}
+          meanings={meanings}
+          onRelatedTextClicked={onRelatedTextClicked}
+        />
+      )}
     </Box>
   );
 };
