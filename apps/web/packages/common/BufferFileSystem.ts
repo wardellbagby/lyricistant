@@ -5,7 +5,7 @@ export interface BufferFileSystem {
     buffer: ArrayBuffer,
     defaultFileName: string,
     handle?: FileSystemHandle
-  ) => Promise<FileSystemHandle>;
+  ) => Promise<{ handle?: FileSystemHandle; cancelled: boolean }>;
   openFile: () => Promise<{
     path: string;
     data: ArrayBuffer;

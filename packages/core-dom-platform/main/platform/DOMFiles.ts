@@ -10,7 +10,7 @@ import {
 } from '@lyricistant/common/files/PlatformFile';
 import { Logger } from '@lyricistant/common/Logger';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
-import { FileWithHandle, FileSystemHandle } from 'browser-fs-access';
+import { FileSystemHandle } from 'browser-fs-access';
 
 /**
  * Runs the specified block but catch and ignore any AbortErrors, which are
@@ -22,20 +22,22 @@ import { FileWithHandle, FileSystemHandle } from 'browser-fs-access';
 export const runIgnoringAbortErrors = async <R>(
   logger: Logger,
   block: () => R | Promise<R>
-) => {
+): Promise<{ result?: R; cancelled: boolean }> => {
   try {
-    return await block();
+    return { result: await block(), cancelled: false };
   } catch (e) {
     if (e instanceof DOMException && e.name === 'AbortError') {
       logger.verbose(
         'Swallowing exception since user closed the open file picker',
         e
       );
+      return { cancelled: true };
     } else {
       throw e;
     }
   }
 };
+
 export class DOMFiles implements Files {
   /*
     An in-memory mapping of generated IDs to FileSystemHandles. We'd prefer for
@@ -53,14 +55,12 @@ export class DOMFiles implements Files {
       return file;
     }
 
-    const result: FileWithHandle = await runIgnoringAbortErrors(
-      this.logger,
-      () =>
-        this.fs.openFile({
-          mimeTypes: SUPPORTED_MIME_TYPES,
-          extensions: SUPPORTED_EXTENSIONS,
-          multiple: false,
-        })
+    const { result } = await runIgnoringAbortErrors(this.logger, () =>
+      this.fs.openFile({
+        mimeTypes: SUPPORTED_MIME_TYPES,
+        extensions: SUPPORTED_EXTENSIONS,
+        multiple: false,
+      })
     );
 
     if (result) {
@@ -82,15 +82,22 @@ export class DOMFiles implements Files {
     fileHandleId?: string
   ): Promise<FileMetadata> => {
     const fileHandle = this.fileHandles.get(fileHandleId);
-    const result = await this.fs.saveFile(
-      new Blob([data], {
-        type: LYRICS_MIME_TYPE,
-      }),
-      {
-        fileName: defaultFilename,
-      },
-      fileHandle
+    const { result, cancelled } = await runIgnoringAbortErrors(
+      this.logger,
+      () =>
+        this.fs.saveFile(
+          new Blob([data], {
+            type: LYRICS_MIME_TYPE,
+          }),
+          {
+            fileName: defaultFilename,
+          },
+          fileHandle
+        )
     );
+    if (cancelled) {
+      return null;
+    }
     const handleId = fileHandleId ?? this.generateFileHandleId();
     this.fileHandles.set(handleId, result);
     return { path: handleId, name: result.name ?? defaultFilename };

@@ -18,6 +18,7 @@ import {
   Preferences,
 } from '@lyricistant/common-platform/preferences/Preferences';
 import {
+  CancelError,
   Cancellable,
   CancelSignal,
   makeCancellable,
@@ -145,7 +146,9 @@ export class FileManager implements Manager {
         await this.openFileActual(platformFile);
       }
     } catch (e) {
-      this.logger.error('Error opening file.', e);
+      if (!(e instanceof CancelError)) {
+        this.logger.error('Error opening file.', e);
+      }
       this.rendererDelegate.send('file-opened', e, undefined, true);
     } finally {
       this.rendererDelegate.send(

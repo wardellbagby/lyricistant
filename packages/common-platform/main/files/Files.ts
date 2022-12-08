@@ -42,7 +42,9 @@ export interface Files {
    */
   openFile: (file?: PlatformFile) => Promise<PlatformFile>;
   /**
-   * Save the given data to a file.
+   * Save the given data to a file. If this attempt to save the file was
+   * cancelled by the user, this method should return null. If it failed due to
+   * an unexpected error, it should reject.
    *
    * @param data The data to write directly to a file.
    * @param defaultFileName The default file name, with extension, to use.

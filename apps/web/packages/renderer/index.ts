@@ -2,7 +2,7 @@ import { SUPPORTED_EXTENSIONS } from '@lyricistant/common-platform/files/Files';
 import { runIgnoringAbortErrors } from '@lyricistant/core-dom-platform/platform/DOMFiles';
 import { BufferFileSystem } from '@web-common/BufferFileSystem';
 import { Storage } from '@web-common/Storage';
-import { fileOpen, fileSave, FileSystemHandle } from 'browser-fs-access';
+import { fileOpen, fileSave } from 'browser-fs-access';
 import { expose, proxy, transfer } from 'comlink';
 import { mainProcessWorker, platform } from './platform';
 import { platformDelegate } from './PlatformDelegate';
@@ -25,25 +25,25 @@ export const receive = (channel: string, args: any[]) => {
   platformDelegate.receive(channel, args);
 };
 
-// Remove this when Typescript types start including the queryPermission and
-// requestPermission properties.
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface FileSystemFileHandle extends FileSystemHandle {}
-}
-
 const getFileSystem: () => BufferFileSystem = () =>
   proxy({
-    saveFile: async (buffer, defaultFileName: string, handle) =>
-      await fileSave(
-        new Blob([buffer]),
-        {
-          fileName: defaultFileName,
-        },
-        handle
-      ),
+    saveFile: async (buffer, defaultFileName: string, handle) => {
+      const { result, cancelled } = await runIgnoringAbortErrors(logger, () =>
+        fileSave(
+          new Blob([buffer]),
+          {
+            fileName: defaultFileName,
+          },
+          handle
+        )
+      );
+      if (cancelled) {
+        return { cancelled: true };
+      }
+      return { handle: result, cancelled: false };
+    },
     openFile: async () => {
-      const result = await runIgnoringAbortErrors(logger, () =>
+      const { result } = await runIgnoringAbortErrors(logger, () =>
         fileOpen({ extensions: SUPPORTED_EXTENSIONS })
       );
       if (result) {
