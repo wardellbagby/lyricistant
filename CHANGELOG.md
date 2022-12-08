@@ -1,3 +1,13 @@
+## [2.1.2](https://github.com/wardellbagby/lyricistant/compare/v2.1.1...v2.1.2) (2022-12-08)
+
+
+### Bug Fixes
+
+* don't show old dictionary query when the next query fails ([d45674a](https://github.com/wardellbagby/lyricistant/commit/d45674afa4a1fe127b03186d4e93068c17949f0b))
+* **web:** don't crash when cancelling saving logs ([2365bce](https://github.com/wardellbagby/lyricistant/commit/2365bce3bc17ff8d866f2f936d86d76777fdc798))
+
+
+
 ## [2.1.1](https://github.com/wardellbagby/lyricistant/compare/v2.1.0...v2.1.1) (2022-12-04)
 
 
