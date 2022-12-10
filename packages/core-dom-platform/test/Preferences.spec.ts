@@ -2,6 +2,7 @@ import { Preferences } from '@lyricistant/common-platform/preferences/Preference
 import {
   ColorScheme,
   DefaultFileType,
+  DetailPaneVisibility,
   Font,
   PreferencesData,
   RhymeSource,
@@ -22,6 +23,7 @@ describe('Preferences', () => {
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
       defaultFileType: DefaultFileType.Lyricistant_Lyrics,
+      detailPaneVisibility: DetailPaneVisibility.Toggleable,
     };
 
     preferences.setPreferences(expected);
@@ -38,6 +40,7 @@ describe('Preferences', () => {
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
       defaultFileType: DefaultFileType.Always_Ask,
+      detailPaneVisibility: DetailPaneVisibility.Toggleable,
     };
     const expected: PreferencesData = {
       textSize: 2,
@@ -45,6 +48,7 @@ describe('Preferences', () => {
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
       defaultFileType: DefaultFileType.Lyricistant_Lyrics,
+      detailPaneVisibility: DetailPaneVisibility.Always_Show,
     };
 
     preferences.setPreferences(initial);

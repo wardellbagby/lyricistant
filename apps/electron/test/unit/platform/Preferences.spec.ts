@@ -4,6 +4,7 @@ import { Preferences } from '@lyricistant/common-platform/preferences/Preference
 import {
   ColorScheme,
   DefaultFileType,
+  DetailPaneVisibility,
   Font,
   PreferencesData,
   RhymeSource,
@@ -34,6 +35,7 @@ describe('Preferences', () => {
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
       defaultFileType: DefaultFileType.Always_Ask,
+      detailPaneVisibility: DetailPaneVisibility.Toggleable,
     };
     fs.existsSync.returns(true);
     fs.readFileSync.returns(JSON.stringify(expected));
@@ -75,6 +77,7 @@ describe('Preferences', () => {
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
       defaultFileType: DefaultFileType.Always_Ask,
+      detailPaneVisibility: DetailPaneVisibility.Toggleable,
     });
 
     expect(fs.writeFile).to.have.been.calledWith('user/preferences.json');
@@ -89,6 +92,7 @@ describe('Preferences', () => {
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
       defaultFileType: DefaultFileType.Always_Ask,
+      detailPaneVisibility: DetailPaneVisibility.Toggleable,
     });
     await preferences.getPreferences();
 

@@ -7,6 +7,7 @@ import {
   Font,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { ScreenshotterPreferences } from '@screenshotter-app/platform/Preferences';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { DateTime } from 'luxon';
@@ -21,6 +22,7 @@ interface Device {
     height: number;
   };
   deviceScaleFactor: number;
+  isMobile?: boolean;
 }
 
 const devices: Device[] = [
@@ -39,6 +41,7 @@ const devices: Device[] = [
       height: 1024,
     },
     deviceScaleFactor: 2,
+    isMobile: true,
   },
   {
     name: 'ipadPro',
@@ -47,6 +50,7 @@ const devices: Device[] = [
       height: 1024,
     },
     deviceScaleFactor: 2,
+    isMobile: true,
   },
   {
     name: 'iPhone13ProMax',
@@ -55,6 +59,7 @@ const devices: Device[] = [
       height: 926,
     },
     deviceScaleFactor: 3,
+    isMobile: true,
   },
   {
     name: 'iPhone8Plus',
@@ -63,6 +68,7 @@ const devices: Device[] = [
       height: 736,
     },
     deviceScaleFactor: 3,
+    isMobile: true,
   },
   {
     name: 'androidPhone',
@@ -71,6 +77,7 @@ const devices: Device[] = [
       height: 851,
     },
     deviceScaleFactor: 2.75,
+    isMobile: true,
   },
   {
     name: 'androidTablet',
@@ -79,6 +86,7 @@ const devices: Device[] = [
       height: 712,
     },
     deviceScaleFactor: 2.25,
+    isMobile: true,
   },
 ];
 
@@ -133,6 +141,10 @@ devices.forEach((device) => {
       fileHistory = (await page.evaluateHandle(
         () => (window as any).fileHistory
       )) as JSHandle<FileHistory>;
+      await page.evaluate((mobile) => {
+        const prefs: ScreenshotterPreferences = (window as any).preferences;
+        prefs.showToggleButton(!!mobile);
+      }, device.isMobile);
     });
 
     afterEach(async () => {

@@ -18,6 +18,10 @@ export enum DefaultFileType {
   Lyricistant_Lyrics,
   Plain_Text,
 }
+export enum DetailPaneVisibility {
+  Toggleable,
+  Always_Show,
+}
 export type DisplayableColorScheme = ColorScheme.Light | ColorScheme.Dark;
 
 export interface ThemeData {
@@ -32,4 +36,5 @@ export interface PreferencesData {
   font: Font;
   rhymeSource: RhymeSource;
   defaultFileType: DefaultFileType;
+  detailPaneVisibility: DetailPaneVisibility;
 }

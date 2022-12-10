@@ -4,6 +4,7 @@ import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
 import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
 import { appComponent } from '@screenshotter-app/AppComponent';
+import { ScreenshotterPreferences } from '@screenshotter-app/platform/Preferences';
 
 if (module.hot) {
   module.hot.accept();
@@ -18,10 +19,12 @@ declare global {
   interface Window {
     rendererDelegate: RendererDelegate;
     fileHistory: FileHistory;
+    preferences: ScreenshotterPreferences;
   }
 }
 window.rendererDelegate = appComponent.get<RendererDelegate>();
 window.fileHistory = appComponent.get<FileHistory>();
+window.preferences = appComponent.get<ScreenshotterPreferences>();
 
 new Promise<void>((resolve) => {
   appComponent.get<Managers>().forEach((manager) => manager.register());

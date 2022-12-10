@@ -4,6 +4,7 @@ import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemTh
 import {
   ColorScheme,
   DefaultFileType,
+  DetailPaneVisibility,
   Font,
   PreferencesData,
   RhymeSource,
@@ -72,6 +73,7 @@ describe('Preference Manager', () => {
       rhymeSource: RhymeSource.Datamuse,
       font: Font.Roboto,
       defaultFileType: DefaultFileType.Always_Ask,
+      detailPaneVisibility: DetailPaneVisibility.Always_Show,
     });
   });
 
@@ -82,6 +84,7 @@ describe('Preference Manager', () => {
       rhymeSource: RhymeSource.Offline,
       font: Font.Roboto_Mono,
       defaultFileType: DefaultFileType.Plain_Text,
+      detailPaneVisibility: DetailPaneVisibility.Toggleable,
     };
     preferences.getPreferences.resolves(prefs);
 
@@ -102,6 +105,7 @@ describe('Preference Manager', () => {
       rhymeSource: RhymeSource.Datamuse,
       font: Font.Roboto_Mono,
       defaultFileType: DefaultFileType.Lyricistant_Lyrics,
+      detailPaneVisibility: DetailPaneVisibility.Toggleable,
     };
     const theme: ThemeData = {
       ...prefs,

@@ -2,6 +2,7 @@ import {
   ColorScheme as LyricistantTheme,
   ColorScheme,
   DefaultFileType,
+  DetailPaneVisibility,
   Font,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
@@ -144,6 +145,15 @@ export const Preferences = (props: PreferencesProps) => {
     });
   };
 
+  const onDetailPaneMinimizationChanged = (
+    detailPaneVisibility: DetailPaneVisibility
+  ) => {
+    setPreferencesData({
+      ...preferencesData,
+      detailPaneVisibility,
+    });
+  };
+
   const onPreferencesSaved = () => {
     platformDelegate.send('save-prefs', preferencesData);
     props.onClose();
@@ -239,6 +249,22 @@ export const Preferences = (props: PreferencesProps) => {
                 },
               ]}
               label={'Color scheme'}
+            />
+
+            <SelectBox
+              value={preferencesData.detailPaneVisibility}
+              onChange={onDetailPaneMinimizationChanged}
+              items={[
+                {
+                  value: DetailPaneVisibility.Toggleable,
+                  label: 'Show toggle button',
+                },
+                {
+                  value: DetailPaneVisibility.Always_Show,
+                  label: 'Always show',
+                },
+              ]}
+              label={'Detail pane visibility'}
             />
 
             <Header label={'Other'} />

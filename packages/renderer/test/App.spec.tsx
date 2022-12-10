@@ -2,6 +2,7 @@ import { expect } from '@jest/globals';
 import {
   ColorScheme,
   DefaultFileType,
+  DetailPaneVisibility,
   Font,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
@@ -172,6 +173,7 @@ describe('App component', () => {
       colorScheme: ColorScheme.Dark,
       textSize: 16,
       defaultFileType: DefaultFileType.Always_Ask,
+      detailPaneVisibility: DetailPaneVisibility.Always_Show,
     });
 
     const editor = await screen.findByRole('textbox');

@@ -10,7 +10,9 @@ import { Preferences } from '@lyricistant/common-platform/preferences/Preference
 import {
   ColorScheme,
   DefaultFileType,
+  DetailPaneVisibility,
   Font,
+  PreferencesData,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
@@ -37,6 +39,14 @@ describe('File Manager', () => {
   let buffers: StubbedInstance<Buffers>;
   let mockExtension: StubbedInstance<Writable<FileDataExtension>>;
   const rendererDelegate = new MockRendererDelegate();
+  const defaultPreferences: PreferencesData = {
+    defaultFileType: DefaultFileType.Lyricistant_Lyrics,
+    font: Font.Roboto_Mono,
+    colorScheme: ColorScheme.Dark,
+    textSize: 16,
+    rhymeSource: RhymeSource.Offline,
+    detailPaneVisibility: DetailPaneVisibility.Always_Show,
+  };
 
   beforeEach(() => {
     sinon.reset();
@@ -67,11 +77,8 @@ describe('File Manager', () => {
 
     preferences = stubInterface();
     preferences.getPreferences.resolves({
+      ...defaultPreferences,
       defaultFileType: DefaultFileType.Lyricistant_Lyrics,
-      font: Font.Roboto_Mono,
-      colorScheme: ColorScheme.Dark,
-      textSize: 16,
-      rhymeSource: RhymeSource.Offline,
     });
 
     buffers = stubInterface();
@@ -603,11 +610,8 @@ describe('File Manager', () => {
 
   it('prompts the user for their chosen file handler - lyrics', async () => {
     preferences.getPreferences.resolves({
+      ...defaultPreferences,
       defaultFileType: DefaultFileType.Always_Ask,
-      font: Font.Roboto_Mono,
-      colorScheme: ColorScheme.Dark,
-      textSize: 16,
-      rhymeSource: RhymeSource.Offline,
     });
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
@@ -630,11 +634,8 @@ describe('File Manager', () => {
   });
   it('prompts the user for their chosen file handler - text', async () => {
     preferences.getPreferences.resolves({
+      ...defaultPreferences,
       defaultFileType: DefaultFileType.Always_Ask,
-      font: Font.Roboto_Mono,
-      colorScheme: ColorScheme.Dark,
-      textSize: 16,
-      rhymeSource: RhymeSource.Offline,
     });
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
@@ -657,11 +658,8 @@ describe('File Manager', () => {
   });
   it('saves the default file handler', async () => {
     preferences.getPreferences.resolves({
+      ...defaultPreferences,
       defaultFileType: DefaultFileType.Always_Ask,
-      font: Font.Roboto_Mono,
-      colorScheme: ColorScheme.Dark,
-      textSize: 16,
-      rhymeSource: RhymeSource.Offline,
     });
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
@@ -679,11 +677,8 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('save-file-attempt', 'Hiiipower');
 
     expect(preferences.setPreferences).to.have.been.calledWith({
+      ...defaultPreferences,
       defaultFileType: DefaultFileType.Plain_Text,
-      font: Font.Roboto_Mono,
-      colorScheme: ColorScheme.Dark,
-      textSize: 16,
-      rhymeSource: RhymeSource.Offline,
     });
   });
 });

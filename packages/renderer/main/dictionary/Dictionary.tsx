@@ -48,12 +48,10 @@ export const Dictionary = ({
         text={'Waiting for lyrics'}
       />
 
-      {state.matches('no-results') && (
-        <NullStateText
-          visible={state.matches('no-results')}
-          text={'No definition found'}
-        />
-      )}
+      <NullStateText
+        visible={state.matches('no-results')}
+        text={'No definition found'}
+      />
 
       {meanings.length > 0 && (
         <MeaningList

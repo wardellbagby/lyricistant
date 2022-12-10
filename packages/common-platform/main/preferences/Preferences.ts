@@ -1,6 +1,7 @@
 import {
   ColorScheme,
   DefaultFileType,
+  DetailPaneVisibility,
   Font,
   PreferencesData,
   RhymeSource,
@@ -9,6 +10,7 @@ import {
 export interface Preferences {
   getPreferences: () => Promise<PreferencesData | void>;
   setPreferences: (data: PreferencesData) => Promise<void>;
+  getDefaultPreferences?: () => Promise<Partial<PreferencesData>>;
 }
 
 export const getPreferencesDataOrDefault = async (
@@ -22,6 +24,8 @@ export const getPreferencesDataOrDefault = async (
     rhymeSource: RhymeSource.Datamuse,
     font: Font.Roboto,
     defaultFileType: DefaultFileType.Always_Ask,
+    detailPaneVisibility: DetailPaneVisibility.Always_Show,
+    ...(await preferences.getDefaultPreferences?.()),
     ...savedPreferencesData,
   };
 };

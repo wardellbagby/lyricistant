@@ -29,7 +29,7 @@ const RhymesListItem = ({
 };
 const RhymesList = React.memo(({ rhymes, onRhymeClicked }: RhymesListProps) => (
   <Box
-    display={'flex'}
+    display={rhymes.length > 0 ? 'flex' : 'none'}
     flexWrap={'wrap'}
     gap={'4px'}
     alignContent={'start'}

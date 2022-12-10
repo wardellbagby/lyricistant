@@ -15,9 +15,9 @@ const fontFamily = (font?: Font) => {
   }
 };
 const EditorContainer = styled('div')({
-  height: '100%',
-  width: '100%',
   paddingTop: '8px',
+  flexGrow: '1',
+  minHeight: '200px',
 });
 
 export interface EditorTextData {

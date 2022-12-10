@@ -4,6 +4,7 @@ import {
 } from '@lyricistant/core-dom-platform/AppComponents';
 import { BackButtonManager } from '@mobile-app/platform/BackButtonManager';
 import { MobileFiles } from '@mobile-app/platform/MobileFiles';
+import { MobilePreferences } from '@mobile-app/platform/MobilePreferences';
 import { MobileSystemThemeProvider } from '@mobile-app/platform/MobileSystemThemeProvider';
 import { StatusBarManager } from '@mobile-app/platform/StatusBarManager';
 import {
@@ -16,6 +17,7 @@ const createComponent = (): DIContainer => {
   const component = new DIContainer();
   component.registerSingleton<MobileFiles>();
   component.registerSingleton<MobileSystemThemeProvider>();
+  component.registerSingleton<MobilePreferences>();
 
   registerCoreDOMPlatform(
     {
@@ -23,6 +25,7 @@ const createComponent = (): DIContainer => {
       systemThemeProvider: () => component.get<MobileSystemThemeProvider>(),
       uiConfigProvider: () => provideUiConfig,
       titleFormatter: () => formatTitle,
+      preferences: () => component.get<MobilePreferences>(),
     },
     component
   );
