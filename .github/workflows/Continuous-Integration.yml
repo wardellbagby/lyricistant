@@ -15,8 +15,8 @@ jobs:
         uses: 'styfle/cancel-workflow-action@b173b6ec0100793626c2d9e6b90435061f4fc3e5'
         with:
           access_token: '${{ secrets.GITHUB_TOKEN }}'
-  test:
-    name: 'Test'
+  uiTest:
+    name: 'UI Tests'
     runs-on: 'ubuntu-20.04'
     steps:
       - name: 'Mask any potential PII'
@@ -45,8 +45,8 @@ jobs:
         run: 'Xvfb :99 &'
       - name: 'Setup Playwright dependencies'
         run: 'sudo npx playwright install-deps'
-      - name: 'Run all tests'
-        run: 'gulp testAll --max-old-space-size=8192'
+      - name: 'Run UI tests'
+        run: 'gulp uiTests --max-old-space-size=8192'
         env:
           DISPLAY: ':99'
       - name: 'Upload build artifacts if failed'
@@ -54,6 +54,40 @@ jobs:
         uses: 'actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb'
         with:
           path: "apps/**/dist/\ndist/"
+    needs:
+      - 'cancelCurrentRuns'
+  unitTest:
+    name: 'Unit Tests'
+    runs-on: 'ubuntu-20.04'
+    steps:
+      - name: 'Mask any potential PII'
+        run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
+      - name: 'Checkout the current branch'
+        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        with:
+          fetch-depth: 0
+      - name: 'Setup Node.js - 18'
+        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+        with:
+          node-version: '>=18'
+          cache: 'npm'
+      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+        name: 'Cache Node Modules'
+        with:
+          path: '~/.npm'
+          key: '${{ runner.os}}-node-${{ hashFiles(''**/package-lock.json'') }}'
+          restore-keys: '${{ runner.os }}-node-'
+      - name: 'Install Gulp'
+        run: 'npm install -g gulp@4.0.2'
+      - name: 'Install Node modules'
+        run: 'npm ci'
+      - name: 'Set virtual display if Ubuntu'
+        if: 'runner.os == ''Linux'''
+        run: 'Xvfb :99 &'
+      - name: 'Setup Playwright dependencies'
+        run: 'sudo npx playwright install-deps'
+      - name: 'Run unit tests'
+        run: 'gulp unitTests --max-old-space-size=8192'
     needs:
       - 'cancelCurrentRuns'
   lint:

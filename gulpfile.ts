@@ -4,7 +4,11 @@ import del from 'del';
 import { glob } from 'glob';
 import { parallel, series } from 'gulp';
 import { buildElectron } from './apps/electron/electron.gulp';
-import { testElectron } from './apps/electron/test/test.gulp';
+import {
+  testElectron,
+  uiTestElectron,
+  unitTestElectron,
+} from './apps/electron/test/test.gulp';
 import { buildScreenshotter } from './apps/screenshotter/screenshotter.gulp';
 import { testWeb } from './apps/web/test/test.gulp';
 import { buildWeb } from './apps/web/web.gulp';
@@ -36,13 +40,13 @@ export const testCore = series(
 );
 export const testAllWeb = series(testWeb, testCore, testCoreDOMPlatform);
 export const testAllElectron = series(testElectron, testCore);
-export const testAll = series(
+export const unitTests = series(
+  unitTestElectron,
   testCoreDOMPlatform,
-  testWeb,
-  testElectron,
-  buildScreenshotter,
   testCore
 );
+export const uiTests = series(uiTestElectron, testWeb, buildScreenshotter);
+export const testAll = series(unitTests, uiTests);
 
 export const clean = async () => {
   const tsConfigs = await promisify(glob)('!(node_modules)/*/tsconfig.json');

@@ -22,6 +22,7 @@ describe('App component', () => {
 
   beforeEach(async () => {
     configure({
+      asyncUtilTimeout: process.env.CI ? 3_000 : 1_000,
       getElementError: (message) => {
         const error = new Error(message);
         error.name = 'TestingLibraryElementError';

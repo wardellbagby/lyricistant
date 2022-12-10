@@ -14,7 +14,7 @@ import {
 import { createGithubRelease as createGithubReleaseStep } from './helpers/createGithubRelease';
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
 import { gulp } from './helpers/local-tasks';
-import { test } from './helpers/test';
+import { uiTest, unitTest } from './helpers/test';
 import { Job, Workflow } from './helpers/Workflow';
 import { defaultRunner } from './Runners';
 
@@ -23,10 +23,12 @@ const tagMatches = (platform: 'ios' | 'android' | 'electron' | 'web') =>
     .map((num) => `|| endsWith(github.ref, '${num}')`)
     .join(' ')} }}`;
 
+const buildAndDeployNeeds = [uiTest, unitTest];
+
 const deployWeb: Job = {
   name: 'Deploy Web to lyricistant.app',
   'runs-on': defaultRunner,
-  needs: test,
+  needs: buildAndDeployNeeds,
   if: tagMatches('web'),
   steps: [
     ...basicSetup(),
@@ -39,17 +41,17 @@ const deployWeb: Job = {
 };
 const buildIOSApp: Job = {
   ...buildIOSAppJob(),
-  needs: test,
+  needs: buildAndDeployNeeds,
   if: tagMatches('ios'),
 };
 const buildAndroidApp: Job = {
   ...buildAndroidAppJob(),
-  needs: test,
+  needs: buildAndDeployNeeds,
   if: tagMatches('android'),
 };
 const buildElectronApps: Job = {
   ...buildElectronAppsJob(),
-  needs: test,
+  needs: buildAndDeployNeeds,
   if: tagMatches('electron'),
 };
 const createGithubRelease: Job = {
@@ -96,7 +98,8 @@ export const productionReleases: Workflow = {
     },
   },
   jobs: {
-    test,
+    uiTest,
+    unitTest,
     deployWeb,
     buildIOSApp,
     buildAndroidApp,

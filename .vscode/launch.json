@@ -310,6 +310,46 @@
       "console": "internalConsole",
       "outputCapture": "std",
       "program": "node_modules/.bin/gulp"
+    },
+    {
+      "name": "Ui Test Electron",
+      "args": ["uiTestElectron"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
+      "name": "Ui Tests",
+      "args": ["uiTests"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
+      "name": "Unit Test Electron",
+      "args": ["unitTestElectron"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
+    },
+    {
+      "name": "Unit Tests",
+      "args": ["unitTests"],
+      "type": "pwa-node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "internalConsole",
+      "outputCapture": "std",
+      "program": "node_modules/.bin/gulp"
     }
   ]
 }

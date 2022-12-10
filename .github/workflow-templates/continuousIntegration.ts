@@ -1,7 +1,7 @@
 import { basicSetup } from './helpers/basicSetup';
 import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
 import { npm } from './helpers/local-tasks';
-import { test } from './helpers/test';
+import { uiTest, unitTest } from './helpers/test';
 import { Job, Workflow } from './helpers/Workflow';
 import { defaultRunner } from './Runners';
 
@@ -29,8 +29,12 @@ export const continuousIntegration: Workflow = {
   },
   jobs: {
     cancelCurrentRuns,
-    test: {
-      ...test,
+    uiTest: {
+      ...uiTest,
+      needs: cancelCurrentRuns,
+    },
+    unitTest: {
+      ...unitTest,
       needs: cancelCurrentRuns,
     },
     lint,

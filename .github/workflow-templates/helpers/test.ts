@@ -4,14 +4,14 @@ import { gulp } from './local-tasks';
 import { UPLOAD_ARTIFACT } from './versions';
 import { Job } from './Workflow';
 
-export const test: Job = {
-  name: 'Test',
+export const uiTest: Job = {
+  name: 'UI Tests',
   'runs-on': defaultRunner,
   steps: [
     ...basicSetup({ forTests: true }),
     {
-      name: 'Run all tests',
-      run: gulp('testAll'),
+      name: 'Run UI tests',
+      run: gulp('uiTests'),
       env: {
         DISPLAY: ':99',
       },
@@ -23,6 +23,18 @@ export const test: Job = {
       with: {
         path: ['apps/**/dist/', 'dist/'].join('\n'),
       },
+    },
+  ],
+};
+
+export const unitTest: Job = {
+  name: 'Unit Tests',
+  'runs-on': defaultRunner,
+  steps: [
+    ...basicSetup({ forTests: true }),
+    {
+      name: 'Run unit tests',
+      run: gulp('unitTests'),
     },
   ],
 };
