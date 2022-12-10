@@ -1,0 +1,112 @@
+[
+  {
+    "word": "knew",
+    "phonetic": "/ˈnjuː/",
+    "phonetics": [
+      {
+        "text": "/ˈnjuː/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/knew-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=53355521",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈn(j)u/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/knew-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1222270",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To perceive the truth or factuality of; to be certain of or that.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He knew something terrible was going to happen."
+          },
+          {
+            "definition": "To be aware of; to be cognizant of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Did you know Michelle and Jack were getting divorced? ― Yes, I knew."
+          },
+          {
+            "definition": "To be acquainted or familiar with; to have encountered.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I know your mother, but I’ve never met your father."
+          },
+          {
+            "definition": "To experience.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Their relationship knew ups and downs."
+          },
+          {
+            "definition": "To be able to distinguish, to discern, particularly by contrast or comparison; to recognize the nature of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I wouldn't know one from the other."
+          },
+          {
+            "definition": "To recognize as the same (as someone or something previously encountered) after an absence or change.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To understand or have a grasp of through experience or study.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "His mother tongue is Italian, but he also knows French and English."
+          },
+          {
+            "definition": "To have sexual relations with. This meaning normally specified in modern English as e.g. to ’know someone in the biblical sense’ or to ‘know Biblically.’",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To have knowledge; to have information, be informed.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He knows about 19th century politics."
+          },
+          {
+            "definition": "To be or become aware or cognizant.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Did you know Michelle and Jack were getting divorced? ― Yes, I knew."
+          },
+          {
+            "definition": "To be acquainted (with another person).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be able to play or perform (a song or other piece of music).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Do you know \"Blueberry Hill\"?"
+          }
+        ],
+        "synonyms": ["coitize", "go to bed with", "sleep with"],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/knew",
+      "https://en.wiktionary.org/wiki/know"
+    ]
+  }
+]

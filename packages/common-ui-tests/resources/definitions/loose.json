@@ -1,0 +1,238 @@
+[
+  {
+    "word": "loose",
+    "phonetic": "/luːs/",
+    "phonetics": [
+      {
+        "text": "/luːs/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/loose-1-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=623008",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The release of an arrow.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A state of laxity or indulgence; unrestrained freedom, abandonment.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "All play other than set pieces (scrums and line-outs).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Freedom from restraint.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A letting go; discharge.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To let loose, to free from restraints.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To unfasten, to loosen.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To make less tight, to loosen.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Of a grip or hold, to let go.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To shoot (an arrow)",
+            "synonyms": [],
+            "antonyms": []
+          },
+          { "definition": "To set sail.", "synonyms": [], "antonyms": [] },
+          {
+            "definition": "To solve; to interpret.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "fire",
+          "shoot",
+          "free",
+          "release",
+          "loosen",
+          "relax",
+          "slacken",
+          "let go",
+          "release",
+          "loosen",
+          "unbind",
+          "undo",
+          "unfasten",
+          "untie"
+        ],
+        "antonyms": [
+          "fast",
+          "bind",
+          "constrain",
+          "tighten",
+          "tighten",
+          "bind",
+          "fasten",
+          "tie"
+        ]
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Not fixed in place tightly or firmly.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This wheelbarrow has a loose wheel."
+          },
+          {
+            "definition": "Not held or packaged together.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "'You can buy apples in a pack, but they are cheaper loose."
+          },
+          {
+            "definition": "Not under control.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The dog is loose again."
+          },
+          {
+            "definition": "Not fitting closely",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "'I wear loose clothes when it is hot."
+          },
+          {
+            "definition": "Not compact.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "'It is difficult walking on loose gravel."
+          },
+          {
+            "definition": "Relaxed.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She danced with a loose flowing movement."
+          },
+          {
+            "definition": "Not precise or exact; vague; indeterminate.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a loose way of reasoning"
+          },
+          {
+            "definition": "Indiscreet.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Loose talk costs lives."
+          },
+          {
+            "definition": "(somewhat dated) Free from moral restraint; immoral, unchaste.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Not being in the possession of any competing team during a game.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He caught an elbow going after a loose ball."
+          },
+          {
+            "definition": "Not costive; having lax bowels.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "indiscreet",
+          "free",
+          "untethered",
+          "diffuse",
+          "spaced out",
+          "baggy",
+          "unfastened",
+          "unsecured",
+          "separate",
+          "unpackaged",
+          "polygamous",
+          "promiscuous",
+          "slutty",
+          "tarty",
+          "whorish",
+          "loose-limbed",
+          "relaxed"
+        ],
+        "antonyms": [
+          "discreet",
+          "bound",
+          "leashed",
+          "tethered",
+          "tied",
+          "tied up",
+          "compact",
+          "firm",
+          "close-fitting",
+          "snug",
+          "tight",
+          "firm",
+          "tight",
+          "packaged",
+          "faithful",
+          "monogamous",
+          "tense",
+          "tensed"
+        ]
+      },
+      {
+        "partOfSpeech": "interjection",
+        "definitions": [
+          {
+            "definition": "Begin shooting; release your arrows",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": ["fast"]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": ["https://en.wiktionary.org/wiki/loose"]
+  }
+]

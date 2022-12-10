@@ -22,7 +22,7 @@ export class ScreenshotterPreferences implements Preferences {
     return Promise.resolve({
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
-      rhymeSource: RhymeSource.Offline,
+      rhymeSource: RhymeSource.Datamuse,
       textSize: 16,
       defaultFileType: DefaultFileType.Lyricistant_Lyrics,
       detailPaneVisibility: DetailPaneVisibility.Always_Show,

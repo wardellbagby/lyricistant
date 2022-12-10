@@ -8,7 +8,7 @@ interface DroppableFile {
   metadata: FileMetadata;
   data: string | ArrayBuffer;
 }
-const resourcesDir = path.resolve(__dirname, 'resources');
+export const resourcesDir = path.resolve(__dirname, 'resources');
 
 /** A plain text file with the text "Hello World!" */
 export const HELLO_WORLD_PLAIN_TEXT_FILE: DroppableFile = {

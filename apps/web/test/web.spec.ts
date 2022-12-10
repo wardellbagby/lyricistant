@@ -2,6 +2,8 @@ import path from 'path';
 import addCommonUiTests, {
   findMenuButton,
   PlaywrightScreen,
+  useMockDefinitions,
+  useMockRhymes,
 } from '@lyricistant/common-ui-tests';
 import {
   setup as setupServer,
@@ -106,6 +108,9 @@ describe.each(args)(
         viewport,
         args: browser.args,
       });
+
+      await useMockRhymes(browserContext);
+      await useMockDefinitions(browserContext);
     });
 
     beforeEach(async () => {

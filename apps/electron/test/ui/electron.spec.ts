@@ -1,6 +1,9 @@
 import os from 'os';
 import path from 'path';
-import addCommonUiTests from '@lyricistant/common-ui-tests';
+import addCommonUiTests, {
+  useMockDefinitions,
+  useMockRhymes,
+} from '@lyricistant/common-ui-tests';
 import del from 'del';
 import { _electron as electron, ElectronApplication, Page } from 'playwright';
 import { getDocument, getQueriesForElement } from 'playwright-testing-library';
@@ -30,6 +33,9 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
         '--enable-logging',
       ],
     });
+
+    await useMockRhymes(app.context());
+    await useMockDefinitions(app.context());
 
     await app.evaluate((electronModule, dir) => {
       electronModule.app.setPath('appData', dir);

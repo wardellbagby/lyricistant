@@ -1,6 +1,10 @@
 import path from 'path';
 import { pathToFileURL } from 'url';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import {
+  useMockDefinitions,
+  useMockRhymes,
+} from '@lyricistant/common-ui-tests';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   ColorScheme,
@@ -125,6 +129,9 @@ devices.forEach((device) => {
           '--allow-file-access-from-files',
         ],
       });
+
+      await useMockRhymes(browser);
+      await useMockDefinitions(browser);
     });
 
     beforeEach(async () => {
