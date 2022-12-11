@@ -246,6 +246,13 @@ jobs:
         with:
           name: 'android-app'
           path: '/tmp/artifacts'
+      - name: 'Delete current nightly tag and release'
+        uses: 'dev-drprasad/delete-tag-and-release/@431bd3dd0512ac0ae8813bd830ebfaf4188d2211'
+        with:
+          delete_release: true
+          tag_name: 'latest'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
       - name: 'Create Nightly Github release'
         uses: 'softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844'
         with:

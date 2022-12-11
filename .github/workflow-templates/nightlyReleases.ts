@@ -15,7 +15,8 @@ import { cancelCurrentRuns } from './helpers/cancelCurrentRuns';
 import { createGithubRelease as createGithubReleaseStep } from './helpers/createGithubRelease';
 import { deployWeb as deployWebStep } from './helpers/deployWeb';
 import { gulp } from './helpers/local-tasks';
-import { Job, Workflow } from './helpers/Workflow';
+import { DELETE_TAG_AND_RELEASE } from './helpers/versions';
+import { Job, Step, Workflow } from './helpers/Workflow';
 import { defaultRunner } from './Runners';
 
 const deployWeb: Job = {
@@ -50,6 +51,18 @@ const buildElectronApps: Job = {
   needs: cancelCurrentRuns,
 };
 
+const deleteTagStep: Step = {
+  name: 'Delete current nightly tag and release',
+  uses: DELETE_TAG_AND_RELEASE,
+  with: {
+    delete_release: true,
+    tag_name: 'latest',
+  },
+  env: {
+    GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+  },
+};
+
 const createGithubRelease: Job = {
   name: 'Create Github Nightly Release',
   'runs-on': defaultRunner,
@@ -63,6 +76,7 @@ const createGithubRelease: Job = {
     downloadIOSApp({ path: '/tmp/artifacts' }),
     downloadElectronApps({ path: '/tmp/artifacts' }),
     downloadAndroidApp({ path: '/tmp/artifacts' }),
+    deleteTagStep,
     createGithubReleaseStep({
       nightly: true,
       files: '/tmp/artifacts/*.*',
