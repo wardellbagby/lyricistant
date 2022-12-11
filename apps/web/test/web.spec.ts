@@ -5,6 +5,7 @@ import addCommonUiTests, {
   useMockDefinitions,
   useMockRhymes,
 } from '@lyricistant/common-ui-tests';
+import getPort from 'get-port';
 import {
   setup as setupServer,
   teardown as stopServer,
@@ -18,9 +19,8 @@ import {
 import waitForExpect from 'wait-for-expect';
 import { getSpecs } from './ui-test-specs';
 
-const { shard, specs } = getSpecs();
+const { specs } = getSpecs();
 const host = 'localhost';
-const port = 8181 + shard;
 
 describe.each(specs)(
   'Web launch - $browser.label - $viewport.width x $viewport.height - forceLegacyWeb: $forceLegacyWeb',
@@ -28,8 +28,10 @@ describe.each(specs)(
     let browserContext: BrowserContext;
     let page: Page;
     let screen: PlaywrightScreen;
+    let port: number;
 
     beforeAll(async () => {
+      port = await getPort();
       await setupServer({
         command: `http-server "${path.resolve(
           'apps',

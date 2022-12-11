@@ -103,7 +103,12 @@ export const getBaseJestConfig = (options: {
 };
 
 export const jest = (project: string, env?: NodeJS.ProcessEnv) =>
-  spawn('npx', ['jest', '--projects', project], { env });
+  spawn('npx', ['jest', '--projects', project], {
+    env: {
+      ...env,
+      NODE_OPTIONS: '--no-deprecation',
+    },
+  });
 
 export const spawn = (
   command: string,
