@@ -89,13 +89,6 @@ describe.each(specs)(
       }
     });
 
-    it('allows you to type in the editor', async () => {
-      const editorTextArea = await page.$('.cm-content');
-      await editorTextArea.type('Hello World!', { delay: 10 });
-
-      await expect(editorTextArea.textContent()).resolves.toBe('Hello World!');
-    });
-
     it('shows downloads', async () => {
       await expect(
         screen.queryByText('Download Lyricistant')
