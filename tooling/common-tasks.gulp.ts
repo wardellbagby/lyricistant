@@ -102,8 +102,8 @@ export const getBaseJestConfig = (options: {
   };
 };
 
-export const jest = (project: string) =>
-  spawn('npx', ['jest', '--projects', project]);
+export const jest = (project: string, env?: NodeJS.ProcessEnv) =>
+  spawn('npx', ['jest', '--projects', project], { env });
 
 export const spawn = (
   command: string,
@@ -114,6 +114,10 @@ export const spawn = (
     cwd: rootDirectory,
     stdio: 'inherit',
     ...options,
+    env: {
+      ...process.env,
+      ...options.env,
+    },
   };
   const childProcess = nodeSpawn(command, args, optionsWithCwd);
 

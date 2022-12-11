@@ -139,9 +139,11 @@ devices.forEach((device) => {
       await page.goto(
         pathToFileURL(
           path.resolve('apps/screenshotter/dist/development/index.html')
-        ).toString()
+        ).toString(),
+        {
+          waitUntil: 'networkidle',
+        }
       );
-      await page.waitForLoadState('networkidle');
       rendererDelegate = (await page.evaluateHandle(
         () => (window as any).rendererDelegate
       )) as JSHandle<RendererDelegate>;

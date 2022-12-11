@@ -1,7 +1,23 @@
 import { jest } from '@tooling/common-tasks.gulp';
-import { series } from 'gulp';
+import { parallel, series } from 'gulp';
 import { buildTestWeb } from '../web.gulp';
+import { getTotalShardCount, webUiTestShardEnv } from './ui-test-specs';
 
-const uiTestWeb = () => jest(__dirname);
+const runUiTest = (shard: number) => {
+  const test = () => jest(__dirname, { [webUiTestShardEnv]: shard.toString() });
+  test.displayName = `uiTestShard${shard}`;
+  return test;
+};
 
-export const testWeb = series(buildTestWeb, uiTestWeb);
+const createUiTestRunner = () => {
+  const totalCount = getTotalShardCount();
+  const tests = [];
+
+  for (let i = 1; i <= totalCount; i++) {
+    tests.push(runUiTest(i));
+  }
+
+  return parallel(...tests);
+};
+
+export const testWeb = series(buildTestWeb, createUiTestRunner());

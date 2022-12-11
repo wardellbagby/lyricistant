@@ -9,83 +9,20 @@ import {
   setup as setupServer,
   teardown as stopServer,
 } from 'jest-process-manager';
-import { flatMap } from 'lodash';
-import {
-  BrowserContext,
-  BrowserType,
-  chromium,
-  firefox,
-  Page,
-  webkit,
-} from 'playwright';
+import { BrowserContext, Page } from 'playwright';
 import {
   getDocument,
   getQueriesForElement,
   waitFor,
 } from 'playwright-testing-library';
 import waitForExpect from 'wait-for-expect';
+import { getSpecs } from './ui-test-specs';
 
-interface Viewport {
-  width: number;
-  height: number;
-  isSmallLayout: boolean;
-}
-
-interface Browser {
-  type: BrowserType;
-  label: string;
-  args?: string[];
-}
-
-const viewports: Viewport[] = [
-  {
-    width: 360,
-    height: 780,
-    isSmallLayout: true,
-  },
-  {
-    width: 1200,
-    height: 1200,
-    isSmallLayout: false,
-  },
-];
-
-const browsers: Browser[] = [
-  { type: webkit, label: 'WebKit' },
-  { type: firefox, label: 'Firefox' },
-  {
-    type: chromium,
-    label: 'Chromium',
-    args: [
-      '--no-sandbox',
-      '--disable-gpu',
-      '--enable-logging',
-      '--allow-file-access-from-files',
-    ],
-  },
-];
-
-const forceLegacyWebs = [false, true];
-
-interface Arg {
-  viewport: Viewport;
-  browser: Browser;
-  forceLegacyWeb: boolean;
-}
-
-const args: Arg[] = flatMap(forceLegacyWebs, (forceLegacyWeb) =>
-  flatMap(viewports, (viewport) =>
-    flatMap(browsers, (browser) => ({
-      viewport,
-      browser,
-      forceLegacyWeb,
-    }))
-  )
-);
-
+const { shard, specs } = getSpecs();
 const host = 'localhost';
-const port = 8081;
-describe.each(args)(
+const port = 8181 + shard;
+
+describe.each(specs)(
   'Web launch - $browser.label - $viewport.width x $viewport.height - forceLegacyWeb: $forceLegacyWeb',
   ({ viewport, browser, forceLegacyWeb }) => {
     let browserContext: BrowserContext;
@@ -101,7 +38,7 @@ describe.each(args)(
           'test'
         )}" --port ${port} -a ${host}`,
         port,
-        usedPortAction: process.env.CI ? 'kill' : 'ask',
+        usedPortAction: 'error',
       });
       browserContext = await browser.type.launchPersistentContext('', {
         headless: !!!process.env.PWDEBUG,
@@ -115,8 +52,9 @@ describe.each(args)(
 
     beforeEach(async () => {
       page = await browserContext.newPage();
-      await page.goto(`http://${host}:${port}?forceLegacy=${!forceLegacyWeb}`);
-      await page.waitForLoadState('networkidle');
+      await page.goto(`http://${host}:${port}?forceLegacy=${!forceLegacyWeb}`, {
+        waitUntil: 'networkidle',
+      });
       screen = getQueriesForElement(await getDocument(page));
     });
 
