@@ -3,6 +3,13 @@ import { Rhyme } from './rhyme';
 const url = 'https://lyricistant.wardellbagby.workers.dev';
 type RhymeType = 'perfect' | 'near' | 'sounds-like';
 
+const getMaxRhymeCount = (type: RhymeType) => {
+  if (type === 'perfect') {
+    return 50;
+  } else {
+    return 25;
+  }
+};
 const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
   let param;
   switch (type) {
@@ -18,7 +25,9 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
   }
 
   logger.debug(`Fetching ${type} rhymes for word: ${word}`);
-  const response = await fetch(`${url}/words?${param}=${word}&max=25`);
+  const response = await fetch(
+    `${url}/words?${param}=${word}&max=${getMaxRhymeCount(type)}`
+  );
 
   if (response.ok && response.status < 400) {
     const text = await response.text();
