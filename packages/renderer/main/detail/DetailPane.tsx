@@ -84,7 +84,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
   // When we're closed and not animating, position as absolute so that only the
   // button is actually taking up space in the layout. Use position instead of
   // display so that the animation can finish properly.
-  const paperPosition = !isExpanded && !isAnimating ? 'absolute' : 'unset';
+  const paperDisplay = !isExpanded && !isAnimating ? 'none' : 'unset';
 
   const calculateHeight = useCallback(() => {
     if (!isSmallLayout) {
@@ -151,7 +151,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
             maxHeight: '100%',
             height: calculateHeight(),
             flex: '1 1 auto',
-            position: paperPosition,
+            display: paperDisplay,
           }}
         >
           <Box
