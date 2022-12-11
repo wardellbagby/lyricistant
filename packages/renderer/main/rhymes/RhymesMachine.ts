@@ -50,75 +50,97 @@ const fetchRhymes = async (
 };
 
 /** A State Machine that handles fetching rhymes based on a query and returning a result. */
-export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>({
-  id: 'rhymes',
-  initial: 'inactive',
-  context: {
-    rhymes: [],
-  },
-  on: {
-    INPUT: [
-      {
-        target: '.loading',
-        cond: (context, event) =>
-          context.input !== event.input ||
-          context.rhymeSource !== event.rhymeSource,
-        actions: assign({
-          input: (context, event) => event.input,
-          rhymeSource: (context, event) => event.rhymeSource,
-        }),
-      },
-    ],
-  },
-  states: {
-    inactive: {},
-    loading: {
-      initial: 'debouncing',
-      states: {
-        debouncing: {
-          after: {
-            1000: 'active',
-          },
+export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>(
+  {
+    id: 'rhymes',
+    initial: 'inactive',
+    context: {
+      rhymes: [],
+    },
+    on: {
+      INPUT: [
+        {
+          target: '.loading',
+          cond: 'isValidInput',
+          actions: assign({
+            input: (context, event) => event.input,
+            rhymeSource: (context, event) => event.rhymeSource,
+          }),
         },
-        active: {
-          invoke: {
-            id: 'fetch-rhymes',
-            src: async (context) =>
-              fetchRhymes(context.input, context.rhymeSource),
-            onDone: [
-              {
-                target: '#displaying',
-                cond: (context, event) =>
-                  Array.isArray(event.data) && event.data.length > 0,
+      ],
+    },
+    states: {
+      inactive: {
+        id: '#inactive',
+      },
+      loading: {
+        initial: 'debouncing',
+        states: {
+          debouncing: {
+            on: {
+              INPUT: [
+                {
+                  target: 'debouncing',
+                  cond: 'isValidInput',
+                  actions: assign({
+                    input: (context, event) => event.input,
+                    rhymeSource: (context, event) => event.rhymeSource,
+                  }),
+                },
+                { target: '#rhymes.inactive' },
+              ],
+            },
+            after: {
+              1000: 'active',
+            },
+          },
+          active: {
+            invoke: {
+              id: 'fetch-rhymes',
+              src: async (context) =>
+                fetchRhymes(context.input, context.rhymeSource),
+              onDone: [
+                {
+                  target: '#displaying',
+                  cond: (context, event) =>
+                    Array.isArray(event.data) && event.data.length > 0,
+                  actions: assign({
+                    rhymes: (context, event) => event.data,
+                  }),
+                },
+                {
+                  target: '#no-results',
+                  actions: assign({
+                    rhymes: (context, event) => event.data,
+                  }),
+                },
+              ],
+              onError: {
+                target: '#error',
                 actions: assign({
-                  rhymes: (context, event) => event.data,
+                  error: (context, event) => event.data,
                 }),
               },
-              {
-                target: '#no-results',
-                actions: assign({
-                  rhymes: (context, event) => event.data,
-                }),
-              },
-            ],
-            onError: {
-              target: '#error',
-              actions: assign({
-                error: (context, event) => event.data,
-              }),
             },
           },
         },
       },
-    },
-    displaying: {
-      id: 'displaying',
-    },
-    'no-results': {
-      id: 'no-results',
-    },
-    error: {
-      id: 'error',
+      displaying: {
+        id: 'displaying',
+      },
+      'no-results': {
+        id: 'no-results',
+      },
+      error: {
+        id: 'error',
+      },
     },
   },
-});
+  {
+    guards: {
+      isValidInput: (context, event) =>
+        context.input !== event.input ||
+        context.rhymeSource !== event.rhymeSource,
+    },
+  }
+);

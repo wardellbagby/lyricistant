@@ -73,79 +73,100 @@ const normalize = (meanings: Meaning[]): Meaning[] =>
 export const dictionaryMachine = createMachine<
   DictionaryContext,
   DictionaryEvent
->({
-  id: 'dictionary',
-  initial: 'waiting',
-  context: {
-    result: [],
-  },
-  on: {
-    INPUT: [
-      {
-        target: 'loading',
-        cond: (context, event) =>
-          event.input &&
-          event.input.trim().length > 0 &&
-          !!event.input.match(/\w+/) &&
-          event.input !== context.input,
-        actions: assign({
-          input: (context, event) => event.input,
-        }),
-      },
-    ],
-  },
-  states: {
-    waiting: {
-      id: 'waiting',
+>(
+  {
+    id: 'dictionary',
+    initial: 'waiting',
+    context: {
+      result: [],
     },
-    loading: {
-      initial: 'debouncing',
-      states: {
-        debouncing: {
-          after: {
-            1000: 'active',
-          },
+    on: {
+      INPUT: [
+        {
+          target: 'loading',
+          cond: 'isValidInput',
+          actions: assign({
+            input: (context, event) => event.input,
+          }),
         },
-        active: {
-          invoke: {
-            src: async (context) => fetchDefinition(context.input),
-            onDone: [
-              {
-                target: '#displaying',
-                cond: (context, event) =>
-                  Array.isArray(event.data) && event.data.length > 0,
-                actions: assign({
-                  inputForResult: (context) => context.input,
-                  result: (context, event) => normalize(event.data),
-                }),
-              },
-              {
-                target: '#no-results',
-                actions: assign({
-                  result: (context, event) => event.data ?? [],
-                }),
-              },
-            ],
-            onError: {
-              target: '#no-results',
-              actions: [
-                assign({
-                  error: (context, event) => event.data,
-                  result: [],
-                }),
-                (context) =>
-                  logger.warn(`Failed to load definition for ${context.input}`),
+      ],
+    },
+    states: {
+      waiting: {
+        id: 'waiting',
+      },
+      loading: {
+        initial: 'debouncing',
+        states: {
+          debouncing: {
+            on: {
+              INPUT: [
+                {
+                  target: 'debouncing',
+                  cond: 'isValidInput',
+                  actions: assign({
+                    input: (context, event) => event.input,
+                  }),
+                },
+                { target: '#dictionary.waiting' },
               ],
+            },
+            after: {
+              1000: 'active',
+            },
+          },
+          active: {
+            invoke: {
+              src: async (context) => fetchDefinition(context.input),
+              onDone: [
+                {
+                  target: '#displaying',
+                  cond: (context, event) =>
+                    Array.isArray(event.data) && event.data.length > 0,
+                  actions: assign({
+                    inputForResult: (context) => context.input,
+                    result: (context, event) => normalize(event.data),
+                  }),
+                },
+                {
+                  target: '#no-results',
+                  actions: assign({
+                    result: (context, event) => event.data ?? [],
+                  }),
+                },
+              ],
+              onError: {
+                target: '#no-results',
+                actions: [
+                  assign({
+                    error: (context, event) => event.data,
+                    result: [],
+                  }),
+                  (context) =>
+                    logger.warn(
+                      `Failed to load definition for ${context.input}`
+                    ),
+                ],
+              },
             },
           },
         },
       },
-    },
-    displaying: {
-      id: 'displaying',
-    },
-    'no-results': {
-      id: 'no-results',
+      displaying: {
+        id: 'displaying',
+      },
+      'no-results': {
+        id: 'no-results',
+      },
     },
   },
-});
+  {
+    guards: {
+      isValidInput: (context, event) =>
+        event.input &&
+        event.input.trim().length > 0 &&
+        !!event.input.match(/\w+/) &&
+        event.input !== context.input,
+    },
+  }
+);
