@@ -37,6 +37,6 @@ export const CACHE = 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7';
 export const AUTOMATIC_RELEASES =
   'softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844';
 
-// pin@v0.2.1
+// pin@v0.2.0
 export const DELETE_TAG_AND_RELEASE =
-  'dev-drprasad/delete-tag-and-release/@431bd3dd0512ac0ae8813bd830ebfaf4188d2211';
+  'dev-drprasad/delete-tag-and-release/@085c6969f18bad0de1b9f3fe6692a3cd01f64fe5';
