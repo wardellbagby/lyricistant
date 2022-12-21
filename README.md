@@ -7,7 +7,7 @@ An assistant to the lyricist in you!
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/wardellbagby/lyricistant?style=for-the-badge)](https://lyricistant.app/#download)
 [![GitHub Release Date](https://img.shields.io/github/release-date/wardellbagby/lyricistant?style=for-the-badge)](https://lyricistant.app/#download)
 [![GitHub](https://img.shields.io/github/license/wardellbagby/lyricistant?style=for-the-badge)](https://github.com/wardellbagby/lyricistant/blob/main/LICENSE.md)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/wardellbagby/lyricistant/Continuous%20Integration?style=for-the-badge)](https://github.com/wardellbagby/lyricistant/actions?query=workflow%3A%22Continuous+Integration%22)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/wardellbagby/lyricistant/Continuous-Integration.yml?branch=main&style=for-the-badge)](https://github.com/wardellbagby/lyricistant/actions/workflows/Continuous-Integration.yml)
 
 ## What is it?
 
