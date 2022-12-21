@@ -6,6 +6,7 @@ import { BackButtonManager } from '@mobile-app/platform/BackButtonManager';
 import { MobileFiles } from '@mobile-app/platform/MobileFiles';
 import { MobilePreferences } from '@mobile-app/platform/MobilePreferences';
 import { MobileSystemThemeProvider } from '@mobile-app/platform/MobileSystemThemeProvider';
+import { SoftKeyboardManager } from '@mobile-app/platform/SoftKeyboardManager';
 import { StatusBarManager } from '@mobile-app/platform/StatusBarManager';
 import {
   formatTitle,
@@ -32,11 +33,13 @@ const createComponent = (): DIContainer => {
 
   component.registerSingleton<StatusBarManager>();
   component.registerSingleton<BackButtonManager>();
+  component.registerSingleton<SoftKeyboardManager>();
 
   registerCoreDOMManagers(
     component,
     component.get<StatusBarManager>(),
-    component.get<BackButtonManager>()
+    component.get<BackButtonManager>(),
+    component.get<SoftKeyboardManager>()
   );
   return component;
 };

@@ -8,7 +8,7 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 
 export interface Preferences {
-  getPreferences: () => Promise<PreferencesData | void>;
+  getPreferences: () => Promise<Partial<PreferencesData> | void>;
   setPreferences: (data: PreferencesData) => Promise<void>;
   getDefaultPreferences?: () => Promise<Partial<PreferencesData>>;
 }

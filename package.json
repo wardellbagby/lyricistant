@@ -142,6 +142,7 @@
     "@capacitor/app": "^4.0.0",
     "@capacitor/core": "^4.0.0",
     "@capacitor/ios": "^4.0.0",
+    "@capacitor/keyboard": "^4.1.0",
     "@capacitor/status-bar": "^4.0.0",
     "@codemirror/commands": "^6.1.2",
     "@codemirror/search": "^6.2.3",

@@ -194,6 +194,10 @@ export interface PlatformToRendererListener {
    * @param history The most recent file history data.
    */
   'file-history': (history: ParsedHistoryData[]) => void;
+  /** Fired when the platform wants to request that the renderer shows the detail pane. */
+  'show-detail-pane': () => void;
+  /** Fired when the platform wants to request that the renderer hides the detail pane. */
+  'close-detail-pane': () => void;
 }
 
 /** All possible channels that the platform can use to talk to the renderer. */

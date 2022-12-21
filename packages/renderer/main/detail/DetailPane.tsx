@@ -4,7 +4,10 @@ import {
   Dictionary,
   DictionaryProps,
 } from '@lyricistant/renderer/dictionary/Dictionary';
-import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
+import {
+  useChannel,
+  useChannelData,
+} from '@lyricistant/renderer/platform/useChannel';
 import { Rhymes, RhymesProps } from '@lyricistant/renderer/rhymes/Rhymes';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import {
@@ -22,12 +25,7 @@ import {
   ChevronUp,
   ScriptOutline,
 } from 'mdi-material-ui';
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 
 interface DetailPaneProps {
   rhymeProps: Omit<RhymesProps, keyof DetailPaneChildProps>;
@@ -69,6 +67,11 @@ const ToggleDetailPaneIcon = ({ isExpanded }: { isExpanded: boolean }) => {
   return <ChevronLeft />;
 };
 
+/**
+ * Renders the Rhymes and Dictionary components inside a floating pane that can
+ * optionally be toggled so that it disappears and reappears depending on the
+ * user's preferences.
+ */
 export const DetailPane: React.FC<DetailPaneProps> = (props) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [isLoading, setLoading] = useState(false);
@@ -81,22 +84,30 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
     preferencesData == null ||
     preferencesData.detailPaneVisibility === DetailPaneVisibility.Toggleable;
 
+  useChannel(
+    'show-detail-pane',
+    () => {
+      if (showToggleButton) {
+        setExpanded(true);
+      }
+    },
+    [showToggleButton]
+  );
+
+  useChannel(
+    'close-detail-pane',
+    () => {
+      if (showToggleButton) {
+        setExpanded(false);
+      }
+    },
+    [showToggleButton]
+  );
+
   // When we're closed and not animating, position as absolute so that only the
   // button is actually taking up space in the layout. Use position instead of
   // display so that the animation can finish properly.
   const paperDisplay = !isExpanded && !isAnimating ? 'none' : 'unset';
-
-  const calculateHeight = useCallback(() => {
-    if (!isSmallLayout) {
-      return 'auto';
-    }
-
-    if (!isExpanded && !isAnimating) {
-      return 'auto';
-    }
-
-    return 'clamp(300px, 450px, 40vh)';
-  }, [isExpanded, isSmallLayout]);
 
   useEffect(() => {
     setLoading(false);
@@ -119,81 +130,87 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
 
   return (
     <Box
-      display={'flex'}
-      flexDirection={'column-reverse'}
-      width={isSmallLayout ? '100%' : '400px'}
-      minWidth={isSmallLayout ? undefined : '400px'}
-      flexShrink={1}
-      padding={'16px'}
-      gap={'8px'}
+      width={isSmallLayout ? undefined : '400px'}
+      flex={isSmallLayout ? '.75 1' : undefined}
     >
-      {showToggleButton && (
-        <Box display={'flex'} justifyContent={'end'}>
-          <Fab
-            size={'small'}
-            onClick={() => {
-              setExpanded(!isExpanded);
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'end'}
+        padding={'16px'}
+        height={'100%'}
+        width={'100%'}
+        gap={'8px'}
+      >
+        <Slide
+          in={isExpanded}
+          direction={isSmallLayout ? 'up' : 'left'}
+          onEnter={() => setIsAnimating(true)}
+          onExited={() => setIsAnimating(false)}
+        >
+          <Paper
+            elevation={1}
+            sx={{
+              minHeight: isSmallLayout ? '250px' : undefined,
+              maxHeight: isSmallLayout ? '600px' : undefined,
+              flex: '1 1 0',
+              display: paperDisplay,
+              overflow: 'auto',
             }}
           >
-            <ToggleDetailPaneIcon isExpanded={isExpanded} />
-          </Fab>
-        </Box>
-      )}
-      <Slide
-        in={isExpanded}
-        direction={isSmallLayout ? 'up' : 'left'}
-        onEnter={() => setIsAnimating(true)}
-        onExited={() => setIsAnimating(false)}
-      >
-        <Paper
-          elevation={1}
-          sx={{
-            maxHeight: '100%',
-            height: calculateHeight(),
-            flex: '1 1 auto',
-            display: paperDisplay,
-          }}
-        >
-          <Box
-            display={'flex'}
-            flexDirection={'column'}
-            height={'100%'}
-            width={'100%'}
-          >
-            <Tabs
-              value={tabIndex}
-              onChange={(_, newTabIndex) => setTabIndex(newTabIndex)}
-              variant={'fullWidth'}
-              sx={{
-                flex: '0 0 auto',
-                boxShadow: 1,
-              }}
-              TabIndicatorProps={{
-                children: isLoading ? (
-                  <LinearProgress variant={'indeterminate'} />
-                ) : undefined,
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              height={'100%'}
+              width={'100%'}
+            >
+              <Tabs
+                value={tabIndex}
+                onChange={(_, newTabIndex) => setTabIndex(newTabIndex)}
+                variant={'fullWidth'}
+                sx={{
+                  flex: '0 0 auto',
+                  boxShadow: 1,
+                }}
+                TabIndicatorProps={{
+                  children: isLoading ? (
+                    <LinearProgress variant={'indeterminate'} />
+                  ) : undefined,
+                }}
+              >
+                <Tab aria-label={'Rhymes Tab'} icon={<ScriptOutline />} />
+                <Tab aria-label={'Dictionary Tab'} icon={<BookAlphabet />} />
+              </Tabs>
+              <TabbedItem index={0} selectedIndex={tabIndex}>
+                <Rhymes
+                  {...props.rhymeProps}
+                  isVisible={tabIndex === 0}
+                  onLoadingChanged={setLoading}
+                />
+              </TabbedItem>
+              <TabbedItem index={1} selectedIndex={tabIndex}>
+                <Dictionary
+                  {...props.dictionaryProps}
+                  isVisible={tabIndex === 1}
+                  onLoadingChanged={setLoading}
+                />
+              </TabbedItem>
+            </Box>
+          </Paper>
+        </Slide>
+        {showToggleButton && (
+          <Box display={'flex'} justifyContent={'end'} flex={'0 0 auto'}>
+            <Fab
+              size={'small'}
+              onClick={() => {
+                setExpanded(!isExpanded);
               }}
             >
-              <Tab aria-label={'Rhymes Tab'} icon={<ScriptOutline />} />
-              <Tab aria-label={'Dictionary Tab'} icon={<BookAlphabet />} />
-            </Tabs>
-            <TabbedItem index={0} selectedIndex={tabIndex}>
-              <Rhymes
-                {...props.rhymeProps}
-                isVisible={tabIndex === 0}
-                onLoadingChanged={setLoading}
-              />
-            </TabbedItem>
-            <TabbedItem index={1} selectedIndex={tabIndex}>
-              <Dictionary
-                {...props.dictionaryProps}
-                isVisible={tabIndex === 1}
-                onLoadingChanged={setLoading}
-              />
-            </TabbedItem>
+              <ToggleDetailPaneIcon isExpanded={isExpanded} />
+            </Fab>
           </Box>
-        </Paper>
-      </Slide>
+        )}
+      </Box>
     </Box>
   );
 };

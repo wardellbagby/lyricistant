@@ -16,7 +16,7 @@ const fontFamily = (font?: Font) => {
 };
 const EditorContainer = styled('div')({
   paddingTop: '8px',
-  flexGrow: '1',
+  flex: '1 1 500px',
   minHeight: '200px',
 });
 
