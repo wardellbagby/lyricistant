@@ -30,8 +30,8 @@ export const Dictionary = ({
   }, [query, isVisible]);
 
   useEffect(() => {
-    onLoadingChanged?.(state.matches('loading.active'));
-  }, [state.matches('loading.active')]);
+    onLoadingChanged?.(state.matches('loading'));
+  }, [state.matches('loading')]);
 
   const meanings: Meaning[] = state.context.result;
 

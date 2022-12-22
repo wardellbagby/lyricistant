@@ -165,7 +165,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
               width={'100%'}
             >
               <Tabs
-                value={tabIndex}
+                value={isExpanded ? tabIndex : false}
                 onChange={(_, newTabIndex) => setTabIndex(newTabIndex)}
                 variant={'fullWidth'}
                 sx={{
@@ -184,14 +184,14 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
               <TabbedItem index={0} selectedIndex={tabIndex}>
                 <Rhymes
                   {...props.rhymeProps}
-                  isVisible={tabIndex === 0}
+                  isVisible={tabIndex === 0 && isExpanded}
                   onLoadingChanged={setLoading}
                 />
               </TabbedItem>
               <TabbedItem index={1} selectedIndex={tabIndex}>
                 <Dictionary
                   {...props.dictionaryProps}
-                  isVisible={tabIndex === 1}
+                  isVisible={tabIndex === 1 && isExpanded}
                   onLoadingChanged={setLoading}
                 />
               </TabbedItem>

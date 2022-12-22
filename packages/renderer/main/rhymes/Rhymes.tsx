@@ -92,8 +92,8 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
   }, [handleError, state]);
 
   useEffect(() => {
-    props.onLoadingChanged?.(state.matches('loading.active'));
-  }, [state.matches('loading.active')]);
+    props.onLoadingChanged?.(state.matches('loading'));
+  }, [state.matches('loading')]);
 
   const rhymes: Rhyme[] = state.context.rhymes;
 
