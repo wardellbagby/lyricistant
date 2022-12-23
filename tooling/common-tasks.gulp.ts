@@ -121,7 +121,7 @@ export const spawn = (
     ...options,
     env: {
       ...process.env,
-      ...options.env,
+      ...options?.env,
     },
   };
   const childProcess = nodeSpawn(command, args, optionsWithCwd);
