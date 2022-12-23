@@ -131,7 +131,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
   return (
     <Box
       width={isSmallLayout ? undefined : '400px'}
-      flex={isSmallLayout ? '.75 1' : undefined}
+      flex={isSmallLayout ? '.75 1 50%' : undefined}
     >
       <Box
         display={'flex'}
