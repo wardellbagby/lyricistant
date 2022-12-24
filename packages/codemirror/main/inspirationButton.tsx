@@ -9,9 +9,9 @@ import {
 } from '@codemirror/view';
 import { Chip, Fade } from '@mui/material';
 import { sample } from 'lodash-es';
-import { AutoFix } from 'mdi-material-ui';
+import { Dice3 } from 'mdi-material-ui';
 import React, { useEffect, useState } from 'react';
-import ReactDOMClient from 'react-dom/client';
+import ReactDOMClient, { Root } from 'react-dom/client';
 
 interface InspirationButtonProps {
   showImmediately: boolean;
@@ -21,16 +21,17 @@ interface InspirationButtonProps {
 const InspirationButton = (props: InspirationButtonProps) => {
   const [fadeIn, setFadeIn] = useState(props.showImmediately);
   useEffect(() => {
+    setFadeIn(props.showImmediately);
     const handle = setTimeout(() => setFadeIn(true), 15_000);
     return () => clearTimeout(handle);
-  }, null);
+  }, [props.showImmediately]);
 
   return (
     <Fade in={fadeIn} timeout={props.showImmediately ? 0 : 5_000}>
       <Chip
         onClick={props.onClick}
         className={'cm-line-widget'}
-        icon={<AutoFix />}
+        icon={<Dice3 />}
         label={props.showImmediately ? 'Again?' : 'Inspire?'}
         variant={'outlined'}
         size={'small'}
@@ -45,9 +46,11 @@ interface InspirationWidgetConfig
 }
 
 class InspirationButtonWidget extends WidgetType {
-  private root: ReactDOMClient.Root | null = null;
-
-  public constructor(private config: InspirationWidgetConfig) {
+  public constructor(
+    private container: HTMLElement,
+    private root: Root,
+    private config: InspirationWidgetConfig
+  ) {
     super();
   }
 
@@ -56,42 +59,30 @@ class InspirationButtonWidget extends WidgetType {
   }
 
   public toDOM() {
-    if (this.root != null) {
-      this.root.unmount();
-    }
-
-    const container = document.createElement('span');
-    container.style.display = 'inline-flex';
-    container.style.verticalAlign = 'middle';
-    container.style.position = 'absolute';
-    container.style.paddingLeft = '8px';
-    container.style.paddingRight = '8px';
-
-    this.root = ReactDOMClient.createRoot(container);
-
     this.root.render(
       <InspirationButton
         {...this.config}
-        onClick={() => this.config.onClick(container)}
+        onClick={() => this.config.onClick(this.container)}
       />
     );
 
-    return container;
+    return this.container;
+  }
+
+  public destroy(dom: HTMLElement) {
+    super.destroy(dom);
+    this.root.render(null);
   }
 
   public ignoreEvent() {
     return true;
   }
-
-  public destroy(dom: HTMLElement) {
-    super.destroy(dom);
-    this.root?.unmount();
-    this.root = null;
-  }
 }
 
 const createDecorations = (
   view: EditorView,
+  container: HTMLElement,
+  root: Root,
   config: InspirationWidgetConfig
 ) => {
   const lastVisibleLine =
@@ -102,7 +93,7 @@ const createDecorations = (
   if (line && (line.length === 0 || config.showImmediately) && lineBlock) {
     return Decoration.set(
       Decoration.widget({
-        widget: new InspirationButtonWidget(config),
+        widget: new InspirationButtonWidget(container, root, config),
         side: 1,
       }).range(line.to)
     );
@@ -114,23 +105,41 @@ class InspirationButtonPlugin implements PluginValue {
   public decorations: DecorationSet = Decoration.none;
   private words: string[];
   private hasClickedWidget = false;
+  private container = document.createElement('span');
+  private root: Root = ReactDOMClient.createRoot(this.container);
 
   public constructor(private view: EditorView) {
+    this.container.style.display = 'inline-flex';
+    this.container.style.verticalAlign = 'middle';
+    this.container.style.position = 'absolute';
+    this.container.style.paddingLeft = '8px';
+    this.container.style.paddingRight = '8px';
+
     import('./inspiration_words.json').then((words) => {
       this.words = words;
-      this.decorations = createDecorations(view, {
+      this.decorations = createDecorations(view, this.container, this.root, {
         showImmediately: false,
         onClick: this.onWidgetClick,
       });
     });
   }
 
+  public destroy() {
+    this.root.unmount();
+    this.container.remove();
+  }
+
   public update(update: ViewUpdate) {
     if (this.words && (update.docChanged || update.viewportChanged)) {
-      this.decorations = createDecorations(update.view, {
-        showImmediately: this.hasClickedWidget,
-        onClick: this.onWidgetClick,
-      });
+      this.decorations = createDecorations(
+        update.view,
+        this.container,
+        this.root,
+        {
+          showImmediately: this.hasClickedWidget,
+          onClick: this.onWidgetClick,
+        }
+      );
       this.hasClickedWidget = false;
     }
   }
