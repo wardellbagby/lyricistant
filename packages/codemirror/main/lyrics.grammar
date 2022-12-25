@@ -1,0 +1,17 @@
+@top Lyrics { expression* }
+
+@skip { space }
+
+expression { LineComment | Lyric | TodoComment | Context }
+
+@tokens {
+  space { @whitespace+ }
+  TodoComment { "//" " "? ("todo" | "TODO") ![\n]* }
+  Context { "[" ![\n]+ "]" }
+  LineComment { "//" ![\n]* }
+  @precedence { TodoComment, LineComment, space }
+}
+
+@external tokens lyric from "./lyrics-tokens" { Lyric }
+
+@detectDelim

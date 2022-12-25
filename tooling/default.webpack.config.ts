@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import path from 'path';
 import { Mode } from '@tooling/common-tasks.gulp';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import webpack, { Configuration } from 'webpack';
@@ -84,6 +85,10 @@ export default (
           test: /\.svg$/,
           include: [/packages\/renderer\/main/],
           use: ['@svgr/webpack', 'raw-loader'],
+        },
+        {
+          test: /\.grammar$/,
+          loader: require.resolve(path.resolve(__dirname, 'grammar-loader.js')),
         },
       ],
     },

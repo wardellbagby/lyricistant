@@ -1,8 +1,31 @@
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { tags } from '@lezer/highlight';
+import { context, todoComment } from '@lyricistant/codemirror/lyrics-language';
 import { Theme } from '@mui/material';
 
-export const editorTheme = (appTheme: Theme, font: string): Extension =>
+const textColorSelectionStyle = (appTheme: Theme) => ({
+  '&::selection': {
+    backgroundColor: appTheme.palette.primary.main,
+    color: appTheme.palette.getContrastText(appTheme.palette.primary.main),
+  },
+});
+export const editorTheme = (appTheme: Theme, font: string): Extension => [
+  syntaxHighlighting(
+    HighlightStyle.define([
+      {
+        tag: tags.lineComment,
+        color: appTheme.palette.text.disabled,
+        ...textColorSelectionStyle(appTheme),
+      },
+      {
+        tag: [todoComment, context],
+        color: appTheme.palette.primary.main,
+        ...textColorSelectionStyle(appTheme),
+      },
+    ])
+  ),
   EditorView.theme(
     {
       '&.cm-editor': {
@@ -23,12 +46,7 @@ export const editorTheme = (appTheme: Theme, font: string): Extension =>
       },
       '.cm-line': {
         color: appTheme.palette.text.primary,
-        '&::selection': {
-          backgroundColor: appTheme.palette.primary.main,
-          color: appTheme.palette.getContrastText(
-            appTheme.palette.primary.main
-          ),
-        },
+        ...textColorSelectionStyle(appTheme),
       },
       '.cm-scroller': {
         fontFamily: `"${font}"`,
@@ -108,4 +126,5 @@ export const editorTheme = (appTheme: Theme, font: string): Extension =>
     {
       dark: appTheme.palette.mode === 'dark',
     }
-  );
+  ),
+];

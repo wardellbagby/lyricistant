@@ -1,5 +1,10 @@
 import { SelectionRange, Text } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { SyntaxNode } from '@lezer/common';
+import {
+  doesNodeContainSelection,
+  getLyricNodesBetween,
+} from '@lyricistant/codemirror/SyntaxNodes';
 
 export interface TextSelectionData {
   from: number;
@@ -12,9 +17,27 @@ export const textSelection = (
 ) => [
   EditorView.updateListener.of((update) => {
     if (update.selectionSet) {
-      onTextSelected(
-        findWordAt(update.state.doc, update.state.selection.asSingle().main)
+      const selectionRange = update.state.selection.asSingle().main;
+      let nodes: SyntaxNode[];
+
+      if (selectionRange.empty) {
+        const { from, to } = update.state.doc.lineAt(selectionRange.from);
+        nodes = getLyricNodesBetween(update.state, from, to);
+      } else {
+        nodes = getLyricNodesBetween(
+          update.state,
+          selectionRange.from,
+          selectionRange.to
+        );
+      }
+
+      const hasLyricSelection = nodes.find((node) =>
+        doesNodeContainSelection(node, selectionRange)
       );
+
+      if (hasLyricSelection) {
+        onTextSelected(findWordAt(update.state.doc, selectionRange));
+      }
     }
   }),
 ];
