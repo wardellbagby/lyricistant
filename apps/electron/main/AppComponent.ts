@@ -6,6 +6,7 @@ import { ElectronPreferences } from '@electron-app/platform/ElectronPreferences'
 import { ElectronRecentFiles } from '@electron-app/platform/ElectronRecentFiles';
 import { ElectronSystemThemeProvider } from '@electron-app/platform/ElectronSystemThemeProvider';
 import { ElectronTimes } from '@electron-app/platform/ElectronTimes';
+import { NoopAppUpdater } from '@electron-app/platform/NoopAppUpdater';
 import { QuitManager } from '@electron-app/platform/QuitManager';
 import {
   formatTitle,
@@ -19,6 +20,7 @@ import {
   registerCommonManagers,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import { DIContainer } from '@wessberg/di';
 import {
@@ -36,7 +38,12 @@ const registerElectronFunctionality = (
   window: BrowserWindow
 ) => {
   component.registerSingleton<BrowserWindow>(() => window);
-  component.registerSingleton<AppUpdater>(() => autoUpdater);
+  component.registerSingleton<AppUpdater>(() => {
+    if (isUnderTest) {
+      return new NoopAppUpdater();
+    }
+    return autoUpdater;
+  });
   component.registerSingleton<ElectronDialog>(() => dialog);
   component.registerSingleton<FileSystem, NodeFileSystem>();
   component.registerSingleton<HttpClient, AxiosHttpClient>();
