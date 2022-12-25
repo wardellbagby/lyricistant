@@ -89,6 +89,7 @@ export const getBaseJestConfig = (options: {
       // The order here matters. First match is always picked.
       '^.+\\.(png|css|scss)$': 'identity-obj-proxy',
       '^.+\\.svg$': path.resolve(__dirname, 'jest-svg-mock.js'),
+      '^.+\\.grammar$': path.resolve(__dirname, 'grammar-mock.js'),
       ...baseConfig.moduleNameMapper,
     },
     testEnvironment: getJestEnv(options.type),

@@ -16,6 +16,7 @@ import {
 } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { inspirationButton } from '@lyricistant/codemirror/inspirationButton';
+import { Lyrics } from '@lyricistant/codemirror/lyrics-language';
 import { useTheme } from '@mui/material';
 import { differenceWith, isEqual, sample } from 'lodash-es';
 import {
@@ -151,6 +152,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const defaultConfig = useMemo<EditorStateConfig>(
     () => ({
       extensions: [
+        Lyrics(),
         syllableCounts(),
         history(),
         EditorView.lineWrapping,
