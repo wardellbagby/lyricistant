@@ -1,3 +1,4 @@
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
 import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
@@ -90,9 +91,12 @@ export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>(
                 { target: '#rhymes.inactive' },
               ],
             },
-            after: {
-              1000: 'active',
-            },
+            after: [
+              {
+                delay: 'DEBOUNCE',
+                target: 'active',
+              },
+            ],
           },
           active: {
             invoke: {
@@ -137,6 +141,9 @@ export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>(
     },
   },
   {
+    delays: {
+      DEBOUNCE: () => (isUnderTest ? 100 : 1_000),
+    },
     guards: {
       isValidInput: (context, event) =>
         context.input !== event.input ||

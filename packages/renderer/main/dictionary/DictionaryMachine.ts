@@ -1,3 +1,4 @@
+import { isUnderTest } from '@lyricistant/common/BuildModes';
 import axios from 'axios';
 import { flattenDeep, uniq } from 'lodash-es';
 import { assign, createMachine, EventObject } from 'xstate';
@@ -111,9 +112,12 @@ export const dictionaryMachine = createMachine<
                 { target: '#dictionary.waiting' },
               ],
             },
-            after: {
-              1000: 'active',
-            },
+            after: [
+              {
+                delay: 'DEBOUNCE',
+                target: 'active',
+              },
+            ],
           },
           active: {
             invoke: {
@@ -161,6 +165,9 @@ export const dictionaryMachine = createMachine<
     },
   },
   {
+    delays: {
+      DEBOUNCE: () => (isUnderTest ? 100 : 1_000),
+    },
     guards: {
       isValidInput: (context, event) =>
         event.input &&

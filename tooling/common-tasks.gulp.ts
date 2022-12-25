@@ -67,7 +67,10 @@ export const getBaseJestConfig = (options: {
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
     moduleDirectories: [rootDirectory, 'node_modules'],
     testTimeout: getTimeout(options.type),
-    setupFilesAfterEnv: ['jest-extended/all'],
+    setupFilesAfterEnv: [
+      'jest-extended/all',
+      path.resolve(__dirname, 'jest-test-setup.js'),
+    ],
   };
 
   if (options.type === 'browser') {
