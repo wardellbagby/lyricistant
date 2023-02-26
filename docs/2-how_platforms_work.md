@@ -19,15 +19,17 @@ same pattern:
 
 1. Create their own `RendererDelegate` and `PlatformDelegate` based on the platform.
     - Electron uses a thin wrapper around `ipcMain` and `ipcRenderer` to accomplish this.
-    - Web (Legacy) and Mobile use `CoreRendererDelegate` and `CorePlatformDelegate`, which manually keep track of
+    - Web (Legacy) and Mobile use `DOMRendererDelegate` and `DOMPlatformDelegate`, which manually keep track of
       listeners that have been set and invoke them when events are sent. All of this happens in a single thread.
-    - Web (Modern) uses a similar mechanism to Web (Legacy) but sends messages to a Web Worker and back to the renderer.
+    - Web (Modern) uses a similar mechanism to Electron since it also uses a two process system, except that the
+      platform code is ran inside a Web Worker instead of Node. See `WebRendererDelegate` and `WebPlatformDelegate` if
+      you're curious, but it's not important to know.
 2. Create an `AppComponent`, which is a container that understands how to inject dependencies into class constructors.
     - The easiest way to create an `AppComponent` is to use the `registerCommonPlatform` and `registerCommonManagers`
       functions in the `packages/common-platform`
 3. Call `register` on all the `Manager`s it cares about; both common ones and the platform-specific ones.
     - Since all platforms have an `AppComponent`, they accomplish this by asking their app component to give them a list
-      of managers to be used, and iterating over that list to call `register` on
+      of managers to be used, and iterating over that list, calling `register` on every `Manager`. to call `register` on
 4. Import the `index.html` from `packages/renderer` file and load it into a browser.
     - How the various platforms do this differs pretty wildly, but they all get it done.
 
@@ -45,14 +47,14 @@ platforms run entirely in a browser.
 ## What is a Manager?
 
 In order to more easily handle talking to the renderer, Lyricistant uses its own concept of a `Manager` to handle
-registering for events that the renderer sends and to send events back to the renderer. The purpose of a manager is to
+registering for events that the renderer sends, and sending events back to the renderer. The purpose of a manager is to
 consolidate related platform code into one stateful class. `Manager` itself is just an interface with a single
 method: `register`. However, `Manager`s hold the vast majority of Lyricistant's complexity.
 
 Every manager is a bit different, but in general, whenever `register` is called, they'll start listening to events that
-the renderer sends. `Manager`s should focus on a specific "feature", where feature is poorly defined term but can
-generally be thought of as things that users would expect to related in functionality. For instance, the `FileManager`
-handles all things relating to files; opening, saving, and creating new files.
+the renderer sends. `Manager`s should focus on a specific "feature", where feature is a poorly defined term but can
+generally be thought of as handling certain events that users would expect to be related. For instance,
+the `FileManager` handles all things relating to files; opening, saving, and creating new files.
 
 A manager doesn't actually _have_ to listen to the renderer, though. The `Manager` pattern is just as useful for
 organizing platform-only logic. In those cases, `register` can be thought of as an extra initialization that's run when

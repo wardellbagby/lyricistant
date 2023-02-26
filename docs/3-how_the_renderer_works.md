@@ -11,7 +11,7 @@ with to type their text, change their settings, open and save files, and more.
 
 The renderer is comparatively much simpler than the various platforms, since platforms do the majority of the
 heavy-lifting. If you have React experience, you should hopefully be pretty comfortable exploring here without much
-guidance. If you aren't, please let me know and I'll update the documentation to be clearer!
+guidance. If you aren't, please let me know, and I'll update the documentation to be clearer!
 
 The renderer code lives in [packages/renderer](../packages/renderer).
 
@@ -66,5 +66,5 @@ for your new property.
 Since Lyricistant also supports Mobile, it has two layouts: its desktop (default) layout, and a "small" layout that
 works better on smaller devices. When adding new UI, it's important to make sure it looks good on both the default
 layout and the small layout. To make these checks easier, there's
-a [`useSmallLayout`](../packages/renderer/main/app/useSmallLayout.ts) hook that will return a boolean saying whether or
-not the small layout is currently in use.
+a [`useSmallLayout`](../packages/renderer/main/app/useSmallLayout.ts) hook that will return a boolean saying whether the
+small layout is currently in use.
