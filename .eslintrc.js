@@ -27,7 +27,6 @@ module.exports = {
     'eslint-plugin-prefer-arrow',
     'eslint-plugin-react',
     '@typescript-eslint',
-    '@typescript-eslint/tslint',
     'prettier',
   ],
   overrides: [
