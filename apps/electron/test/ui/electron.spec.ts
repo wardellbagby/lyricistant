@@ -43,6 +43,9 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
 
     window = await app.firstWindow();
     await window.waitForLoadState('networkidle');
+    await window.waitForFunction(
+      () => document.getElementById('preload-overlay') == null
+    );
     const elements = await window.$$('#app > *');
     expect(elements).not.toBeEmpty();
 
@@ -84,7 +87,9 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     ];
 
     for (const component of components) {
-      await expect(component.isVisible()).resolves.toBeTrue();
+      await waitForExpect(
+        async () => await expect(component.isVisible()).resolves.toBeTruthy()
+      );
     }
   });
 

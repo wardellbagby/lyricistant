@@ -57,6 +57,9 @@ describe.each(specs)(
       await page.goto(`http://${host}:${port}?forceLegacy=${!forceLegacyWeb}`, {
         waitUntil: 'networkidle',
       });
+      await page.waitForFunction(
+        () => document.getElementById('preload-overlay') == null
+      );
       screen = getQueriesForElement(await getDocument(page));
     });
 
@@ -85,7 +88,9 @@ describe.each(specs)(
       ];
 
       for (const component of components) {
-        await expect(component.isVisible()).resolves.toBeTruthy();
+        await waitForExpect(
+          async () => await expect(component.isVisible()).resolves.toBeTruthy()
+        );
       }
     });
 
