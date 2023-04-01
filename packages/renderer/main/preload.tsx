@@ -1,5 +1,5 @@
 import { Palette } from '@lyricistant/common/theme/SystemTheme';
-import feather from '@lyricistant/renderer/lyricistant_feather.svg';
+import logo from '@lyricistant/renderer/lyricistant_logo.svg';
 import { getThemePalette } from '@lyricistant/renderer/theme';
 
 onThemeUpdated(getThemePalette().palette);
@@ -11,11 +11,11 @@ if (!container) {
   container.id = 'preload-overlay';
   document.body.append(container);
 
-  container.innerHTML = feather;
+  container.innerHTML = logo;
   const image = container.firstElementChild as SVGSVGElement;
   image.style.width = '128px';
   image.style.height = '128px';
-  image.id = 'preload-overlay-feather';
+  image.id = 'preload-overlay-logo';
 }
 
 export const onPageLoaded = () => {

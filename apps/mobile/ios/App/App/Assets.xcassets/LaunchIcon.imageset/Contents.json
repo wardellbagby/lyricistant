@@ -1,27 +1,27 @@
 {
   "images" : [
     {
-      "filename" : "256x256@1x.png",
+      "filename" : "themed.svg",
       "idiom" : "iphone",
       "scale" : "1x"
     },
     {
-      "filename" : "256x256@2x.png",
+      "filename" : "themed-1.svg",
       "idiom" : "iphone",
       "scale" : "2x"
     },
     {
-      "filename" : "256x256@3x.png",
+      "filename" : "themed-2.svg",
       "idiom" : "iphone",
       "scale" : "3x"
     },
     {
-      "filename" : "256x256@3x-1.png",
+      "filename" : "themed-3.svg",
       "idiom" : "ipad",
       "scale" : "1x"
     },
     {
-      "filename" : "512x512.png",
+      "filename" : "themed-4.svg",
       "idiom" : "ipad",
       "scale" : "2x"
     }
@@ -29,5 +29,8 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "template-rendering-intent" : "template"
   }
 }

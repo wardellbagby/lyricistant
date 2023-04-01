@@ -1,4 +1,4 @@
-import { ReactComponent as Feather } from '@lyricistant/renderer/lyricistant_feather.svg';
+import { ReactComponent as Logo } from '@lyricistant/renderer/lyricistant_logo.svg';
 import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 
@@ -38,12 +38,7 @@ export const NullStateText = ({
       justifyContent={'center'}
       flexDirection={'column'}
     >
-      <Feather
-        height={'64px'}
-        width={'64px'}
-        fill={theme.palette.text.disabled}
-        viewBox={'0 0 100 100'}
-      />
+      <Logo height={'96px'} width={'96px'} fill={theme.palette.text.disabled} />
       <Typography
         sx={{
           color: theme.palette.text.disabled,

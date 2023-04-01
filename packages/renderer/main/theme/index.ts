@@ -71,7 +71,7 @@ export const createTheme = (themeData?: ThemeData): Theme => {
 };
 
 const lightThemePalette: Palette = {
-  primary: '#0388d1',
+  primary: '#d0950d',
   background: '#fafafa',
   surface: '#E0E0E0',
   primaryText: '#212121',
@@ -79,7 +79,7 @@ const lightThemePalette: Palette = {
 };
 
 const darkThemePalette: Palette = {
-  primary: '#2ab6f6',
+  primary: '#f2b21c',
   background: '#141414',
   surface: '#232323',
   primaryText: '#f8f8f8',
