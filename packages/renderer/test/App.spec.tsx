@@ -9,8 +9,8 @@ import {
 import { App as RealApp } from '@lyricistant/renderer/app/App';
 import { configure, screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BaseLocationHook, Router } from 'wouter';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { render, wait } from './Wrappers';
@@ -198,9 +198,14 @@ describe('App component', () => {
     ).toBeTruthy();
   });
 
+  const useMemoryLocation: BaseLocationHook = () => {
+    const [path, setPath] = useState('');
+    return [path, setPath];
+  };
+
   const App = () => (
-    <MemoryRouter>
+    <Router hook={useMemoryLocation}>
       <RealApp />
-    </MemoryRouter>
+    </Router>
   );
 });

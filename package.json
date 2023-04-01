@@ -58,7 +58,6 @@
     "@types/react": "^17.0.45",
     "@types/react-beforeunload": "^2.1.0",
     "@types/react-dom": "^18.0.9",
-    "@types/react-router-dom": "^5.1.7",
     "@types/semver": "^7.3.9",
     "@types/sinon": "^9.0.5",
     "@types/sinon-chai": "^3.2.8",
@@ -172,13 +171,13 @@
     "react-device-detect": "^2.2.2",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
-    "react-router-dom": "^5.3.3",
     "rxjs": "^6.6.2",
     "semver": "^7.3.5",
     "sprintf-js": "^1.1.2",
     "syllable": "^4.1.0",
     "tslib": "^2.4.0",
     "use-debounce": "^8.0.2",
+    "wouter": "^2.10.0",
     "xstate": "^4.32.1"
   },
   "config": {

@@ -1,74 +1,40 @@
 import { AboutDialog } from '@lyricistant/renderer/about/AboutDialog';
+import {
+  RoutePaths,
+  useBackNavigation,
+  useNavigation,
+} from '@lyricistant/renderer/app/Navigation';
 import { ChooseDownloadDialog } from '@lyricistant/renderer/download/ChooseDownloadDialog';
 import { FileHistory } from '@lyricistant/renderer/filehistory/FileHistory';
 import { PlatformDialogs } from '@lyricistant/renderer/platform/PlatformDialogs';
 import { useChannel } from '@lyricistant/renderer/platform/useChannel';
 import { Preferences } from '@lyricistant/renderer/preferences/Preferences';
 import { PrivacyPolicy } from '@lyricistant/renderer/privacy/PrivacyPolicy';
-import { History } from 'history';
-import React, { ReactNode, useCallback, useEffect } from 'react';
-import { RouteChildrenProps } from 'react-router';
-import { Route, useHistory } from 'react-router-dom';
+import React, { ReactElement, useEffect } from 'react';
+import { useLocation } from 'wouter';
 
-/** The names of the paths that Lyricistant can navigate to. */
-type ModalRoutePathNames =
-  | 'about'
-  | 'download'
-  | 'file-history'
-  | 'preferences'
-  | 'privacypolicy';
-
-/** The React Router compatible paths that Lyricistant can navigate to. */
-type ModalRoutePath<Name extends ModalRoutePathNames = ModalRoutePathNames> =
-  `/${Name}`;
 interface ModalRouteProps {
-  path: ModalRoutePath;
-  render: (open: boolean) => ReactNode;
+  path: RoutePaths;
+  render: (open: boolean) => ReactElement;
 }
-const ModalRoute = ({ path, render }: ModalRouteProps) => (
-  <Route
-    path={path}
-    children={({ match }: RouteChildrenProps) => render(!!match)}
-  />
-);
 
-/**
- * Navigate to a new path.
- *
- * @param history The React Router history.
- * @param path The path to navigate to.
- */
-export const goTo = (history: History, path: ModalRoutePathNames) => {
-  history.push(`/${path}`, { isChildPath: true });
+const ModalRoute = ({ path, render }: ModalRouteProps) => {
+  const [location] = useLocation();
+  const Component = () => render(path.replace('/', '') === location);
+  return <Component />;
 };
 
 /** Displays various models over Lyricistant based on the current router path. */
 export function Modals() {
-  const history = useHistory();
-
-  const goAbout = useCallback(() => history.push('/about'), [history]);
-  const goBack = useCallback(() => {
-    const locationState = history.location.state;
-    const isChildPath: boolean =
-      typeof locationState === 'object' &&
-      'isChildPath' in locationState &&
-      (locationState as any).isChildPath;
-
-    if (isChildPath && history.location.pathname !== '/') {
-      history.goBack();
-    } else {
-      // We never set "isChildPath" when navigating to the root so that we'll
-      // call the browser's goBack so that users can leave the app.
-      history.replace('/');
-    }
-  }, [history]);
+  const navigate = useNavigation();
+  const goBack = useBackNavigation();
 
   useEffect(() => {
     logger.verbose('Navigation', location.pathname);
   }, [location]);
 
-  useChannel('open-about', () => goTo(history, 'about'), [history]);
-  useChannel('open-prefs', () => goTo(history, 'preferences'), [history]);
+  useChannel('open-about', () => navigate('/about'), []);
+  useChannel('open-prefs', () => navigate('/preferences'), []);
 
   return (
     <>
@@ -91,7 +57,11 @@ export function Modals() {
       <ModalRoute
         path="/preferences"
         render={(open) => (
-          <Preferences open={open} onClose={goBack} onAboutClicked={goAbout} />
+          <Preferences
+            open={open}
+            onClose={goBack}
+            onAboutClicked={() => navigate('/about', { replace: true })}
+          />
         )}
       />
       <PlatformDialogs />

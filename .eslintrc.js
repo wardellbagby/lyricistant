@@ -201,6 +201,7 @@ module.exports = {
           '@testing-library/jest-dom/*',
           '@fontsource/**/*',
           'react-dom/*',
+          'wouter/*',
         ],
       },
     ],

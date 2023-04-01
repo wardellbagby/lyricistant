@@ -1,7 +1,8 @@
 import { Text } from '@lyricistant/codemirror/CodeMirror';
 import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { AppError } from '@lyricistant/renderer/app/AppError';
-import { goTo, Modals } from '@lyricistant/renderer/app/Modals';
+import { Modals } from '@lyricistant/renderer/app/Modals';
+import { useNavigation } from '@lyricistant/renderer/app/Navigation';
 import { DetailPane } from '@lyricistant/renderer/detail/DetailPane';
 import { Editor, EditorTextData } from '@lyricistant/renderer/editor/Editor';
 import {
@@ -19,7 +20,6 @@ import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { useHistory } from 'react-router-dom';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
 
 const MINIMUM_IDLE_TIME = 15_000;
@@ -43,7 +43,7 @@ export function App() {
   const [error, setError] = useState<any>(null);
   const [selectedText, setSelectedText] = useState<TextSelectionData>();
   const [isModified, setIsModified] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigation();
   const [uiConfig] = useChannelData('ui-config');
 
   const onSaveClicked = useCallback(
@@ -131,13 +131,11 @@ export function App() {
     [editorTextData.text]
   );
 
-  const onDownloadClicked = useEventCallback(() => goTo(history, 'download'));
+  const onDownloadClicked = useEventCallback(() => navigate('/download'));
   const onFileHistoryClicked = useEventCallback(() =>
-    goTo(history, 'file-history')
+    navigate('/file-history')
   );
-  const onPreferencesClicked = useEventCallback(() =>
-    goTo(history, 'preferences')
-  );
+  const onPreferencesClicked = useEventCallback(() => navigate('/preferences'));
   const onNewClicked = useEventCallback(() =>
     platformDelegate.send('new-file-attempt')
   );

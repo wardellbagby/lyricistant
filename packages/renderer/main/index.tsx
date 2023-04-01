@@ -8,7 +8,8 @@ import { Themed } from '@lyricistant/renderer/theme/Themed';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import { Router, BaseLocationHook } from 'wouter';
+import { useLocationProperty, navigate } from 'wouter/use-location';
 
 if (module.hot) {
   module.hot.accept();
@@ -18,6 +19,21 @@ setWindowErrorHandler();
 setupAnalytics();
 const container: HTMLElement = document.getElementById('app');
 const root = ReactDOM.createRoot(container);
+
+const hashLocation = () => window.location.hash.replace(/^#/, '') || '/';
+const hashNavigate = (to: string, ...args: any[]) => {
+  if (to) {
+    navigate('#' + to, ...args);
+  } else {
+    navigate('/', ...args);
+  }
+  window.history.replaceState({ internal: true }, null, null);
+};
+
+const useHashLocation: BaseLocationHook = () => {
+  const location = useLocationProperty(hashLocation);
+  return [location, hashNavigate];
+};
 
 root.render(
   <React.StrictMode>
@@ -41,9 +57,9 @@ root.render(
           }}
         >
           <SupportedBrowserWarning>
-            <HashRouter hashType={'noslash'}>
+            <Router hook={useHashLocation}>
               <App />
-            </HashRouter>
+            </Router>
           </SupportedBrowserWarning>
         </SnackbarProvider>
       </Themed>
