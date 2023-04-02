@@ -1,3 +1,4 @@
+![lyricistant_logo](apps/mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png)
 # Lyricistant
 
 ![lyricistant](lyricistant.png)
