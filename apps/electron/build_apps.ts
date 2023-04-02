@@ -52,6 +52,7 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
         '!*${/*}',
       ],
       mac: {
+        notarize: false,
         category: 'public.app-category.utilities',
         target: ['dmg', 'zip'],
         hardenedRuntime: true,
