@@ -20,8 +20,7 @@ interface ModalRouteProps {
 
 const ModalRoute = ({ path, render }: ModalRouteProps) => {
   const [location] = useLocation();
-  const Component = () => render(path.replace('/', '') === location);
-  return <Component />;
+  return <>{render(path.replace('/', '') === location)}</>;
 };
 
 /** Displays various models over Lyricistant based on the current router path. */
