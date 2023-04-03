@@ -16,16 +16,11 @@
   "homepage": "https://github.com/wardellbagby/lyricistant",
   "scripts": {
     "lint": "eslint -c .eslintrc.js . && typesync --dry=fail && scripts/check/github_workflows.ts && scripts/check/run_configs.ts && scripts/check/unused_dependencies.ts && commitlint --from origin/main --to HEAD --verbose",
-    "lint-fix": "eslint -c .eslintrc.js . --fix && scripts/check/run_configs.ts --fix && typesync"
+    "lint-fix": "eslint -c .eslintrc.js . --fix && scripts/check/run_configs.ts --fix && typesync",
+    "prepare": "husky install"
   },
   "engines": {
     "node": ">= 16"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "./scripts/hooks/pre-commit.ts",
-      "pre-push": "npm run lint"
-    }
   },
   "devDependencies": {
     "@capacitor/cli": "^4.0.0",
@@ -94,7 +89,7 @@
     "get-port": "^5.1.1",
     "gulp": "^4.0.2",
     "http-server": "^14.1.1",
-    "husky": "^4.2.5",
+    "husky": "^8.0.0",
     "identity-obj-proxy": "^3.0.0",
     "inquirer": "^8.1.1",
     "internal-ip": "^4.3.0",

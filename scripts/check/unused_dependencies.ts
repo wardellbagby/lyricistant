@@ -61,6 +61,7 @@ const options: Options = {
     'identity-obj-proxy',
     'http-server',
     'jest-extended',
+    'husky',
   ],
 };
 
