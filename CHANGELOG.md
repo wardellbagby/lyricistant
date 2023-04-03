@@ -1,3 +1,22 @@
+# [3.0.0](https://github.com/wardellbagby/lyricistant/compare/v2.1.2...v3.0.0) (2023-04-03)
+
+
+### Bug Fixes
+
+* properly debounce when typing ([0084db4](https://github.com/wardellbagby/lyricistant/commit/0084db439f7c5ffdc80922b2bd33a1e4e0e75b62))
+* re-enable animations when opening and closing certain modals. ([30a4b70](https://github.com/wardellbagby/lyricistant/commit/30a4b702fdd85b66c4fca63204099a5d6e100877))
+
+
+### Features
+
+* add ability to hide the detail pane (rhymes and dictionary) ([e771ef8](https://github.com/wardellbagby/lyricistant/commit/e771ef8af5b918b2a2d353ca9d415db63623a559))
+* add the new Lyricistant logo and change the theme colors ([d9829dc](https://github.com/wardellbagby/lyricistant/commit/d9829dc3bdbe2da4db7201f047ed0e4ccbf5a480))
+* increase potential "perfect" rhyme count when using datamuse ([87892c5](https://github.com/wardellbagby/lyricistant/commit/87892c58a73d4b97f52a5cf9f7774b19488ac643))
+* **mobile:** hide and show the detail pane based on the keyboard ([3f7ca31](https://github.com/wardellbagby/lyricistant/commit/3f7ca3175491c58d2b29da7db68ad6c723e0497e))
+* support comments, todo, and section markers in lyrics ([fc003ee](https://github.com/wardellbagby/lyricistant/commit/fc003eef8e97771593a0b024517c45f85bafea1c))
+
+
+
 ## [2.1.2](https://github.com/wardellbagby/lyricistant/compare/v2.1.1...v2.1.2) (2022-12-08)
 
 
