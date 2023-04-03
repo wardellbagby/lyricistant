@@ -27,7 +27,7 @@ export interface HistoryDataV1 {
 }
 export class FileHistory implements FileDataExtension<'history'> {
   private static readonly MAX_DELTA_SIZE = 100;
-  public key: 'history' = 'history';
+  public key = 'history' as const;
 
   private delta: HistoryData[] = [];
   private lastKnownLyrics = '';
