@@ -17,7 +17,7 @@ const fontFamily = (font?: Font) => {
 const EditorContainer = styled('div')({
   paddingTop: '8px',
   flex: '1 1 500px',
-  minHeight: '200px',
+  minHeight: '50px',
 });
 
 export interface EditorTextData {
