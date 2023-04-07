@@ -79,9 +79,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
   }, []);
 
   const onTextChanged = useCallback(
-    (text: Text) => {
+    (text: Text, cursorPosition: number) => {
       props.onTextChanged({
         text,
+        cursorPosition,
         isTransactional: true,
       });
     },
@@ -99,7 +100,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     cursorPosition: props.value.cursorPosition,
     onTextChanged,
     onFileDropped,
-    onWordSelected: props.onTextSelected,
+    onTextSelected: props.onTextSelected,
     font: fontFamily(themeData?.font),
   });
 

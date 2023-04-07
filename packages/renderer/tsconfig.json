@@ -1,5 +1,5 @@
 {
-  "include": ["main/**/*"],
+  "include": ["main/**/*", "main/**/*.json"],
   "exclude": ["main/**/webpack.config.ts"],
   "compilerOptions": {
     "outDir": "build",

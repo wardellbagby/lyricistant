@@ -15,7 +15,6 @@ import {
   Text,
 } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
-import { inspirationButton } from '@lyricistant/codemirror/inspirationButton';
 import { Lyrics } from '@lyricistant/codemirror/lyrics-language';
 import { useTheme } from '@mui/material';
 import { differenceWith, isEqual, sample } from 'lodash-es';
@@ -49,10 +48,12 @@ const placeholders = [
   'What do you want to write today?',
   'Put your feelings to words...',
 ];
-const textChanged = (onTextChanged: (text: Text) => void) =>
+const textChanged = (
+  onTextChanged: (text: Text, cursorPosition: number) => void
+) =>
   EditorView.updateListener.of((update) => {
-    if (update.docChanged) {
-      onTextChanged(update.state.doc);
+    if (update.docChanged || update.selectionSet) {
+      onTextChanged(update.state.doc, update.state.selection.main.from);
     }
   });
 
@@ -76,6 +77,7 @@ interface ReconfigurableExtension {
   compartment: Compartment;
   extension: Extension;
 }
+
 const useReconfigurableExtension = (
   view: EditorView,
   configs: ReconfigurableExtension[]
@@ -103,8 +105,8 @@ export interface CodeMirrorEditorProps {
   text: Text;
   cursorPosition?: number;
   font: string;
-  onWordSelected: (word: TextSelectionData) => void;
-  onTextChanged: (text: Text) => void;
+  onTextSelected: (word: TextSelectionData) => void;
+  onTextChanged: (text: Text, cursorPosition: number) => void;
   onFileDropped: (item: DataTransferItem | File) => void;
 }
 
@@ -118,7 +120,6 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const textCompartment = useMemo(() => new Compartment(), []);
   const selectionCompartment = useMemo(() => new Compartment(), []);
   const fileDroppedCompartment = useMemo(() => new Compartment(), []);
-  const inspirationButtonCompartment = useMemo(() => new Compartment(), []);
 
   const themeExtension = useMemo(
     () => editorTheme(appTheme, props.font),
@@ -129,14 +130,13 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     [props.onTextChanged]
   );
   const selectionExtension = useMemo(
-    () => textSelection(props.onWordSelected),
-    [props.onWordSelected]
+    () => textSelection(props.onTextSelected),
+    [props.onTextSelected]
   );
   const fileDroppedExtension = useMemo(
     () => fileDropped(props.onFileDropped),
     [props.onFileDropped]
   );
-  const inspirationButtonExtension = useMemo(() => inspirationButton(), []);
 
   /*
   When the view gets its state set explicitly set (like it does when its first
@@ -162,7 +162,6 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         selectionCompartment.of(selectionExtension),
         fileDroppedCompartment.of(fileDroppedExtension),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
-        inspirationButtonCompartment.of(inspirationButtonExtension),
       ],
     }),
     [
@@ -172,7 +171,6 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       selectionExtension,
       fileDroppedExtension,
       resetCount,
-      inspirationButtonExtension,
     ]
   );
 
@@ -234,10 +232,6 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         extension: themeExtension,
       },
       {
-        compartment: inspirationButtonCompartment,
-        extension: inspirationButtonExtension,
-      },
-      {
         compartment: textCompartment,
         extension: textChangedExtension,
       },
@@ -253,8 +247,6 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     [
       themeCompartment,
       themeExtension,
-      inspirationButtonCompartment,
-      inspirationButtonExtension,
       textCompartment,
       textChangedExtension,
       selectionCompartment,

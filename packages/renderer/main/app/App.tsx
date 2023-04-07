@@ -16,6 +16,7 @@ import {
 } from '@lyricistant/renderer/platform/useChannel';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { useEventCallback } from '@mui/material';
+import { sample, startCase } from 'lodash-es';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
@@ -146,6 +147,9 @@ export function App() {
     onTextReplacement(rhyme.word)
   );
 
+  const { onInspirationButtonClicked, isInspirationButtonEnabled } =
+    useInspirationButton(editorTextData, setEditorTextData, setSelectedText);
+
   if (error) {
     return (
       <AppError error={error} editorText={editorTextData.text.toString()} />
@@ -175,6 +179,8 @@ export function App() {
         }
         detail={
           <DetailPane
+            showInspirationButton={isInspirationButtonEnabled}
+            onInspirationButtonClicked={onInspirationButtonClicked}
             rhymeProps={{
               onRhymeClicked,
               query: selectedText?.text,
@@ -190,6 +196,81 @@ export function App() {
     </ErrorBoundary>
   );
 }
+
+const useInspirationWords = () => {
+  const [inspirationWords, setInspirationWords] = useState<string[]>(null);
+  useEffect(() => {
+    if (!inspirationWords) {
+      import('./inspiration_words.json').then((words) => {
+        setInspirationWords(words);
+      });
+    }
+  }, []);
+  return inspirationWords;
+};
+
+const useInspirationButton = (
+  editorTextData: EditorTextData,
+  setEditorTextData: (data: EditorTextData) => void,
+  setSelectedText: (data: TextSelectionData) => void
+) => {
+  const inspirationWords = useInspirationWords();
+  const onInspirationButtonClicked = useEventCallback(() => {
+    const position = editorTextData.cursorPosition ?? 0;
+    const prefix = editorTextData.text.sliceString(0, position);
+    const suffix = editorTextData.text.sliceString(position);
+
+    const word = sample(inspirationWords);
+    const line = editorTextData.text.lineAt(position);
+    let newText = word;
+    let newPosition = position + word.length;
+    const isStartOfLine = position === line.from;
+    const isEndOfLine = position === line.to;
+
+    if (isStartOfLine) {
+      newText = startCase(newText);
+    }
+
+    const isPreviousCharacterSpace =
+      !isStartOfLine &&
+      position > 0 &&
+      editorTextData.text
+        .slice(position - 1, position)
+        .toString()
+        .match(/\s/);
+    const isNextCharacterSpace =
+      !isEndOfLine &&
+      position < editorTextData.text.length &&
+      editorTextData.text
+        .slice(position, position + 1)
+        .toString()
+        .match(/\s/);
+
+    if (prefix && !isStartOfLine && !isPreviousCharacterSpace) {
+      newText = ' ' + newText;
+      newPosition += 1;
+    }
+    if (suffix && !isEndOfLine && !isNextCharacterSpace) {
+      newText = newText + ' ';
+    }
+
+    setEditorTextData({
+      text: Text.of((prefix + newText + suffix).split('\n')),
+      isTransactional: true,
+      cursorPosition: newPosition,
+    });
+    setSelectedText({
+      text: word,
+      from: newPosition - word.length,
+      to: newPosition,
+    });
+  });
+
+  return {
+    onInspirationButtonClicked,
+    isInspirationButtonEnabled: !!inspirationWords,
+  };
+};
 
 const useFileEvents = (
   isModified: boolean,

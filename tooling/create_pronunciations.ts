@@ -3,7 +3,7 @@
 import fs, { writeFileSync } from 'fs';
 import path from 'path';
 import axios from 'axios';
-import { uniq, startCase } from 'lodash';
+import { uniq, lowerCase } from 'lodash';
 import popularWordsJson from './popular.json';
 
 /**
@@ -141,11 +141,11 @@ const writeSupportedWords = async (pronunciations: Pronunciations) => {
     .filter((word) => word.trim().replace(/['."-]/, '').length > 3)
     // Take the 5000 most popular words after we've done the filtering.
     .filter((word, index) => index < 5000)
-    .map(startCase)
+    .map(lowerCase)
     .sort((left, right) => left.localeCompare(right));
 
   writeFileSync(
-    'packages/codemirror/main/inspiration_words.json',
+    'packages/renderer/main/app/inspiration_words.json',
     JSON.stringify(output)
   );
 };

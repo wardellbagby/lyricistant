@@ -23,11 +23,14 @@ import {
   BookAlphabet,
   ChevronDown,
   ChevronUp,
+  Dice6,
   ScriptOutline,
 } from 'mdi-material-ui';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 
 interface DetailPaneProps {
+  showInspirationButton: boolean;
+  onInspirationButtonClicked: () => void;
   rhymeProps: Omit<RhymesProps, keyof DetailPaneChildProps>;
   dictionaryProps: Omit<DictionaryProps, keyof DetailPaneChildProps>;
 }
@@ -198,8 +201,25 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
             </Box>
           </Paper>
         </Slide>
-        {showToggleButton && (
-          <Box display={'flex'} justifyContent={'end'} flex={'0 0 auto'}>
+
+        <Box
+          display={'flex'}
+          justifyContent={'end'}
+          flex={'0 0 auto'}
+          gap={'16px'}
+        >
+          {props.showInspirationButton && (
+            <Fab
+              size={'small'}
+              color={'primary'}
+              onClick={() => {
+                props.onInspirationButtonClicked();
+              }}
+            >
+              <Dice6 />
+            </Fab>
+          )}
+          {showToggleButton && (
             <Fab
               size={'small'}
               onClick={() => {
@@ -208,8 +228,8 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
             >
               <ToggleDetailPaneIcon isExpanded={isExpanded} />
             </Fab>
-          </Box>
-        )}
+          )}
+        </Box>
       </Box>
     </Box>
   );
