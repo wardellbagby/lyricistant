@@ -1,3 +1,12 @@
+# [3.1.0](https://github.com/wardellbagby/lyricistant/compare/v3.0.0...v3.1.0) (2023-04-11)
+
+
+### Features
+
+* always enable "inspiration button" ([3f6c28d](https://github.com/wardellbagby/lyricistant/commit/3f6c28d9da20ad0d2e89d17d52e1ed7824dc1d14))
+
+
+
 # [3.0.0](https://github.com/wardellbagby/lyricistant/compare/v2.1.2...v3.0.0) (2023-04-03)
 
 
