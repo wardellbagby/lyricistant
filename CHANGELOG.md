@@ -1,3 +1,12 @@
+## [3.1.1](https://github.com/wardellbagby/lyricistant/compare/v3.1.0...v3.1.1) (2023-07-02)
+
+
+### Bug Fixes
+
+* allow highlighting text starting from the end of the selection ([0798354](https://github.com/wardellbagby/lyricistant/commit/0798354515047140b73e8c4484b425a7377848b8))
+
+
+
 # [3.1.0](https://github.com/wardellbagby/lyricistant/compare/v3.0.0...v3.1.0) (2023-04-11)
 
 
