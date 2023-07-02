@@ -11,3 +11,20 @@ declare module '*.svg' {
   export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
   export default value;
 }
+
+declare module '*.dic' {
+  const value: unknown;
+  export = value;
+}
+
+declare module '*.aff' {
+  const value: string;
+  export default value;
+}
+
+declare module 'retext-usage' {
+  export default function retextUsage(): import('unified').Transformer<
+    import('nlcst').Root,
+    import('nlcst').Root
+  >;
+}

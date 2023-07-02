@@ -18,6 +18,8 @@ const Editor = (props: Partial<EditorProps>) => (
   <RealEditor
     onTextSelected={() => undefined}
     onModificationStateChanged={() => undefined}
+    onSelectedDiagnosticRendered={() => undefined}
+    diagnostics={[]}
     onTextChanged={() => undefined}
     value={{ isTransactional: false, text: Text.empty }}
     {...props}

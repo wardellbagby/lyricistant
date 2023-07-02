@@ -3,7 +3,6 @@ import path from 'path';
 import { Config } from '@jest/types';
 import del from 'del';
 import { pathsToModuleNameMapper } from 'ts-jest';
-import { defaults as tsjPreset } from 'ts-jest/presets';
 import { compilerOptions } from '../tsconfig.json';
 
 export const rootDirectory = path.resolve(__dirname, '..');
@@ -23,6 +22,28 @@ const getJestEnv = (type: TestType): string => {
     return 'node';
   }
 };
+
+const modulesToTransform = [
+  'retext',
+  'retext-spell',
+  'unified',
+  'bail',
+  'is-plain-obj',
+  'trough',
+  'vfile',
+  'unist-util-stringify-position',
+  'unherit',
+  'parse-latin',
+  'nlcst-to-string',
+  'unist-util-modify-children',
+  'array-iterate',
+  'unist-util-visit-children',
+  'unist-util-visit',
+  'unist-util-is',
+  'unist-util-position',
+  'nlcst-is-literal',
+  'quotation',
+];
 
 const getLabel = (type: TestType): string => {
   switch (type) {
@@ -100,8 +121,11 @@ export const getBaseJestConfig = (options: {
       advanceTimers: true,
       enableGlobally: true,
     },
+    transformIgnorePatterns: [
+      `.+node_modules/(?!${modulesToTransform.join('|')})`,
+    ],
     transform: {
-      ...tsjPreset.transform,
+      '\\.[jt]sx?$': 'ts-jest',
     },
   };
 };

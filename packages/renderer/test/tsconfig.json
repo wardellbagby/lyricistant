@@ -2,6 +2,7 @@
   "include": ["**/*.ts", "**/*.tsx", "../main/typings.d.ts"],
   "exclude": ["build", "**/*.gulp.ts", "*.config.ts"],
   "compilerOptions": {
+    "allowJs": true,
     "outDir": "build",
     "lib": ["dom"],
     "types": [

@@ -5,7 +5,13 @@ import { Modals } from '@lyricistant/renderer/app/Modals';
 import { useNavigation } from '@lyricistant/renderer/app/Navigation';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { DetailPane } from '@lyricistant/renderer/detail/DetailPane';
-import { Editor, EditorTextData } from '@lyricistant/renderer/editor/Editor';
+import { DiagnosticActionPopover } from '@lyricistant/renderer/diagnostics/Diagnostics';
+import { Diagnostic } from '@lyricistant/renderer/diagnostics/DiagnosticsMachine';
+import {
+  Editor,
+  EditorTextData,
+  SelectableDiagnostic,
+} from '@lyricistant/renderer/editor/Editor';
 import {
   getRootError,
   isReportableError,
@@ -18,8 +24,9 @@ import {
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { useEventCallback } from '@mui/material';
 import { sample, startCase } from 'lodash-es';
+import { Dice6 } from 'mdi-material-ui';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
@@ -47,6 +54,20 @@ export function App() {
   const [isModified, setIsModified] = useState(false);
   const navigate = useNavigation();
   const [uiConfig] = useChannelData('ui-config');
+  const [showQuerySelection, setShowQuerySelection] = useState(true);
+  const [diagnostics, onDiagnosticsLoaded] = useState([]);
+  const [selectedDiagnostic, setSelectedDiagnostic] =
+    useState<SelectableDiagnostic>(null);
+  const [selectedDiagnosticRect, setSelectedDiagnosticRect] =
+    useState<DOMRect>(null);
+  const [selectedDiagnosticKey, incrementKey] = useReducer(
+    (value) => value + 1,
+    0
+  );
+
+  useEffect(() => {
+    setSelectedDiagnostic(null);
+  }, [diagnostics]);
 
   const onSaveClicked = useCallback(
     () =>
@@ -156,6 +177,19 @@ export function App() {
   const { onInspirationButtonClicked, isInspirationButtonEnabled } =
     useInspirationButton(editorTextData, setEditorTextData, setSelectedText);
 
+  const { onProposalAccepted } = useProposalAcceptance(
+    editorTextData,
+    setEditorTextData,
+    setSelectedText
+  );
+
+  const detailPaneButtons = [
+    isInspirationButtonEnabled && {
+      icon: <Dice6 />,
+      onClick: onInspirationButtonClicked,
+    },
+  ].filter((button) => !!button);
+
   if (error) {
     return (
       <AppError error={error} editorText={editorTextData.text.toString()} />
@@ -178,7 +212,10 @@ export function App() {
         main={
           <Editor
             value={editorTextData}
-            selectedText={selectedText}
+            selectedText={showQuerySelection ? selectedText : null}
+            diagnostics={diagnostics}
+            selectedDiagnostic={selectedDiagnostic}
+            onSelectedDiagnosticRendered={setSelectedDiagnosticRect}
             onTextChanged={setEditorTextData}
             onTextSelected={onTextSelected}
             onModificationStateChanged={setIsModified}
@@ -186,8 +223,10 @@ export function App() {
         }
         detail={
           <DetailPane
-            showInspirationButton={isInspirationButtonEnabled}
-            onInspirationButtonClicked={onInspirationButtonClicked}
+            buttons={detailPaneButtons}
+            onTabChanged={(data) => {
+              setShowQuerySelection(data.isQueryTab);
+            }}
             rhymeProps={{
               onRhymeClicked,
               query: selectedText?.text,
@@ -196,13 +235,62 @@ export function App() {
               onRelatedTextClicked: onTextReplacement,
               query: selectedText?.text,
             }}
+            diagnosticsProps={{
+              text: editorTextData.text,
+              onDiagnosticsLoaded,
+              onProposalAccepted,
+              onDiagnosticClicked: (diagnostic) => {
+                setSelectedDiagnostic({
+                  ...diagnostic,
+                  key: selectedDiagnosticKey,
+                });
+                incrementKey();
+              },
+            }}
           />
         }
       />
       <Modals />
+      <DiagnosticActionPopover
+        diagnostic={selectedDiagnostic}
+        domRect={selectedDiagnosticRect}
+        onProposalAccepted={onProposalAccepted}
+        onClose={() => {
+          setSelectedDiagnostic(null);
+          setSelectedDiagnosticRect(null);
+        }}
+      />
     </ErrorBoundary>
   );
 }
+
+const useProposalAcceptance = (
+  editorTextData: EditorTextData,
+  setEditorTextData: (data: EditorTextData) => void,
+  setSelectedText: (data: TextSelectionData) => void
+) => {
+  const onProposalAccepted = useEventCallback(
+    (proposal: string, diagnostic: Diagnostic) => {
+      setEditorTextData({
+        ...editorTextData,
+        text: editorTextData.text.replace(
+          diagnostic.from,
+          diagnostic.to,
+          Text.of([proposal])
+        ),
+      });
+      setSelectedText({
+        text: proposal,
+        from: diagnostic.from,
+        to: diagnostic.from + proposal.length,
+      });
+    }
+  );
+
+  return {
+    onProposalAccepted,
+  };
+};
 
 const useInspirationWords = () => {
   const [inspirationWords, setInspirationWords] = useState<string[]>(null);

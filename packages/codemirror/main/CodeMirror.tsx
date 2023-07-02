@@ -6,6 +6,7 @@ import {
   undo as undoTextChange,
   undoDepth,
 } from '@codemirror/commands';
+import { Diagnostic, linter, setDiagnostics } from '@codemirror/lint';
 import { openSearchPanel, searchKeymap } from '@codemirror/search';
 import {
   Compartment,
@@ -124,20 +125,27 @@ export interface CodeMirrorEditorProps {
   onTextSelected: (word: TextSelectionData) => void;
   onTextChanged: (text: Text, cursorPosition: number) => void;
   onFileDropped: (item: DataTransferItem | File) => void;
+  diagnostics?: Diagnostic[];
 }
 
 const markDecoration = Decoration.mark({ class: 'cm-mark' });
-const addMark = StateEffect.define<Mark>({
-  map: ({ from, to }, change) => ({
-    from: change.mapPos(from),
-    to: change.mapPos(to),
-  }),
+const setMark = StateEffect.define<Mark | null>({
+  map: (mark, change) => {
+    if (!mark) {
+      return null;
+    }
+    return {
+      from: change.mapPos(mark.from),
+      to: change.mapPos(mark.to),
+    };
+  },
 });
 
 const isApplicableAddMarkEffect = (
   effect: StateEffect<Mark>,
   doc: Text
 ): boolean =>
+  effect.value &&
   effect.value.from < doc.length &&
   effect.value.to <= doc.length &&
   effect.value.to - effect.value.from > 0;
@@ -149,12 +157,14 @@ const markStateField = StateField.define<DecorationSet>({
   update(marks, tr) {
     for (const effect of tr.effects) {
       if (
-        effect.is(addMark) &&
+        effect.is(setMark) &&
         isApplicableAddMarkEffect(effect, tr.state.doc)
       ) {
         return RangeSet.of(
           markDecoration.range(effect.value.from, effect.value.to)
         );
+      } else if (effect.is(setMark) && !effect.value) {
+        return Decoration.none;
       }
     }
     return marks.map(tr.changes);
@@ -191,14 +201,17 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   );
 
   useEffect(() => {
-    if (
-      !props.markedText ||
-      props.markedText.to === props.markedText.from ||
-      !view
-    ) {
+    if (!view) {
       return;
     }
-    const effects: Array<StateEffect<unknown>> = [addMark.of(props.markedText)];
+
+    const effects: Array<StateEffect<Mark>> = [];
+
+    if (!props.markedText || props.markedText.to === props.markedText.from) {
+      effects.push(setMark.of(null));
+    } else {
+      effects.push(setMark.of(props.markedText));
+    }
 
     view.dispatch({ effects });
   }, [props.markedText, view]);
@@ -228,6 +241,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         fileDroppedCompartment.of(fileDroppedExtension),
         markStateField,
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
+        linter(() => [], { delay: 0, tooltipFilter: () => [] }),
       ],
     }),
     [
@@ -341,8 +355,6 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
 
     Array.from(container.getElementsByClassName('cm-content')).forEach(
       (element) => {
-        element.setAttribute('spellcheck', 'on');
-        element.setAttribute('autocorrect', 'on');
         element.setAttribute('autocapitalize', 'on');
       }
     );
@@ -361,7 +373,14 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     [view]
   );
 
+  useEffect(() => {
+    if (view?.state) {
+      view.dispatch(setDiagnostics(view.state, props.diagnostics));
+    }
+  }, [props.diagnostics, view?.state]);
+
   return {
+    view,
     isModified: view?.state ? undoDepth(view.state) !== 0 : false,
     resetHistory,
     undo,
