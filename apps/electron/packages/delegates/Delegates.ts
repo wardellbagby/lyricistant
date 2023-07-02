@@ -8,6 +8,7 @@ import {
   ipcMain as electronMain,
   IpcRenderer,
   ipcRenderer as electronRenderer,
+  Event,
 } from 'electron';
 import log from 'electron-log';
 
@@ -18,19 +19,13 @@ interface WrappedListener extends ElectronListener {
   originalListener?: (...args: any[]) => void;
 }
 
-type ElectronListener = (
-  event: GlobalEvent,
-  ...args: []
-) => Promise<void> | void;
+type ElectronListener = (event: Event, ...args: []) => Promise<void> | void;
 
 class WrappedListenerHelper {
   private listeners = new Set<WrappedListener>();
 
   public wrap = (listener: (...args: any[]) => unknown): ElectronListener => {
-    const wrappedListener: WrappedListener = (
-      _: GlobalEvent,
-      ...args: any[]
-    ) => {
+    const wrappedListener: WrappedListener = (_: Event, ...args: any[]) => {
       Promise.resolve(listener(...args)).catch((reason) => {
         logger.error('Uncaught exception in listener', reason);
         throw reason;
