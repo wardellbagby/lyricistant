@@ -215,6 +215,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     if (
       view &&
       props.cursorPosition !== undefined &&
+      view.state.selection.main.empty &&
       view.state.selection.main.anchor !== props.cursorPosition
     ) {
       view.dispatch({
