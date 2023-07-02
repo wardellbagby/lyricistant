@@ -1,6 +1,10 @@
 import { DetailPaneVisibility } from '@lyricistant/common/preferences/PreferencesData';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import {
+  Diagnostics,
+  DiagnosticsPanelProps,
+} from '@lyricistant/renderer/diagnostics/Diagnostics';
+import {
   Dictionary,
   DictionaryProps,
 } from '@lyricistant/renderer/dictionary/Dictionary';
@@ -9,7 +13,7 @@ import {
   useChannelData,
 } from '@lyricistant/renderer/platform/useChannel';
 import { Rhymes, RhymesProps } from '@lyricistant/renderer/rhymes/Rhymes';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, Spellcheck } from '@mui/icons-material';
 import {
   Box,
   Fab,
@@ -23,21 +27,36 @@ import {
   BookAlphabet,
   ChevronDown,
   ChevronUp,
-  Dice6,
   ScriptOutline,
 } from 'mdi-material-ui';
-import React, { PropsWithChildren, useEffect, useState } from 'react';
+import React, {
+  ReactElement,
+  PropsWithChildren,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
+
+interface Button {
+  onClick: () => void;
+  icon: ReactElement;
+}
+
+interface TabChangedData {
+  isQueryTab: boolean;
+}
 
 interface DetailPaneProps {
-  showInspirationButton: boolean;
-  onInspirationButtonClicked: () => void;
+  buttons: Button[];
   rhymeProps: Omit<RhymesProps, keyof DetailPaneChildProps>;
   dictionaryProps: Omit<DictionaryProps, keyof DetailPaneChildProps>;
+  diagnosticsProps: Omit<DiagnosticsPanelProps, keyof DetailPaneChildProps>;
+  onTabChanged: (data: TabChangedData) => void;
 }
 
 export interface DetailPaneChildProps {
-  isVisible?: boolean;
-  onLoadingChanged?: (isLoading: boolean) => void;
+  isVisible: boolean;
+  onLoadingChanged: (isLoading: boolean) => void;
 }
 
 type TabbedItemProps = PropsWithChildren<{
@@ -70,6 +89,12 @@ const ToggleDetailPaneIcon = ({ isExpanded }: { isExpanded: boolean }) => {
   return <ChevronLeft />;
 };
 
+const DetailButton = (props: Button) => (
+  <Fab size={'small'} onClick={() => props.onClick()} color={'primary'}>
+    {props.icon}
+  </Fab>
+);
+
 /**
  * Renders the Rhymes and Dictionary components inside a floating pane that can
  * optionally be toggled so that it disappears and reappears depending on the
@@ -82,6 +107,17 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
   const isSmallLayout = useSmallLayout();
   const [isAnimating, setIsAnimating] = useState(false);
   const [preferencesData] = useChannelData('prefs-updated');
+
+  const changeTab = useCallback(
+    (index: number) => {
+      setTabIndex(index);
+      props.onTabChanged({
+        // Rhymes and Dictionary both use a query to show data.
+        isQueryTab: index === 0 || index === 1,
+      });
+    },
+    [setTabIndex, props.onTabChanged]
+  );
 
   const showToggleButton =
     preferencesData == null ||
@@ -172,7 +208,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
             >
               <Tabs
                 value={isExpanded ? tabIndex : false}
-                onChange={(_, newTabIndex) => setTabIndex(newTabIndex)}
+                onChange={(_, newTabIndex) => changeTab(newTabIndex)}
                 variant={'fullWidth'}
                 sx={{
                   flex: '0 0 auto',
@@ -186,6 +222,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
               >
                 <Tab aria-label={'Rhymes Tab'} icon={<ScriptOutline />} />
                 <Tab aria-label={'Dictionary Tab'} icon={<BookAlphabet />} />
+                <Tab aria-label={'Diagnostics Tab'} icon={<Spellcheck />} />
               </Tabs>
               <TabbedItem index={0} selectedIndex={tabIndex}>
                 <Rhymes
@@ -201,6 +238,13 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
                   onLoadingChanged={setLoading}
                 />
               </TabbedItem>
+              <TabbedItem index={2} selectedIndex={tabIndex}>
+                <Diagnostics
+                  {...props.diagnosticsProps}
+                  isVisible={tabIndex === 2 && isExpanded}
+                  onLoadingChanged={setLoading}
+                />
+              </TabbedItem>
             </Box>
           </Paper>
         </Slide>
@@ -211,17 +255,9 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
           flex={'0 0 auto'}
           gap={'16px'}
         >
-          {props.showInspirationButton && (
-            <Fab
-              size={'small'}
-              color={'primary'}
-              onClick={() => {
-                props.onInspirationButtonClicked();
-              }}
-            >
-              <Dice6 />
-            </Fab>
-          )}
+          {props.buttons.map((button, index) => (
+            <DetailButton key={index} {...button} />
+          ))}
           {showToggleButton && (
             <Fab
               size={'small'}

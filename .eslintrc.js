@@ -202,6 +202,7 @@ module.exports = {
           '@fontsource/**/*',
           'react-dom/*',
           'wouter/*',
+          'dictionary-en/*',
         ],
       },
     ],

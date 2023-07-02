@@ -1,6 +1,8 @@
-import { useCodeMirror, Text } from '@lyricistant/codemirror/CodeMirror';
+import { EditorView } from '@codemirror/view';
+import { Text, useCodeMirror } from '@lyricistant/codemirror/CodeMirror';
 import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { Font } from '@lyricistant/common/preferences/PreferencesData';
+import { Diagnostic } from '@lyricistant/renderer/diagnostics/DiagnosticsMachine';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { Box, styled, useTheme } from '@mui/material';
 import React, { useCallback, useEffect, useRef } from 'react';
@@ -24,6 +26,7 @@ interface EdgeFadeProps {
   endColor: string;
   towards: 'top' | 'bottom';
 }
+
 const EdgeFade = ({ endColor, towards }: EdgeFadeProps) => {
   const startColor = `#${endColor.slice(1)}00`;
   const rotation = towards === 'bottom' ? '180deg' : '0deg';
@@ -57,11 +60,18 @@ export interface EditorTextData {
   cursorPosition?: number;
 }
 
+export interface SelectableDiagnostic extends Diagnostic {
+  key: any;
+}
+
 /** The props for the {@link Editor} component. */
 export interface EditorProps {
   /** The value to be represented in the editor. */
   value: EditorTextData;
   selectedText?: TextSelectionData;
+  diagnostics: Diagnostic[];
+  selectedDiagnostic?: SelectableDiagnostic;
+  onSelectedDiagnosticRendered: (rect: DOMRect) => void;
   /**
    * Invoked whenever the text changes.
    *
@@ -114,7 +124,9 @@ export const Editor: React.FC<EditorProps> = (props) => {
     },
     [props.onTextChanged]
   );
+
   const {
+    view,
     isModified,
     resetHistory,
     redo,
@@ -132,6 +144,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     onFileDropped,
     onTextSelected: props.onTextSelected,
     font: fontFamily(themeData?.font),
+    diagnostics: props.diagnostics,
   });
 
   useEffect(() => {
@@ -148,6 +161,33 @@ export const Editor: React.FC<EditorProps> = (props) => {
       resetHistory();
     }
   }, [props.value]);
+
+  useEffect(() => {
+    if (!view || !props.selectedDiagnostic) {
+      return;
+    }
+
+    view.dispatch({
+      effects: [
+        EditorView.scrollIntoView(props.selectedDiagnostic.from, {
+          y: 'start',
+          yMargin: 20,
+        }),
+      ],
+    });
+    const node = view.domAtPos(props.selectedDiagnostic.from).node;
+    const range = document.createRange();
+    range.selectNode(node);
+
+    const handle = setTimeout(() => {
+      // Cheat here so that the scroll finishes from the dispatch earlier.
+      props.onSelectedDiagnosticRendered(range.getBoundingClientRect());
+    }, 0);
+
+    return () => {
+      clearTimeout(handle);
+    };
+  }, [view, props.selectedDiagnostic]);
 
   useTextActionEvents(undo, redo, openFindReplaceDialog);
   return (

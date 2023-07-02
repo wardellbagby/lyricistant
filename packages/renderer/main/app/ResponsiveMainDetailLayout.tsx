@@ -30,8 +30,7 @@ export const ResponsiveMainDetailLayout = ({
 
   return (
     <Box
-      height={'100%'}
-      width={'100%'}
+      flex={'1 1 auto'}
       display={'flex'}
       overflow={'hidden'}
       flexDirection={isSmallLayout ? 'column' : 'row'}

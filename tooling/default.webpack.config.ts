@@ -90,6 +90,11 @@ export default (
           test: /\.grammar$/,
           loader: require.resolve(path.resolve(__dirname, 'grammar-loader.js')),
         },
+        {
+          test: /.aff$|.dic$/,
+          include: [/dictionary-en/],
+          use: 'raw-loader',
+        },
       ],
     },
     plugins: [

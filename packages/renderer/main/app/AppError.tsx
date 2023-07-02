@@ -1,4 +1,3 @@
-import { isDevelopment } from '@lyricistant/common/BuildModes';
 import {
   Box,
   Button,
@@ -6,7 +5,6 @@ import {
   DialogActions,
   DialogTitle,
   Link,
-  TextareaAutosize,
   Typography,
 } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
@@ -52,23 +50,6 @@ export function AppError({ error, editorText }: AppErrorProps) {
         >
           Click here to report an issue.
         </Link>
-        {isDevelopment && (
-          <Box
-            fontFamily={'Roboto Mono'}
-            width={'100%'}
-            minWidth={'100%'}
-            maxWidth={'100%'}
-          >
-            <TextareaAutosize
-              wrap={'soft'}
-              maxRows={6}
-              readOnly
-              defaultValue={
-                error?.stack ?? error?.reason ?? JSON.stringify(error)
-              }
-            />
-          </Box>
-        )}
       </Box>
       <DialogActions>
         <Button variant={'text'} onClick={onDownloadLogs}>
