@@ -25,7 +25,7 @@ interface EdgeFadeProps {
   towards: 'top' | 'bottom';
 }
 const EdgeFade = ({ endColor, towards }: EdgeFadeProps) => {
-  const startColor = `#00${endColor.slice(1)}`;
+  const startColor = `#${endColor.slice(1)}00`;
   const rotation = towards === 'bottom' ? '180deg' : '0deg';
 
   return (
@@ -148,7 +148,13 @@ export const Editor: React.FC<EditorProps> = (props) => {
   return (
     <EditorContainer ref={editor}>
       <Box
-        sx={{ position: 'absolute', top: '0px', bottom: '0px', width: '100%' }}
+        sx={{
+          position: 'absolute',
+          top: '0px',
+          bottom: '0px',
+          left: '8px',
+          right: '8px',
+        }}
       >
         <EdgeFade towards={'top'} endColor={theme.palette.background.default} />
         <EdgeFade
