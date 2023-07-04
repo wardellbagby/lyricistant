@@ -3,6 +3,7 @@ import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { AppError } from '@lyricistant/renderer/app/AppError';
 import { Modals } from '@lyricistant/renderer/app/Modals';
 import { useNavigation } from '@lyricistant/renderer/app/Navigation';
+import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { DetailPane } from '@lyricistant/renderer/detail/DetailPane';
 import { Editor, EditorTextData } from '@lyricistant/renderer/editor/Editor';
 import {
@@ -121,6 +122,11 @@ export function App() {
     }, MINIMUM_IDLE_TIME);
     return () => clearTimeout(timer);
   }, [editorTextData]);
+
+  const isSmallLayout = useSmallLayout();
+  useEffect(() => {
+    platformDelegate.send('layout-changed', isSmallLayout);
+  }, [isSmallLayout]);
 
   const fallbackErrorRendering = useCallback(
     (props: FallbackProps) => (

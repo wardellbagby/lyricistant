@@ -8,12 +8,18 @@ import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { DetailPaneVisibility } from '@lyricistant/common/preferences/PreferencesData';
 
 export class SoftKeyboardManager implements Manager {
+  private isSmallLayout = false;
+
   public constructor(
     private rendererDelegate: RendererDelegate,
     private preferences: Preferences
   ) {}
 
   public register(): void {
+    this.rendererDelegate.on('layout-changed', (isSmallLayout) => {
+      this.isSmallLayout = isSmallLayout;
+    });
+
     Keyboard.addListener('keyboardWillShow', async () => {
       if (await this.isDetailPaneToggleable()) {
         this.rendererDelegate.send('close-detail-pane');
@@ -31,6 +37,7 @@ export class SoftKeyboardManager implements Manager {
     const preferenceData = await getPreferencesDataOrDefault(this.preferences);
 
     return (
+      this.isSmallLayout &&
       preferenceData &&
       preferenceData.detailPaneVisibility === DetailPaneVisibility.Toggleable
     );

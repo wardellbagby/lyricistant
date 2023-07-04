@@ -100,6 +100,13 @@ export interface RendererToPlatformListener {
    * @param text The current editor text content.
    */
   'editor-idle': (text: string) => void;
+  /**
+   * Fired when the renderer changes from its small layout to its normal layout,
+   * and vice-versa.
+   *
+   * @param isSmallLayout Whether the renderer is in its small layout.
+   */
+  'layout-changed': (isSmallLayout: boolean) => void;
 }
 
 /** Information that the platform wants to send to the renderer. */
