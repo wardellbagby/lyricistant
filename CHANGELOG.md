@@ -1,3 +1,17 @@
+## [3.1.3](https://github.com/wardellbagby/lyricistant/compare/v3.1.2...v3.1.3) (2023-07-04)
+
+
+### Bug Fixes
+
+* remove blue bars above and below editor in light mode ([607fc84](https://github.com/wardellbagby/lyricistant/commit/607fc844d38d31dc28eb0ef9f4e4090c31623cf1))
+
+
+### Features
+
+* improve contrast for light theme ([6731c22](https://github.com/wardellbagby/lyricistant/commit/6731c224d1851c2d4bdc63dba797ed20770136a1))
+
+
+
 ## [3.1.2](https://github.com/wardellbagby/lyricistant/compare/v3.1.1...v3.1.2) (2023-07-04)
 
 
