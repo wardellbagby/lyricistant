@@ -2,7 +2,7 @@ import { useCodeMirror, Text } from '@lyricistant/codemirror/CodeMirror';
 import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { Font } from '@lyricistant/common/preferences/PreferencesData';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
-import { styled } from '@mui/material';
+import { Box, styled, useTheme } from '@mui/material';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { toPlatformFile } from './to-platform-file';
 
@@ -15,10 +15,34 @@ const fontFamily = (font?: Font) => {
   }
 };
 const EditorContainer = styled('div')({
-  paddingTop: '8px',
   flex: '1 1 500px',
   minHeight: '50px',
+  position: 'relative',
 });
+
+interface EdgeFadeProps {
+  endColor: string;
+  towards: 'top' | 'bottom';
+}
+const EdgeFade = ({ endColor, towards }: EdgeFadeProps) => {
+  const startColor = `#00${endColor.slice(1)}`;
+  const rotation = towards === 'bottom' ? '180deg' : '0deg';
+
+  return (
+    <Box
+      sx={{
+        content: "''",
+        height: '24px',
+        width: '100%',
+        background: `linear-gradient(${rotation}, ${startColor} 0%, ${endColor} 100%)`,
+        position: 'absolute',
+        zIndex: 1,
+        top: towards === 'top' ? '0' : undefined,
+        bottom: towards === 'bottom' ? '0' : undefined,
+      }}
+    />
+  );
+};
 
 export interface EditorTextData {
   /** The text to be displayed in the editor. */
@@ -69,6 +93,7 @@ export interface EditorProps {
 export const Editor: React.FC<EditorProps> = (props) => {
   const editor = useRef();
   const [themeData] = useChannelData('theme-updated');
+  const theme = useTheme();
   const onFileDropped = useCallback((item: DataTransferItem | File) => {
     logger.debug('Attempted to drop a file.');
     toPlatformFile(item)
@@ -120,7 +145,19 @@ export const Editor: React.FC<EditorProps> = (props) => {
   }, [props.value]);
 
   useTextActionEvents(undo, redo, openFindReplaceDialog);
-  return <EditorContainer ref={editor} />;
+  return (
+    <EditorContainer ref={editor}>
+      <Box
+        sx={{ position: 'absolute', top: '0px', bottom: '0px', width: '100%' }}
+      >
+        <EdgeFade towards={'top'} endColor={theme.palette.background.default} />
+        <EdgeFade
+          towards={'bottom'}
+          endColor={theme.palette.background.default}
+        />
+      </Box>
+    </EditorContainer>
+  );
 };
 
 const useTextActionEvents = (

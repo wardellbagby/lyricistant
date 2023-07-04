@@ -226,9 +226,10 @@ export const Menu: React.FC<MenuProps> = (props) => {
 
   return (
     <Box
-      marginBottom={isSmallLayout ? '8px' : 'inherit'}
-      marginRight={isSmallLayout ? 'inherit' : '8px'}
-      padding={'8px'}
+      paddingTop={'8px'}
+      paddingLeft={'8px'}
+      paddingRight={isSmallLayout ? '8px' : undefined}
+      paddingBottom={isSmallLayout ? undefined : '8px'}
     >
       <Paper
         color={theme.palette.primary.main}

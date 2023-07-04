@@ -140,7 +140,10 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
         display={'flex'}
         flexDirection={'column'}
         justifyContent={'end'}
-        padding={'16px'}
+        paddingTop={isSmallLayout ? undefined : '16px'}
+        paddingLeft={isSmallLayout ? '16px' : undefined}
+        paddingRight={'16px'}
+        paddingBottom={'16px'}
         height={'100%'}
         width={'100%'}
         gap={'8px'}
