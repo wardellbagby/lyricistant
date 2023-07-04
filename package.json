@@ -23,7 +23,7 @@
     "node": ">= 16"
   },
   "devDependencies": {
-    "@capacitor/cli": "^4.7.3",
+    "@capacitor/cli": "^4.8.1",
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
     "@electron/notarize": "^1.2.3",
