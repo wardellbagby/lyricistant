@@ -57,9 +57,7 @@ const deleteTagStep: Step = {
   with: {
     delete_release: true,
     tag_name: 'latest',
-  },
-  env: {
-    GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
+    github_token: '${{ secrets.GITHUB_TOKEN }}',
   },
 };
 
