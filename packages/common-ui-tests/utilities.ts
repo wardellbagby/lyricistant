@@ -118,6 +118,8 @@ export const dropFile = async (
     [droppableFile.metadata, data]
   );
 
-  await editor.dispatchEvent('drop', { dataTransfer });
-  await (await screen.findByText('Opening file')).waitForElementState('hidden');
+  await Promise.all([
+    editor.dispatchEvent('drop', { dataTransfer }),
+    page.waitForSelector('[role=presentation]', { state: 'hidden' }),
+  ]);
 };
