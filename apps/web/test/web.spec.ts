@@ -54,12 +54,14 @@ describe.each(specs)(
 
     beforeEach(async () => {
       page = await browserContext.newPage();
-      await page.goto(`http://${host}:${port}?forceLegacy=${!forceLegacyWeb}`, {
-        waitUntil: 'networkidle',
-      });
-      await page.waitForFunction(
-        () => document.getElementById('preload-overlay') == null
-      );
+
+      await Promise.all([
+        page.goto(`http://${host}:${port}?forceLegacy=${!forceLegacyWeb}`, {
+          waitUntil: 'networkidle',
+        }),
+        page.waitForSelector('#preload-overlay', { state: 'hidden' }),
+      ]);
+
       screen = getQueriesForElement(await getDocument(page));
     });
 
