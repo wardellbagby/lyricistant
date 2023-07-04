@@ -63,7 +63,7 @@ export const generatePronunciations: Workflow = {
         },
         {
           name: 'Create & push changes if there are any',
-          run: 'git diff --quiet && git diff --staged --quiet || (git commit --all -m "chore: update pronunciations" && git push)',
+          run: 'git diff --quiet && git diff --staged --quiet || (git commit --no-verify --all -m "chore: update pronunciations" && git push --no-verify)',
         },
       ],
     },
