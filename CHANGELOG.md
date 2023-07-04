@@ -1,3 +1,13 @@
+## [3.1.2](https://github.com/wardellbagby/lyricistant/compare/v3.1.1...v3.1.2) (2023-07-04)
+
+
+### Features
+
+* add soft fade when lyrics are under menu or detail pane ([b6a2fb8](https://github.com/wardellbagby/lyricistant/commit/b6a2fb8cb2e4c29be6c5fecc2adaab0b8140855f))
+* don't auto hide detail pane when soft keyboard is shown on large mobile devices ([c564d87](https://github.com/wardellbagby/lyricistant/commit/c564d878cc6a8b90ed40dfa5303a96914cc388e9))
+
+
+
 ## [3.1.1](https://github.com/wardellbagby/lyricistant/compare/v3.1.0...v3.1.1) (2023-07-02)
 
 
