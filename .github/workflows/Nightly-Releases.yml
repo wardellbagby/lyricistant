@@ -252,6 +252,8 @@ jobs:
           delete_release: true
           tag_name: 'latest'
           github_token: '${{ secrets.GITHUB_TOKEN }}'
+      - name: 'Wait for tag deletion to be propagated'
+        run: 'sleep 30s'
       - name: 'Create Nightly Github release'
         uses: 'softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844'
         with:

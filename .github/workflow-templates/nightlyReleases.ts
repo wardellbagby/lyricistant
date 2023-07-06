@@ -75,6 +75,10 @@ const createGithubRelease: Job = {
     downloadElectronApps({ path: '/tmp/artifacts' }),
     downloadAndroidApp({ path: '/tmp/artifacts' }),
     deleteTagStep,
+    {
+      name: 'Wait for tag deletion to be propagated',
+      run: 'sleep 30s',
+    },
     createGithubReleaseStep({
       nightly: true,
       files: '/tmp/artifacts/*.*',
