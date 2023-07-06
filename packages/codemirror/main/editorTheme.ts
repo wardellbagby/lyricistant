@@ -48,6 +48,10 @@ export const editorTheme = (appTheme: Theme, font: string): Extension => [
         color: appTheme.palette.text.primary,
         ...textColorSelectionStyle(appTheme),
       },
+      '.cm-mark': {
+        borderBottom: `2px solid ${appTheme.palette.primary.main}55`,
+        ...textColorSelectionStyle(appTheme),
+      },
       '.cm-scroller': {
         fontFamily: `"${font}"`,
         fontSize: `${appTheme.typography.fontSize}px`,

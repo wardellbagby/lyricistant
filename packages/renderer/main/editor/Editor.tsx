@@ -61,6 +61,7 @@ export interface EditorTextData {
 export interface EditorProps {
   /** The value to be represented in the editor. */
   value: EditorTextData;
+  selectedText?: TextSelectionData;
   /**
    * Invoked whenever the text changes.
    *
@@ -122,6 +123,10 @@ export const Editor: React.FC<EditorProps> = (props) => {
     setContainer,
   } = useCodeMirror({
     text: props.value.text,
+    markedText: props.selectedText && {
+      from: props.selectedText.from,
+      to: props.selectedText.to,
+    },
     cursorPosition: props.value.cursorPosition,
     onTextChanged,
     onFileDropped,

@@ -53,13 +53,13 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
       (electronModule, [newViewport, browserWindow]) => {
         if (newViewport.label === 'default') {
           return;
+        } else {
+          browserWindow.setSize(newViewport.width, newViewport.height);
+          // Wait a little to let the resize settle. CI is notoriously slow so wait longer there.
+          return new Promise((resolve) =>
+            setTimeout(resolve, process.env.CI ? 2000 : 500)
+          );
         }
-
-        browserWindow.setSize(newViewport.width, newViewport.height);
-        // Wait a little to let the resize settle. CI is notoriously slow so wait longer there.
-        return new Promise((resolve) =>
-          setTimeout(resolve, process.env.CI ? 2000 : 500)
-        );
       },
       [viewport, await app.browserWindow(window)] as const
     );

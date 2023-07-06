@@ -178,6 +178,7 @@ export function App() {
         main={
           <Editor
             value={editorTextData}
+            selectedText={selectedText}
             onTextChanged={setEditorTextData}
             onTextSelected={onTextSelected}
             onModificationStateChanged={setIsModified}

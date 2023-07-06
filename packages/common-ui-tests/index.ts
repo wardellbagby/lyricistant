@@ -32,7 +32,6 @@ export default (
     await editor.type(text, { delay: 10 });
 
     await expect(editor.textContent()).resolves.toEqual(text);
-    await expect(screen.findByText(text)).resolves.toBeTruthy();
 
     const newFileButton = await screen.findByRole('button', {
       name: 'New file',

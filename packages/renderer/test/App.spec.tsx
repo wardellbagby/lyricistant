@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 import { BaseLocationHook, Router } from 'wouter';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
-import { render, wait } from './Wrappers';
+import { nestedElementTextMatcher, render, wait } from './Wrappers';
 
 jest.mock('@lyricistant/rhyme-generator');
 
@@ -66,14 +66,18 @@ describe('App component', () => {
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'Initially here');
 
-    await expect(screen.getByText('Initially here')).toBeTruthy();
+    await expect(
+      screen.getByText(nestedElementTextMatcher('Initially here'))
+    ).toBeTruthy();
 
     await platformDelegate.invoke('file-save-ended', undefined, 'apath.txt');
 
     await expect(screen.getByText('apath.txt saved')).toBeTruthy();
 
     await platformDelegate.invoke('undo');
-    expect(screen.getByText('Initially here')).toBeTruthy();
+    expect(
+      screen.getByText(nestedElementTextMatcher('Initially here'))
+    ).toBeTruthy();
   });
 
   it("handles the platform checking if file is modified when it isn't", async () => {
@@ -107,7 +111,9 @@ describe('App component', () => {
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'my loco pinocchio');
 
-    await expect(await screen.findByText('my loco pinocchio')).toBeTruthy();
+    await expect(
+      await screen.findByText(nestedElementTextMatcher('my loco pinocchio'))
+    ).toBeTruthy();
 
     await platformDelegate.invoke('new-file-created');
 
@@ -121,14 +127,20 @@ describe('App component', () => {
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'ok! coo!');
 
-    await expect(screen.getByText('ok! coo!')).toBeTruthy();
+    await expect(
+      screen.getByText(nestedElementTextMatcher('ok! coo!'))
+    ).toBeTruthy();
 
     await platformDelegate.invoke('file-opened', null, 'coo coo...', true);
 
-    await expect(await screen.findByText('coo coo...')).toBeTruthy();
+    await expect(
+      await screen.findByText(nestedElementTextMatcher('coo coo...'))
+    ).toBeTruthy();
 
     await platformDelegate.invoke('undo');
-    await expect(await screen.findByText('coo coo...')).toBeTruthy();
+    await expect(
+      await screen.findByText(nestedElementTextMatcher('coo coo...'))
+    ).toBeTruthy();
   });
 
   it('handles the platform having opened a file but does not clear history', async () => {
@@ -136,7 +148,9 @@ describe('App component', () => {
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'dot buzz backslash tight!');
-    await expect(screen.getByText('dot buzz backslash tight!')).toBeTruthy();
+    await expect(
+      screen.getByText(nestedElementTextMatcher('dot buzz backslash tight!'))
+    ).toBeTruthy();
     // We need to wait here for CodeMirror to update its undo cache.
     await wait(1000);
 
@@ -186,14 +200,18 @@ describe('App component', () => {
     await userEvent.click(screen.getByText('Test Rhyme 1'));
 
     expect(
-      await screen.findByText('and the oscar goes to Test Rhyme 1...')
+      await screen.findByText(
+        nestedElementTextMatcher('and the oscar goes to Test Rhyme 1...')
+      )
     ).toBeTruthy();
 
     await userEvent.click(screen.getByText('Test Rhyme 2'));
 
     expect(
       await screen.findByText(
-        'and the oscar goes to Test Rhyme Test Rhyme 2...'
+        nestedElementTextMatcher(
+          'and the oscar goes to Test Rhyme Test Rhyme 2...'
+        )
       )
     ).toBeTruthy();
   });

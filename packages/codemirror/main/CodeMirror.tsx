@@ -12,9 +12,18 @@ import {
   EditorState,
   EditorStateConfig,
   Extension,
+  RangeSet,
+  StateEffect,
+  StateField,
   Text,
 } from '@codemirror/state';
-import { EditorView, keymap, placeholder } from '@codemirror/view';
+import {
+  Decoration,
+  DecorationSet,
+  EditorView,
+  keymap,
+  placeholder,
+} from '@codemirror/view';
 import { Lyrics } from '@lyricistant/codemirror/lyrics-language';
 import { useTheme } from '@mui/material';
 import { differenceWith, isEqual, sample } from 'lodash-es';
@@ -48,6 +57,12 @@ const placeholders = [
   'What do you want to write today?',
   'Put your feelings to words...',
 ];
+
+interface Mark {
+  from: number;
+  to: number;
+}
+
 const textChanged = (
   onTextChanged: (text: Text, cursorPosition: number) => void
 ) =>
@@ -105,10 +120,47 @@ export interface CodeMirrorEditorProps {
   text: Text;
   cursorPosition?: number;
   font: string;
+  markedText?: Mark;
   onTextSelected: (word: TextSelectionData) => void;
   onTextChanged: (text: Text, cursorPosition: number) => void;
   onFileDropped: (item: DataTransferItem | File) => void;
 }
+
+const markDecoration = Decoration.mark({ class: 'cm-mark' });
+const addMark = StateEffect.define<Mark>({
+  map: ({ from, to }, change) => ({
+    from: change.mapPos(from),
+    to: change.mapPos(to),
+  }),
+});
+
+const isApplicableAddMarkEffect = (
+  effect: StateEffect<Mark>,
+  doc: Text
+): boolean =>
+  effect.value.from < doc.length &&
+  effect.value.to <= doc.length &&
+  effect.value.to - effect.value.from > 0;
+
+const markStateField = StateField.define<DecorationSet>({
+  create() {
+    return Decoration.none;
+  },
+  update(marks, tr) {
+    for (const effect of tr.effects) {
+      if (
+        effect.is(addMark) &&
+        isApplicableAddMarkEffect(effect, tr.state.doc)
+      ) {
+        return RangeSet.of(
+          markDecoration.range(effect.value.from, effect.value.to)
+        );
+      }
+    }
+    return marks.map(tr.changes);
+  },
+  provide: (field) => EditorView.decorations.from(field),
+});
 
 export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const [view, setView] = useState<EditorView>(null);
@@ -138,6 +190,19 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     [props.onFileDropped]
   );
 
+  useEffect(() => {
+    if (
+      !props.markedText ||
+      props.markedText.to === props.markedText.from ||
+      !view
+    ) {
+      return;
+    }
+    const effects: Array<StateEffect<unknown>> = [addMark.of(props.markedText)];
+
+    view.dispatch({ effects });
+  }, [props.markedText, view]);
+
   /*
   When the view gets its state set explicitly set (like it does when its first
   created and whenever we need to clear the undo state), this is used to provide
@@ -161,6 +226,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         textCompartment.of(textChangedExtension),
         selectionCompartment.of(selectionExtension),
         fileDroppedCompartment.of(fileDroppedExtension),
+        markStateField,
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
       ],
     }),
@@ -197,6 +263,16 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       }
     };
   }, [container]);
+
+  useEffect(
+    () => () => {
+      if (view) {
+        view.destroy();
+        setView(undefined);
+      }
+    },
+    [view]
+  );
 
   useEffect(() => {
     const currentText = view ? view.state.doc : Text.empty;
