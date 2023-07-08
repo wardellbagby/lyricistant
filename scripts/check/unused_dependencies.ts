@@ -4,7 +4,6 @@ import * as path from 'path';
 import depcheck, { Options, Results } from 'depcheck';
 import { dependencies, devDependencies } from '../../package.json';
 
-// Typesync handles making sure the @types deps are put together, so ignore those.
 const TYPES_MATCH = '@types/*';
 
 const options: Options = {
@@ -55,7 +54,6 @@ const options: Options = {
     'commitizen',
     'cz-conventional-changelog',
     'standard-changelog',
-    'typesync',
     'prettier-plugin-jsdoc',
     'blob-polyfill',
     'identity-obj-proxy',
@@ -114,7 +112,7 @@ options.ignoreMatches.forEach((dep) => {
   }
   if (!(dep in dependencies || dep in devDependencies)) {
     console.log(
-      `"${dep}" is explicitly ignored from dependency checks but is no longer installed. Please remove from "scripts/check/unsued_dependencies.ts"`
+      `"${dep}" is explicitly ignored from dependency checks but is no longer installed. Please remove from "${__filename}"`
     );
   }
 });
