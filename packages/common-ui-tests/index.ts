@@ -29,6 +29,7 @@ export default (
 
     const editor = await getEditor(screen);
 
+    await editor.click();
     await editor.type(text, { delay: 10 });
 
     await expect(editor.textContent()).resolves.toEqual(text);
