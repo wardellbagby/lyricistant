@@ -139,9 +139,14 @@ jobs:
       - name: 'Install Gulp'
         run: 'npm install -g gulp@4.0.2'
       - name: 'Setup Ruby'
-        uses: 'ruby/setup-ruby@c7079efafd956afb5d823e8999c2506e1053aefa'
+        uses: 'ruby/setup-ruby@250fcd6a742febb1123a77a841497ccaa8b9e939'
         with:
           bundler-cache: true
+      - name: 'Setup Java 17'
+        uses: 'actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2'
+        with:
+          java-version: 17
+          distribution: 'temurin'
       - name: 'Install Fastlane'
         run: 'gem install bundler && bundle install'
       - name: 'Install Node modules'
@@ -198,9 +203,14 @@ jobs:
       - name: 'Install Gulp'
         run: 'npm install -g gulp@4.0.2'
       - name: 'Setup Ruby'
-        uses: 'ruby/setup-ruby@c7079efafd956afb5d823e8999c2506e1053aefa'
+        uses: 'ruby/setup-ruby@250fcd6a742febb1123a77a841497ccaa8b9e939'
         with:
           bundler-cache: true
+      - name: 'Setup Java 17'
+        uses: 'actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2'
+        with:
+          java-version: 17
+          distribution: 'temurin'
       - name: 'Install Fastlane'
         run: 'gem install bundler && bundle install'
       - name: 'Install Node modules'

@@ -1,5 +1,11 @@
 import { ifTrue } from './addIfTrue';
-import { CACHE, CHECKOUT, SETUP_NODE, SETUP_RUBY } from './versions';
+import {
+  CACHE,
+  CHECKOUT,
+  SETUP_JAVA,
+  SETUP_NODE,
+  SETUP_RUBY,
+} from './versions';
 import { Step } from './Workflow';
 
 interface Options {
@@ -54,6 +60,14 @@ export const basicSetup = (options?: Options): Step[] => {
         uses: SETUP_RUBY,
         with: {
           'bundler-cache': true,
+        },
+      },
+      {
+        name: 'Setup Java 17',
+        uses: SETUP_JAVA,
+        with: {
+          'java-version': 17,
+          distribution: 'temurin',
         },
       },
       {

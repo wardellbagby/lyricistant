@@ -6,9 +6,9 @@ export const SETUP_NODE =
 export const CHECKOUT =
   'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8';
 
-// pin@v1.126.0
+// pin@v1.152.0
 export const SETUP_RUBY =
-  'ruby/setup-ruby@c7079efafd956afb5d823e8999c2506e1053aefa';
+  'ruby/setup-ruby@250fcd6a742febb1123a77a841497ccaa8b9e939';
 
 // pin@v3.1.1
 export const UPLOAD_ARTIFACT =
@@ -40,3 +40,7 @@ export const AUTOMATIC_RELEASES =
 // pin@v1.0
 export const DELETE_TAG_AND_RELEASE =
   'dev-drprasad/delete-tag-and-release/@8cd619d00037e4aeb781909c9a6b03940507d0da';
+
+// pin@v3.11.0
+export const SETUP_JAVA =
+  'actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2';
