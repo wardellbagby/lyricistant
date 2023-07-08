@@ -1,6 +1,3 @@
-import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
-import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
-import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import {
   ColorScheme,
   DefaultFileType,
@@ -14,6 +11,9 @@ import {
   SystemPalette,
   SystemTheme,
 } from '@lyricistant/common/theme/SystemTheme';
+import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { expect, use } from 'chai';
 import sinonChai from 'sinon-chai';

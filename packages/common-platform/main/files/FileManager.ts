@@ -1,3 +1,13 @@
+import {
+  CancelError,
+  Cancellable,
+  CancelSignal,
+  makeCancellable,
+} from '@lyricistant/common/Cancellable';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
+import { Logger } from '@lyricistant/common/Logger';
+import { DefaultFileType } from '@lyricistant/common/preferences/PreferencesData';
 import { Buffers } from '@lyricistant/common-platform/files/Buffers';
 import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import {
@@ -17,16 +27,6 @@ import {
   getPreferencesDataOrDefault,
   Preferences,
 } from '@lyricistant/common-platform/preferences/Preferences';
-import {
-  CancelError,
-  Cancellable,
-  CancelSignal,
-  makeCancellable,
-} from '@lyricistant/common/Cancellable';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
-import { Logger } from '@lyricistant/common/Logger';
-import { DefaultFileType } from '@lyricistant/common/preferences/PreferencesData';
 
 /** Represents all the data that {@link FileManager} needs to store for the current file. */
 interface CurrentFile {

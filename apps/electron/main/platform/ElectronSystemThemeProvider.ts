@@ -1,5 +1,5 @@
-import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { SystemTheme } from '@lyricistant/common/theme/SystemTheme';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { NativeTheme } from 'electron';
 
 export class ElectronSystemThemeProvider implements SystemThemeProvider {

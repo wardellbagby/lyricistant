@@ -1,7 +1,7 @@
-import { Manager } from '@lyricistant/common-platform/Manager';
-import { Managers } from '@lyricistant/common-platform/Managers';
 import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { Logger } from '@lyricistant/common/Logger';
+import { Manager } from '@lyricistant/common-platform/Manager';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
 import { createComponent as createLegacyComponent } from '@web-app/LegacyAppComponent';
 import { start as startNew } from '@web-renderer/index';

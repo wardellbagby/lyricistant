@@ -1,3 +1,4 @@
+import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import { ExtensionData } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import {
   FileData,
@@ -5,7 +6,6 @@ import {
   SerializedExtensions,
 } from '@lyricistant/common-platform/files/Files';
 import { FileHandler } from '@lyricistant/common-platform/files/handlers/FileHandler';
-import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import JSZip from 'jszip';
 import { isEqual } from 'lodash-es';
 

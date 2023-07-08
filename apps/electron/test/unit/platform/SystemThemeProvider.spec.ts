@@ -1,6 +1,6 @@
 import { ElectronSystemThemeProvider } from '@electron-app/platform/ElectronSystemThemeProvider';
-import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { SystemTheme } from '@lyricistant/common/theme/SystemTheme';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { EventListeners } from '@testing/utilities/Listeners';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';

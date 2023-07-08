@@ -1,7 +1,7 @@
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { Logger } from '@lyricistant/common/Logger';
 import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 
 export class ElectronPreferences implements Preferences {
   private readonly preferencesFilePath: string;

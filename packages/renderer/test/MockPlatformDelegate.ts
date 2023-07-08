@@ -4,8 +4,8 @@ import {
   PlatformToRendererListener,
   RendererChannel,
 } from '@lyricistant/common/Delegates';
-import { act } from '@testing-library/react';
 import { PlatformListeners } from '@testing/utilities/Listeners';
+import { act } from '@testing-library/react';
 
 export class MockPlatformDelegate implements PlatformDelegate {
   public send: () => void = jest.fn();

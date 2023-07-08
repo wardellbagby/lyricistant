@@ -1,7 +1,7 @@
-import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
-import { Managers } from '@lyricistant/common-platform/Managers';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
+import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
 import { appComponent } from '@screenshotter-app/AppComponent';
 import { ScreenshotterPreferences } from '@screenshotter-app/platform/Preferences';

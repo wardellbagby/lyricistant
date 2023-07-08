@@ -1,8 +1,8 @@
-import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import {
   SystemPalette,
   SystemTheme,
 } from '@lyricistant/common/theme/SystemTheme';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { setColorSchemeListener } from '@lyricistant/core-dom-platform/platform/DOMSystemThemeProvider';
 
 declare global {

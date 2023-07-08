@@ -2,8 +2,8 @@ if (module.hot) {
   module.hot.accept();
 }
 
-import { Managers } from '@lyricistant/common-platform/Managers';
 import { Logger } from '@lyricistant/common/Logger';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { platformDelegate } from '@lyricistant/core-dom-platform/Delegates';
 import { appComponent } from '@mobile-app/AppComponent';
 

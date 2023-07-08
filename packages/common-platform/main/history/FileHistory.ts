@@ -1,4 +1,9 @@
 import {
+  Chunk,
+  ParsedHistoryData,
+} from '@lyricistant/common/history/ParsedHistoryData';
+import { Logger } from '@lyricistant/common/Logger';
+import {
   Change,
   FileDataExtension,
   HistoryData,
@@ -11,11 +16,6 @@ import {
 import { createChunks } from '@lyricistant/common-platform/history/ChunkCreation';
 import { Clock } from '@lyricistant/common-platform/time/Clock';
 import { MED_WITH_SECONDS } from '@lyricistant/common-platform/time/Formats';
-import {
-  Chunk,
-  ParsedHistoryData,
-} from '@lyricistant/common/history/ParsedHistoryData';
-import { Logger } from '@lyricistant/common/Logger';
 import type { patch_obj } from 'diff-match-patch';
 
 const CURRENT_VERSION = 2;

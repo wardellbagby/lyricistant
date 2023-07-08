@@ -1,16 +1,16 @@
 import path from 'path';
 import { pathToFileURL } from 'url';
-import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
-import {
-  useMockDefinitions,
-  useMockRhymes,
-} from '@lyricistant/common-ui-tests';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   ColorScheme,
   Font,
   ThemeData,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
+import {
+  useMockDefinitions,
+  useMockRhymes,
+} from '@lyricistant/common-ui-tests';
 import { ScreenshotterPreferences } from '@screenshotter-app/platform/Preferences';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';

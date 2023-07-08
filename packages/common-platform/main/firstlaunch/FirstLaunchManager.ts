@@ -1,7 +1,7 @@
-import { AppData } from '@lyricistant/common-platform/appdata/AppData';
-import { Manager } from '@lyricistant/common-platform/Manager';
 import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RendererDelegate, RendererInfo } from '@lyricistant/common/Delegates';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
+import { Manager } from '@lyricistant/common-platform/Manager';
 
 export class FirstLaunchManager implements Manager {
   private static readonly IS_FIRST_LAUNCH_KEY = 'is-first-launch';

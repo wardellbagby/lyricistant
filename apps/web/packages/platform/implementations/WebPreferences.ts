@@ -1,5 +1,5 @@
-import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { renderer } from '@web-platform/renderer';
 
 export class WebPreferences implements Preferences {

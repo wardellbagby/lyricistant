@@ -1,8 +1,8 @@
-import { Files } from '@lyricistant/common-platform/files/Files';
 import {
   FileMetadata,
   PlatformFile,
 } from '@lyricistant/common/files/PlatformFile';
+import { Files } from '@lyricistant/common-platform/files/Files';
 import { renderer } from '@web-platform/renderer';
 import { FileSystemHandle } from 'browser-fs-access';
 

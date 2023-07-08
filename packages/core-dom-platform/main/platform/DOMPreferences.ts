@@ -1,5 +1,5 @@
-import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { PreferencesData } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 
 export class DOMPreferences implements Preferences {
   private readonly prefsKey = 'lyricistant_preferences';

@@ -1,5 +1,5 @@
-import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { Serializable } from '@lyricistant/common/Serializable';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 
 export class DOMAppData implements AppData {
   public set = (key: string, data: Serializable) => {

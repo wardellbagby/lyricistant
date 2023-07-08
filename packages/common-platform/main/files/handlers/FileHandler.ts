@@ -1,5 +1,5 @@
-import { FileData } from '@lyricistant/common-platform/files/Files';
 import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
+import { FileData } from '@lyricistant/common-platform/files/Files';
 
 export interface FileHandler {
   extension: string;

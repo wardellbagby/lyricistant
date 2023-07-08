@@ -1,4 +1,3 @@
-import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import {
   ColorScheme,
   DefaultFileType,
@@ -7,6 +6,7 @@ import {
   PreferencesData,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { DOMPreferences } from '@lyricistant/core-dom-platform/platform/DOMPreferences';
 
 describe('Preferences', () => {

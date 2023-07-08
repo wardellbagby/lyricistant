@@ -1,6 +1,6 @@
+import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import { getEditorText, Manager } from '@lyricistant/common-platform/Manager';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
 
 export class FileHistoryManager implements Manager {
   public constructor(

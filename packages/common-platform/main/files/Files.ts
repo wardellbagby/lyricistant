@@ -1,8 +1,8 @@
-import { ExtensionData } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import {
   FileMetadata,
   PlatformFile,
 } from '@lyricistant/common/files/PlatformFile';
+import { ExtensionData } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 
 export type SerializedExtensions = {
   [extensionKey in keyof ExtensionData]?: ArrayBuffer;

@@ -1,6 +1,6 @@
 import { UpdateManager } from '@electron-app/platform/UpdateManager';
-import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { EventListeners } from '@testing/utilities/Listeners';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { expect, use } from 'chai';

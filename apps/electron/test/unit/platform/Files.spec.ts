@@ -1,8 +1,8 @@
 import { TextEncoder } from 'util';
 import { ElectronFiles } from '@electron-app/platform/ElectronFiles';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { Files } from '@lyricistant/common-platform/files/Files';
 import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
+import { Files } from '@lyricistant/common-platform/files/Files';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';

@@ -16,12 +16,12 @@ import { UpdateManager } from '@electron-app/platform/UpdateManager';
 import { FileSystem, NodeFileSystem } from '@electron-app/wrappers/FileSystem';
 import { AxiosHttpClient, HttpClient } from '@electron-app/wrappers/HttpClient';
 import { ElectronRendererDelegate } from '@electron-delegates/Delegates';
+import { isUnderTest } from '@lyricistant/common/BuildModes';
+import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import {
   registerCommonManagers,
   registerCommonPlatform,
 } from '@lyricistant/common-platform/AppComponents';
-import { isUnderTest } from '@lyricistant/common/BuildModes';
-import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import { DIContainer } from '@wessberg/di';
 import {
   BrowserWindow,

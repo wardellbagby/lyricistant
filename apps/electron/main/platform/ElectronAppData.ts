@@ -1,7 +1,7 @@
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { Logger } from '@lyricistant/common/Logger';
 import { Serializable } from '@lyricistant/common/Serializable';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 
 export class ElectronAppData implements AppData {
   public constructor(private fs: FileSystem, private logger: Logger) {}

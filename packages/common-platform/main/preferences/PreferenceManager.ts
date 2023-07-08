@@ -1,9 +1,3 @@
-import { Manager } from '@lyricistant/common-platform/Manager';
-import {
-  getPreferencesDataOrDefault,
-  Preferences,
-} from '@lyricistant/common-platform/preferences/Preferences';
-import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import {
   ColorScheme,
@@ -14,6 +8,12 @@ import {
   SystemPalette,
   SystemTheme,
 } from '@lyricistant/common/theme/SystemTheme';
+import { Manager } from '@lyricistant/common-platform/Manager';
+import {
+  getPreferencesDataOrDefault,
+  Preferences,
+} from '@lyricistant/common-platform/preferences/Preferences';
+import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 
 // TODO Make this manage the renderer palette as well & update StatusBarManager to take advantage.
 export class PreferenceManager implements Manager {

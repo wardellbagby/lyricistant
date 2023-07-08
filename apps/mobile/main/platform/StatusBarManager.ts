@@ -1,8 +1,8 @@
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { Manager } from '@lyricistant/common-platform/Manager';
-import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 import { Logger } from '@lyricistant/common/Logger';
 import { ColorScheme } from '@lyricistant/common/preferences/PreferencesData';
+import { Manager } from '@lyricistant/common-platform/Manager';
+import { PreferenceManager } from '@lyricistant/common-platform/preferences/PreferenceManager';
 
 export class StatusBarManager implements Manager {
   public constructor(

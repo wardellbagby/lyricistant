@@ -1,6 +1,6 @@
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 import { Logger } from '@lyricistant/common/Logger';
+import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 
 export class ElectronRecentFiles implements RecentFiles {
   private readonly recentFilesFilePath = this.fs.resolve(

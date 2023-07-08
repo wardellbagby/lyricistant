@@ -1,6 +1,5 @@
 import { ElectronPreferences } from '@electron-app/platform/ElectronPreferences';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
-import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import {
   ColorScheme,
   DefaultFileType,
@@ -9,6 +8,7 @@ import {
   PreferencesData,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinonChai from 'sinon-chai';

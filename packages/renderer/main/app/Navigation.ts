@@ -11,7 +11,7 @@ const routes = [
   '/privacypolicy',
 ] as const;
 /** The paths that Lyricistant can navigate to. */
-export type RoutePaths = typeof routes[number];
+export type RoutePaths = (typeof routes)[number];
 
 export const useNavigation = () => {
   const setLocation = useLocation()[1];

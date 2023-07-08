@@ -38,7 +38,7 @@ const platforms = [
   'Screenshotter',
   'Test',
 ] as const;
-export type Platform = typeof platforms[number];
+export type Platform = (typeof platforms)[number];
 
 export default (
   mode: Mode,

@@ -1,7 +1,7 @@
-import { Manager } from '@lyricistant/common-platform/Manager';
-import { Managers } from '@lyricistant/common-platform/Managers';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { Logger } from '@lyricistant/common/Logger';
+import { Manager } from '@lyricistant/common-platform/Manager';
+import { Managers } from '@lyricistant/common-platform/Managers';
 import { renderer } from '@web-platform/renderer';
 import { expose, proxy } from 'comlink';
 import { appComponent } from './AppComponent';

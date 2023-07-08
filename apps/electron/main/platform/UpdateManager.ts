@@ -1,12 +1,12 @@
 import { HttpClient } from '@electron-app/wrappers/HttpClient';
-import { AppData } from '@lyricistant/common-platform/appdata/AppData';
-import { Manager } from '@lyricistant/common-platform/Manager';
 import { isDevelopment } from '@lyricistant/common/BuildModes';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
 import { DialogInteractionData } from '@lyricistant/common/dialogs/Dialog';
 import { Logger } from '@lyricistant/common/Logger';
 import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import { Serializable } from '@lyricistant/common/Serializable';
+import { AppData } from '@lyricistant/common-platform/appdata/AppData';
+import { Manager } from '@lyricistant/common-platform/Manager';
 import { AppUpdater, UpdateInfo } from 'electron-updater';
 
 export class UpdateManager implements Manager {

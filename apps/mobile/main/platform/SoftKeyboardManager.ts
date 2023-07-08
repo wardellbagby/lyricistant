@@ -1,11 +1,11 @@
 import { Keyboard } from '@capacitor/keyboard';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { DetailPaneVisibility } from '@lyricistant/common/preferences/PreferencesData';
 import { Manager } from '@lyricistant/common-platform/Manager';
 import {
   getPreferencesDataOrDefault,
   Preferences,
 } from '@lyricistant/common-platform/preferences/Preferences';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { DetailPaneVisibility } from '@lyricistant/common/preferences/PreferencesData';
 
 export class SoftKeyboardManager implements Manager {
   private isSmallLayout = false;

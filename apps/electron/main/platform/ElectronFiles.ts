@@ -1,12 +1,12 @@
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import {
-  Files,
-  LYRICS_EXTENSION,
-} from '@lyricistant/common-platform/files/Files';
-import {
   FileMetadata,
   PlatformFile,
 } from '@lyricistant/common/files/PlatformFile';
+import {
+  Files,
+  LYRICS_EXTENSION,
+} from '@lyricistant/common-platform/files/Files';
 import { BrowserWindow, Dialog as ElectronDialog } from 'electron';
 
 const DOTLESS_LYRICS_EXTENSIONS = LYRICS_EXTENSION.substring(1);

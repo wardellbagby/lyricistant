@@ -1,3 +1,6 @@
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { YES_NO_BUTTONS } from '@lyricistant/common/dialogs/Dialog';
+import { Logger } from '@lyricistant/common/Logger';
 import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
@@ -6,9 +9,6 @@ import {
   showRendererDialog,
 } from '@lyricistant/common-platform/Manager';
 import { Times } from '@lyricistant/common-platform/time/Times';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { YES_NO_BUTTONS } from '@lyricistant/common/dialogs/Dialog';
-import { Logger } from '@lyricistant/common/Logger';
 
 export class UnsavedDataManager implements Manager {
   public static readonly UNSAVED_LYRICS_KEY = 'unsaved-lyrics-key';

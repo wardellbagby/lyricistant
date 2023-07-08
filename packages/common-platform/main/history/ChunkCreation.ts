@@ -1,8 +1,8 @@
-import { Change } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import {
   Chunk,
   ChunkLine,
 } from '@lyricistant/common/history/ParsedHistoryData';
+import { Change } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 
 /**
  * Create "chunks" of changed lines and context (non-changed lines that are near

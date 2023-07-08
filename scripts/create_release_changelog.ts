@@ -6,7 +6,7 @@ import standardChangelog, { RawCommit } from 'standard-changelog';
 import { version } from '../package.json';
 
 const APP_SCOPES = ['android', 'electron', 'web', 'ios', 'all'] as const;
-type App = typeof APP_SCOPES[number];
+type App = (typeof APP_SCOPES)[number];
 
 Handlebars.registerHelper(
   'toJSON',

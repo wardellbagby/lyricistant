@@ -1,4 +1,3 @@
-import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import {
   ColorScheme,
   DefaultFileType,
@@ -7,6 +6,7 @@ import {
   PreferencesData,
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
+import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 
 export class ScreenshotterPreferences implements Preferences {
   public showToggleButton = async (show: boolean) => {

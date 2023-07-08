@@ -1,3 +1,6 @@
+import { isUnderTest } from '@lyricistant/common/BuildModes';
+import { RendererDelegate } from '@lyricistant/common/Delegates';
+import { Logger } from '@lyricistant/common/Logger';
 import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { Buffers } from '@lyricistant/common-platform/files/Buffers';
 import { FileDataExtensions } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
@@ -29,9 +32,6 @@ import {
   TitleFormatter,
   UiConfigProvider,
 } from '@lyricistant/common-platform/ui/UiConfigProviders';
-import { isUnderTest } from '@lyricistant/common/BuildModes';
-import { RendererDelegate } from '@lyricistant/common/Delegates';
-import { Logger } from '@lyricistant/common/Logger';
 import { DIContainer } from '@wessberg/di';
 
 export type Provider<T> = () => T;
