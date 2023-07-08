@@ -6,7 +6,11 @@ def versions = new Properties()
 versions.load(new FileInputStream(versionsFile))
 
 android {
+  namespace "com.wardellbagby.lyricistant"
   compileSdkVersion rootProject.ext.compileSdkVersion
+  kotlinOptions {
+      jvmTarget = "17"
+  }
   defaultConfig {
     applicationId "com.wardellbagby.lyricistant"
     minSdkVersion rootProject.ext.minSdkVersion
@@ -63,12 +67,6 @@ dependencies {
   implementation "androidx.core:core-ktx:1.6.0"
   implementation 'androidx.webkit:webkit:1.4.0'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-  kotlinOptions {
-    jvmTarget = "11"
-  }
 }
 
 apply from: 'capacitor.build.gradle'

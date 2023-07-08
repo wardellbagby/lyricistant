@@ -11,7 +11,7 @@ name: 'Regenerate Pronunciations'
 jobs:
   cancelCurrentRuns:
     name: 'Cancel in-progress Workflow runs'
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     steps:
       - name: 'Cancel in-progress Workflow runs'
         uses: 'styfle/cancel-workflow-action@b173b6ec0100793626c2d9e6b90435061f4fc3e5'
@@ -21,7 +21,7 @@ jobs:
     name: 'Generation'
     needs:
       - 'cancelCurrentRuns'
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     steps:
       - name: 'Checkout the current branch'
         uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
