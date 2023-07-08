@@ -1,3 +1,12 @@
+# [3.2.0](https://github.com/wardellbagby/lyricistant/compare/v3.1.3...v3.2.0) (2023-07-08)
+
+
+### Features
+
+* add a mark to words that are currently being used to find rhymes ([10307e3](https://github.com/wardellbagby/lyricistant/commit/10307e38987e4e9a891568e0618421156d24f962))
+
+
+
 ## [3.1.3](https://github.com/wardellbagby/lyricistant/compare/v3.1.2...v3.1.3) (2023-07-04)
 
 
