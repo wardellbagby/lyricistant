@@ -1,5 +1,3 @@
-import { FileSystemHandle } from 'browser-fs-access';
-
 /** Metadata for a platform file. */
 export interface FileMetadata {
   /**
@@ -24,12 +22,4 @@ export interface PlatformFile {
   data: ArrayBuffer;
   /** The optional mime type of this file. */
   type?: string;
-  /** Extra information that platforms might be able to use. */
-  extras?: {
-    /**
-     * When running on Web on a browser that supports file system handles, this
-     * will be the handle for a file that was dragged-and-dropped.
-     */
-    handle?: FileSystemHandle;
-  };
 }

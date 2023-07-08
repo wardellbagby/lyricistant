@@ -4,13 +4,9 @@ import {
 } from '@lyricistant/common/files/PlatformFile';
 import { Files } from '@lyricistant/common-platform/files/Files';
 import { renderer } from '@web-platform/renderer';
-import { FileSystemHandle } from 'browser-fs-access';
 
 export class WebFiles implements Files {
-  private handles: Map<string, FileSystemHandle> = new Map<
-    string,
-    FileSystemHandle
-  >();
+  private handles = new Map<string, FileSystemFileHandle>();
   public openFile = async (file?: PlatformFile): Promise<PlatformFile> => {
     if (file) {
       this.handles.set(file.metadata.path, file.extras.handle);

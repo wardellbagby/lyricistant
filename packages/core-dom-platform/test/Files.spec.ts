@@ -79,8 +79,7 @@ describe('Files', () => {
       name: 'Lyrics.lyrics',
       kind: 'file',
       isSameEntry: undefined,
-      queryPermission: undefined,
-      requestPermission: undefined,
+      getFile: undefined,
     });
 
     const actual = await files.saveFile(data, 'MyLyrics.lyrics');
@@ -91,7 +90,7 @@ describe('Files', () => {
     const actualOptions = fs.saveFile.mock.lastCall[1];
 
     expect(
-      new Uint8Array(new Uint8Array(await actualBlob.arrayBuffer()))
+      new Uint8Array(new Uint8Array(await (await actualBlob).arrayBuffer()))
     ).toEqual(expectedBuffer);
     expect(actualOptions).toEqual({
       fileName: 'MyLyrics.lyrics',
@@ -103,8 +102,6 @@ describe('Files', () => {
       name: 'mycoollyrics.txt',
       kind: 'file',
       isSameEntry: () => undefined,
-      requestPermission: () => undefined,
-      queryPermission: () => undefined,
       getFile: () => undefined,
     };
 
@@ -124,8 +121,7 @@ describe('Files', () => {
       name: 'mycoollyrics.lyrics',
       kind: 'file',
       isSameEntry: undefined,
-      queryPermission: undefined,
-      requestPermission: undefined,
+      getFile: undefined,
     });
 
     const actual = await files.saveFile(

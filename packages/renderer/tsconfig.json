@@ -4,7 +4,11 @@
   "compilerOptions": {
     "outDir": "build",
     "lib": ["dom", "es6"],
-    "types": ["webpack-env", "../renderer-window"],
+    "types": [
+      "webpack-env",
+      "../renderer-window",
+      "../platform-file-file-handle-extensions"
+    ],
     "typeRoots": ["**/node_modules/@types"],
     "composite": true
   },

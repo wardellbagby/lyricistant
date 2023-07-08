@@ -1,14 +1,12 @@
-import { FileSystemHandle } from 'browser-fs-access';
-
 export interface BufferFileSystem {
   saveFile: (
     buffer: ArrayBuffer,
     defaultFileName: string,
-    handle?: FileSystemHandle
-  ) => Promise<{ handle?: FileSystemHandle; cancelled: boolean }>;
+    handle?: FileSystemFileHandle
+  ) => Promise<{ handle?: FileSystemFileHandle; cancelled: boolean }>;
   openFile: () => Promise<{
     path: string;
     data: ArrayBuffer;
-    handle?: FileSystemHandle;
+    handle?: FileSystemFileHandle;
   }>;
 }

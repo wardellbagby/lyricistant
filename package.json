@@ -155,7 +155,7 @@
     "@wessberg/di": "^2.1.0",
     "@xstate/react": "^3.0.0",
     "axios": "^0.27.2",
-    "browser-fs-access": "^0.25.0",
+    "browser-fs-access": "^0.34.1",
     "comlink": "^4.3.1",
     "diff-match-patch": "^1.0.5",
     "electron-debug": "^3.2.0",

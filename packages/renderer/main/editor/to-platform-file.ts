@@ -1,5 +1,4 @@
 import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
-import { FileSystemHandle } from 'browser-fs-access';
 
 /**
  * Represents a {@link DataTransferItem} with an optional getAsFileSystemHandle
@@ -11,7 +10,7 @@ import { FileSystemHandle } from 'browser-fs-access';
  * https://caniuse.com/mdn-api_datatransferitem_getasfilesystemhandle
  */
 type FSApiDataTransferItem = DataTransferItem & {
-  getAsFileSystemHandle?: () => Promise<FileSystemHandle>;
+  getAsFileSystemHandle?: () => Promise<FileSystemFileHandle>;
 };
 /**
  * A file that, optionally, includes a path.

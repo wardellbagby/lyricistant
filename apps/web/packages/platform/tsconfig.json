@@ -3,13 +3,13 @@
   "compilerOptions": {
     "outDir": "build",
     "lib": ["es6", "WebWorker"],
-    "types": [],
+    "types": ["../../../../packages/platform-file-file-handle-extensions"],
     "composite": true
   },
   "references": [
     { "path": "../../../../packages/common/" },
-    { "path": "../../../../packages/common-platform/"},
-    { "path": "../../../../packages/core-dom-platform/"},
+    { "path": "../../../../packages/common-platform/" },
+    { "path": "../../../../packages/core-dom-platform/" },
     { "path": "../../packages/common" }
   ],
   "extends": "../../../../tsconfig.json"

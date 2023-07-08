@@ -10,7 +10,6 @@ import {
   SUPPORTED_MIME_TYPES,
 } from '@lyricistant/common-platform/files/Files';
 import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
-import { FileSystemHandle } from 'browser-fs-access';
 
 /**
  * Runs the specified block but catch and ignore any AbortErrors, which are
@@ -45,7 +44,7 @@ export class DOMFiles implements Files {
     FileSystemHandle cannot be serialized to JSON and restored to the same
     FileSystemHandle.
    */
-  private fileHandles: Map<string, FileSystemHandle> = new Map();
+  private fileHandles: Map<string, FileSystemFileHandle> = new Map();
   private counter = 0;
 
   public constructor(private fs: FileSystem, private logger: Logger) {}

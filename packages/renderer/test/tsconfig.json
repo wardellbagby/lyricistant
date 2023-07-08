@@ -8,7 +8,8 @@
       "jest",
       "node",
       "../../third-party-types",
-      "../../renderer-window"
+      "../../renderer-window",
+      "../../platform-file-file-handle-extensions"
     ]
   },
   "references": [
