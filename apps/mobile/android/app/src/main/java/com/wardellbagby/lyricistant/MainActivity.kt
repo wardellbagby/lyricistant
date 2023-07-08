@@ -55,8 +55,8 @@ class MainActivity : BridgeActivity() {
     } else {
       mapOf(
         "primary" to getColor(android.R.color.system_accent1_700).toHex(),
-        "background" to getColor(android.R.color.system_neutral1_100).toHex(),
-        "surface" to getColor(android.R.color.system_neutral1_200).toHex()
+        "background" to getColor(android.R.color.system_neutral1_50).toHex(),
+        "surface" to getColor(android.R.color.system_neutral1_100).toHex()
       )
     }
       return JSObject.wrap(palette)!!.toString()
