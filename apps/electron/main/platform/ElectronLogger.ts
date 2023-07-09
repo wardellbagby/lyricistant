@@ -28,7 +28,6 @@ export class ElectronLogger implements PlatformLogger {
     log.transports.file.readAllLogs().forEach(({ lines }) => {
       messages.push(...lines);
     });
-    messages.sort();
 
     return messages;
   }
