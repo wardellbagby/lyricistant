@@ -52,7 +52,7 @@ const crash = (reason: any) => {
       '',
       `App version: ${process.env.APP_VERSION}`,
       `Homepage: ${process.env.APP_HOMEPAGE}`,
-      `Log location: ${logger?.getLogFolder() ?? 'No logs available'}`,
+      `Log location: ${logger?.getLogDirectory() ?? 'No logs available'}`,
     ].join('\n')
   );
   if (!isDevelopment) {
