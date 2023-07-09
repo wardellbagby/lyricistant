@@ -35,7 +35,7 @@ const EdgeFade = ({ endColor, towards }: EdgeFadeProps) => {
     <Box
       sx={{
         content: "''",
-        height: '24px',
+        height: '8px',
         width: '100%',
         background: `linear-gradient(${rotation}, ${startColor} 0%, ${endColor} 100%)`,
         position: 'absolute',
