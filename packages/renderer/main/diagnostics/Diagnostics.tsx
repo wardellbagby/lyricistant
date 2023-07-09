@@ -33,7 +33,7 @@ export const Diagnostics = (props: DiagnosticsPanelProps) => {
   const [state, send] = useMachine(diagnosticsMachine);
 
   useEffect(() => {
-    if (props.isVisible && props.text.length > 0) {
+    if (props.isVisible) {
       send({ type: 'INPUT', input: props.text });
     }
   }, [props.text, props.isVisible]);

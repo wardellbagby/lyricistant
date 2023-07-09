@@ -55,7 +55,11 @@ const loadDictionary: Dictionary = (callback) => {
     .catch((e) => callback(e))
     .then((result) => callback(null, result));
 };
-const retextDiagnostics = async (text: Text): Promise<Diagnostic[]> => {
+const retextDiagnostics = async (text: Text | null): Promise<Diagnostic[]> => {
+  if (!text || text.length === 0) {
+    return [];
+  }
+
   const result = await retext()
     .use(retextSpell, loadDictionary)
     .use(retextRepeatedWords)
@@ -65,7 +69,7 @@ const retextDiagnostics = async (text: Text): Promise<Diagnostic[]> => {
   return toDiagnostics(result, text);
 };
 
-const createDiagnostics = async (text: Text): Promise<Diagnostic[]> =>
+const createDiagnostics = async (text: Text | null): Promise<Diagnostic[]> =>
   retextDiagnostics(text);
 
 interface DiagnosticsContext {
@@ -179,8 +183,7 @@ export const diagnosticsMachine = createMachine<
       DEBOUNCE: () => (isUnderTest ? 100 : 1_000),
     },
     guards: {
-      isValidInput: (context, event) =>
-        event.input && event.input.length > 0 && context.input !== event.input,
+      isValidInput: (context, event) => context.input !== event.input,
     },
   }
 );
