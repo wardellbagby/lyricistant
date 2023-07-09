@@ -33,7 +33,7 @@ export const getNodesBetween = (
   let pos = from;
   while (pos < to) {
     let checkChild = true;
-    if (cursor.node.to <= to) {
+    if (cursor.node.to <= to && cursor.node.from >= from) {
       nodes.push(cursor.node);
       checkChild = false;
     }
