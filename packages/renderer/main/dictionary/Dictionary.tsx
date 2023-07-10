@@ -80,6 +80,17 @@ const MeaningList = React.memo(
               meaning={meaning}
               onRelatedTextClicked={props.onRelatedTextClicked}
             />
+            {(meaning.synonyms?.length > 0 || meaning.antonyms?.length > 0) && (
+              <Divider variant={'middle'}>
+                <Typography variant={'caption'}>Related</Typography>
+              </Divider>
+            )}
+            <RelatedTextLists
+              disablePadding
+              synonyms={meaning.synonyms}
+              antonyms={meaning.antonyms}
+              onRelatedTextClicked={props.onRelatedTextClicked}
+            />
             {index < props.meanings.length - 1 && (
               <Divider variant={'fullWidth'} />
             )}
@@ -101,61 +112,93 @@ const VisualMeaning = (props: {
     </Typography>
     {props.meaning.definitions.map((definition, index) => (
       <VisualDefinition
+        showHeader={props.meaning.definitions.length > 1}
         key={index}
+        index={index + 1}
         definition={definition}
         onRelatedTextClicked={props.onRelatedTextClicked}
-        showDivider={index < props.meaning.definitions.length - 1}
       />
     ))}
   </Box>
 );
 
 const VisualDefinition = ({
+  index,
   definition,
-  showDivider,
+  showHeader,
   onRelatedTextClicked,
 }: {
+  index: number;
+  showHeader: boolean;
   definition: Definition;
-  showDivider: boolean;
   onRelatedTextClicked: (word: string) => void;
-}) => {
-  const hideRelatedWords = useMemo(
-    () => !(definition.antonyms?.length > 0 || definition.synonyms?.length > 0),
-    [definition]
-  );
-  return (
-    <Box>
-      <Typography>{definition.definition}</Typography>
-      {definition.example?.trim()?.length > 0 && (
-        <Typography variant={'body2'} sx={{ fontStyle: 'italic' }}>
-          {definition.example}
-        </Typography>
-      )}
-      <Box
+}) => (
+  <Box>
+    {showHeader && (
+      <Divider
+        variant={'middle'}
         sx={{
-          padding: '4px',
-          display: hideRelatedWords ? 'none' : undefined,
+          paddingTop: '4px',
+          paddingBottom: '4px',
         }}
       >
-        {definition.synonyms?.length > 0 && (
-          <RelatedText
-            label={'Synonyms'}
-            words={definition.synonyms}
-            onRelatedTextClicked={onRelatedTextClicked}
-          />
-        )}
-        {definition.antonyms?.length > 0 && (
-          <RelatedText
-            label={'Antonyms'}
-            words={definition.antonyms}
-            onRelatedTextClicked={onRelatedTextClicked}
-          />
-        )}
-      </Box>
-      {showDivider && (
-        <Divider
-          variant={'middle'}
-          sx={{ paddingTop: '4px', paddingBottom: '4px' }}
+        <Typography variant={'caption'}>{index}</Typography>
+      </Divider>
+    )}
+    <Typography>{definition.definition}</Typography>
+    {definition.example?.trim()?.length > 0 && (
+      <Typography variant={'body2'} sx={{ fontStyle: 'italic' }}>
+        {definition.example}
+      </Typography>
+    )}
+    <RelatedTextLists
+      synonyms={definition.synonyms}
+      antonyms={definition.antonyms}
+      onRelatedTextClicked={onRelatedTextClicked}
+    />
+  </Box>
+);
+
+const RelatedTextLists = (props: {
+  disablePadding?: boolean;
+  synonyms: string[];
+  antonyms: string[];
+  onRelatedTextClicked: (word: string) => void;
+}) => {
+  const shouldHide = useMemo(
+    () => !(props.antonyms?.length > 0 || props.synonyms?.length > 0),
+    [props.synonyms, props.antonyms]
+  );
+  const synonyms = useMemo(
+    () => [...new Set(props.synonyms)],
+    [props.synonyms]
+  );
+  const antonyms = useMemo(
+    () => [...new Set(props.antonyms)],
+    [props.antonyms]
+  );
+  const hasSynonyms = synonyms.length > 0;
+  const hasAntonyms = antonyms.length > 0;
+  return (
+    <Box
+      sx={{
+        padding: props.disablePadding ? undefined : '4px',
+        display: shouldHide ? 'none' : undefined,
+      }}
+    >
+      {hasSynonyms && (
+        <RelatedText
+          label={hasAntonyms ? 'Synonyms' : null}
+          words={synonyms}
+          onRelatedTextClicked={props.onRelatedTextClicked}
+        />
+      )}
+      {hasSynonyms && hasAntonyms && <Box height={'8px'} />}
+      {hasAntonyms && (
+        <RelatedText
+          label={'Antonyms'}
+          words={antonyms}
+          onRelatedTextClicked={props.onRelatedTextClicked}
         />
       )}
     </Box>
@@ -163,12 +206,19 @@ const VisualDefinition = ({
 };
 
 const RelatedText = (props: {
-  label: string;
+  label?: string;
   words: string[];
   onRelatedTextClicked: (word: string) => void;
 }) => (
   <>
-    <Typography variant={'subtitle2'}>{props.label}</Typography>
+    {props.label && (
+      <Typography
+        variant={'subtitle2'}
+        sx={{ paddingBottom: '4px', fontSize: 'italic' }}
+      >
+        {props.label}
+      </Typography>
+    )}
     <Box display={'flex'} flexWrap={'wrap'} flexDirection={'row'} gap={'4px'}>
       {props.words.map((word) => (
         <WordChip
