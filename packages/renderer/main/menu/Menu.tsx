@@ -1,7 +1,10 @@
+import { useReadOnlyMode } from '@lyricistant/renderer/app/useReadOnlyMode';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import {
   AddCircle,
+  Edit,
+  EditOff,
   FolderOpen,
   GetApp,
   History,
@@ -12,6 +15,7 @@ import {
 } from '@mui/icons-material';
 import {
   Box,
+  Checkbox,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -54,6 +58,7 @@ const MenuIcon: FunctionComponent<{
 interface MenuItemData {
   icon: SvgIconComponent;
   label: string;
+  checked?: boolean;
   onClick: () => void;
 }
 
@@ -137,7 +142,11 @@ const MenuBar = (props: AppBarProps) => {
             }}
           >
             <ListItemIcon>
-              <item.icon />
+              {item.checked !== undefined ? (
+                <Checkbox checked={item.checked} edge={'start'} disableRipple />
+              ) : (
+                <item.icon />
+              )}
             </ListItemIcon>
             <ListItemText>{item.label}</ListItemText>
           </MenuItem>
@@ -150,6 +159,7 @@ const MenuBar = (props: AppBarProps) => {
 
 /** The props needed to render {@link Menu}. */
 export interface MenuProps {
+  onReadOnlyToggled: (readOnly: boolean) => void;
   /** Invoked when the new button is clicked */
   onNewClicked: () => void;
   /** Invoked when the open button is clicked */
@@ -180,20 +190,22 @@ export const Menu: React.FC<MenuProps> = (props) => {
   const [uiConfig] = useChannelData('ui-config');
   const isSmallLayout = useSmallLayout();
   const direction = isSmallLayout ? 'horizontal' : 'vertical';
+  const isReadOnly = useReadOnlyMode();
 
   const leadingIcons = useMemo(
     () =>
       [
-        {
+        !isReadOnly && {
           label: 'New file',
           icon: AddCircle,
           onClick: props.onNewClicked,
         },
-        uiConfig?.showOpen && {
-          label: 'Open file',
-          icon: FolderOpen,
-          onClick: props.onOpenClicked,
-        },
+        !isReadOnly &&
+          uiConfig?.showOpen && {
+            label: 'Open file',
+            icon: FolderOpen,
+            onClick: props.onOpenClicked,
+          },
         {
           label: 'Save file',
           icon: Save,
@@ -214,6 +226,14 @@ export const Menu: React.FC<MenuProps> = (props) => {
           label: 'Download Lyricistant',
           icon: GetApp,
           onClick: props.onDownloadClicked,
+        },
+        {
+          label: 'Enable readonly mode',
+          icon: isReadOnly ? EditOff : Edit,
+          checked: isReadOnly,
+          onClick: () => {
+            props.onReadOnlyToggled(!isReadOnly);
+          },
         },
         {
           label: 'Open preferences',

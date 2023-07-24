@@ -2,6 +2,7 @@ import { EditorView } from '@codemirror/view';
 import { Text, useCodeMirror } from '@lyricistant/codemirror/CodeMirror';
 import { TextSelectionData } from '@lyricistant/codemirror/textSelection';
 import { Font } from '@lyricistant/common/preferences/PreferencesData';
+import { useReadOnlyMode } from '@lyricistant/renderer/app/useReadOnlyMode';
 import { Diagnostic } from '@lyricistant/renderer/diagnostics/DiagnosticsMachine';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import { Box, styled, useTheme } from '@mui/material';
@@ -134,6 +135,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
     openFindReplaceDialog,
     setContainer,
   } = useCodeMirror({
+    isReadOnly: useReadOnlyMode(),
     text: props.value.text,
     markedText: props.selectedText && {
       from: props.selectedText.from,

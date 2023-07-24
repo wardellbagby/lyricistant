@@ -3,6 +3,7 @@ import {
   ChunkLine,
   ParsedHistoryData,
 } from '@lyricistant/common/history/ParsedHistoryData';
+import { useReadOnlyMode } from '@lyricistant/renderer/app/useReadOnlyMode';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
 import {
@@ -141,6 +142,7 @@ export function FileHistory(props: FileHistoryProps) {
   const [historyData] = useChannelData('file-history', props.open);
   const [displayedHistory, setDisplayedHistory] =
     useState<ParsedHistoryData>(null);
+  const isReadOnly = useReadOnlyMode();
 
   const anchor = useSmallLayout() ? 'bottom' : 'right';
 
@@ -165,15 +167,17 @@ export function FileHistory(props: FileHistoryProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDisplayedHistory(null)}>Close</Button>
-          <Button
-            onClick={() => {
-              platformDelegate.send('apply-file-history', displayedHistory);
-              setDisplayedHistory(null);
-              onClose();
-            }}
-          >
-            Apply
-          </Button>
+          {!isReadOnly && (
+            <Button
+              onClick={() => {
+                platformDelegate.send('apply-file-history', displayedHistory);
+                setDisplayedHistory(null);
+                onClose();
+              }}
+            >
+              Apply
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
       <Drawer
