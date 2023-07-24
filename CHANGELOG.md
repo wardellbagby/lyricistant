@@ -1,3 +1,17 @@
+# [3.3.0](https://github.com/wardellbagby/lyricistant/compare/v3.2.0...v3.3.0) (2023-07-24)
+
+
+### Bug Fixes
+
+* scope syllable counts for lines that start with whitespace to line ([ecdda35](https://github.com/wardellbagby/lyricistant/commit/ecdda3598d3b79b811a65a9063db585f1ace2f4f))
+
+
+### Features
+
+* add grammar and spellchecking support ([cd3e567](https://github.com/wardellbagby/lyricistant/commit/cd3e567b0b906c49e58a399a4ff04081f04cf23d))
+
+
+
 # [3.2.0](https://github.com/wardellbagby/lyricistant/compare/v3.1.3...v3.2.0) (2023-07-08)
 
 
