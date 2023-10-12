@@ -1,4 +1,5 @@
 import { CapacitorConfig } from '@capacitor/cli';
+import { KeyboardResize } from '@capacitor/keyboard';
 import ip from 'internal-ip';
 
 const config: CapacitorConfig = {
@@ -18,7 +19,7 @@ const config: CapacitorConfig = {
   },
   plugins: {
     Keyboard: {
-      resize: 'native',
+      resize: KeyboardResize.Native,
     },
   },
 };
