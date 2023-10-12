@@ -35,7 +35,7 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
       extraMetadata: {
         main: 'main.js',
       },
-      afterSign: require.resolve('./notarize-mac-app.js'),
+      afterSign: require.resolve('./notarize-mac-app.ts'),
       fileAssociations: {
         ext: 'lyrics',
         name: 'Lyricistant File',

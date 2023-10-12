@@ -59,7 +59,13 @@ module.exports = {
       rules: { 'jest/valid-expect': 'off', 'jest/expect-expect': 'off' },
     },
     {
-      files: ['*.js', 'scripts/**/*.ts', 'tooling/**/*.ts', '.github/**/*.ts'],
+      files: [
+        '*.js',
+        'scripts/**/*.ts',
+        'tooling/**/*.ts',
+        '.github/**/*.ts',
+        'apps/electron/notarize-mac-app.ts',
+      ],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/explicit-member-accessibility': 'off',

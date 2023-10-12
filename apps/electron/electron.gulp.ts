@@ -225,7 +225,7 @@ export const buildAllElectronApps = series(
   runElectronBuilder('production', false)
 );
 export const buildCurrentElectronApp = series(
-  coreTasks('development'),
-  bundleElectron('development'),
-  runElectronBuilder('development', true)
+  coreTasks('production'),
+  bundleElectron('production'),
+  runElectronBuilder('production', true)
 );

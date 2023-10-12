@@ -1,10 +1,14 @@
-require('dotenv').config({
-  path: require('path').resolve('apps', 'electron', 'notarize-mac-app.env'),
+import path from 'path';
+import { notarize } from '@electron/notarize';
+import { config } from 'dotenv';
+import { AfterPackContext } from 'electron-builder';
+
+config({
+  path: path.resolve('apps', 'electron', 'notarize-mac-app.env'),
   debug: true,
 });
-const { notarize } = require('@electron/notarize');
 
-exports.default = async (context) => {
+export default async (context: AfterPackContext) => {
   const { electronPlatformName, appOutDir } = context;
   if (electronPlatformName !== 'darwin') {
     return;
@@ -24,7 +28,10 @@ exports.default = async (context) => {
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLE_ID,
     appleIdPassword: process.env.APPLE_ID_PASSWORD,
+    teamId: '46CHV69543',
   });
+
+  console.log('  • notarized successfully using custom notarization');
 
   /*
    * electron-builder doesn't let you explicitly define the platforms that it
