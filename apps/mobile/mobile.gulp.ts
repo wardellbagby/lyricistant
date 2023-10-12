@@ -164,7 +164,7 @@ export const startAndroid = series(
 export const startIOS = series(
   cleanMobile,
   copyMobileHtmlFile,
-  parallel(runWebServer('Android'), runIOS)
+  parallel(runWebServer('iOS'), runIOS)
 );
 
 export const buildAndroid = series(bundleAndroid, buildAndroidApp);

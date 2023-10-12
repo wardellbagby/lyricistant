@@ -11,13 +11,12 @@ public class FilesPlugin: CAPPlugin, UIDocumentPickerDelegate,UINavigationContro
     
     @objc func openFile(_ call: CAPPluginCall) {
         guard let viewController = self.bridge?.viewController else { return }
-        let types = UTType.types(tag: "txt",
-                                 tagClass: UTTagClass.filenameExtension,
-                                 conformingTo: nil) + [UTType.LyricsFileFormat]
+        let types = [UTType.data]
         
         DispatchQueue.main.async {
             let documentPickerController = UIDocumentPickerViewController(
-                forOpeningContentTypes: types)
+                forOpeningContentTypes: types
+            )
             
             self.delegate = OpenFileDelegate(call);
             documentPickerController.delegate = self.delegate;
@@ -91,12 +90,23 @@ private class OpenFileDelegate : NSObject, UIDocumentPickerDelegate {
         guard let filePath = urls.first else {
             return
         }
-        do {
-            let data = [UInt8](try Data(contentsOf: filePath))
-            call.resolve(PlatformFile(filePath, data));
-        } catch {
-            call.reject("Unable to read the selected file");
-        }
+            if(filePath.startAccessingSecurityScopedResource()) {
+                let error: NSErrorPointer = nil
+                let coordinator = NSFileCoordinator(filePresenter: nil)
+                coordinator.coordinate(readingItemAt: filePath, error: error) { url in
+                    do {
+                        let data = [UInt8](try Data(contentsOf: url))
+                        call.resolve(PlatformFile(filePath, data));
+                    } catch {
+                        call.reject("Unable to read the selected file", nil, error);
+                    }
+                }
+                if(error != nil) {
+                    call.reject("Unable to read the selected file", nil, error?.pointee)
+                }
+            } else {
+                call.reject("Unable to read the selected file")
+            }
     }
     
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
