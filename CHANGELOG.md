@@ -1,3 +1,7 @@
+## [3.3.2](https://github.com/wardellbagby/lyricistant/compare/v3.3.1+electron.ios...v3.3.2) (2023-10-13)
+
+
+
 ## [3.3.1](https://github.com/wardellbagby/lyricistant/compare/v3.3.0...v3.3.1) (2023-10-13)
 
 
