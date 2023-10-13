@@ -1,3 +1,12 @@
+## [3.3.1](https://github.com/wardellbagby/lyricistant/compare/v3.3.0...v3.3.1) (2023-10-13)
+
+
+### Bug Fixes
+
+* support opening files external files on iOS on physical devices ([4060934](https://github.com/wardellbagby/lyricistant/commit/4060934ac1c156aad41a5e54cdc1c03e8142631e))
+
+
+
 # [3.3.0](https://github.com/wardellbagby/lyricistant/compare/v3.2.0...v3.3.0) (2023-07-24)
 
 
