@@ -105,6 +105,7 @@ describe('Menu component', () => {
       onPreferencesClicked={jest.fn()}
       onDownloadClicked={jest.fn()}
       onFileHistoryClicked={jest.fn()}
+      onReadOnlyToggled={jest.fn()}
       {...props}
     />
   );

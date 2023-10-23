@@ -1,4 +1,5 @@
 import { DetailPaneVisibility } from '@lyricistant/common/preferences/PreferencesData';
+import { useReadOnlyMode } from '@lyricistant/renderer/app/useReadOnlyMode';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import {
   Diagnostics,
@@ -16,8 +17,10 @@ import { Rhymes, RhymesProps } from '@lyricistant/renderer/rhymes/Rhymes';
 import { ChevronLeft, ChevronRight, Spellcheck } from '@mui/icons-material';
 import {
   Box,
+  Button,
   Fab,
   LinearProgress,
+  Link,
   Paper,
   Slide,
   Tab,
@@ -30,11 +33,11 @@ import {
   ScriptOutline,
 } from 'mdi-material-ui';
 import React, {
-  ReactElement,
   PropsWithChildren,
+  ReactElement,
+  useCallback,
   useEffect,
   useState,
-  useCallback,
 } from 'react';
 
 interface Button {
@@ -52,6 +55,7 @@ interface DetailPaneProps {
   dictionaryProps: Omit<DictionaryProps, keyof DetailPaneChildProps>;
   diagnosticsProps: Omit<DiagnosticsPanelProps, keyof DetailPaneChildProps>;
   onTabChanged: (data: TabChangedData) => void;
+  onDisableReadonlyMode: () => void;
 }
 
 export interface DetailPaneChildProps {
@@ -107,6 +111,11 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
   const isSmallLayout = useSmallLayout();
   const [isAnimating, setIsAnimating] = useState(false);
   const [preferencesData] = useChannelData('prefs-updated');
+  const isReadOnly = useReadOnlyMode();
+
+  useEffect(() => {
+    setExpanded(!isReadOnly);
+  }, [isReadOnly]);
 
   const changeTab = useCallback(
     (index: number) => {
@@ -143,9 +152,6 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
     [showToggleButton]
   );
 
-  // When we're closed and not animating, position as absolute so that only the
-  // button is actually taking up space in the layout. Use position instead of
-  // display so that the animation can finish properly.
   const paperDisplay = !isExpanded && !isAnimating ? 'none' : 'unset';
 
   useEffect(() => {
@@ -153,7 +159,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
   }, [tabIndex]);
 
   useEffect(() => {
-    if (!isSmallLayout) {
+    if (!isSmallLayout && !isReadOnly) {
       setExpanded(true);
     }
   }, [isSmallLayout]);
@@ -255,18 +261,30 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
           flex={'0 0 auto'}
           gap={'16px'}
         >
-          {props.buttons.map((button, index) => (
-            <DetailButton key={index} {...button} />
-          ))}
-          {showToggleButton && (
-            <Fab
-              size={'small'}
-              onClick={() => {
-                setExpanded(!isExpanded);
-              }}
+          {isReadOnly ? (
+            <Link
+              fontStyle={'italic'}
+              variant={'subtitle2'}
+              onClick={props.onDisableReadonlyMode}
             >
-              <ToggleDetailPaneIcon isExpanded={isExpanded} />
-            </Fab>
+              Disable readonly mode
+            </Link>
+          ) : (
+            <>
+              {props.buttons.map((button, index) => (
+                <DetailButton key={index} {...button} />
+              ))}
+              {showToggleButton && (
+                <Fab
+                  size={'small'}
+                  onClick={() => {
+                    setExpanded(!isExpanded);
+                  }}
+                >
+                  <ToggleDetailPaneIcon isExpanded={isExpanded} />
+                </Fab>
+              )}
+            </>
           )}
         </Box>
       </Box>

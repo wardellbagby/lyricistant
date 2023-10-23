@@ -118,6 +118,7 @@ const useReconfigurableExtension = (
 };
 
 export interface CodeMirrorEditorProps {
+  isReadOnly: boolean;
   text: Text;
   cursorPosition?: number;
   font: string;
@@ -182,6 +183,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const textCompartment = useMemo(() => new Compartment(), []);
   const selectionCompartment = useMemo(() => new Compartment(), []);
   const fileDroppedCompartment = useMemo(() => new Compartment(), []);
+  const readOnlyCompartment = useMemo(() => new Compartment(), []);
 
   const themeExtension = useMemo(
     () => editorTheme(appTheme, props.font),
@@ -198,6 +200,13 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
   const fileDroppedExtension = useMemo(
     () => fileDropped(props.onFileDropped),
     [props.onFileDropped]
+  );
+  const readOnlyExtension = useMemo(
+    () => [
+      EditorState.readOnly.of(props.isReadOnly),
+      EditorView.editable.of(!props.isReadOnly),
+    ],
+    [props.isReadOnly]
   );
 
   useEffect(() => {
@@ -242,6 +251,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         markStateField,
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
         linter(() => [], { delay: 0, tooltipFilter: () => [] }),
+        readOnlyCompartment.of(readOnlyExtension),
       ],
     }),
     [
@@ -334,6 +344,10 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         compartment: fileDroppedCompartment,
         extension: fileDroppedExtension,
       },
+      {
+        compartment: readOnlyCompartment,
+        extension: readOnlyExtension,
+      },
     ],
     [
       themeCompartment,
@@ -344,6 +358,8 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       selectionExtension,
       fileDroppedCompartment,
       fileDroppedExtension,
+      readOnlyCompartment,
+      readOnlyExtension,
     ]
   );
   useReconfigurableExtension(view, reconfigurableExtensions);
