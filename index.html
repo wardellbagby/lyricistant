@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" type="image/png" href="favicon.svg" />
+    <meta charset="utf-8" />
+    <meta name="title" content="Lyricistant" />
+    <meta
+      name="description"
+      content="A helpful writing assistant for lyricists!"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://lyricistant.app/" />
+    <meta property="og:title" content="Lyricistant" />
+    <meta
+      property="og:description"
+      content="A helpful writing assistant for lyricists!"
+    />
+    <meta
+      property="og:image"
+      content="https://lyricistant.app/social_banner.png"
+    />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://lyricistant.app/" />
+    <meta property="twitter:title" content="Lyricistant" />
+    <meta
+      property="twitter:description"
+      content="A helpful writing assistant for lyricists!"
+    />
+    <meta
+      property="twitter:image"
+      content="https://lyricistant.app/social_banner.png"
+    />
+    <style>
+      body {
+        height: 100vh;
+        width: 100vw;
+        height: 100dvh;
+        width: 100dvw;
+        margin: 0;
+        overscroll-behavior: none;
+        overflow: hidden;
+      }
+      .MuiDialog-root {
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
+      @keyframes preload-overlay-logo-animation {
+        0% {
+          fill: var(--primary);
+        }
+
+        100% {
+          fill: var(--surface);
+        }
+      }
+      #preload-overlay {
+        opacity: 1;
+        background-color: var(--background);
+        color: var(--text);
+        transition: opacity 500ms linear, background-color 500ms;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        position: fixed;
+        overscroll-behavior: none;
+        z-index: 999;
+      }
+      #preload-overlay-logo {
+        animation-duration: 2s;
+        animation-fill-mode: forwards;
+        animation-iteration-count: infinite;
+        animation-name: preload-overlay-logo-animation;
+        animation-timing-function: ease-in-out;
+        animation-direction: alternate;
+      }
+      #app {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        transition: opacity 500ms linear;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
+    </style>
+    <title>Lyricistant</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="preload.renderer.js"></script>
+    <script async src="renderer.js"></script>
+  </body>
+</html>

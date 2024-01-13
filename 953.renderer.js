@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunklyricistant=self.webpackChunklyricistant||[]).push([[953],{3953:(e,r,n)=>{n.r(r),n.d(r,{rhymeGenerator:()=>t});const t=(0,n(4375).Ud)(new Worker(new URL(n.p+n.u(946),n.b),{name:"rhyme-generator"}))}}]);
+//# sourceMappingURL=953.renderer.js.map
