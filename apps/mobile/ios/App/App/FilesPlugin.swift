@@ -38,12 +38,16 @@ public class FilesPlugin: CAPPlugin, UIDocumentPickerDelegate,UINavigationContro
             return;
         }
         
-        do {
-            let url = URL(string: path)!
-            try data.write(to: url)
-            call.resolve(FileMetadata(url))
-        } catch {
-            call.reject(error.localizedDescription)
+        let url = URL(string: path)!
+        let error: NSErrorPointer = nil
+        let coordinator = NSFileCoordinator(filePresenter: nil)
+        coordinator.coordinate(writingItemAt: url, error: error) { urlToWrite in
+            do {
+                try data.write(to: urlToWrite)
+                call.resolve(FileMetadata(url))
+            } catch {
+                call.reject(error.localizedDescription)
+            }
         }
     }
     
@@ -90,23 +94,23 @@ private class OpenFileDelegate : NSObject, UIDocumentPickerDelegate {
         guard let filePath = urls.first else {
             return
         }
-            if(filePath.startAccessingSecurityScopedResource()) {
-                let error: NSErrorPointer = nil
-                let coordinator = NSFileCoordinator(filePresenter: nil)
-                coordinator.coordinate(readingItemAt: filePath, error: error) { url in
-                    do {
-                        let data = [UInt8](try Data(contentsOf: url))
-                        call.resolve(PlatformFile(filePath, data));
-                    } catch {
-                        call.reject("Unable to read the selected file", nil, error);
-                    }
+        if(filePath.startAccessingSecurityScopedResource()) {
+            let error: NSErrorPointer = nil
+            let coordinator = NSFileCoordinator(filePresenter: nil)
+            coordinator.coordinate(readingItemAt: filePath, error: error) { url in
+                do {
+                    let data = [UInt8](try Data(contentsOf: url))
+                    call.resolve(PlatformFile(filePath, data));
+                } catch {
+                    call.reject("Unable to read the selected file", nil, error);
                 }
-                if(error != nil) {
-                    call.reject("Unable to read the selected file", nil, error?.pointee)
-                }
-            } else {
-                call.reject("Unable to read the selected file")
             }
+            if(error != nil) {
+                call.reject("Unable to read the selected file", nil, error?.pointee)
+            }
+        } else {
+            call.reject("Unable to read the selected file")
+        }
     }
     
     public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
