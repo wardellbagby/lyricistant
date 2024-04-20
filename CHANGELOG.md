@@ -1,3 +1,12 @@
+## [3.3.3](https://github.com/wardellbagby/lyricistant/compare/v3.3.2+ios...v3.3.3) (2024-04-20)
+
+
+### Bug Fixes
+
+* **ios:** support iOS writing to external files properly ([928ddb8](https://github.com/wardellbagby/lyricistant/commit/928ddb87f20eba706b0ac39d866f01f88de5d516))
+
+
+
 ## [3.3.2](https://github.com/wardellbagby/lyricistant/compare/v3.3.1+electron.ios...v3.3.2) (2023-10-13)
 
 
