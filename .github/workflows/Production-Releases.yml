@@ -11,15 +11,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -40,7 +40,7 @@ jobs:
           DISPLAY: ':99'
       - name: 'Upload build artifacts if failed'
         if: 'failure()'
-        uses: 'actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb'
+        uses: 'actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba'
         with:
           path: "apps/**/dist/\ndist/"
   unitTest:
@@ -50,15 +50,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -86,15 +86,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -107,7 +107,7 @@ jobs:
       - name: 'Build Web'
         run: 'gulp buildWeb --max-old-space-size=8192'
       - name: 'Deploy Web'
-        uses: 'peaceiris/actions-gh-pages@de7ea6f8efb354206b205ef54722213d99067935'
+        uses: 'peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e'
         with:
           personal_token: '${{ secrets.LYRICISTANT_TOKEN }}'
           publish_branch: 'gh-pages'
@@ -122,15 +122,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -139,11 +139,11 @@ jobs:
       - name: 'Install Gulp'
         run: 'npm install -g gulp@4.0.2'
       - name: 'Setup Ruby'
-        uses: 'ruby/setup-ruby@250fcd6a742febb1123a77a841497ccaa8b9e939'
+        uses: 'ruby/setup-ruby@6bd3d993c602f6b675728ebaecb2b569ff86e99b'
         with:
           bundler-cache: true
       - name: 'Setup Java 17'
-        uses: 'actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2'
+        uses: 'actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9'
         with:
           java-version: 17
           distribution: 'temurin'
@@ -171,7 +171,7 @@ jobs:
           MATCH_GIT_BASIC_AUTHORIZATION: '${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}'
           MATCH_PASSWORD: '${{ secrets.MATCH_PASSWORD }}'
       - name: 'Upload iOS app'
-        uses: 'actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb'
+        uses: 'actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba'
         with:
           name: 'ios-app'
           path: 'apps/mobile/dist/ios/*.ipa'
@@ -186,15 +186,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -203,11 +203,11 @@ jobs:
       - name: 'Install Gulp'
         run: 'npm install -g gulp@4.0.2'
       - name: 'Setup Ruby'
-        uses: 'ruby/setup-ruby@250fcd6a742febb1123a77a841497ccaa8b9e939'
+        uses: 'ruby/setup-ruby@6bd3d993c602f6b675728ebaecb2b569ff86e99b'
         with:
           bundler-cache: true
       - name: 'Setup Java 17'
-        uses: 'actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2'
+        uses: 'actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9'
         with:
           java-version: 17
           distribution: 'temurin'
@@ -230,7 +230,7 @@ jobs:
       - name: 'Build Android'
         run: 'bundle exec fastlane android release deploy:true'
       - name: 'Upload Android app'
-        uses: 'actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb'
+        uses: 'actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba'
         with:
           name: 'android-app'
           path: 'apps/mobile/dist/android/*.apk'
@@ -245,15 +245,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -264,7 +264,7 @@ jobs:
       - name: 'Install Node modules'
         run: 'npm ci'
       - name: 'Build Electron apps'
-        uses: 'nick-invision/retry@3e91a01664abd3c5cd539100d10d33b9c5b68482'
+        uses: 'nick-invision/retry@7152eba30c6575329ac0576536151aca5a72780e'
         env:
           CSC_LINK: '${{ secrets.MACOS_CERT }}'
           CSC_KEY_PASSWORD: '${{ secrets.MACOS_CERT_PASSWORD }}'
@@ -276,7 +276,7 @@ jobs:
           max_attempts: 3
           command: 'gulp buildAllElectronApps --max-old-space-size=8192'
       - name: 'Upload Electron apps'
-        uses: 'actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb'
+        uses: 'actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba'
         with:
           name: 'electron-apps'
           path: 'apps/electron/dist/production/app/*.*'
@@ -296,15 +296,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -317,25 +317,25 @@ jobs:
       - name: 'Create Github release notes'
         run: './scripts/create_release_changelog.ts all release.txt'
       - name: 'Download iOS app'
-        uses: 'actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7'
+        uses: 'actions/download-artifact@8caf195ad4b1dee92908e23f56eeb0696f1dd42d'
         with:
           name: 'ios-app'
           path: '/tmp/artifacts'
         if: 'needs.buildIOSApp.result == ''success'''
       - name: 'Download Electron apps'
-        uses: 'actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7'
+        uses: 'actions/download-artifact@8caf195ad4b1dee92908e23f56eeb0696f1dd42d'
         with:
           name: 'electron-apps'
           path: '/tmp/artifacts'
         if: 'needs.buildElectronApps.result == ''success'''
       - name: 'Download Android app'
-        uses: 'actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7'
+        uses: 'actions/download-artifact@8caf195ad4b1dee92908e23f56eeb0696f1dd42d'
         with:
           name: 'android-app'
           path: '/tmp/artifacts'
         if: 'needs.buildAndroidApp.result == ''success'''
       - name: 'Create Github release'
-        uses: 'softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844'
+        uses: 'softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564'
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           body_path: 'release.txt'

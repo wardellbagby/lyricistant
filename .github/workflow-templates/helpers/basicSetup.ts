@@ -33,10 +33,10 @@ export const basicSetup = (options?: Options): Step[] => {
       },
     } as Step,
     {
-      name: 'Setup Node.js - 18',
+      name: 'Setup Node.js - 20',
       uses: SETUP_NODE,
       with: {
-        'node-version': '>=18',
+        'node-version': '>=20',
         cache: 'npm',
       },
     } as Step,

@@ -12,7 +12,7 @@ jobs:
     runs-on: 'ubuntu-22.04'
     steps:
       - name: 'Cancel in-progress Workflow runs'
-        uses: 'styfle/cancel-workflow-action@b173b6ec0100793626c2d9e6b90435061f4fc3e5'
+        uses: 'styfle/cancel-workflow-action@85880fa0301c86cca9da44039ee3bb12d3bedbfa'
         with:
           access_token: '${{ secrets.GITHUB_TOKEN }}'
   uiTest:
@@ -22,15 +22,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -51,7 +51,7 @@ jobs:
           DISPLAY: ':99'
       - name: 'Upload build artifacts if failed'
         if: 'failure()'
-        uses: 'actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb'
+        uses: 'actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba'
         with:
           path: "apps/**/dist/\ndist/"
     needs:
@@ -63,15 +63,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
@@ -99,15 +99,15 @@ jobs:
       - name: 'Mask any potential PII'
         run: "echo \"::add-mask::${{ secrets.PHONE_NUMBER }}\"\necho \"::add-mask::${{ secrets.APPLE_ID }}\""
       - name: 'Checkout the current branch'
-        uses: 'actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8'
+        uses: 'actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11'
         with:
           fetch-depth: 0
-      - name: 'Setup Node.js - 18'
-        uses: 'actions/setup-node@8c91899e586c5b171469028077307d293428b516'
+      - name: 'Setup Node.js - 20'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
-          node-version: '>=18'
+          node-version: '>=20'
           cache: 'npm'
-      - uses: 'actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7'
+      - uses: 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9'
         name: 'Cache Node Modules'
         with:
           path: '~/.npm'
