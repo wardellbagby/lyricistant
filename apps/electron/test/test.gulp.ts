@@ -7,8 +7,4 @@ const runElectronUiTests = () => jest(path.resolve(__dirname, 'ui'));
 
 export const uiTestElectron = series(buildTestElectron, runElectronUiTests);
 export const unitTestElectron = () => jest(path.resolve(__dirname, 'unit'));
-export const testElectron = series(
-  unitTestElectron,
-  buildTestElectron,
-  uiTestElectron
-);
+export const testElectron = series(unitTestElectron, uiTestElectron);

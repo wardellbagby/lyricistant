@@ -88,7 +88,7 @@ export const basicSetup = (options?: Options): Step[] => {
       },
       {
         name: 'Setup Playwright dependencies',
-        run: 'sudo npx playwright install-deps',
+        run: 'npx playwright install --with-deps',
       }
     ),
   ].filter((value) => value);

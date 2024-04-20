@@ -33,7 +33,7 @@ jobs:
         if: 'runner.os == ''Linux'''
         run: 'Xvfb :99 &'
       - name: 'Setup Playwright dependencies'
-        run: 'sudo npx playwright install-deps'
+        run: 'npx playwright install --with-deps'
       - name: 'Run UI tests'
         run: 'gulp uiTests --max-old-space-size=8192'
         env:
@@ -72,7 +72,7 @@ jobs:
         if: 'runner.os == ''Linux'''
         run: 'Xvfb :99 &'
       - name: 'Setup Playwright dependencies'
-        run: 'sudo npx playwright install-deps'
+        run: 'npx playwright install --with-deps'
       - name: 'Run unit tests'
         run: 'gulp unitTests --max-old-space-size=8192'
   deployWeb:
