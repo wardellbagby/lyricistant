@@ -1,5 +1,4 @@
 import { DetailPaneChildProps } from '@lyricistant/renderer/detail/DetailPane';
-import { ListSpacer } from '@lyricistant/renderer/detail/ListSpacer';
 import { NullStateText } from '@lyricistant/renderer/detail/NullStateText';
 import { WordChip } from '@lyricistant/renderer/detail/WordChip';
 import {
@@ -71,7 +70,6 @@ const MeaningList = React.memo(
     onRelatedTextClicked: (word: string) => void;
   }) => (
     <Box sx={{ overflow: 'auto', paddingLeft: '16px', paddingRight: '16px' }}>
-      <ListSpacer />
       <Typography variant={'h5'}>{props.query}</Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {props.meanings.map((meaning, index) => (
@@ -97,7 +95,6 @@ const MeaningList = React.memo(
           </React.Fragment>
         ))}
       </Box>
-      <ListSpacer />
     </Box>
   )
 );

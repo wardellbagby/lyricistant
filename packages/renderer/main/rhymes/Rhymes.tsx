@@ -1,12 +1,9 @@
 import { DetailPaneChildProps } from '@lyricistant/renderer/detail/DetailPane';
-import { ListSpacer } from '@lyricistant/renderer/detail/ListSpacer';
 import { NullStateText } from '@lyricistant/renderer/detail/NullStateText';
 import { WordChip } from '@lyricistant/renderer/detail/WordChip';
-import { useChannelData } from '@lyricistant/renderer/platform/useChannel';
-import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
+import { RhymesState } from '@lyricistant/renderer/rhymes/RhymesMachine';
 import { Box } from '@mui/material';
-import { useMachine } from '@xstate/react';
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { Rhyme } from './rhyme';
 
@@ -34,11 +31,9 @@ const RhymesList = React.memo(({ rhymes, onRhymeClicked }: RhymesListProps) => (
     gap={'4px'}
     alignContent={'start'}
     flexDirection={'row'}
-    overflow={'auto'}
     paddingLeft={'16px'}
     paddingRight={'16px'}
   >
-    <ListSpacer />
     {rhymes.map((rhyme) => (
       <RhymesListItem
         rhyme={rhyme}
@@ -46,14 +41,12 @@ const RhymesList = React.memo(({ rhymes, onRhymeClicked }: RhymesListProps) => (
         onRhymeClicked={onRhymeClicked}
       />
     ))}
-    <ListSpacer />
   </Box>
 ));
 
 /** The props needed to render the {@link Rhymes} component. */
 export interface RhymesProps extends DetailPaneChildProps {
-  /** The query to find rhymes for. */
-  query?: string;
+  state: RhymesState;
   /**
    * Invoked when a rhyme is clicked.
    *
@@ -68,22 +61,9 @@ export interface RhymesProps extends DetailPaneChildProps {
  * @param props The props needed to render this component.
  */
 export const Rhymes: React.FC<RhymesProps> = (props) => {
-  const [state, send] = useMachine(rhymesMachine);
+  const state = props.state;
 
   const handleError = useErrorHandler();
-
-  const [preferences] = useChannelData('prefs-updated');
-
-  useLayoutEffect(() => {
-    if (!props.isVisible || !props.query || !preferences) {
-      return;
-    }
-    send({
-      type: 'INPUT',
-      input: props.query,
-      rhymeSource: preferences.rhymeSource,
-    });
-  }, [props.query, props.isVisible, preferences]);
 
   useEffect(() => {
     if (state.matches('error')) {

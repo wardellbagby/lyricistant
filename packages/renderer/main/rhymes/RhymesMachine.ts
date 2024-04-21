@@ -2,7 +2,7 @@ import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
 import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import { assign, createMachine, EventObject } from 'xstate';
+import { assign, createMachine, EventObject, State } from 'xstate';
 
 type generateRhymes =
   typeof import('@lyricistant/rhyme-generator')['rhymeGenerator']['generateRhymes'];
@@ -24,6 +24,8 @@ interface RhymesEvent extends EventObject {
   input: string;
   rhymeSource: RhymeSource;
 }
+
+export type RhymesState = State<RhymesContext, RhymesEvent>;
 
 const fetchRhymes = async (
   input: string,
