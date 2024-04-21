@@ -1,3 +1,12 @@
+## [3.3.4](https://github.com/wardellbagby/lyricistant/compare/v3.3.3...v3.3.4) (2024-04-21)
+
+
+### Features
+
+* hide scrollbars ([7dcacb5](https://github.com/wardellbagby/lyricistant/commit/7dcacb5f9d0e9c5b40bc3bb607bec1932154bed3))
+
+
+
 ## [3.3.3](https://github.com/wardellbagby/lyricistant/compare/v3.3.2+ios...v3.3.3) (2024-04-20)
 
 
