@@ -286,7 +286,7 @@ const SingleLineRhymeList = ({
   state: RhymesState;
   onClick: (rhyme: Rhyme) => void;
 }) => {
-  const rhymes = state.context.rhymes?.slice(8) ?? [];
+  const rhymes = state.context.rhymes?.slice(0, 8) ?? [];
 
   return (
     <Box
