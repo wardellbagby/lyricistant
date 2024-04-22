@@ -355,6 +355,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
 
     Array.from(container.getElementsByClassName('cm-content')).forEach(
       (element) => {
+        element.setAttribute('autocorrect', 'on');
         element.setAttribute('autocapitalize', 'on');
       }
     );
