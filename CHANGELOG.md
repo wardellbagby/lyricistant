@@ -1,3 +1,14 @@
+# [3.4.0](https://github.com/wardellbagby/lyricistant/compare/v3.3.4+web.electron...v3.4.0) (2024-04-22)
+
+
+### Features
+
+* add readonly mode ([d8664dd](https://github.com/wardellbagby/lyricistant/commit/d8664dd40ae4509caeb876a6906e4fcc5c95d88b))
+* move "inspiration" button into the rhymes detail pane ([461e71f](https://github.com/wardellbagby/lyricistant/commit/461e71f600c54914b244c4805d919950f151052c))
+* show rhymes on phones when not expanded ([6fc981c](https://github.com/wardellbagby/lyricistant/commit/6fc981c3e26fd0f46326aee09f04c53c1a5e1c27))
+
+
+
 ## [3.3.4](https://github.com/wardellbagby/lyricistant/compare/v3.3.3...v3.3.4) (2024-04-21)
 
 
