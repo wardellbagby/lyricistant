@@ -1,5 +1,6 @@
 import { DetailPaneVisibility } from '@lyricistant/common/preferences/PreferencesData';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
+import { WordChip } from '@lyricistant/renderer/detail/WordChip';
 import {
   Diagnostics,
   DiagnosticsPanelProps,
@@ -13,8 +14,11 @@ import {
   useChannelData,
 } from '@lyricistant/renderer/platform/useChannel';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import { Rhymes } from '@lyricistant/renderer/rhymes/Rhymes';
-import { rhymesMachine } from '@lyricistant/renderer/rhymes/RhymesMachine';
+import { Rhymes, RhymesProps } from '@lyricistant/renderer/rhymes/Rhymes';
+import {
+  rhymesMachine,
+  RhymesState,
+} from '@lyricistant/renderer/rhymes/RhymesMachine';
 import { ChevronLeft, ChevronRight, Spellcheck } from '@mui/icons-material';
 import {
   Box,
@@ -39,7 +43,6 @@ import React, {
   useEffect,
   useState,
   useCallback,
-  ReactNode,
   useLayoutEffect,
 } from 'react';
 
@@ -174,15 +177,6 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
     }
   }, [preferencesData?.detailPaneVisibility]);
 
-  const rhymesNode = (
-    <Rhymes
-      isVisible={isExpanded ? isExpandedPaneShowingRhymes : true}
-      onLoadingChanged={setLoading}
-      state={rhymesState}
-      onRhymeClicked={props.rhymeProps.onRhymeClicked}
-    />
-  );
-
   // Only show the small rhymes when we're not expanded on the small layout.
   // The large layout doesn't need them.
   const showSmallRhymes = isSmallLayout ? !isExpanded : false;
@@ -213,7 +207,10 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
             props.onTabChanged(data);
             setIsExpandedPaneIsShowingRhymes(data.isRhymesTab);
           }}
-          rhymesNode={rhymesNode}
+          rhymesProps={{
+            onRhymeClicked: props.rhymeProps.onRhymeClicked,
+            state: rhymesState,
+          }}
           dictionaryProps={props.dictionaryProps}
           diagnosticsProps={props.diagnosticsProps}
         />
@@ -221,10 +218,14 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
           display={'flex'}
           justifyContent={'end'}
           flex={'0 0 auto'}
-          gap={'16px'}
+          gap={'20px'}
         >
           {showSmallRhymes && (
-            <ClosedPaneRhymes isLoading={isLoading} rhymesNode={rhymesNode} />
+            <ClosedPaneRhymes
+              isLoading={isLoading}
+              rhymesState={rhymesState}
+              onRhymeClicked={props.rhymeProps.onRhymeClicked}
+            />
           )}
           {props.buttons.map((button, index) => (
             <DetailButton key={index} {...button} />
@@ -247,17 +248,49 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
 
 interface ClosedPaneRhymesProps {
   isLoading: boolean;
-  rhymesNode: ReactElement;
+  rhymesState: RhymesState;
+  onRhymeClicked: (rhyme: Rhyme) => void;
 }
 const ClosedPaneRhymes = (props: ClosedPaneRhymesProps) => (
   <Fade in={!props.isLoading}>
     <Box display={'flex'} flex={'1 1'} alignItems={'center'}>
       <Box height={'32px'} overflow={'hidden'} flex={'1 1 auto'}>
-        {props.rhymesNode}
+        <SingleLineRhymeList
+          state={props.rhymesState}
+          onClick={props.onRhymeClicked}
+        />
       </Box>
     </Box>
   </Fade>
 );
+
+const SingleLineRhymeList = ({
+  state,
+  onClick,
+}: {
+  state: RhymesState;
+  onClick: (rhyme: Rhyme) => void;
+}) => {
+  const rhymes = state.context.rhymes?.slice(8) ?? [];
+
+  return (
+    <Box
+      display={'flex'}
+      flexWrap={'wrap'}
+      gap={'8px'}
+      alignContent={'start'}
+      flexDirection={'row'}
+    >
+      {rhymes.map((rhyme) => (
+        <WordChip
+          word={rhyme.word}
+          key={rhyme.word}
+          onClick={() => onClick(rhyme)}
+        />
+      ))}
+    </Box>
+  );
+};
 
 interface ExpandedDetailPaneTabChangedData extends TabChangedData {
   isRhymesTab: boolean;
@@ -268,7 +301,7 @@ interface ExpandedDetailPaneProps {
   isLoading: boolean;
   setLoading: (value: boolean) => void;
   onTabChanged: (data: ExpandedDetailPaneTabChangedData) => void;
-  rhymesNode: ReactNode;
+  rhymesProps: Omit<RhymesProps, keyof DetailPaneChildProps>;
   dictionaryProps: DetailPaneProps['dictionaryProps'];
   diagnosticsProps: DetailPaneProps['diagnosticsProps'];
 }
@@ -278,7 +311,7 @@ const ExpandedDetailPane = ({
   isLoading,
   setLoading,
   onTabChanged,
-  rhymesNode,
+  rhymesProps,
   dictionaryProps,
   diagnosticsProps,
 }: ExpandedDetailPaneProps) => {
@@ -348,7 +381,11 @@ const ExpandedDetailPane = ({
             <Tab aria-label={'Diagnostics Tab'} icon={<Spellcheck />} />
           </Tabs>
           <TabbedItem index={0} selectedIndex={tabIndex}>
-            {rhymesNode}
+            <Rhymes
+              {...rhymesProps}
+              isVisible={tabIndex === 0}
+              onLoadingChanged={setLoading}
+            />
           </TabbedItem>
           <TabbedItem index={1} selectedIndex={tabIndex}>
             <Dictionary
