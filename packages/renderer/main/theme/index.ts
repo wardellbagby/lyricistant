@@ -71,9 +71,9 @@ export const createTheme = (themeData?: ThemeData): Theme => {
 };
 
 const lightThemePalette: Palette = {
-  primary: '#1b5e20',
-  background: '#fafafa',
-  surface: '#eeeeee',
+  primary: '#2c9a35',
+  background: '#faf9f7',
+  surface: '#efeae1',
   primaryText: '#212121',
   secondaryText: '#424242',
 };
