@@ -2,7 +2,7 @@ import { DetailPaneChildProps } from '@lyricistant/renderer/detail/DetailPane';
 import { NullStateText } from '@lyricistant/renderer/detail/NullStateText';
 import { WordChip } from '@lyricistant/renderer/detail/WordChip';
 import { RhymesState } from '@lyricistant/renderer/rhymes/RhymesMachine';
-import { Box } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { Rhyme } from './rhyme';
@@ -47,12 +47,14 @@ const RhymesList = React.memo(({ rhymes, onRhymeClicked }: RhymesListProps) => (
 /** The props needed to render the {@link Rhymes} component. */
 export interface RhymesProps extends DetailPaneChildProps {
   state: RhymesState;
+  isSurpriseButtonEnabled: boolean;
   /**
    * Invoked when a rhyme is clicked.
    *
    * @param rhyme The rhyme that was clicked.
    */
   onRhymeClicked: (rhyme: Rhyme) => void;
+  onSurpriseMeClicked: () => void;
 }
 
 /**
@@ -96,6 +98,25 @@ export const Rhymes: React.FC<RhymesProps> = (props) => {
       />
 
       <RhymesList rhymes={rhymes} onRhymeClicked={props.onRhymeClicked} />
+      {props.isSurpriseButtonEnabled && (
+        <>
+          <Box flex={'1 1 auto'} />
+          <Box
+            paddingLeft={'32px'}
+            paddingRight={'32px'}
+            width={'100%'}
+            display={'flex'}
+          >
+            <Chip
+              sx={{ flex: '1 1 auto' }}
+              label={'Surprise me'}
+              onClick={props.onSurpriseMeClicked}
+              variant={'outlined'}
+              color={'primary'}
+            />
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

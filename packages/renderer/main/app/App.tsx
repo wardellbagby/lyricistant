@@ -24,7 +24,6 @@ import {
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
 import { useEventCallback } from '@mui/material';
 import { sample, startCase } from 'lodash-es';
-import { Dice6 } from 'mdi-material-ui';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
@@ -183,13 +182,6 @@ export function App() {
     setSelectedText
   );
 
-  const detailPaneButtons = [
-    isInspirationButtonEnabled && {
-      icon: <Dice6 />,
-      onClick: onInspirationButtonClicked,
-    },
-  ].filter((button) => !!button);
-
   if (error) {
     return (
       <AppError error={error} editorText={editorTextData.text.toString()} />
@@ -223,13 +215,15 @@ export function App() {
         }
         detail={
           <DetailPane
-            buttons={detailPaneButtons}
+            buttons={[]}
             onTabChanged={(data) => {
               setShowQuerySelection(data.isQueryTab);
             }}
             rhymeProps={{
               onRhymeClicked,
               query: selectedText?.text,
+              isSurpriseButtonEnabled: isInspirationButtonEnabled,
+              onSurpriseMeClicked: onInspirationButtonClicked,
             }}
             dictionaryProps={{
               onRelatedTextClicked: onTextReplacement,

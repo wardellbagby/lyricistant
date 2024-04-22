@@ -55,9 +55,9 @@ interface TabChangedData {
   isQueryTab: boolean;
 }
 
-interface DetailRhymesProps {
+interface DetailRhymesProps
+  extends Omit<Omit<RhymesProps, 'state'>, keyof DetailPaneChildProps> {
   query?: string;
-  onRhymeClicked: (rhyme: Rhyme) => void;
 }
 
 interface DetailPaneProps {
@@ -208,7 +208,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
             setIsExpandedPaneIsShowingRhymes(data.isRhymesTab);
           }}
           rhymesProps={{
-            onRhymeClicked: props.rhymeProps.onRhymeClicked,
+            ...props.rhymeProps,
             state: rhymesState,
           }}
           dictionaryProps={props.dictionaryProps}
