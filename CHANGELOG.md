@@ -1,3 +1,12 @@
+## [3.4.2](https://github.com/wardellbagby/lyricistant/compare/v3.4.1...v3.4.2) (2024-04-22)
+
+
+### Features
+
+* improve light theme color scheme ([91ccaaf](https://github.com/wardellbagby/lyricistant/commit/91ccaaf77ffdc90112cd286020ae6db4ee9f417a))
+
+
+
 ## [3.4.1](https://github.com/wardellbagby/lyricistant/compare/v3.4.0...v3.4.1) (2024-04-22)
 
 
