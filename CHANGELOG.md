@@ -1,3 +1,12 @@
+## [3.4.1](https://github.com/wardellbagby/lyricistant/compare/v3.4.0...v3.4.1) (2024-04-22)
+
+
+### Bug Fixes
+
+* match closed panel rhymes to the extended panel rhymes ([eae6aba](https://github.com/wardellbagby/lyricistant/commit/eae6aba2766558e9d19725eede98ae2f69271b1f))
+
+
+
 # [3.4.0](https://github.com/wardellbagby/lyricistant/compare/v3.3.4+web.electron...v3.4.0) (2024-04-22)
 
 
