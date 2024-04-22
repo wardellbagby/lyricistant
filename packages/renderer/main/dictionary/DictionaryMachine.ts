@@ -78,6 +78,7 @@ export const dictionaryMachine = createMachine<
   DictionaryEvent
 >(
   {
+    predictableActionArguments: true,
     id: 'dictionary',
     initial: 'waiting',
     context: {

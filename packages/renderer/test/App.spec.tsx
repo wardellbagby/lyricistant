@@ -8,6 +8,7 @@ import {
 } from '@lyricistant/common/preferences/PreferencesData';
 import { App as RealApp } from '@lyricistant/renderer/app/App';
 import { configure, screen } from '@testing-library/dom';
+import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, { useState } from 'react';
 import { BaseLocationHook, Router } from 'wouter';
@@ -40,7 +41,7 @@ describe('App component', () => {
   });
 
   it('updates the document title when the app title changes', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     await platformDelegate.invoke('app-title-changed', 'All I Need');
 
@@ -48,7 +49,7 @@ describe('App component', () => {
   });
 
   it('shows an error when files fail to open', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     await platformDelegate.invoke(
       'file-opened',
@@ -61,7 +62,7 @@ describe('App component', () => {
   });
 
   it('handles files being saved', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'Initially here');
@@ -81,7 +82,7 @@ describe('App component', () => {
   });
 
   it("handles the platform checking if file is modified when it isn't", async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     await platformDelegate.invoke('check-file-modified');
 
@@ -92,7 +93,7 @@ describe('App component', () => {
   });
 
   it('handles the platform checking if file is modified when user has made edits', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'oh no the printer jaaaaaaaaaaaaaammmmed');
@@ -106,7 +107,7 @@ describe('App component', () => {
   });
 
   it('handles the platform having created a new file', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'my loco pinocchio');
@@ -122,7 +123,7 @@ describe('App component', () => {
   });
 
   it('handles the platform having opened a file', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'ok! coo!');
@@ -144,7 +145,7 @@ describe('App component', () => {
   });
 
   it('handles the platform having opened a file but does not clear history', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'dot buzz backslash tight!');
@@ -166,7 +167,7 @@ describe('App component', () => {
   });
 
   it('handles the platform asking for the editor text', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'and the oscar goes to...');
@@ -180,7 +181,7 @@ describe('App component', () => {
   });
 
   it('replaces words when rhymes are clicked', async () => {
-    render(<App />);
+    await act(() => render(<App />));
 
     await platformDelegate.invoke('prefs-updated', {
       rhymeSource: RhymeSource.Offline,

@@ -88,6 +88,7 @@ export const diagnosticsMachine = createMachine<
   DiagnosticsEvent
 >(
   {
+    predictableActionArguments: true,
     id: 'diagnostics',
     initial: 'waiting',
     context: {

@@ -27,6 +27,7 @@ export const latestReleaseMachine = createMachine<
   LatestReleaseContext,
   LatestReleaseEvent
 >({
+  predictableActionArguments: true,
   id: 'latest-release',
   initial: 'inactive',
   context: {

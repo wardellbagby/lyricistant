@@ -90,7 +90,7 @@ export const getBaseJestConfig = (options: {
     testTimeout: getTimeout(options.type),
     setupFilesAfterEnv: [
       'jest-extended/all',
-      path.resolve(__dirname, 'jest-test-setup.js'),
+      path.resolve(__dirname, 'jest-test-setup.ts'),
     ],
   };
 

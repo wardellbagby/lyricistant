@@ -55,6 +55,7 @@ const fetchRhymes = async (
 /** A State Machine that handles fetching rhymes based on a query and returning a result. */
 export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>(
   {
+    predictableActionArguments: true,
     id: 'rhymes',
     initial: 'inactive',
     context: {
