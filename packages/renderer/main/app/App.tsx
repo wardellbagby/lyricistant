@@ -29,6 +29,7 @@ import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
+import { ReadOnlyModeContext } from './useReadOnlyMode';
 
 const MINIMUM_IDLE_TIME = 15_000;
 
@@ -63,6 +64,7 @@ export function App() {
     (value) => value + 1,
     0
   );
+  const [isReadOnly, setReadOnly] = useState(false);
 
   useEffect(() => {
     setSelectedDiagnostic(null);
@@ -190,70 +192,74 @@ export function App() {
 
   return (
     <ErrorBoundary fallbackRender={fallbackErrorRendering}>
-      <ResponsiveMainDetailLayout
-        menu={
-          <Menu
-            onDownloadClicked={onDownloadClicked}
-            onFileHistoryClicked={onFileHistoryClicked}
-            onPreferencesClicked={onPreferencesClicked}
-            onNewClicked={onNewClicked}
-            onOpenClicked={onOpenClicked}
-            onSaveClicked={onSaveClicked}
-          />
-        }
-        main={
-          <Editor
-            value={editorTextData}
-            selectedText={showQuerySelection ? selectedText : null}
-            diagnostics={diagnostics}
-            selectedDiagnostic={selectedDiagnostic}
-            onSelectedDiagnosticRendered={setSelectedDiagnosticRect}
-            onTextChanged={setEditorTextData}
-            onTextSelected={onTextSelected}
-            onModificationStateChanged={setIsModified}
-          />
-        }
-        detail={
-          <DetailPane
-            buttons={[]}
-            onTabChanged={(data) => {
-              setShowQuerySelection(data.isQueryTab);
-            }}
-            rhymeProps={{
-              onRhymeClicked,
-              query: selectedText?.text,
-              isSurpriseButtonEnabled: isInspirationButtonEnabled,
-              onSurpriseMeClicked: onInspirationButtonClicked,
-            }}
-            dictionaryProps={{
-              onRelatedTextClicked: onTextReplacement,
-              query: selectedText?.text,
-            }}
-            diagnosticsProps={{
-              text: editorTextData.text,
-              onDiagnosticsLoaded,
-              onProposalAccepted,
-              onDiagnosticClicked: (diagnostic) => {
-                setSelectedDiagnostic({
-                  ...diagnostic,
-                  key: selectedDiagnosticKey,
-                });
-                incrementKey();
-              },
-            }}
-          />
-        }
-      />
-      <Modals />
-      <DiagnosticActionPopover
-        diagnostic={selectedDiagnostic}
-        domRect={selectedDiagnosticRect}
-        onProposalAccepted={onProposalAccepted}
-        onClose={() => {
-          setSelectedDiagnostic(null);
-          setSelectedDiagnosticRect(null);
-        }}
-      />
+      <ReadOnlyModeContext.Provider value={isReadOnly}>
+        <ResponsiveMainDetailLayout
+          menu={
+            <Menu
+              onReadOnlyToggled={setReadOnly}
+              onDownloadClicked={onDownloadClicked}
+              onFileHistoryClicked={onFileHistoryClicked}
+              onPreferencesClicked={onPreferencesClicked}
+              onNewClicked={onNewClicked}
+              onOpenClicked={onOpenClicked}
+              onSaveClicked={onSaveClicked}
+            />
+          }
+          main={
+            <Editor
+              value={editorTextData}
+              selectedText={showQuerySelection ? selectedText : null}
+              diagnostics={diagnostics}
+              selectedDiagnostic={selectedDiagnostic}
+              onSelectedDiagnosticRendered={setSelectedDiagnosticRect}
+              onTextChanged={setEditorTextData}
+              onTextSelected={onTextSelected}
+              onModificationStateChanged={setIsModified}
+            />
+          }
+          detail={
+            <DetailPane
+              buttons={[]}
+              onTabChanged={(data) => {
+                setShowQuerySelection(data.isQueryTab);
+              }}
+              rhymeProps={{
+                onRhymeClicked,
+                query: selectedText?.text,
+                isSurpriseButtonEnabled: isInspirationButtonEnabled,
+                onSurpriseMeClicked: onInspirationButtonClicked,
+              }}
+              dictionaryProps={{
+                onRelatedTextClicked: onTextReplacement,
+                query: selectedText?.text,
+              }}
+              diagnosticsProps={{
+                text: editorTextData.text,
+                onDiagnosticsLoaded,
+                onProposalAccepted,
+                onDiagnosticClicked: (diagnostic) => {
+                  setSelectedDiagnostic({
+                    ...diagnostic,
+                    key: selectedDiagnosticKey,
+                  });
+                  incrementKey();
+                },
+              }}
+              onDisableReadonlyMode={() => setReadOnly(false)}
+            />
+          }
+        />
+        <Modals />
+        <DiagnosticActionPopover
+          diagnostic={selectedDiagnostic}
+          domRect={selectedDiagnosticRect}
+          onProposalAccepted={onProposalAccepted}
+          onClose={() => {
+            setSelectedDiagnostic(null);
+            setSelectedDiagnosticRect(null);
+          }}
+        />
+      </ReadOnlyModeContext.Provider>
     </ErrorBoundary>
   );
 }

@@ -1,4 +1,5 @@
 import { DetailPaneVisibility } from '@lyricistant/common/preferences/PreferencesData';
+import { useReadOnlyMode } from '@lyricistant/renderer/app/useReadOnlyMode';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
 import { WordChip } from '@lyricistant/renderer/detail/WordChip';
 import {
@@ -22,9 +23,11 @@ import {
 import { ChevronLeft, ChevronRight, Spellcheck } from '@mui/icons-material';
 import {
   Box,
+  Button,
   Fab,
   Fade,
   LinearProgress,
+  Link,
   Paper,
   Slide,
   Tab,
@@ -38,12 +41,12 @@ import {
   ScriptOutline,
 } from 'mdi-material-ui';
 import React, {
-  ReactElement,
   PropsWithChildren,
-  useEffect,
-  useState,
+  ReactElement,
   useCallback,
+  useEffect,
   useLayoutEffect,
+  useState,
 } from 'react';
 
 interface Button {
@@ -66,6 +69,7 @@ interface DetailPaneProps {
   dictionaryProps: Omit<DictionaryProps, keyof DetailPaneChildProps>;
   diagnosticsProps: Omit<DiagnosticsPanelProps, keyof DetailPaneChildProps>;
   onTabChanged: (data: TabChangedData) => void;
+  onDisableReadonlyMode: () => void;
 }
 
 export interface DetailPaneChildProps {
@@ -127,6 +131,11 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
     useState(true);
   const [rhymesState, sendRhymesEvent] = useMachine(rhymesMachine);
   const isRhymesVisible = isExpanded ? isExpandedPaneShowingRhymes : true;
+  const isReadOnly = useReadOnlyMode();
+
+  useEffect(() => {
+    setExpanded(!isReadOnly);
+  }, [isReadOnly]);
 
   useLayoutEffect(() => {
     if (!isRhymesVisible || !props.rhymeProps || !preferencesData) {
@@ -164,7 +173,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
   );
 
   useEffect(() => {
-    if (!isSmallLayout) {
+    if (!isSmallLayout && !isReadOnly) {
       setExpanded(true);
     }
   }, [isSmallLayout]);
@@ -179,7 +188,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
 
   // Only show the small rhymes when we're not expanded on the small layout.
   // The large layout doesn't need them.
-  const showSmallRhymes = isSmallLayout ? !isExpanded : false;
+  const showSmallRhymes = isSmallLayout ? !isExpanded && !isReadOnly : false;
 
   return (
     <Box
@@ -217,6 +226,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
         <Box
           display={'flex'}
           justifyContent={'end'}
+          alignItems={'center'}
           flex={'0 0 auto'}
           gap={'20px'}
         >
@@ -226,6 +236,11 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
               rhymesState={rhymesState}
               onRhymeClicked={props.rhymeProps.onRhymeClicked}
             />
+          )}
+          {isReadOnly && (
+            <Link variant={'subtitle2'} onClick={props.onDisableReadonlyMode}>
+              Readonly mode
+            </Link>
           )}
           {props.buttons.map((button, index) => (
             <DetailButton key={index} {...button} />
