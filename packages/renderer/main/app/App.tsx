@@ -86,6 +86,10 @@ export function App() {
     [setEditorTextData]
   );
   const onTextReplacement = useEventCallback((text: string) => {
+    if (isReadOnly) {
+      return;
+    }
+
     const prefix = editorTextData.text.sliceString(0, selectedText.from);
     const suffix = editorTextData.text.sliceString(selectedText.to);
 
@@ -176,10 +180,16 @@ export function App() {
   );
 
   const { onInspirationButtonClicked, isInspirationButtonEnabled } =
-    useInspirationButton(editorTextData, setEditorTextData, setSelectedText);
+    useInspirationButton(
+      editorTextData,
+      isReadOnly,
+      setEditorTextData,
+      setSelectedText
+    );
 
   const { onProposalAccepted } = useProposalAcceptance(
     editorTextData,
+    isReadOnly,
     setEditorTextData,
     setSelectedText
   );
@@ -266,11 +276,16 @@ export function App() {
 
 const useProposalAcceptance = (
   editorTextData: EditorTextData,
+  isReadOnly: boolean,
   setEditorTextData: (data: EditorTextData) => void,
   setSelectedText: (data: TextSelectionData) => void
 ) => {
   const onProposalAccepted = useEventCallback(
     (proposal: string, diagnostic: Diagnostic) => {
+      if (isReadOnly) {
+        return;
+      }
+
       setEditorTextData({
         ...editorTextData,
         text: editorTextData.text.replace(
@@ -306,11 +321,16 @@ const useInspirationWords = () => {
 
 const useInspirationButton = (
   editorTextData: EditorTextData,
+  isReadOnly: boolean,
   setEditorTextData: (data: EditorTextData) => void,
   setSelectedText: (data: TextSelectionData) => void
 ) => {
   const inspirationWords = useInspirationWords();
   const onInspirationButtonClicked = useEventCallback(() => {
+    if (isReadOnly) {
+      return;
+    }
+
     const position = editorTextData.cursorPosition ?? 0;
     const prefix = editorTextData.text.sliceString(0, position);
     const suffix = editorTextData.text.sliceString(position);
@@ -363,7 +383,7 @@ const useInspirationButton = (
 
   return {
     onInspirationButtonClicked,
-    isInspirationButtonEnabled: !!inspirationWords,
+    isInspirationButtonEnabled: !isReadOnly && !!inspirationWords,
   };
 };
 
