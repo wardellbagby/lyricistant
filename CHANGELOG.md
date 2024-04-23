@@ -1,3 +1,12 @@
+## [3.4.3](https://github.com/wardellbagby/lyricistant/compare/v3.4.2...v3.4.3) (2024-04-23)
+
+
+### Bug Fixes
+
+* **readonly:** disable selecting rhymes, fixes, and "surprise me" button when readonly is enabled ([8d8b0b4](https://github.com/wardellbagby/lyricistant/commit/8d8b0b43c822ee0077a35d8f78b9aba5e9c00516))
+
+
+
 ## [3.4.2](https://github.com/wardellbagby/lyricistant/compare/v3.4.1...v3.4.2) (2024-04-22)
 
 
