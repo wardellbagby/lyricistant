@@ -92,7 +92,7 @@
     "eslint-plugin-react": "^7.30.0",
     "file-loader": "^6.2.0",
     "get-port": "^5.1.1",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "http-server": "^14.1.1",
     "husky": "^8.0.0",
     "identity-obj-proxy": "^3.0.0",
