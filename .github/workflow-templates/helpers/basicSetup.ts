@@ -51,7 +51,7 @@ export const basicSetup = (options?: Options): Step[] => {
     } as Step,
     {
       name: 'Install Gulp',
-      run: 'npm install -g gulp@4.0.2',
+      run: 'npm install -g gulp@5',
     },
     ...ifTrue<Step>(
       forMobileBuilds,
