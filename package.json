@@ -23,7 +23,7 @@
     "node": ">= 16"
   },
   "devDependencies": {
-    "@capacitor/cli": "^5.5.0",
+    "@capacitor/cli": "^6.2.0",
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
     "@electron/notarize": "^2.5.0",
@@ -133,12 +133,12 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "@capacitor/android": "^5.5.0",
-    "@capacitor/app": "^5.0.6",
-    "@capacitor/core": "^5.5.0",
-    "@capacitor/ios": "^5.5.0",
-    "@capacitor/keyboard": "^5.0.6",
-    "@capacitor/status-bar": "^5.0.6",
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/app": "^6.0.2",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0",
+    "@capacitor/keyboard": "^6.0.3",
+    "@capacitor/status-bar": "^6.0.2",
     "@codemirror/commands": "^6.5.0",
     "@codemirror/language": "^6.10.1",
     "@codemirror/lint": "^6.5.0",

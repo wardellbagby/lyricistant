@@ -7,7 +7,7 @@ versions.load(new FileInputStream(versionsFile))
 
 android {
   namespace "com.wardellbagby.lyricistant"
-  compileSdkVersion rootProject.ext.compileSdkVersion
+  compileSdk rootProject.ext.compileSdkVersion
   kotlinOptions {
       jvmTarget = "17"
   }
