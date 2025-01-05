@@ -1,3 +1,12 @@
+## [3.4.6](https://github.com/wardellbagby/lyricistant/compare/v3.4.5...v3.4.6) (2025-01-05)
+
+
+### Bug Fixes
+
+* **ios:** stop pretending to resave files after initial save ([111796b](https://github.com/wardellbagby/lyricistant/commit/111796b3606c6c4edf5e0a511b73205f4707a902))
+
+
+
 ## [3.4.5](https://github.com/wardellbagby/lyricistant/compare/v3.4.4...v3.4.5) (2025-01-02)
 
 
