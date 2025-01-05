@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
+		47150DD42D2A212E0001EA7C /* LyricistantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47150DD32D2A212E0001EA7C /* LyricistantViewController.swift */; };
 		47905CC32617F5240080728B /* FilesPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47905CC22617F5240080728B /* FilesPlugin.swift */; };
 		47905CC72617F5B60080728B /* FilesPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 47905CC62617F5B60080728B /* FilesPlugin.m */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
+		47150DD32D2A212E0001EA7C /* LyricistantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricistantViewController.swift; sourceTree = "<group>"; };
 		47905CC22617F5240080728B /* FilesPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesPlugin.swift; sourceTree = "<group>"; };
 		47905CC52617F5B50080728B /* App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "App-Bridging-Header.h"; sourceTree = "<group>"; };
 		47905CC62617F5B60080728B /* FilesPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilesPlugin.m; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				47905CC22617F5240080728B /* FilesPlugin.swift */,
 				47905CC62617F5B60080728B /* FilesPlugin.m */,
 				47905CC52617F5B50080728B /* App-Bridging-Header.h */,
+				47150DD32D2A212E0001EA7C /* LyricistantViewController.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -218,6 +221,7 @@
 				47905CC72617F5B60080728B /* FilesPlugin.m in Sources */,
 				47905CC32617F5240080728B /* FilesPlugin.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				47150DD42D2A212E0001EA7C /* LyricistantViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
