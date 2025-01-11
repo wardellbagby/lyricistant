@@ -3,6 +3,7 @@ import {
   RendererDelegate,
   RendererToPlatformListener,
 } from '@lyricistant/common/Delegates';
+import { DialogInteractionData } from '@lyricistant/common/dialogs/Dialog';
 
 /**
  * Represents some discrete "grouping" of logic related mostly to a single bit
@@ -52,22 +53,30 @@ export const getEditorText = async (
 export const showRendererDialog = async (
   rendererDelegate: RendererDelegate,
   ...args: Parameters<PlatformToRendererListener['show-dialog']>
-): Promise<Parameters<RendererToPlatformListener['dialog-interaction']>> =>
-  new Promise((resolve) => {
+): Promise<DialogInteractionData> => {
+  const tag = args[0].tag;
+  return new Promise((resolve) => {
     const onInteraction = (
       ...clickArgs: Parameters<RendererToPlatformListener['dialog-interaction']>
     ) => {
-      rendererDelegate.removeListener('dialog-interaction', onInteraction);
-      rendererDelegate.removeListener('dialog-closed', onClose);
-      resolve(clickArgs);
+      if (clickArgs[0] === tag) {
+        rendererDelegate.removeListener('dialog-interaction', onInteraction);
+        rendererDelegate.removeListener('dialog-closed', onClose);
+        resolve(clickArgs[1]);
+      }
     };
 
-    const onClose = () => {
-      rendererDelegate.removeListener('dialog-interaction', onInteraction);
-      rendererDelegate.removeListener('dialog-closed', onClose);
+    const onClose = (
+      ...closeArgs: Parameters<RendererToPlatformListener['dialog-closed']>
+    ) => {
+      if (closeArgs[0] === tag) {
+        rendererDelegate.removeListener('dialog-interaction', onInteraction);
+        rendererDelegate.removeListener('dialog-closed', onClose);
+      }
     };
 
     rendererDelegate.on('dialog-interaction', onInteraction);
     rendererDelegate.on('dialog-closed', onClose);
     rendererDelegate.send('show-dialog', ...args);
   });
+};

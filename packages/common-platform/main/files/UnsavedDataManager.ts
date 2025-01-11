@@ -49,17 +49,17 @@ export class UnsavedDataManager implements Manager {
 
     if (hasUnsavedData) {
       this.logger.verbose('Unsaved data found.');
-      const [dialogTag, interactionData] = await showRendererDialog(
-        this.rendererDelegate,
-        {
-          type: 'alert',
-          tag: UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
-          title: 'Recover unsaved lyrics',
-          message: 'Unsaved lyrics found. Would you like to recover them?',
-          buttons: YES_NO_BUTTONS,
-        }
+      const interactionData = await showRendererDialog(this.rendererDelegate, {
+        type: 'alert',
+        tag: UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
+        title: 'Recover unsaved lyrics',
+        message: 'Unsaved lyrics found. Would you like to recover them?',
+        buttons: YES_NO_BUTTONS,
+      });
+      await this.onDialogClicked(
+        UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
+        interactionData.selectedButton
       );
-      await this.onDialogClicked(dialogTag, interactionData.selectedButton);
     } else {
       this.hasPromptedUnsavedDataRecovery = true;
       this.startAutomaticFileSaver();

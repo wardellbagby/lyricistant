@@ -287,46 +287,36 @@ export class FileManager implements Manager {
   };
 
   private onPromptSaveFileForNew = async () => {
-    const [tag, { selectedButton }] = await showRendererDialog(
-      this.rendererDelegate,
-      {
-        tag: FileManager.CONFIRM_NEW_FILE_TAG,
-        type: 'alert',
-        title: 'Discard unsaved changes?',
-        message:
-          "Your changes haven't been saved. Are you sure you want to create a new file?",
-        buttons: ['Cancel', 'Create new file'],
-      }
-    );
+    const { selectedButton } = await showRendererDialog(this.rendererDelegate, {
+      tag: FileManager.CONFIRM_NEW_FILE_TAG,
+      type: 'alert',
+      title: 'Discard unsaved changes?',
+      message:
+        "Your changes haven't been saved. Are you sure you want to create a new file?",
+      buttons: ['Cancel', 'Create new file'],
+    });
 
-    if (tag === FileManager.CONFIRM_NEW_FILE_TAG) {
-      if (selectedButton === 'Create new file') {
-        this.createNewFile();
-      } else {
-        this.logger.debug('User selected to not create a new file.');
-      }
+    if (selectedButton === 'Create new file') {
+      this.createNewFile();
+    } else {
+      this.logger.debug('User selected to not create a new file.');
     }
   };
 
   private onPromptSaveFileForOpen = async (file?: PlatformFile) => {
-    const [tag, { selectedButton }] = await showRendererDialog(
-      this.rendererDelegate,
-      {
-        tag: FileManager.CONFIRM_OPEN_FILE_TAG,
-        type: 'alert',
-        title: 'Discard unsaved changes?',
-        message:
-          "Your changes haven't been saved. Are you sure you want to open a different file?",
-        buttons: ['Cancel', 'Open file'],
-      }
-    );
+    const { selectedButton } = await showRendererDialog(this.rendererDelegate, {
+      tag: FileManager.CONFIRM_OPEN_FILE_TAG,
+      type: 'alert',
+      title: 'Discard unsaved changes?',
+      message:
+        "Your changes haven't been saved. Are you sure you want to open a different file?",
+      buttons: ['Cancel', 'Open file'],
+    });
 
-    if (tag === FileManager.CONFIRM_OPEN_FILE_TAG) {
-      if (selectedButton === 'Open file') {
-        await this.openFile(file);
-      } else {
-        this.logger.debug('User selected to not open file', file?.metadata);
-      }
+    if (selectedButton === 'Open file') {
+      await this.openFile(file);
+    } else {
+      this.logger.debug('User selected to not open file', file?.metadata);
     }
   };
 
@@ -396,24 +386,17 @@ export class FileManager implements Manager {
     const textOption = 'Plain text (.txt)';
     const neverAskAgainLabel = 'Never ask again';
 
-    const [tag, interactionData] = await showRendererDialog(
-      this.rendererDelegate,
-      {
-        tag: FileManager.CHOOSE_FILE_HANDLER_TAG,
-        type: 'selection',
-        title: 'Select file type',
-        checkbox: {
-          label: neverAskAgainLabel,
-        },
-        message:
-          'What file type to save as? Text files have wide compatibility, but Lyrics files support all Lyricistant features.',
-        options: [lyricsOption, textOption],
-      }
-    );
-
-    if (tag !== FileManager.CHOOSE_FILE_HANDLER_TAG) {
-      return;
-    }
+    const interactionData = await showRendererDialog(this.rendererDelegate, {
+      tag: FileManager.CHOOSE_FILE_HANDLER_TAG,
+      type: 'selection',
+      title: 'Select file type',
+      checkbox: {
+        label: neverAskAgainLabel,
+      },
+      message:
+        'What file type to save as? Text files have wide compatibility, but Lyrics files support all Lyricistant features.',
+      options: [lyricsOption, textOption],
+    });
 
     if (interactionData.checkboxes?.[neverAskAgainLabel]) {
       const preferencesData = await getPreferencesDataOrDefault(

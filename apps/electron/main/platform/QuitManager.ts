@@ -56,22 +56,17 @@ export class QuitManager implements Manager {
 
   private onPromptQuit = async () => {
     clearTimeout(this.forceQuitTimeout);
-    const [tag, { selectedButton }] = await showRendererDialog(
-      this.rendererDelegate,
-      {
-        tag: PROMPT_QUIT_TAG,
-        type: 'alert',
-        title: 'Discard unsaved changes?',
-        message:
-          "Are you sure you want to quit? Your changes haven't been saved.",
-        buttons: ['No', 'Quit Lyricistant'],
-      }
-    );
+    const { selectedButton } = await showRendererDialog(this.rendererDelegate, {
+      tag: PROMPT_QUIT_TAG,
+      type: 'alert',
+      title: 'Discard unsaved changes?',
+      message:
+        "Are you sure you want to quit? Your changes haven't been saved.",
+      buttons: ['No', 'Quit Lyricistant'],
+    });
 
-    if (tag === PROMPT_QUIT_TAG) {
-      if (selectedButton === 'Quit Lyricistant') {
-        this.onOkayForQuit();
-      }
+    if (selectedButton === 'Quit Lyricistant') {
+      this.onOkayForQuit();
     }
   };
 }
