@@ -1,4 +1,5 @@
 export interface BufferFileSystem {
+  areHandlesSupported: () => Promise<boolean>;
   saveFile: (
     buffer: ArrayBuffer,
     defaultFileName: string,

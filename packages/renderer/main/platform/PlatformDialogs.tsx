@@ -29,6 +29,7 @@ import {
   LinearProgressProps,
   MenuItem,
   Select,
+  TextField,
   Typography,
 } from '@mui/material';
 import * as React from 'react';
@@ -166,67 +167,87 @@ const AlertDialog = ({
   open: boolean;
   dialogData: AlertDialogData;
   onDialogInteraction: (interactionData: DialogInteractionData) => void;
-}) => (
-  <Dialog
-    open={open}
-    sx={{
-      overflow: 'none',
-    }}
-  >
-    <DialogTitle>{dialogData.title}</DialogTitle>
-    <DialogContent>
-      {dialogData.message && (
-        <DialogContentText>{dialogData.message}</DialogContentText>
-      )}
-      {dialogData.collapsibleMessage && (
-        <Accordion elevation={0} square>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            sx={{
-              paddingLeft: '0px',
-              paddingRight: '0px',
-            }}
-          >
-            <DialogContentText>
-              {dialogData.collapsibleMessage.label}
-            </DialogContentText>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{
-              overflowY: 'auto',
-              wordBreak: 'break-word',
-              maxHeight: '300px',
-            }}
-          >
-            <DialogContentText>
-              <Markdown text={dialogData.collapsibleMessage.message} />
-            </DialogContentText>
-          </AccordionDetails>
-        </Accordion>
-      )}
-      {dialogData.progress && (
-        <LinearProgressWithLabel value={dialogData.progress} />
-      )}
-    </DialogContent>
+}) => {
+  const [text, setText] = useState<string>(
+    dialogData.textField?.defaultValue ?? ''
+  );
 
-    {dialogData.buttons && (
-      <DialogActions>
-        {dialogData.buttons.map((label, index) => (
-          <Button
-            key={label}
-            onClick={() => onDialogInteraction({ selectedButton: label })}
-            color="primary"
-            variant={
-              index === dialogData.buttons.length - 1 ? 'contained' : 'text'
-            }
-          >
-            {label}
-          </Button>
-        ))}
-      </DialogActions>
-    )}
-  </Dialog>
-);
+  return (
+    <Dialog
+      open={open}
+      sx={{
+        overflow: 'none',
+      }}
+    >
+      <DialogTitle>{dialogData.title}</DialogTitle>
+      <DialogContent>
+        {dialogData.message && (
+          <DialogContentText>{dialogData.message}</DialogContentText>
+        )}
+        {dialogData.collapsibleMessage && (
+          <Accordion elevation={0} square>
+            <AccordionSummary
+              expandIcon={<ExpandMore />}
+              sx={{
+                paddingLeft: '0px',
+                paddingRight: '0px',
+              }}
+            >
+              <DialogContentText>
+                {dialogData.collapsibleMessage.label}
+              </DialogContentText>
+            </AccordionSummary>
+            <AccordionDetails
+              sx={{
+                overflowY: 'auto',
+                wordBreak: 'break-word',
+                maxHeight: '300px',
+              }}
+            >
+              <DialogContentText>
+                <Markdown text={dialogData.collapsibleMessage.message} />
+              </DialogContentText>
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {dialogData.progress && (
+          <LinearProgressWithLabel value={dialogData.progress} />
+        )}
+        {dialogData.textField && (
+          <TextField
+            fullWidth
+            margin={'dense'}
+            variant={'outlined'}
+            label={dialogData.textField.label}
+            value={text}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setText(event.target.value);
+            }}
+          />
+        )}
+      </DialogContent>
+
+      {dialogData.buttons && (
+        <DialogActions>
+          {dialogData.buttons.map((label, index) => (
+            <Button
+              key={label}
+              onClick={() => {
+                onDialogInteraction({ selectedButton: label, textField: text });
+              }}
+              color="primary"
+              variant={
+                index === dialogData.buttons.length - 1 ? 'contained' : 'text'
+              }
+            >
+              {label}
+            </Button>
+          ))}
+        </DialogActions>
+      )}
+    </Dialog>
+  );
+};
 
 const SelectionDialog = ({
   open,

@@ -17,6 +17,8 @@ const mobileFilesPlugin = registerPlugin<MobileFilesPlugin>('Files');
 export class MobileFiles implements Files {
   public constructor(private logger: Logger) {}
 
+  public supportsChoosingFileName = async () => true;
+
   public openFile = async () => {
     const result = await mobileFilesPlugin.openFile();
     if (result) {

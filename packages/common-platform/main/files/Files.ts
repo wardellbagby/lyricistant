@@ -34,6 +34,13 @@ export const SUPPORTED_EXTENSIONS = ['.txt', LYRICS_EXTENSION];
  */
 export interface Files {
   /**
+   * Whether this platform supports letting the user pick their own file name.
+   * If false, the user will be prompted to choose their file name before
+   * {@link saveFile} is called.
+   */
+  // TODO change this to an enum (promptForFileNameBeforeSave with values YES, NO)
+  supportsChoosingFileName: () => boolean | Promise<boolean>;
+  /**
    * Open a file from the platform. If file is provided, it is a file that the
    * user had dragged-and-dropped onto Lyricistant. If file is not provided,
    * this should open a file picker.
@@ -47,7 +54,8 @@ export interface Files {
    * an unexpected error, it should reject.
    *
    * @param data The data to write directly to a file.
-   * @param defaultFileName The default file name, with extension, to use.
+   * @param defaultFileName The default file name, with extension, to use. If
+   *   {@link supportsChoosingFileName} is false, this is the file name the user entered.
    * @param path Optionally, the path that is associated with this file. A path
    *   will be associated with this file if the user explicitly opened a file
    *   using {@link openFile}, and the path provided here will be the same

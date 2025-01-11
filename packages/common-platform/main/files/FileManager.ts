@@ -61,6 +61,9 @@ export class FileManager implements Manager {
     private logger: Logger
   ) {}
 
+  private static generateDefaultFileName = (fileHandler: FileHandler) =>
+    `Lyrics.${fileHandler.extension}`;
+
   public register(): void {
     this.rendererDelegate.on('ready-for-events', this.onRendererReady);
     this.rendererDelegate.on('new-file-attempt', this.onNewFile);
@@ -179,6 +182,33 @@ export class FileManager implements Manager {
     await this.saveFileActual(text, this.currentFile?.path);
   };
 
+  private getUserSelectedFileName = async (
+    fileHandler: FileHandler
+  ): Promise<string | null> => {
+    const defaultFileName = FileManager.generateDefaultFileName(fileHandler);
+    const interactionData = await showRendererDialog(this.rendererDelegate, {
+      tag: 'file-name-dialog',
+      type: 'alert',
+      title: 'Enter a file name',
+      textField: {
+        label: 'File name',
+        defaultValue: defaultFileName,
+      },
+      buttons: ['Cancel', 'Save'],
+    });
+
+    if (interactionData.selectedButton === 'Cancel') {
+      return null;
+    }
+
+    const selectedFileName = interactionData.textField ?? defaultFileName;
+    if (selectedFileName.endsWith(`.${fileHandler.extension}`)) {
+      return selectedFileName;
+    } else {
+      return `${selectedFileName}.${fileHandler.extension}`;
+    }
+  };
+
   private saveFileActual = async (lyrics: string, path: string) => {
     try {
       this.logger.debug('Saving file with lyrics', { path, lyrics });
@@ -202,6 +232,22 @@ export class FileManager implements Manager {
         ? await this.getDefaultFileHandler()
         : this.currentFile?.handler;
 
+      let defaultFileName = FileManager.generateDefaultFileName(fileHandler);
+
+      if (
+        (this.currentFile == null || this.currentFile?.path == null) &&
+        !(await this.files.supportsChoosingFileName())
+      ) {
+        // In the case where the platform won't give the user the ability to select a file name, and the file we're
+        // trying to save won't be able to overwrite an existing file (i.e., we have no path or no current file at all),
+        // prompt for a file name that we can pass into the platform.
+        defaultFileName = await this.getUserSelectedFileName(fileHandler);
+        // Cancel out if the user didn't pick a filename
+        if (defaultFileName == null) {
+          return;
+        }
+      }
+
       const serializedFileData = await fileHandler.create({
         extensions,
         lyrics,
@@ -209,14 +255,10 @@ export class FileManager implements Manager {
 
       const cancelSignal = this.showLoadingDialog('save', true);
       const newFileMetadata = await makeCancellable(
-        this.files.saveFile(
-          serializedFileData,
-          `Lyrics.${fileHandler.extension}`,
-          path
-        ),
+        this.files.saveFile(serializedFileData, defaultFileName, path),
         cancelSignal
       );
-      if (newFileMetadata) {
+      if (newFileMetadata && newFileMetadata.path) {
         this.showLoadingDialog('save');
         const fileTitle = newFileMetadata.name ?? newFileMetadata.path;
         this.currentFile = {

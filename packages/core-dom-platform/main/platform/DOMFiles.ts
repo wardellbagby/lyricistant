@@ -49,6 +49,8 @@ export class DOMFiles implements Files {
 
   public constructor(private fs: FileSystem, private logger: Logger) {}
 
+  public supportsChoosingFileName = () => true;
+
   public openFile = async (file?: PlatformFile): Promise<PlatformFile> => {
     if (file) {
       return file;

@@ -7,6 +7,10 @@ import { renderer } from '@web-platform/renderer';
 
 export class WebFiles implements Files {
   private handles = new Map<string, FileSystemFileHandle>();
+
+  public supportsChoosingFileName = async () =>
+    (await renderer.getFileSystem()).areHandlesSupported();
+
   public openFile = async (file?: PlatformFile): Promise<PlatformFile> => {
     if (file) {
       this.handles.set(file.metadata.path, file.extras.handle);
@@ -23,7 +27,7 @@ export class WebFiles implements Files {
       data,
       type: '',
       metadata: {
-        path,
+        path: handle ? path : undefined,
       },
     };
   };
@@ -41,7 +45,7 @@ export class WebFiles implements Files {
       return null;
     }
 
-    const returnedPath = handle?.name ?? path ?? defaultFileName;
+    const returnedPath = handle?.name;
     if (handle) {
       this.handles.set(returnedPath, handle);
     }

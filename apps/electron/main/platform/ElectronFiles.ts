@@ -16,6 +16,9 @@ export class ElectronFiles implements Files {
     private fs: FileSystem,
     private window: BrowserWindow
   ) {}
+
+  public supportsChoosingFileName = () => true;
+
   public openFile = async (file?: PlatformFile): Promise<PlatformFile> => {
     if (file) {
       return file;

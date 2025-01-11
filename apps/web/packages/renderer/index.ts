@@ -2,7 +2,7 @@ import { SUPPORTED_EXTENSIONS } from '@lyricistant/common-platform/files/Files';
 import { runIgnoringAbortErrors } from '@lyricistant/core-dom-platform/platform/DOMFiles';
 import { BufferFileSystem } from '@web-common/BufferFileSystem';
 import { Storage } from '@web-common/Storage';
-import { fileOpen, fileSave } from 'browser-fs-access';
+import { fileOpen, fileSave, supported } from 'browser-fs-access';
 import { expose, proxy, transfer } from 'comlink';
 import { mainProcessWorker, platform } from './platform';
 import { platformDelegate } from './PlatformDelegate';
@@ -27,6 +27,7 @@ export const receive = (channel: string, args: any[]) => {
 
 const getFileSystem: () => BufferFileSystem = () =>
   proxy({
+    areHandlesSupported: async () => supported,
     saveFile: async (buffer, defaultFileName: string, handle) => {
       const { result, cancelled } = await runIgnoringAbortErrors(logger, () =>
         fileSave(

@@ -20,6 +20,10 @@ export interface AlertDialogData {
   };
   buttons?: string[];
   progress?: number;
+  textField?: {
+    label: string;
+    defaultValue?: string;
+  };
 }
 
 export interface SelectionDialogData {
@@ -38,4 +42,5 @@ export interface DialogInteractionData {
   checkboxes?: {
     [label: string]: boolean;
   };
+  textField?: string;
 }
