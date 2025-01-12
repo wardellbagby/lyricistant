@@ -1,4 +1,5 @@
 import { registerPlugin } from '@capacitor/core';
+import { Device } from '@capacitor/device';
 import { FileMetadata } from '@lyricistant/common/files/PlatformFile';
 import { Logger } from '@lyricistant/common/Logger';
 import { Files } from '@lyricistant/common-platform/files/Files';
@@ -17,7 +18,10 @@ const mobileFilesPlugin = registerPlugin<MobileFilesPlugin>('Files');
 export class MobileFiles implements Files {
   public constructor(private logger: Logger) {}
 
-  public supportsChoosingFileName = async () => true;
+  public supportsChoosingFileName = async () => {
+    const platform = (await Device.getInfo()).platform;
+    return platform !== 'ios';
+  };
 
   public openFile = async () => {
     const result = await mobileFilesPlugin.openFile();

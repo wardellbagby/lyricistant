@@ -365,7 +365,7 @@
 				CURRENT_PROJECT_VERSION = 69;
 				DEVELOPMENT_TEAM = 46CHV69543;
 				INFOPLIST_FILE = App/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wardellbagby.lyricistant;
@@ -391,7 +391,7 @@
 				CURRENT_PROJECT_VERSION = 69;
 				DEVELOPMENT_TEAM = 46CHV69543;
 				INFOPLIST_FILE = App/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.wardellbagby.lyricistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";

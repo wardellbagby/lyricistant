@@ -38,7 +38,6 @@ export interface Files {
    * If false, the user will be prompted to choose their file name before
    * {@link saveFile} is called.
    */
-  // TODO change this to an enum (promptForFileNameBeforeSave with values YES, NO)
   supportsChoosingFileName: () => boolean | Promise<boolean>;
   /**
    * Open a file from the platform. If file is provided, it is a file that the
