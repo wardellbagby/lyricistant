@@ -1,3 +1,13 @@
+## [3.4.7](https://github.com/wardellbagby/lyricistant/compare/v3.4.6+ios...v3.4.7) (2025-01-13)
+
+
+### Features
+
+* **ios:** support setting a file name before saving ([4a7acc5](https://github.com/wardellbagby/lyricistant/commit/4a7acc500b332a056142b25c986c3bb78c2e06c6))
+* **web:** support setting a file name for browsers that only download ([f68da31](https://github.com/wardellbagby/lyricistant/commit/f68da31758188f7e79f2b7d0cc4504c59ab158b0))
+
+
+
 ## [3.4.6](https://github.com/wardellbagby/lyricistant/compare/v3.4.5...v3.4.6) (2025-01-05)
 
 
