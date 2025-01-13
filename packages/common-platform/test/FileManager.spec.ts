@@ -60,6 +60,7 @@ describe('File Manager', () => {
         type: 'text/plain',
       }),
       saveFile: Promise.resolve({ path: '/path/test2' }),
+      supportsChoosingFileName: Promise.resolve(true),
     });
 
     recentFiles = stubInterface<RecentFiles>({
@@ -656,6 +657,7 @@ describe('File Manager', () => {
       },
     });
   });
+
   it('saves the default file handler', async () => {
     preferences.getPreferences.resolves({
       ...defaultPreferences,
@@ -680,5 +682,43 @@ describe('File Manager', () => {
       ...defaultPreferences,
       defaultFileType: DefaultFileType.Plain_Text,
     });
+  });
+
+  it('prompts the user for the file name', async () => {
+    rendererDelegate.invokeOnSet(
+      'dialog-interaction',
+      FileManager.PROMPT_FILE_NAME_TAG,
+      {
+        selectedButton: 'Save',
+        textField: 'gnx.lyrics',
+      }
+    );
+    files.supportsChoosingFileName.resolves(false);
+
+    manager.register();
+
+    await rendererDelegate.invoke('save-file-attempt', 'Peekaboo');
+
+    expect(files.saveFile).to.have.been.calledWith(
+      encode('Peekaboo'),
+      'gnx.lyrics'
+    );
+  });
+
+  it('prompts the user for the file name - cancelling does nothing', async () => {
+    rendererDelegate.invokeOnSet(
+      'dialog-interaction',
+      FileManager.PROMPT_FILE_NAME_TAG,
+      {
+        selectedButton: 'Cancel',
+      }
+    );
+    files.supportsChoosingFileName.resolves(false);
+
+    manager.register();
+
+    await rendererDelegate.invoke('save-file-attempt', 'Peekaboo');
+
+    expect(files.saveFile).to.not.have.been.called;
   });
 });

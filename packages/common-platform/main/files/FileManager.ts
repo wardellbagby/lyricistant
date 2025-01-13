@@ -40,6 +40,7 @@ export class FileManager implements Manager {
   public static CONFIRM_NEW_FILE_TAG = 'confirm-new-file';
   public static CONFIRM_OPEN_FILE_TAG = 'confirm-open-file';
   public static CHOOSE_FILE_HANDLER_TAG = 'choose-file-handler';
+  public static PROMPT_FILE_NAME_TAG = 'file-name-dialog';
 
   public initialFile: PlatformFile | null = null;
 
@@ -187,7 +188,7 @@ export class FileManager implements Manager {
   ): Promise<string | null> => {
     const defaultFileName = FileManager.generateDefaultFileName(fileHandler);
     const interactionData = await showRendererDialog(this.rendererDelegate, {
-      tag: 'file-name-dialog',
+      tag: FileManager.PROMPT_FILE_NAME_TAG,
       type: 'alert',
       title: 'Enter a file name',
       textField: {
