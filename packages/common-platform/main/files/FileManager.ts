@@ -194,6 +194,7 @@ export class FileManager implements Manager {
       textField: {
         label: 'File name',
         defaultValue: defaultFileName,
+        validationRegex: /^[\w.()_\-+]+$/.source,
       },
       buttons: ['Cancel', 'Save'],
     });

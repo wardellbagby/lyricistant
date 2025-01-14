@@ -33,7 +33,7 @@ import {
   Typography,
 } from '@mui/material';
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /** Displays dialogs that the platform has requested to be shown. */
 export function PlatformDialogs() {
@@ -172,6 +172,14 @@ const AlertDialog = ({
     dialogData.textField?.defaultValue ?? ''
   );
 
+  const isTextFieldValid = useMemo(() => {
+    if (dialogData.textField?.validationRegex == null) {
+      return true;
+    }
+
+    return RegExp(dialogData.textField.validationRegex).test(text);
+  }, [dialogData.textField?.validationRegex, text]);
+
   return (
     <Dialog
       open={open}
@@ -236,6 +244,9 @@ const AlertDialog = ({
                 onDialogInteraction({ selectedButton: label, textField: text });
               }}
               color="primary"
+              disabled={
+                !isTextFieldValid && index === dialogData.buttons.length - 1
+              }
               variant={
                 index === dialogData.buttons.length - 1 ? 'contained' : 'text'
               }

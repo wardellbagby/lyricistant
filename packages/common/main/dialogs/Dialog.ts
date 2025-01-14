@@ -23,6 +23,7 @@ export interface AlertDialogData {
   textField?: {
     label: string;
     defaultValue?: string;
+    validationRegex?: string;
   };
 }
 

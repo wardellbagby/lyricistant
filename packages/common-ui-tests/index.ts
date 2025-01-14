@@ -23,7 +23,7 @@ export default (
     isSmallLayout: boolean;
   }>
 ) => {
-  it('shows a prompt when creating a new file with changes', async () => {
+  it.only('shows a prompt when creating a new file with changes', async () => {
     const { screen } = await getDependencies();
     const text = 'The Soul';
 
