@@ -30,8 +30,8 @@ export const CANCEL_WORKFLOW =
 export const DEPLOY_GH_PAGES =
   'peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e';
 
-// pin@v4.0.2
-export const CACHE = 'actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9';
+// pin@v4.2.0
+export const CACHE = 'actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57';
 
 // pin@v2.0.4
 export const AUTOMATIC_RELEASES =
