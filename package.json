@@ -105,7 +105,7 @@
     "jest-process-manager": "^0.4.0",
     "js-yaml": "^4.1.0",
     "json-stringify-safe": "^5.0.1",
-    "mocha": "^10.2.0",
+    "mocha": "^10.8.2",
     "playwright": "^1.43.1",
     "playwright-testing-library": "^4.5.0",
     "prettier": "^2.6.2",
