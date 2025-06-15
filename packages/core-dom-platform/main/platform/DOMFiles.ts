@@ -20,7 +20,7 @@ import { FileSystem } from '@lyricistant/core-dom-platform/wrappers/FileSystem';
  */
 export const runIgnoringAbortErrors = async <R>(
   logger: Logger,
-  block: () => R | Promise<R>
+  block: () => R | Promise<R>,
 ): Promise<{ result?: R; cancelled: boolean }> => {
   try {
     return { result: await block(), cancelled: false };
@@ -28,7 +28,7 @@ export const runIgnoringAbortErrors = async <R>(
     if (e instanceof DOMException && e.name === 'AbortError') {
       logger.verbose(
         'Swallowing exception since user closed the open file picker',
-        e
+        e,
       );
       return { cancelled: true };
     } else {
@@ -47,7 +47,10 @@ export class DOMFiles implements Files {
   private fileHandles: Map<string, FileSystemFileHandle> = new Map();
   private counter = 0;
 
-  public constructor(private fs: FileSystem, private logger: Logger) {}
+  public constructor(
+    private fs: FileSystem,
+    private logger: Logger,
+  ) {}
 
   public supportsChoosingFileName = () => true;
 
@@ -61,7 +64,7 @@ export class DOMFiles implements Files {
         mimeTypes: SUPPORTED_MIME_TYPES,
         extensions: SUPPORTED_EXTENSIONS,
         multiple: false,
-      })
+      }),
     );
 
     if (result) {
@@ -80,7 +83,7 @@ export class DOMFiles implements Files {
   public saveFile = async (
     data: ArrayBuffer,
     defaultFilename: string,
-    fileHandleId?: string
+    fileHandleId?: string,
   ): Promise<FileMetadata> => {
     const fileHandle = this.fileHandles.get(fileHandleId);
     const { result, cancelled } = await runIgnoringAbortErrors(
@@ -93,8 +96,8 @@ export class DOMFiles implements Files {
           {
             fileName: defaultFilename,
           },
-          fileHandle
-        )
+          fileHandle,
+        ),
     );
     if (cancelled) {
       return null;

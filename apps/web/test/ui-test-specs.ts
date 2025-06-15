@@ -55,8 +55,8 @@ const specs: Spec[] = flatMap(forceLegacyWebs, (forceLegacyWeb) =>
       viewport,
       browser,
       forceLegacyWeb,
-    }))
-  )
+    })),
+  ),
 );
 
 export const webUiTestShardEnv = 'WEB_UI_TEST_SHARD';

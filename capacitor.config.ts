@@ -1,12 +1,11 @@
 import { CapacitorConfig } from '@capacitor/cli';
 import { KeyboardResize } from '@capacitor/keyboard';
-import ip from 'internal-ip';
+import { internalIpV4Sync } from 'internal-ip';
 
 const config: CapacitorConfig = {
   appId: 'com.wardellbagby.lyricistant',
   appName: 'Lyricistant',
   webDir: 'apps/mobile/dist',
-  bundledWebRuntime: false,
   android: {
     path: 'apps/mobile/android',
   },
@@ -14,8 +13,9 @@ const config: CapacitorConfig = {
     path: 'apps/mobile/ios',
   },
   server: process.env.NODE_ENV === 'development' && {
-    url: `http://${ip.v4.sync()}:8080`,
+    url: `http://${internalIpV4Sync()}:8080`,
     cleartext: true,
+    hostname: 'localhost',
   },
   plugins: {
     Keyboard: {

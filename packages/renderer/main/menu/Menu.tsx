@@ -26,20 +26,27 @@ import {
   useTheme,
 } from '@mui/material';
 import React, {
-  FunctionComponent,
   MouseEvent,
+  PropsWithChildren,
   useEffect,
   useMemo,
   useState,
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
-const MenuIcon: FunctionComponent<{
+interface MenuIconProps extends PropsWithChildren {
   onClick: (event: MouseEvent) => void;
   ariaLabel: string;
   debounce?: boolean;
   sx?: SxProps;
-}> = ({ onClick, ariaLabel, debounce, sx, children }) => {
+}
+const MenuIcon = ({
+  onClick,
+  ariaLabel,
+  debounce,
+  sx,
+  children,
+}: MenuIconProps) => {
   const debouncedClick = useDebouncedCallback(onClick, 200);
 
   return (
@@ -81,7 +88,7 @@ const MenuBar = (props: AppBarProps) => {
 
   const shouldTrim = useMemo(
     () => props.leading.length > 3 && isHorizontal,
-    [props.leading, isHorizontal]
+    [props.leading, isHorizontal],
   );
 
   const leading: MenuItemData[] = useMemo(() => {
@@ -217,7 +224,7 @@ export const Menu: React.FC<MenuProps> = (props) => {
           onClick: props.onFileHistoryClicked,
         },
       ].filter((node) => node),
-    [uiConfig, props]
+    [uiConfig, props],
   );
   const trailingIcons = useMemo(
     () =>
@@ -241,7 +248,7 @@ export const Menu: React.FC<MenuProps> = (props) => {
           onClick: props.onPreferencesClicked,
         },
       ].filter((value) => !!value),
-    [uiConfig, props]
+    [uiConfig, props],
   );
 
   return (

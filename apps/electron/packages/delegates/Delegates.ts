@@ -16,7 +16,7 @@ const logger = log;
 const newRendererListenerListeners = new Map<string, Array<() => void>>();
 
 interface WrappedListener extends ElectronListener {
-  originalListener?: (...args: any[]) => void;
+  originalListener?: (...args: unknown[]) => void;
 }
 
 type ElectronListener = (event: Event, ...args: []) => Promise<void> | void;
@@ -24,8 +24,10 @@ type ElectronListener = (event: Event, ...args: []) => Promise<void> | void;
 class WrappedListenerHelper {
   private listeners = new Set<WrappedListener>();
 
-  public wrap = (listener: (...args: any[]) => unknown): ElectronListener => {
-    const wrappedListener: WrappedListener = (_: Event, ...args: any[]) => {
+  public wrap = (
+    listener: (...args: unknown[]) => unknown,
+  ): ElectronListener => {
+    const wrappedListener: WrappedListener = (_: Event, ...args: unknown[]) => {
       Promise.resolve(listener(...args)).catch((reason) => {
         logger.error('Uncaught exception in listener', reason);
         throw reason;
@@ -40,7 +42,7 @@ class WrappedListenerHelper {
   };
 
   public remove = (
-    listener: (...args: any[]) => void
+    listener: (...args: unknown[]) => void,
   ): ElectronListener | null => {
     let wrappedListener = null;
     this.listeners.forEach((wrapped) => {
@@ -74,7 +76,7 @@ export class ElectronRendererDelegate implements RendererDelegate {
     });
   }
 
-  public send(channel: string, ...args: any[]): void {
+  public send(channel: string, ...args: unknown[]): void {
     logger.info('Sending data to renderer', channel, args);
     args.forEach((arg) => {
       if (isError(arg)) {
@@ -84,7 +86,7 @@ export class ElectronRendererDelegate implements RendererDelegate {
     this.window.webContents.send(channel, ...args);
   }
 
-  public on(channel: string, listener: (...args: any[]) => void): this {
+  public on(channel: string, listener: (...args: unknown[]) => void): this {
     logger.info('Registering renderer listener', channel);
 
     this.ipcMain.on(channel, this.listeners.wrap(listener));
@@ -94,7 +96,7 @@ export class ElectronRendererDelegate implements RendererDelegate {
 
   public addRendererListenerSetListener(
     channel: string,
-    listener: () => void
+    listener: () => void,
   ): void {
     const listeners = newRendererListenerListeners.get(channel) ?? [];
     listeners.push(listener);
@@ -103,7 +105,7 @@ export class ElectronRendererDelegate implements RendererDelegate {
 
   public removeListener(
     channel: string,
-    listener: (...args: any[]) => void
+    listener: (...args: unknown[]) => void,
   ): this {
     logger.info('Removing renderer listener', channel);
 
@@ -125,7 +127,7 @@ class ElectronPlatformDelegate implements PlatformDelegate {
     this.ipcRenderer = ipcRenderer;
   }
 
-  public send(channel: string, ...args: any[]): void {
+  public send(channel: string, ...args: unknown[]): void {
     logger.info('Sending data to platform', channel, args);
     args.forEach((arg) => {
       if (isError(arg)) {
@@ -135,7 +137,7 @@ class ElectronPlatformDelegate implements PlatformDelegate {
     this.ipcRenderer.send(channel, ...args);
   }
 
-  public on(channel: string, listener: (...args: any[]) => void): this {
+  public on(channel: string, listener: (...args: unknown[]) => void): this {
     logger.info('Registering platform listener', channel);
 
     this.ipcRenderer.on(channel, this.listeners.wrap(listener));
@@ -146,7 +148,7 @@ class ElectronPlatformDelegate implements PlatformDelegate {
 
   public removeListener(
     channel: string,
-    listener: (...args: any[]) => void
+    listener: (...args: unknown[]) => void,
   ): this {
     logger.info('Removing platform listener', channel);
 
@@ -159,12 +161,12 @@ class ElectronPlatformDelegate implements PlatformDelegate {
   }
 }
 
-const isError = (e: any) => e instanceof Error;
+const isError = (e: unknown) => e instanceof Error;
 
 export const createRendererDelegate: (
-  window: BrowserWindow
+  window: BrowserWindow,
 ) => RendererDelegate = (window) =>
   new ElectronRendererDelegate(electronMain, window);
 export const platformDelegate: PlatformDelegate = new ElectronPlatformDelegate(
-  electronRenderer
+  electronRenderer,
 );

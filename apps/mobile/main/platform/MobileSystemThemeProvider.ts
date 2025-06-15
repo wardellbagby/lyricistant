@@ -28,7 +28,7 @@ declare global {
 
 export class MobileSystemThemeProvider implements SystemThemeProvider {
   public onChange = (
-    listener: (theme: SystemTheme, palette?: SystemPalette) => void
+    listener: (theme: SystemTheme, palette?: SystemPalette) => void,
   ) => {
     window.onNativeThemeChanged = (dark, palette) => {
       listener(dark ? SystemTheme.Dark : SystemTheme.Light, palette);

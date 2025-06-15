@@ -37,7 +37,7 @@ describe('Files', () => {
     fs.openFile.mockResolvedValue(
       new File(['Here are lyrics!'], 'mycoollyrics.txt', {
         type: 'text/plain',
-      })
+      }),
     );
 
     const actual = await files.openFile();
@@ -73,7 +73,7 @@ describe('Files', () => {
     const expectedBuffer = new Uint8Array(
       await new Blob([data], {
         type: LYRICS_MIME_TYPE,
-      }).arrayBuffer()
+      }).arrayBuffer(),
     );
     fs.saveFile.mockResolvedValue({
       name: 'Lyrics.lyrics',
@@ -90,7 +90,7 @@ describe('Files', () => {
     const actualOptions = fs.saveFile.mock.lastCall[1];
 
     expect(
-      new Uint8Array(new Uint8Array(await (await actualBlob).arrayBuffer()))
+      new Uint8Array(new Uint8Array(await (await actualBlob).arrayBuffer())),
     ).toEqual(expectedBuffer);
     expect(actualOptions).toEqual({
       fileName: 'MyLyrics.lyrics',
@@ -127,7 +127,7 @@ describe('Files', () => {
     const actual = await files.saveFile(
       encode('oh wow!'),
       'defaultfilename.lyrics',
-      openFileResult.metadata.path
+      openFileResult.metadata.path,
     );
 
     expect(actual).toEqual(expected);
@@ -138,7 +138,7 @@ describe('Files', () => {
       {
         fileName: 'defaultfilename.lyrics',
       },
-      handle
+      handle,
     );
   });
 });

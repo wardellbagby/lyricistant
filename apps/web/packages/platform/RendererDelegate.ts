@@ -15,7 +15,7 @@ export class WebRendererDelegate implements RendererDelegate {
 
   public constructor(private logger: Logger) {}
 
-  public receive = (channel: string, args: any[]) => {
+  public receive = (channel: string, args: unknown[]) => {
     this.listeners.getListeners(channel).forEach((listener) => {
       Promise.resolve(listener(...args)).catch((reason) => {
         this.logger.error('Uncaught exception in listener', reason);
@@ -26,7 +26,7 @@ export class WebRendererDelegate implements RendererDelegate {
 
   public on<Channel extends PlatformChannel>(
     channel: Channel,
-    listener: RendererToPlatformListener[Channel]
+    listener: RendererToPlatformListener[Channel],
   ): this {
     this.listeners.addListener(channel, listener);
     return this;
@@ -34,7 +34,7 @@ export class WebRendererDelegate implements RendererDelegate {
 
   public removeListener<Channel extends PlatformChannel>(
     channel: Channel,
-    listener: RendererToPlatformListener[Channel]
+    listener: RendererToPlatformListener[Channel],
   ): this {
     this.listeners.removeListener(channel, listener);
     return this;
@@ -55,7 +55,7 @@ export class WebRendererDelegate implements RendererDelegate {
 
   public addRendererListenerSetListener = <Channel extends RendererChannel>(
     channel: Channel,
-    listener: () => void
+    listener: () => void,
   ) => {
     const listeners = this.rendererListenerSetListeners.get(channel) ?? [];
     listeners.push(listener);

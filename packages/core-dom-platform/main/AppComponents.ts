@@ -26,7 +26,7 @@ export const registerCoreDOMManagers = registerCommonManagers;
 
 export const registerCoreDOMPlatform = (
   platformDependenciesOverrides: Partial<PlatformDependencies> = {},
-  component: DIContainer
+  component: DIContainer,
 ): DIContainer => {
   component.registerSingleton<DOMRendererDelegate>();
   component.registerSingleton<DOMLogger>();
@@ -55,7 +55,7 @@ export const registerCoreDOMPlatform = (
       times: () => component.get<DOMTimes>(),
       ...platformDependenciesOverrides,
     },
-    component
+    component,
   );
   return component;
 };

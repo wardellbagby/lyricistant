@@ -107,7 +107,7 @@ describe('File Manager', () => {
       [lyricsFileHandler, textFileHandler],
       [mockExtension],
       preferences,
-      stubInterface()
+      stubInterface(),
     );
   });
 
@@ -181,7 +181,7 @@ describe('File Manager', () => {
     manager.onNewFile();
 
     expect(rendererDelegate.send).to.have.been.calledWith(
-      'check-file-modified'
+      'check-file-modified',
     );
   });
 
@@ -191,7 +191,7 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('new-file-attempt');
 
     expect(rendererDelegate.send).to.have.been.calledWith(
-      'check-file-modified'
+      'check-file-modified',
     );
   });
 
@@ -199,7 +199,7 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CONFIRM_NEW_FILE_TAG,
-      { selectedButton: 'Cancel' }
+      { selectedButton: 'Cancel' },
     );
 
     manager.register();
@@ -217,7 +217,7 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CONFIRM_OPEN_FILE_TAG,
-      { selectedButton: 'Cancel' }
+      { selectedButton: 'Cancel' },
     );
 
     manager.register();
@@ -237,7 +237,7 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CONFIRM_NEW_FILE_TAG,
-      { selectedButton: 'Create new file' }
+      { selectedButton: 'Create new file' },
     );
 
     manager.register();
@@ -252,7 +252,7 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CONFIRM_NEW_FILE_TAG,
-      { selectedButton: 'Cancel' }
+      { selectedButton: 'Cancel' },
     );
 
     manager.register();
@@ -261,7 +261,7 @@ describe('File Manager', () => {
 
     expect(files.openFile).to.not.have.been.called;
     expect(rendererDelegate.send).to.have.not.been.calledWithMatch(
-      'file-opened'
+      'file-opened',
     );
   });
 
@@ -271,7 +271,7 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('is-file-modified', false);
 
     expect(rendererDelegate.send).to.have.not.been.calledWithMatch(
-      'show-dialog'
+      'show-dialog',
     );
     expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
   });
@@ -281,7 +281,7 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CONFIRM_OPEN_FILE_TAG,
-      { selectedButton: 'Open file' }
+      { selectedButton: 'Open file' },
     );
 
     manager.register();
@@ -298,7 +298,7 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'This water'
+      'This water',
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       'whitetuxedo.txt',
@@ -314,7 +314,7 @@ describe('File Manager', () => {
     manager.onSaveFile(false);
 
     expect(rendererDelegate.send).to.have.been.calledWith(
-      'request-editor-text'
+      'request-editor-text',
     );
   });
 
@@ -330,7 +330,7 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith(
       encode('Reeboks on; just do it!'),
-      'Lyrics.lyrics'
+      'Lyrics.lyrics',
     );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -352,7 +352,7 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('editor-text', 'Reeboks on; just do it!');
 
     expect(files.saveFile).to.have.been.calledWith(
-      encode('Reeboks on; just do it!')
+      encode('Reeboks on; just do it!'),
     );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -372,7 +372,7 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('save-file-attempt', 'Blessings, blessings.');
 
     expect(files.saveFile).to.have.been.calledWith(
-      encode('Blessings, blessings.')
+      encode('Blessings, blessings.'),
     );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -392,7 +392,7 @@ describe('File Manager', () => {
         metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
         data: encode('This water'),
         type: '',
-      })
+      }),
     );
     manager.register();
 
@@ -403,7 +403,7 @@ describe('File Manager', () => {
     expect(files.saveFile).to.have.been.calledWith(
       encode('Blessings, blessings.'),
       'Lyrics.lyrics',
-      '/Desktop/whitetuxedo.txt'
+      '/Desktop/whitetuxedo.txt',
     );
     expect(fileChangeListener).to.have.been.called;
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -423,13 +423,13 @@ describe('File Manager', () => {
         metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
         data: encode('This water'),
         type: '',
-      })
+      }),
     );
     files.saveFile.returns(
       Promise.resolve({
         name: 'whitetuxedo.txt',
         path: '/Desktop/whitetuxedo2.txt',
-      })
+      }),
     );
     manager.register();
 
@@ -441,7 +441,7 @@ describe('File Manager', () => {
     expect(files.saveFile).to.have.been.calledWith(
       encode('Blessings, blessings.'),
       'Lyrics.lyrics',
-      '/Desktop/whitetuxedo2.txt'
+      '/Desktop/whitetuxedo2.txt',
     );
     expect(fileChangeListener).to.have.been.called.callCount(3);
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
@@ -459,7 +459,7 @@ describe('File Manager', () => {
         metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
         data: encode('This water'),
         type: '',
-      })
+      }),
     );
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
       sinon.fake();
@@ -473,7 +473,7 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'This water'
+      'This water',
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       '/Desktop/whitetuxedo.txt',
@@ -504,7 +504,7 @@ describe('File Manager', () => {
       'file-opened',
       undefined,
       'This water',
-      true
+      true,
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       '/Desktop/whitetuxedo.txt',
@@ -534,7 +534,7 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'This water'
+      'This water',
     );
     expect(recentFiles.setRecentFiles).to.have.been.calledWith([
       '/Desktop/whitetuxedo.txt',
@@ -553,7 +553,7 @@ describe('File Manager', () => {
         metadata: { name: 'anewdress.txt', path: '121' },
         data: encode('Double headed monster with a mind of its own.'),
         type: 'mytype',
-      })
+      }),
     );
 
     manager.register();
@@ -563,13 +563,13 @@ describe('File Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'file-opened',
       undefined,
-      'Double headed monster with a mind of its own.'
+      'Double headed monster with a mind of its own.',
     );
 
     await rendererDelegate.invoke('save-file-attempt', 'Cherry Red Chariot');
 
     expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
-      'Cherry Red Chariot'
+      'Cherry Red Chariot',
     );
     expect(lyricsFileHandler.create).to.have.been.calledWith({
       lyrics: 'Cherry Red Chariot',
@@ -590,16 +590,16 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('save-file-attempt', 'Hello');
     expect(files.saveFile).to.have.been.calledWith(
       encode('Hello'),
-      'Lyrics.lyrics'
+      'Lyrics.lyrics',
     );
     await rendererDelegate.invoke('save-file-attempt', 'Hello');
     expect(files.saveFile).to.have.been.calledWith(
       encode('Hello'),
-      'Lyrics.lyrics'
+      'Lyrics.lyrics',
     );
 
     expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
-      'Hello'
+      'Hello',
     );
     expect(lyricsFileHandler.create).to.have.been.calledWith({
       lyrics: 'Hello',
@@ -617,14 +617,14 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CHOOSE_FILE_HANDLER_TAG,
-      { selectedButton: 'Lyricistant file (.lyrics)' }
+      { selectedButton: 'Lyricistant file (.lyrics)' },
     );
 
     manager.register();
     await rendererDelegate.invoke('save-file-attempt', 'Hiiipower');
 
     expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
-      'Hiiipower'
+      'Hiiipower',
     );
     expect(lyricsFileHandler.create).to.have.been.calledWith({
       lyrics: 'Hiiipower',
@@ -641,14 +641,14 @@ describe('File Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CHOOSE_FILE_HANDLER_TAG,
-      { selectedButton: 'Confirm', selectedOption: 'Plain text (.txt)' }
+      { selectedButton: 'Confirm', selectedOption: 'Plain text (.txt)' },
     );
 
     manager.register();
     await rendererDelegate.invoke('save-file-attempt', 'Hiiipower');
 
     expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
-      'Hiiipower'
+      'Hiiipower',
     );
     expect(textFileHandler.create).to.have.been.calledWith({
       lyrics: 'Hiiipower',
@@ -672,7 +672,7 @@ describe('File Manager', () => {
         checkboxes: {
           'Never ask again': true,
         },
-      }
+      },
     );
 
     manager.register();
@@ -691,7 +691,7 @@ describe('File Manager', () => {
       {
         selectedButton: 'Save',
         textField: 'gnx.lyrics',
-      }
+      },
     );
     files.supportsChoosingFileName.resolves(false);
 
@@ -701,7 +701,7 @@ describe('File Manager', () => {
 
     expect(files.saveFile).to.have.been.calledWith(
       encode('Peekaboo'),
-      'gnx.lyrics'
+      'gnx.lyrics',
     );
   });
 
@@ -711,7 +711,7 @@ describe('File Manager', () => {
       FileManager.PROMPT_FILE_NAME_TAG,
       {
         selectedButton: 'Cancel',
-      }
+      },
     );
     files.supportsChoosingFileName.resolves(false);
 

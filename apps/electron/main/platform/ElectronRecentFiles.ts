@@ -5,12 +5,15 @@ import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 export class ElectronRecentFiles implements RecentFiles {
   private readonly recentFilesFilePath = this.fs.resolve(
     this.fs.getDataDirectory('userData'),
-    'recent_files.json'
+    'recent_files.json',
   );
 
   private cachedRecentFiles: string[];
 
-  public constructor(private fs: FileSystem, private logger: Logger) {}
+  public constructor(
+    private fs: FileSystem,
+    private logger: Logger,
+  ) {}
 
   public getRecentFiles = (): string[] => {
     if (
@@ -18,7 +21,7 @@ export class ElectronRecentFiles implements RecentFiles {
       this.fs.existsSync(this.recentFilesFilePath)
     ) {
       this.cachedRecentFiles = JSON.parse(
-        this.fs.readFileSync(this.recentFilesFilePath, 'utf8')
+        this.fs.readFileSync(this.recentFilesFilePath, 'utf8'),
       );
     }
     return [...(this.cachedRecentFiles ?? [])];

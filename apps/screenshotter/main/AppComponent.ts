@@ -20,7 +20,7 @@ const createComponent = (): DIContainer => {
       preferences: () => component.get<ScreenshotterPreferences>(),
       uiConfigProvider: () => provideUiConfig,
     },
-    component
+    component,
   );
 
   // Purposefully doesn't use getCoreDOMManagers, so it doesn't include the FirstLaunchManager.

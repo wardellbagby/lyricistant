@@ -47,11 +47,11 @@ export function PlatformDialogs() {
       platformDelegate.send(
         'dialog-interaction',
         dialogData.tag,
-        interactionData
+        interactionData,
       );
       platformDelegate.send('dialog-closed', dialogData.tag);
     },
-    [dialogData]
+    [dialogData],
   );
 
   const onClosed = useCallback(() => {
@@ -169,7 +169,7 @@ const AlertDialog = ({
   onDialogInteraction: (interactionData: DialogInteractionData) => void;
 }) => {
   const [text, setText] = useState<string>(
-    dialogData.textField?.defaultValue ?? ''
+    dialogData.textField?.defaultValue ?? '',
   );
 
   const isTextFieldValid = useMemo(() => {
@@ -336,7 +336,7 @@ const SelectionDialog = ({
 };
 
 const LinearProgressWithLabel = (
-  props: LinearProgressProps & { value: number }
+  props: LinearProgressProps & { value: number },
 ) => (
   <Box
     display="flex"
@@ -351,7 +351,7 @@ const LinearProgressWithLabel = (
     </Box>
     <Box minWidth={35}>
       <Typography variant="body2" color="textSecondary">{`${Math.round(
-        props.value
+        props.value,
       )}%`}</Typography>
     </Box>
   </Box>

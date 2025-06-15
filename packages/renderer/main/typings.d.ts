@@ -1,24 +1,24 @@
 declare module '*.png' {
-  const value: any;
+  const value: unknown;
   export = value;
 }
 declare module '*.css' {
-  const value: any;
+  const value: unknown;
   export = value;
 }
 declare module '*.svg' {
-  const value: any;
+  const value: string;
   export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
   export default value;
 }
 
 declare module '*.dic' {
-  const value: unknown;
-  export = value;
+  const value: Uint8Array;
+  export default value;
 }
 
 declare module '*.aff' {
-  const value: string;
+  const value: Uint8Array;
   export default value;
 }
 

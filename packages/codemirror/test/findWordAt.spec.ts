@@ -40,7 +40,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(['', 'Hello']),
-      EditorSelection.cursor(1)
+      EditorSelection.cursor(1),
     );
     expect(expected).toEqual(actual);
   });
@@ -53,7 +53,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(['', 'Hello']),
-      EditorSelection.cursor(6)
+      EditorSelection.cursor(6),
     );
     expect(expected).toEqual(actual);
   });
@@ -66,7 +66,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(['', 'Hello']),
-      EditorSelection.cursor(4)
+      EditorSelection.cursor(4),
     );
     expect(expected).toEqual(actual);
   });
@@ -79,7 +79,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(['', '  Hello']),
-      EditorSelection.cursor(3)
+      EditorSelection.cursor(3),
     );
     expect(expected).toEqual(actual);
   });
@@ -92,7 +92,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(['', '  Hello']),
-      EditorSelection.cursor(8)
+      EditorSelection.cursor(8),
     );
     expect(expected).toEqual(actual);
   });
@@ -105,7 +105,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(['I do-nut wanna.']),
-      EditorSelection.cursor(2)
+      EditorSelection.cursor(2),
     );
     expect(expected).toEqual(actual);
   });
@@ -118,7 +118,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(['I do-nut wanna.']),
-      EditorSelection.cursor(5)
+      EditorSelection.cursor(5),
     );
     expect(expected).toEqual(actual);
   });
@@ -131,7 +131,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(["I don't wanna."]),
-      EditorSelection.cursor(3)
+      EditorSelection.cursor(3),
     );
     expect(expected).toEqual(actual);
   });
@@ -144,7 +144,7 @@ describe('Word Selection', () => {
     };
     const actual = findWordAt(
       Text.of(["I don't wanna."]),
-      EditorSelection.cursor(5)
+      EditorSelection.cursor(5),
     );
     expect(expected).toEqual(actual);
   });
@@ -163,7 +163,7 @@ describe('Word Selection', () => {
         "When you know I've been crushing since like 2002?",
         'Why you hit me always...always...always...out of the blue?',
       ]),
-      EditorSelection.cursor(50)
+      EditorSelection.cursor(50),
     );
     expect(expected).toEqual(actual);
   });
@@ -182,7 +182,7 @@ describe('Word Selection', () => {
         "When you know I've been crushing since like 2002?",
         'Why you hit me always...always...always...out of the blue?',
       ]),
-      EditorSelection.range(43, 52)
+      EditorSelection.range(43, 52),
     );
     expect(expected).toEqual(actual);
   });

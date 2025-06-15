@@ -136,7 +136,7 @@ interface DiagnosticActionPopoverProps {
 }
 
 export const DiagnosticActionPopover = (
-  props: DiagnosticActionPopoverProps
+  props: DiagnosticActionPopoverProps,
 ) => (
   <Popover
     open={props.diagnostic?.proposals?.length > 0}
@@ -167,7 +167,7 @@ interface DiagnosticActionPopoverContentProps {
 }
 
 const DiagnosticActionPopoverContent = (
-  props: DiagnosticActionPopoverContentProps
+  props: DiagnosticActionPopoverContentProps,
 ) => (
   <List dense>
     {(props.diagnostic?.proposals?.slice(0, 6) ?? []).map((proposal) => (

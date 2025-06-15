@@ -4,6 +4,8 @@ import { Mode } from '@tooling/common-tasks.gulp';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import webpack, { Configuration } from 'webpack';
 import packageInfo from '../package.json';
+import { di } from '@wessberg/di-compiler';
+import * as TS from 'typescript';
 
 const commitHash = () =>
   execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).substr(0, 8);
@@ -43,10 +45,10 @@ export type Platform = (typeof platforms)[number];
 export default (
   mode: Mode,
   platformName: Platform,
-  tsLoaderOptions: Record<string, any> = {
+  tsLoaderOptions: Record<string, unknown> = {
     projectReferences: true,
     transpileOnly: false,
-  }
+  },
 ): Configuration => {
   if (!platforms.includes(platformName)) {
     throw new Error(`Invalid platform: ${platformName}`);
@@ -68,7 +70,8 @@ export default (
           loader: 'ts-loader',
           options: {
             ...tsLoaderOptions,
-            compiler: 'ttypescript',
+            compiler: 'typescript',
+            getCustomTransformers: (program: TS.Program) => di({ program }),
           },
         },
         {
@@ -77,9 +80,8 @@ export default (
           use: ['style-loader', 'css-loader'],
         },
         {
-          test: /\.(woff|woff2|eot|ttf|png)$/,
-          include: [/@mui\/.+/, /@fontsource\/.+/, /packages\/renderer\/main/],
-          loader: 'file-loader',
+          test: /\.(jpe?g|png|gif|ico|eot|ttf|woff2?)(\?v=\d+\.\d+\.\d+)?$/i,
+          type: 'asset/resource',
         },
         {
           test: /\.svg$/,
@@ -100,7 +102,7 @@ export default (
     plugins: [
       new webpack.DefinePlugin({
         'process.env.IS_UNDER_TEST': JSON.stringify(
-          mode === 'test' || platformName === 'Test'
+          mode === 'test' || platformName === 'Test',
         ),
         'process.env.APP_VERSION': JSON.stringify(getAppVersion()),
         'process.env.APP_HOMEPAGE': JSON.stringify(packageInfo.homepage),

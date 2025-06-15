@@ -73,7 +73,7 @@ export const basicSetup = (options?: Options): Step[] => {
       {
         name: 'Install Fastlane',
         run: 'gem install bundler && bundle install',
-      }
+      },
     ),
     {
       name: 'Install Node modules',
@@ -89,7 +89,7 @@ export const basicSetup = (options?: Options): Step[] => {
       {
         name: 'Setup Playwright dependencies',
         run: 'npx playwright install --with-deps',
-      }
+      },
     ),
   ].filter((value) => value);
 };

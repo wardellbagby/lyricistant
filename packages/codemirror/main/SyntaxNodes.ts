@@ -4,7 +4,7 @@ import { SyntaxNode } from '@lezer/common';
 
 export const joinNodesToText = (
   state: EditorState,
-  nodes: SyntaxNode[]
+  nodes: SyntaxNode[],
 ): string => nodes.map((node) => state.sliceDoc(node.from, node.to)).join(' ');
 
 const nonLyricNodeTypes = ['LineComment', 'TodoComment', 'Context'];
@@ -12,21 +12,21 @@ const nonLyricNodeTypes = ['LineComment', 'TodoComment', 'Context'];
 export const getLyricNodesBetween = (
   state: EditorState,
   from: number,
-  to: number
+  to: number,
 ) =>
   getNodesBetween(state, from, to).filter(
-    (node) => !nonLyricNodeTypes.find((name) => name === node.type.name)
+    (node) => !nonLyricNodeTypes.find((name) => name === node.type.name),
   );
 
 export const doesNodeContainSelection = (
   node: SyntaxNode,
-  selection: SelectionRange
+  selection: SelectionRange,
 ): boolean => node.from <= selection.to && node.to >= selection.to;
 
 export const getNodesBetween = (
   state: EditorState,
   from: number,
-  to: number
+  to: number,
 ) => {
   const nodes = [];
   const cursor = syntaxTree(state).cursorAt(from, 1);

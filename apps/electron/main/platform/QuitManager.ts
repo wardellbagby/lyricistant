@@ -18,7 +18,7 @@ export class QuitManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private appData: AppData,
     private logger: Logger,
-    private window: BrowserWindow
+    private window: BrowserWindow,
   ) {}
 
   public register = (): void => undefined;
@@ -42,7 +42,7 @@ export class QuitManager implements Manager {
     this.rendererDelegate.send('check-file-modified');
     this.forceQuitTimeout = setTimeout(() => {
       this.logger.error(
-        'Force-closing app because renderer never responded and user attempted quit!'
+        'Force-closing app because renderer never responded and user attempted quit!',
       );
       this.window.destroy();
     }, 2500);

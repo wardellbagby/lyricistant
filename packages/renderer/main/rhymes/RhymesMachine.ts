@@ -2,21 +2,21 @@ import { isUnderTest } from '@lyricistant/common/BuildModes';
 import { RhymeSource } from '@lyricistant/common/preferences/PreferencesData';
 import { fetchRhymes as datamuseRhymes } from '@lyricistant/renderer/rhymes/datamuse';
 import { Rhyme } from '@lyricistant/renderer/rhymes/rhyme';
-import { assign, createMachine, EventObject, State } from 'xstate';
+import { assign, createMachine, EventObject, fromPromise } from 'xstate';
 
 type generateRhymes =
-  typeof import('@lyricistant/rhyme-generator')['rhymeGenerator']['generateRhymes'];
+  (typeof import('@lyricistant/rhyme-generator'))['rhymeGenerator']['generateRhymes'];
 
 const offlineRhymes = (...args: Parameters<generateRhymes>) =>
   import('@lyricistant/rhyme-generator').then(({ rhymeGenerator }) =>
-    rhymeGenerator.generateRhymes(...args)
+    rhymeGenerator.generateRhymes(...args),
   );
 
 interface RhymesContext {
   rhymeSource?: RhymeSource;
   input?: string;
   rhymes: Rhyme[];
-  error?: any;
+  error?: unknown;
 }
 
 interface RhymesEvent extends EventObject {
@@ -25,11 +25,11 @@ interface RhymesEvent extends EventObject {
   rhymeSource: RhymeSource;
 }
 
-export type RhymesState = State<RhymesContext, RhymesEvent>;
+export type RhymesState = ReturnType<(typeof rhymesMachine)['resolveState']>;
 
 const fetchRhymes = async (
   input: string,
-  rhymeSource: RhymeSource
+  rhymeSource: RhymeSource,
 ): Promise<Rhyme[]> => {
   let results: Rhyme[];
   switch (rhymeSource) {
@@ -42,7 +42,7 @@ const fetchRhymes = async (
       } catch (e) {
         logger.warn(
           'Failed to fetch Datamuse rhymes; falling back to offline',
-          e
+          e,
         );
         results = await offlineRhymes(input);
       }
@@ -53,9 +53,12 @@ const fetchRhymes = async (
 };
 
 /** A State Machine that handles fetching rhymes based on a query and returning a result. */
-export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>(
+export const rhymesMachine = createMachine(
   {
-    predictableActionArguments: true,
+    types: {} as {
+      context: RhymesContext;
+      event: RhymesEvent;
+    },
     id: 'rhymes',
     initial: 'inactive',
     context: {
@@ -65,10 +68,10 @@ export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>(
       INPUT: [
         {
           target: '.loading',
-          cond: 'isValidInput',
+          guard: 'isValidInput',
           actions: assign({
-            input: (context, event) => event.input,
-            rhymeSource: (context, event) => event.rhymeSource,
+            input: ({ event }) => event.input,
+            rhymeSource: ({ event }) => event.rhymeSource,
           }),
         },
       ],
@@ -85,47 +88,47 @@ export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>(
               INPUT: [
                 {
                   target: 'debouncing',
-                  cond: 'isValidInput',
+                  guard: 'isValidInput',
                   actions: assign({
-                    input: (context, event) => event.input,
-                    rhymeSource: (context, event) => event.rhymeSource,
+                    input: ({ event }) => event.input,
+                    rhymeSource: ({ event }) => event.rhymeSource,
                   }),
                 },
                 { target: '#rhymes.inactive' },
               ],
             },
-            after: [
-              {
-                delay: 'DEBOUNCE',
-                target: 'active',
-              },
-            ],
+            after: {
+              DEBOUNCE: { target: 'active' },
+            },
           },
           active: {
             invoke: {
               id: 'fetch-rhymes',
-              src: async (context) =>
-                fetchRhymes(context.input, context.rhymeSource),
+              input: ({ context }) => context,
+              src: fromPromise<Rhyme[], RhymesContext>(
+                async ({ input: context }) =>
+                  fetchRhymes(context.input, context.rhymeSource),
+              ),
               onDone: [
                 {
                   target: '#displaying',
-                  cond: (context, event) =>
-                    Array.isArray(event.data) && event.data.length > 0,
+                  guard: ({ event }) =>
+                    Array.isArray(event.output) && event.output.length > 0,
                   actions: assign({
-                    rhymes: (context, event) => event.data,
+                    rhymes: ({ event }) => event.output,
                   }),
                 },
                 {
                   target: '#no-results',
                   actions: assign({
-                    rhymes: (context, event) => event.data,
+                    rhymes: ({ event }) => event.output,
                   }),
                 },
               ],
               onError: {
                 target: '#error',
                 actions: assign({
-                  error: (context, event) => event.data,
+                  error: ({ event }) => event.error,
                 }),
               },
             },
@@ -148,9 +151,9 @@ export const rhymesMachine = createMachine<RhymesContext, RhymesEvent>(
       DEBOUNCE: () => (isUnderTest ? 100 : 1_000),
     },
     guards: {
-      isValidInput: (context, event) =>
+      isValidInput: ({ context, event }) =>
         context.input !== event.input ||
         context.rhymeSource !== event.rhymeSource,
     },
-  }
+  },
 );

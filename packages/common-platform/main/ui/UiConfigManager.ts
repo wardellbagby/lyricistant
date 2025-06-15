@@ -11,7 +11,7 @@ export class UiConfigManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private provideUiConfig: UiConfigProvider,
     private formatTitle: TitleFormatter,
-    private fileManager: FileManager
+    private fileManager: FileManager,
   ) {}
 
   public register(): void {
@@ -22,7 +22,7 @@ export class UiConfigManager implements Manager {
     this.fileManager.addOnFileChangedListener((filename) => {
       this.rendererDelegate.send(
         'app-title-changed',
-        this.formatTitle(filename)
+        this.formatTitle(filename),
       );
     });
   }

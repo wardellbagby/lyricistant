@@ -4,7 +4,7 @@ import addCommonUiTests, {
   useMockDefinitions,
   useMockRhymes,
 } from '@lyricistant/common-ui-tests';
-import del from 'del';
+import { deleteAsync as del } from 'del';
 import { _electron as electron, ElectronApplication, Page } from 'playwright';
 import { getDocument, getQueriesForElement } from 'playwright-testing-library';
 import waitForExpect from 'wait-for-expect';
@@ -44,7 +44,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     window = await app.firstWindow();
     await window.waitForLoadState('networkidle');
     await window.waitForFunction(
-      () => document.getElementById('preload-overlay') == null
+      () => document.getElementById('preload-overlay') == null,
     );
     const elements = await window.$$('#app > *');
     expect(elements).not.toBeEmpty();
@@ -57,11 +57,11 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
           browserWindow.setSize(newViewport.width, newViewport.height);
           // Wait a little to let the resize settle. CI is notoriously slow so wait longer there.
           return new Promise((resolve) =>
-            setTimeout(resolve, process.env.CI ? 2000 : 500)
+            setTimeout(resolve, process.env.CI ? 2000 : 500),
           );
         }
       },
-      [viewport, await app.browserWindow(window)] as const
+      [viewport, await app.browserWindow(window)] as const,
     );
   });
 
@@ -88,7 +88,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
 
     for (const component of components) {
       await waitForExpect(
-        async () => await expect(component.isVisible()).resolves.toBeTruthy()
+        async () => await expect(component.isVisible()).resolves.toBeTruthy(),
       );
     }
   });

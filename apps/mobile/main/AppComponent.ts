@@ -28,7 +28,7 @@ const createComponent = (): DIContainer => {
       titleFormatter: () => formatTitle,
       preferences: () => component.get<MobilePreferences>(),
     },
-    component
+    component,
   );
 
   component.registerSingleton<StatusBarManager>();
@@ -39,7 +39,7 @@ const createComponent = (): DIContainer => {
     component,
     component.get<StatusBarManager>(),
     component.get<BackButtonManager>(),
-    component.get<SoftKeyboardManager>()
+    component.get<SoftKeyboardManager>(),
   );
   return component;
 };

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'fs';
 import path from 'path';
 import { getOutputDirectory, Mode } from '@tooling/common-tasks.gulp';
@@ -16,7 +15,7 @@ const wantedArtifacts = [
 export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
   const appsOutputDir = path.resolve(
     getOutputDirectory(mode, __dirname),
-    'app'
+    'app',
   );
   const codeSourcesDirectory = getOutputDirectory(mode, __dirname);
   const shouldSignApps = mode === 'production';
@@ -59,11 +58,11 @@ export const buildElectronApp = async (mode: Mode, currentOnly: boolean) => {
         gatekeeperAssess: false,
         entitlements: path.resolve(
           __dirname,
-          'distResources/entitlements.mac.plist'
+          'distResources/entitlements.mac.plist',
         ),
         entitlementsInherit: path.resolve(
           __dirname,
-          'distResources/entitlements.mac.plist'
+          'distResources/entitlements.mac.plist',
         ),
         darkModeSupport: true,
         identity: shouldSignApps ? undefined : null,

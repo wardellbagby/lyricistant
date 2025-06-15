@@ -18,7 +18,7 @@ export default async (context: AfterPackContext) => {
 
   if (context.packager.config.mac.identity === null && !process.env.CSC_LINK) {
     console.log(
-      '  • skipped notarization  reason=identity explicitly is set to null'
+      '  • skipped notarization  reason=identity explicitly is set to null',
     );
     return;
   }

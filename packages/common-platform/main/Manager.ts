@@ -33,7 +33,7 @@ export interface Manager {
 
 /** Fetches the current editor text from the renderer. */
 export const getEditorText = async (
-  rendererDelegate: RendererDelegate
+  rendererDelegate: RendererDelegate,
 ): Promise<string> =>
   new Promise((resolve) => {
     const onEditorText = (text: string) => {

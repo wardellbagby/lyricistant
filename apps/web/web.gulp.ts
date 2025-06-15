@@ -8,7 +8,7 @@ import {
 } from '@tooling/common-tasks.gulp';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
 import { capitalCase } from 'change-case';
-import del from 'del';
+import { deleteAsync as del } from 'del';
 import { series } from 'gulp';
 import { Configuration, webpack } from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
@@ -42,7 +42,7 @@ const createWebpackConfig = async (mode: Mode) => {
       },
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig(mode, 'Web')
+    defaultWebpackConfig(mode, 'Web'),
   );
 };
 
@@ -52,13 +52,13 @@ const copyResources = (mode: Mode) => {
     await fs.mkdir(getOutputDirectory(mode), { recursive: true });
     await fs.copyFile(
       path.resolve('packages/renderer/main/index.html'),
-      path.resolve(outputDirectory, 'index.html')
+      path.resolve(outputDirectory, 'index.html'),
     );
     const staticResources = path.resolve('apps/web/staticResources');
     for (const file of await fs.readdir(staticResources)) {
       await fs.copyFile(
         path.resolve(staticResources, file),
-        path.resolve(outputDirectory, file)
+        path.resolve(outputDirectory, file),
       );
     }
   };
@@ -75,7 +75,7 @@ const runWebServer = async () => {
       hot: true,
       static: config.output.path,
     },
-    webpack(config)
+    webpack(config),
   );
   return server.start();
 };
@@ -102,17 +102,17 @@ const bundleWeb = (mode: Mode) => {
 export const startWeb = series(
   clean('development'),
   copyResources('development'),
-  runWebServer
+  runWebServer,
 );
 export const buildWeb = series(
   cleanBuildDirectory,
   clean('production'),
   copyResources('production'),
-  bundleWeb('production')
+  bundleWeb('production'),
 );
 export const buildTestWeb = series(
   cleanBuildDirectory,
   clean('test'),
   copyResources('test'),
-  bundleWeb('test')
+  bundleWeb('test'),
 );

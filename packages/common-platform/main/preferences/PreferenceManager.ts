@@ -26,7 +26,7 @@ export class PreferenceManager implements Manager {
   public constructor(
     private rendererDelegate: RendererDelegate,
     private systemThemeProvider: SystemThemeProvider,
-    private preferences: Preferences
+    private preferences: Preferences,
   ) {}
 
   public register(): void {
@@ -37,31 +37,31 @@ export class PreferenceManager implements Manager {
         this.systemPalette = palette;
 
         this.sendThemeUpdate(
-          await getPreferencesDataOrDefault(this.preferences)
+          await getPreferencesDataOrDefault(this.preferences),
         );
-      }
+      },
     );
     this.rendererDelegate.addRendererListenerSetListener(
       'prefs-updated',
       async () => {
         this.rendererDelegate.send(
           'prefs-updated',
-          await getPreferencesDataOrDefault(this.preferences)
+          await getPreferencesDataOrDefault(this.preferences),
         );
-      }
+      },
     );
     this.rendererDelegate.addRendererListenerSetListener(
       'theme-updated',
       async () => {
         this.sendThemeUpdate(
-          await getPreferencesDataOrDefault(this.preferences)
+          await getPreferencesDataOrDefault(this.preferences),
         );
-      }
+      },
     );
   }
 
   public addThemeChangedListener = (
-    listener: (theme: ColorScheme, systemPalette: SystemPalette) => void
+    listener: (theme: ColorScheme, systemPalette: SystemPalette) => void,
   ) => {
     this.onThemeChangedListeners.push(listener);
   };
@@ -87,7 +87,7 @@ export class PreferenceManager implements Manager {
     });
 
     this.onThemeChangedListeners.forEach((listener) =>
-      listener(colorScheme, systemPalette)
+      listener(colorScheme, systemPalette),
     );
   };
 
@@ -98,7 +98,7 @@ export class PreferenceManager implements Manager {
   }
 
   private systemThemeToTheme = (
-    systemTheme: SystemTheme
+    systemTheme: SystemTheme,
   ): DisplayableColorScheme =>
     systemTheme === SystemTheme.Dark ? ColorScheme.Dark : ColorScheme.Light;
 }

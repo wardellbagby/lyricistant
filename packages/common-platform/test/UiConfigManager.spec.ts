@@ -36,7 +36,7 @@ describe('Ui Config Manager', () => {
       rendererDelegate,
       uiConfigProvider,
       formatTitle,
-      fileManager
+      fileManager,
     );
   });
 
@@ -48,7 +48,7 @@ describe('Ui Config Manager', () => {
     manager.register();
 
     expect(
-      rendererDelegate.addRendererListenerSetListener
+      rendererDelegate.addRendererListenerSetListener,
     ).to.have.been.calledWith('ui-config');
   });
 
@@ -70,7 +70,7 @@ describe('Ui Config Manager', () => {
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'app-title-changed',
-      'Wow!'
+      'Wow!',
     );
   });
 });

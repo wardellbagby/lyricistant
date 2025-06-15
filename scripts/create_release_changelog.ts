@@ -10,7 +10,7 @@ type App = (typeof APP_SCOPES)[number];
 
 Handlebars.registerHelper(
   'toJSON',
-  (data) => new Handlebars.SafeString(stringify(data))
+  (data) => new Handlebars.SafeString(stringify(data)),
 );
 
 interface CommitGroup {
@@ -73,7 +73,7 @@ const createCommitTransformer =
   };
 const getReleaseData = async (
   app: App,
-  outputUnreleased: boolean
+  outputUnreleased: boolean,
 ): Promise<ReleaseData> => {
   const stream = standardChangelog(
     {
@@ -89,13 +89,13 @@ const getReleaseData = async (
     {
       mainTemplate: '{{toJSON @root}}',
       transform: createCommitTransformer(outputUnreleased),
-    }
+    },
   );
 
   for await (const chunk of stream) {
     const release: ReleaseData = JSON.parse(Buffer.from(chunk).toString());
     const isReleaseApplicable = release.commitGroups.some((group) =>
-      isCommitGroupApplicable(app, group)
+      isCommitGroupApplicable(app, group),
     );
     if (isReleaseApplicable) {
       return release;
@@ -103,7 +103,7 @@ const getReleaseData = async (
   }
 
   console.error(
-    `Unable to find any releases that have commits valid for ${app}`
+    `Unable to find any releases that have commits valid for ${app}`,
   );
   process.exit(1);
 };
@@ -113,7 +113,7 @@ const isCommitApplicable = (app: App, commit: Commit): boolean =>
 
 const isCommitGroupApplicable = (app: App, group: CommitGroup): boolean => {
   const hasApplicableCommits = group.commits.some((commit) =>
-    isCommitApplicable(app, commit)
+    isCommitApplicable(app, commit),
   );
 
   if (app === 'all') {
@@ -150,7 +150,7 @@ const formatCommit = (app: App, commit: Commit): string => {
 const formatCommitGroup = (
   app: App,
   group: CommitGroup,
-  maxLength: number
+  maxLength: number,
 ): { value: string; isComplete: boolean } => {
   const header = `${group.title}\n`;
   let isComplete = true;

@@ -13,7 +13,7 @@ const spawnSync = (
   options?: SpawnSyncOptions,
   onError: (result: SpawnSyncReturns<Buffer>) => void = ({ stderr }) => {
     console.error(stderr.toString());
-  }
+  },
 ) => {
   const result = nodeSpawnSync(command, args, {
     cwd: path.resolve(__dirname, '../../'),

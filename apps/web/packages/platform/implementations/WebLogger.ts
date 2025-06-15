@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { PlatformLogger } from '@lyricistant/common-platform/logging/PlatformLogger';
 import { Clock } from '@lyricistant/common-platform/time/Clock';
 import { renderer } from '@web-platform/renderer';
@@ -11,31 +10,31 @@ export class WebLogger implements PlatformLogger {
 
   public constructor(private clock: Clock) {}
 
-  public debug = (message: string, ...args: any[]): void => {
+  public debug = (message: string, ...args: unknown[]): void => {
     console.debug(message, ...args);
     this.messages.push(this.formatMessage('debug', message, ...args));
     this.maybeAddToCache();
   };
 
-  public error = (message: string, ...args: any[]): void => {
+  public error = (message: string, ...args: unknown[]): void => {
     console.error(message, ...args);
     this.messages.push(this.formatMessage('error', message, ...args));
     this.maybeAddToCache();
   };
 
-  public info = (message: string, ...args: any[]): void => {
+  public info = (message: string, ...args: unknown[]): void => {
     console.info(message, ...args);
     this.messages.push(this.formatMessage('info', message, ...args));
     this.maybeAddToCache();
   };
 
-  public verbose = (message: string, ...args: any[]): void => {
+  public verbose = (message: string, ...args: unknown[]): void => {
     console.debug(message, ...args);
     this.messages.push(this.formatMessage('verbose', message, ...args));
     this.maybeAddToCache();
   };
 
-  public warn = (message: string, ...args: any[]): void => {
+  public warn = (message: string, ...args: unknown[]): void => {
     console.warn(message, ...args);
     this.messages.push(this.formatMessage('warn', message, ...args));
     this.maybeAddToCache();
@@ -51,20 +50,21 @@ export class WebLogger implements PlatformLogger {
       .getSessionStorage()
       .then(async (storage) => JSON.parse(await storage.getItem('logs')) ?? []);
 
-  private maybeAddToCache = (force = false) => {
+  private maybeAddToCache = async (force = false) => {
     if (force || this.messages.length > 25) {
-      return this.getAllLogs().then(async (logs) => {
-        logs.push(...this.messages);
-        this.messages = [];
-        return renderer
-          .getSessionStorage()
-          .then((storage) => storage.setItem('logs', JSON.stringify(logs)));
-      });
+      const logs = await this.getAllLogs();
+      logs.push(...this.messages);
+      this.messages = [];
+      const storage = await renderer.getSessionStorage();
+      return await storage.setItem('logs', JSON.stringify(logs));
     }
-    return Promise.resolve();
   };
 
-  private formatMessage = (level: string, message: string, ...args: any[]) => {
+  private formatMessage = (
+    level: string,
+    message: string,
+    ...args: unknown[]
+  ) => {
     const date = this.clock.now().formatIso();
     const text = `${message} ${args
       .map((arg) => JSON.stringify(arg))

@@ -35,7 +35,7 @@ import { AppUpdater, autoUpdater } from 'electron-updater';
 
 const registerElectronFunctionality = (
   component: DIContainer,
-  window: BrowserWindow
+  window: BrowserWindow,
 ) => {
   component.registerSingleton<BrowserWindow>(() => window);
   component.registerSingleton<AppUpdater>(() => {
@@ -75,7 +75,7 @@ const registerPlatformFunctionality = (component: DIContainer) => {
       uiConfigProvider: () => provideUiConfig,
       times: () => component.get<ElectronTimes>(),
     },
-    component
+    component,
   );
 };
 
@@ -86,7 +86,7 @@ const registerManagers = (component: DIContainer) => {
   registerCommonManagers(
     component,
     component.get<QuitManager>(),
-    component.get<UpdateManager>()
+    component.get<UpdateManager>(),
   );
 };
 

@@ -36,7 +36,7 @@ export class MobileFiles implements Files {
   public saveFile = async (
     data: ArrayBuffer,
     defaultFileName: string,
-    path?: string
+    path?: string,
   ): Promise<FileMetadata> =>
     mobileFilesPlugin.saveFile({
       data: Array.from(new Uint8Array(data)),

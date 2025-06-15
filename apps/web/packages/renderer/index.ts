@@ -16,12 +16,12 @@ window.onerror = () => {
       '',
       `App version: ${process.env.APP_VERSION}`,
       `Homepage: ${process.env.APP_HOMEPAGE}`,
-    ].join('\n')
+    ].join('\n'),
   );
 };
 window.onunhandledrejection = (event) => window.onerror(event.reason);
 
-export const receive = (channel: string, args: any[]) => {
+export const receive = (channel: string, args: unknown[]) => {
   platformDelegate.receive(channel, args);
 };
 
@@ -35,8 +35,8 @@ const getFileSystem: () => BufferFileSystem = () =>
           {
             fileName: defaultFileName,
           },
-          handle
-        )
+          handle,
+        ),
       );
       if (cancelled) {
         return { cancelled: true };
@@ -45,7 +45,7 @@ const getFileSystem: () => BufferFileSystem = () =>
     },
     openFile: async () => {
       const { result } = await runIgnoringAbortErrors(logger, () =>
-        fileOpen({ extensions: SUPPORTED_EXTENSIONS })
+        fileOpen({ extensions: SUPPORTED_EXTENSIONS }),
       );
       if (result) {
         const data = await result.arrayBuffer();
@@ -61,8 +61,10 @@ const getFileSystem: () => BufferFileSystem = () =>
 const getLocalStorage: () => Storage = () => proxy(localStorage);
 const getSessionStorage: () => Storage = () => proxy(sessionStorage);
 const showConfirmDialog = (message?: string) => confirm(message);
-const onError = (reason: any) => {
-  window.onerror(reason);
+const onError = (reason: unknown) => {
+  // @ts-expect-error reason is PROBABLY an error or an event but the error handlers are flexible enough that it
+  // doesn't matter.
+  window.onerror(reason, null, null, null, reason);
 };
 
 expose(
@@ -74,7 +76,7 @@ expose(
     showConfirmDialog,
     onError,
   },
-  mainProcessWorker
+  mainProcessWorker,
 );
 
 export const start = async () => {

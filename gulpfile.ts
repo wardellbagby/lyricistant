@@ -1,6 +1,5 @@
 import path from 'path';
-import { promisify } from 'util';
-import del from 'del';
+import { deleteAsync as del } from 'del';
 import { glob } from 'glob';
 import { parallel, series } from 'gulp';
 import { buildElectron } from './apps/electron/electron.gulp';
@@ -36,26 +35,26 @@ export const testCore = series(
   testCodemirror,
   testCommonPlatform,
   testRhymeGenerator,
-  testRenderer
+  testRenderer,
 );
 export const testAllWeb = series(testWeb, testCore, testCoreDOMPlatform);
 export const testAllElectron = series(testElectron, testCore);
 export const unitTests = series(
   unitTestElectron,
   testCoreDOMPlatform,
-  testCore
+  testCore,
 );
 export const uiTests = series(uiTestElectron, testWeb, buildScreenshotter);
 export const testAll = series(unitTests, uiTests);
 
 export const clean = async () => {
-  const tsConfigs = await promisify(glob)('!(node_modules)/*/tsconfig.json');
+  const tsConfigs = await glob('!(node_modules)/*/tsconfig.json');
 
   tsConfigs
     .map((tsConfig) => path.resolve(path.dirname(tsConfig), 'build'))
     .forEach((buildDir) => {
       console.log(`Cleaning ${buildDir}`);
-      del.sync(buildDir);
+      del(buildDir);
     });
 };
 export const check = parallel(buildAll, testAll);

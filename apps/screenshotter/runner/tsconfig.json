@@ -1,5 +1,5 @@
 {
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "../main/window.d.ts"],
   "compilerOptions": {
     "lib": ["es2021", "dom"],
     "types": ["../../packages/renderer-window", "mocha"]

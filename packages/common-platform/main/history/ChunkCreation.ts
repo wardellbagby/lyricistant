@@ -36,17 +36,17 @@ export const createChunks = (source: string, changes: Change[]): Chunk[] => {
 
     const chunkLines: ChunkLine[] = intRange(
       firstChange.line,
-      lastChange.line + 1
+      lastChange.line + 1,
     )
       .map((originalLineNumber): ChunkLine | ChunkLine[] => {
         const sourceLineData = lineOrControlCharacters(
-          sourceLines[originalLineNumber]
+          sourceLines[originalLineNumber],
         );
         const lineChanges = group.filter(
-          (change) => change.line === originalLineNumber
+          (change) => change.line === originalLineNumber,
         );
         const changedLineData = lineOrControlCharacters(
-          applyToLine(sourceLineData?.line, lineChanges)
+          applyToLine(sourceLineData?.line, lineChanges),
         );
 
         if (sourceLineData?.line !== changedLineData?.line) {
@@ -129,7 +129,7 @@ export const createChunks = (source: string, changes: Change[]): Chunk[] => {
  */
 const createStartContext = (
   sourceLines: string[],
-  firstChange: Change
+  firstChange: Change,
 ): ChunkLine[] => {
   if (firstChange.line === 0) {
     return [];
@@ -159,14 +159,14 @@ const createStartContext = (
  */
 const createEndContext = (
   sourceLines: string[],
-  lastChange: Change
+  lastChange: Change,
 ): ChunkLine[] => {
   const lines: ChunkLine[] = [];
   const maxSourceLineIndex = sourceLines.length - 1;
   if (lastChange.line < maxSourceLineIndex) {
     const endContextLineNumber = Math.min(
       lastChange.line + 2,
-      maxSourceLineIndex
+      maxSourceLineIndex,
     );
 
     // There are some lines we can display after the last group; add them.
@@ -180,7 +180,7 @@ const createEndContext = (
             line: value.line,
             control: value.control,
           };
-        })
+        }),
     );
   }
   if (lastChange.line >= maxSourceLineIndex) {
@@ -255,7 +255,7 @@ const applyToLine = (line: string, changes: Change[]): string => {
  * @param line The line to check.
  */
 const lineOrControlCharacters = (
-  line: string
+  line: string,
 ): { line: string; control: boolean } => {
   if (line === undefined || line === null) {
     return null;

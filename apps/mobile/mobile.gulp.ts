@@ -5,7 +5,7 @@ import { cleanBuildDirectory, Mode, spawn } from '@tooling/common-tasks.gulp';
 import defaultWebpackConfig, {
   Platform,
 } from '@tooling/default.webpack.config';
-import del from 'del';
+import { deleteAsync as del } from 'del';
 import { parallel, series } from 'gulp';
 import webpack, { Configuration } from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
@@ -16,9 +16,7 @@ type CapacitorPlatform = 'android' | 'ios';
 
 const outputDir = path.resolve(__dirname, 'dist');
 
-const cleanMobile = async () => {
-  await del(outputDir);
-};
+const cleanMobile = () => del(outputDir);
 
 const createWebpackConfig = async (mode: Mode, platform: Platform) =>
   merge<Configuration>(
@@ -32,14 +30,14 @@ const createWebpackConfig = async (mode: Mode, platform: Platform) =>
       devtool: 'inline-source-map',
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig(mode, platform)
+    defaultWebpackConfig(mode, platform),
   );
 
 const copyMobileHtmlFile = async () => {
   await fs.mkdir(outputDir, { recursive: true });
   await fs.copyFile(
     path.resolve('packages/renderer/main/index.html'),
-    path.resolve(outputDir, 'index.html')
+    path.resolve(outputDir, 'index.html'),
   );
 };
 
@@ -67,8 +65,9 @@ const runWebServer = (platform: Platform) => async () => {
       port: 8080,
       hot: true,
       static: config.output.path,
+      host: '0.0.0.0',
     },
-    webpack(config)
+    webpack(config),
   );
   return server.start();
 };
@@ -77,7 +76,7 @@ const cap =
   (
     command: CapacitorCommand,
     platform: CapacitorPlatform,
-    options?: { development?: boolean }
+    options?: { development?: boolean },
   ) =>
   () =>
     spawn('node_modules/.bin/cap', [command, platform], {
@@ -105,11 +104,11 @@ const buildAndroidApp = series(
     await fs.mkdir(androidDist);
     await fs.copyFile(
       path.resolve(
-        'apps/mobile/android/app/build/outputs/apk/release/app-release.apk'
+        'apps/mobile/android/app/build/outputs/apk/release/app-release.apk',
       ),
-      path.resolve(androidDist, 'lyricistant.apk')
+      path.resolve(androidDist, 'lyricistant.apk'),
     );
-  }
+  },
 );
 
 const buildIOSApp = series(
@@ -138,7 +137,7 @@ const buildIOSApp = series(
       path.resolve('apps/mobile/ios/dist'),
       '-exportOptionsPlist',
       path.resolve('apps/mobile/ios/export.plist'),
-    ])
+    ]),
 );
 
 export const bundleAndroid = series(
@@ -146,25 +145,25 @@ export const bundleAndroid = series(
   cleanMobile,
   copyMobileHtmlFile,
   bundleMobile('Android'),
-  cap('sync', 'android')
+  cap('sync', 'android'),
 );
 export const bundleIOS = series(
   cleanBuildDirectory,
   cleanMobile,
   copyMobileHtmlFile,
   bundleMobile('iOS'),
-  cap('sync', 'ios')
+  cap('sync', 'ios'),
 );
 
 export const startAndroid = series(
   cleanMobile,
   copyMobileHtmlFile,
-  parallel(runWebServer('Android'), runAndroid)
+  parallel(runWebServer('Android'), runAndroid),
 );
 export const startIOS = series(
   cleanMobile,
   copyMobileHtmlFile,
-  parallel(runWebServer('iOS'), runIOS)
+  parallel(runWebServer('iOS'), runIOS),
 );
 
 export const buildAndroid = series(bundleAndroid, buildAndroidApp);

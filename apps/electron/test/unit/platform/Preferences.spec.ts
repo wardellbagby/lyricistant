@@ -56,7 +56,7 @@ describe('Preferences', () => {
     await preferences.getPreferences();
 
     expect(fs.readFileSync).to.have.been.calledOnceWith(
-      'user/preferences.json'
+      'user/preferences.json',
     );
   });
 

@@ -21,7 +21,7 @@ export default (
     screen: PlaywrightScreen;
     page: Page;
     isSmallLayout: boolean;
-  }>
+  }>,
 ) => {
   it.only('shows a prompt when creating a new file with changes', async () => {
     const { screen } = await getDependencies();
@@ -40,7 +40,7 @@ export default (
     await newFileButton.click();
 
     await expect(
-      screen.findByText('Discard unsaved changes?')
+      screen.findByText('Discard unsaved changes?'),
     ).resolves.toBeTruthy();
   });
 
@@ -57,7 +57,7 @@ export default (
     await newFileButton.click();
 
     await expect(
-      screen.findByText('Discard unsaved changes?')
+      screen.findByText('Discard unsaved changes?'),
     ).rejects.toBeTruthy();
   });
 
@@ -74,7 +74,7 @@ export default (
     await newFileButton.click();
 
     await expect(
-      screen.findByText('Discard unsaved changes?')
+      screen.findByText('Discard unsaved changes?'),
     ).rejects.toBeTruthy();
   });
 
@@ -84,7 +84,7 @@ export default (
     const settings = await findMenuButton(
       screen,
       'Open preferences',
-      isSmallLayout
+      isSmallLayout,
     );
     await settings.click();
 
@@ -97,7 +97,7 @@ export default (
     await waitFor(async () => {
       await expect(screen.findByText('Preferences')).rejects.toBeDefined();
       await expect(
-        screen.findByText('About Lyricistant')
+        screen.findByText('About Lyricistant'),
       ).rejects.toBeDefined();
     });
   });
@@ -113,30 +113,29 @@ export default (
     const fileHistory = await findMenuButton(
       screen,
       'View file history',
-      isSmallLayout
+      isSmallLayout,
     );
     await fileHistory.click();
 
     await expect(screen.findByText('File history')).resolves.toBeTruthy();
     await expect(
-      screen.findByText('Jul 20, 2022, 5:29:12 PM')
+      screen.findByText('Jul 20, 2022, 5:29:12 PM'),
     ).resolves.toBeTruthy();
     await expect(
-      screen.findByText('Jul 20, 2022, 5:28:46 PM')
+      screen.findByText('Jul 20, 2022, 5:28:46 PM'),
     ).resolves.toBeTruthy();
     await expect(
-      screen.findByText('Jul 20, 2022, 5:28:08 PM')
+      screen.findByText('Jul 20, 2022, 5:28:08 PM'),
     ).resolves.toBeTruthy();
 
-    const firstLineChangeFileHistory = await screen.findByText(
-      firstLineChangeLabel
-    );
+    const firstLineChangeFileHistory =
+      await screen.findByText(firstLineChangeLabel);
 
     await firstLineChangeFileHistory.click();
     await (await screen.findByText('Apply')).click();
 
     await expect(
-      screen.findByText(BURY_ME_LOOSE_PRE_LYRICS)
+      screen.findByText(BURY_ME_LOOSE_PRE_LYRICS),
     ).resolves.toBeTruthy();
   });
 
@@ -151,27 +150,26 @@ export default (
     const fileHistory = await findMenuButton(
       screen,
       'View file history',
-      isSmallLayout
+      isSmallLayout,
     );
     await fileHistory.click();
 
     await expect(screen.findByText('File history')).resolves.toBeTruthy();
     await expect(
-      screen.findByText('Jul 23, 2022, 11:02:27 AM')
+      screen.findByText('Jul 23, 2022, 11:02:27 AM'),
     ).resolves.toBeTruthy();
     await expect(
-      screen.findByText('Jul 23, 2022, 11:03:28 AM')
+      screen.findByText('Jul 23, 2022, 11:03:28 AM'),
     ).resolves.toBeTruthy();
 
-    const firstLineChangeFileHistory = await screen.findByText(
-      firstLineChangeLabel
-    );
+    const firstLineChangeFileHistory =
+      await screen.findByText(firstLineChangeLabel);
 
     await firstLineChangeFileHistory.click();
     await (await screen.findByText('Apply')).click();
 
     await expect(
-      screen.findByText(BURY_ME_LOOSE_PRE_LYRICS)
+      screen.findByText(BURY_ME_LOOSE_PRE_LYRICS),
     ).resolves.toBeTruthy();
   });
 };

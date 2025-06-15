@@ -7,7 +7,7 @@ export class FirstLaunchManager implements Manager {
   private static readonly IS_FIRST_LAUNCH_KEY = 'is-first-launch';
   public constructor(
     private rendererDelegate: RendererDelegate,
-    private appData: AppData
+    private appData: AppData,
   ) {}
 
   public register = () => {
@@ -20,7 +20,7 @@ export class FirstLaunchManager implements Manager {
     }
 
     const isFirstLaunch = !(await this.appData.exists(
-      FirstLaunchManager.IS_FIRST_LAUNCH_KEY
+      FirstLaunchManager.IS_FIRST_LAUNCH_KEY,
     ));
     if (isFirstLaunch && !isUnderTest) {
       this.rendererDelegate.send('open-about');

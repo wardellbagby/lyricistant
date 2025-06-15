@@ -8,12 +8,12 @@ import { DOMLogger } from '@lyricistant/core-dom-platform/platform/DOMLogger';
 const logger: Logger = new DOMLogger();
 
 class DOMPlatformDelegate implements PlatformDelegate {
-  public send(channel: string, ...args: any[]) {
+  public send(channel: string, ...args: unknown[]) {
     logger.info('Sending data to platform', { channel, args });
     queue(rendererListeners.getListeners(channel), args);
   }
 
-  public on(channel: string, listener: (...args: any[]) => void): this {
+  public on(channel: string, listener: (...args: unknown[]) => void): this {
     logger.info('Registering renderer listener', { channel });
     platformListeners.addListener(channel, listener);
     newRendererListenerListeners.get(channel)?.forEach((value) => value());
@@ -22,7 +22,7 @@ class DOMPlatformDelegate implements PlatformDelegate {
 
   public removeListener(
     channel: string,
-    listener: (...args: any[]) => void
+    listener: (...args: unknown[]) => void,
   ): this {
     logger.info('Removing renderer listener', { channel });
     platformListeners.removeListener(channel, listener);
@@ -31,12 +31,12 @@ class DOMPlatformDelegate implements PlatformDelegate {
 }
 
 export class DOMRendererDelegate implements RendererDelegate {
-  public send(channel: string, ...args: any[]) {
+  public send(channel: string, ...args: unknown[]) {
     logger.info('Sending data to renderer', { channel, args });
     queue(platformListeners.getListeners(channel), args);
   }
 
-  public on(channel: string, listener: (...args: any[]) => void): this {
+  public on(channel: string, listener: (...args: unknown[]) => void): this {
     logger.info('Registering platform listener', { channel });
     rendererListeners.addListener(channel, listener);
     return this;
@@ -44,7 +44,7 @@ export class DOMRendererDelegate implements RendererDelegate {
 
   public addRendererListenerSetListener(
     channel: string,
-    listener: () => void
+    listener: () => void,
   ): void {
     const listeners = newRendererListenerListeners.get(channel) ?? [];
     listeners.push(listener);
@@ -53,7 +53,7 @@ export class DOMRendererDelegate implements RendererDelegate {
 
   public removeListener(
     channel: string,
-    listener: (...args: any[]) => void
+    listener: (...args: unknown[]) => void,
   ): this {
     logger.info('Removing platform listener', { channel });
     rendererListeners.removeListener(channel, listener);
@@ -62,11 +62,12 @@ export class DOMRendererDelegate implements RendererDelegate {
 }
 
 export class ListenerManager {
-  private listeners: Map<string, Array<(...args: any[]) => void>> = new Map();
+  private listeners: Map<string, Array<(...args: unknown[]) => void>> =
+    new Map();
 
   public addListener(
     channel: string,
-    listener: (...args: any[]) => void
+    listener: (...args: unknown[]) => void,
   ): void {
     const registeredListeners = this.getListeners(channel);
     registeredListeners.push(listener);
@@ -76,7 +77,7 @@ export class ListenerManager {
 
   public removeListener(
     channel: string,
-    listener: (...args: any[]) => void
+    listener: (...args: unknown[]) => void,
   ): void {
     const registeredListeners = this.getListeners(channel);
     registeredListeners.splice(registeredListeners.indexOf(listener), 1);
@@ -84,12 +85,15 @@ export class ListenerManager {
     this.listeners.set(channel, registeredListeners);
   }
 
-  public getListeners(channel: string): Array<(...args: any[]) => unknown> {
+  public getListeners(channel: string): Array<(...args: unknown[]) => unknown> {
     return [...(this.listeners.get(channel) ?? [])];
   }
 }
 
-const queue = (functions: Array<(..._: any[]) => void>, args: any[]) => {
+const queue = (
+  functions: Array<(..._: unknown[]) => void>,
+  args: unknown[],
+) => {
   args.forEach((arg) => {
     if (isError(arg)) {
       logger.error(arg.message, arg);
@@ -99,7 +103,7 @@ const queue = (functions: Array<(..._: any[]) => void>, args: any[]) => {
   functions.forEach((listener) => listener(...args));
 };
 
-const isError = (e: any) => e instanceof Error;
+const isError = (e: unknown) => e instanceof Error;
 
 const platformListeners: ListenerManager = new ListenerManager();
 const rendererListeners: ListenerManager = new ListenerManager();

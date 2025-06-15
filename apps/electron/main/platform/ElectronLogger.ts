@@ -5,23 +5,23 @@ import log from 'electron-log';
 import { flatten } from 'lodash-es';
 
 export class ElectronLogger implements PlatformLogger {
-  public debug(message: string, ...args: any[]): void {
+  public debug(message: string, ...args: unknown[]): void {
     log.debug(message, ...args);
   }
 
-  public error(message: string, ...args: any[]): void {
+  public error(message: string, ...args: unknown[]): void {
     log.error(message, ...args);
   }
 
-  public info(message: string, ...args: any[]): void {
+  public info(message: string, ...args: unknown[]): void {
     log.info(message, ...args);
   }
 
-  public verbose(message: string, ...args: any[]): void {
+  public verbose(message: string, ...args: unknown[]): void {
     log.verbose(message, ...args);
   }
 
-  public warn(message: string, ...args: any[]): void {
+  public warn(message: string, ...args: unknown[]): void {
     log.warn(message, ...args);
   }
 
@@ -32,7 +32,7 @@ export class ElectronLogger implements PlatformLogger {
       await Promise.all([
         this.readLogFile(path.resolve(logDirectory, 'main.log')),
         this.readLogFile(path.resolve(logDirectory, 'renderer.log')),
-      ])
+      ]),
     )
       .sort((a, b) => a.sortLine.localeCompare(b.sortLine))
       .map((msg) => msg.sortLine + '\n' + msg.rest);
@@ -56,7 +56,7 @@ export class ElectronLogger implements PlatformLogger {
           }
           return chunks;
         },
-        [[]]
+        [[]],
       )
       .map<LogMessage>((chunk) => ({
         // The first line in a log message contains the time; we can sort on that

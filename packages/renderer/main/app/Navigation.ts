@@ -2,16 +2,13 @@ import { useCallback } from 'react';
 import { useLocation } from 'wouter';
 
 /** The paths that Lyricistant can navigate to. */
-const routes = [
-  '/',
-  '/about',
-  '/download',
-  '/file-history',
-  '/preferences',
-  '/privacypolicy',
-] as const;
-/** The paths that Lyricistant can navigate to. */
-export type RoutePaths = (typeof routes)[number];
+export type RoutePaths =
+  | '/'
+  | '/about'
+  | '/download'
+  | '/file-history'
+  | '/preferences'
+  | '/privacypolicy';
 
 export const useNavigation = () => {
   const setLocation = useLocation()[1];
@@ -23,7 +20,7 @@ export const useNavigation = () => {
 export const useBackNavigation = () => {
   const navigate = useNavigation();
   return useCallback(() => {
-    const state: Record<string, any> = window.history.state;
+    const state: Record<string, never> = window.history.state;
     if (state?.['internal'] === true) {
       window.history.back();
     } else {

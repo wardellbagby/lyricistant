@@ -35,7 +35,7 @@ import React, { useEffect, useState } from 'react';
 const DialogTransition = React.forwardRef<unknown, SlideProps>(
   function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
-  }
+  },
 );
 
 const Header = ({ label }: { label: string }) => (
@@ -103,7 +103,7 @@ interface PreferencesProps {
 export const Preferences = (props: PreferencesProps) => {
   const [originalPreferenceData] = useChannelData('prefs-updated', props.open);
   const [preferencesData, setPreferencesData] = useState(
-    originalPreferenceData
+    originalPreferenceData,
   );
 
   useEffect(() => {
@@ -146,7 +146,7 @@ export const Preferences = (props: PreferencesProps) => {
   };
 
   const onDetailPaneMinimizationChanged = (
-    detailPaneVisibility: DetailPaneVisibility
+    detailPaneVisibility: DetailPaneVisibility,
   ) => {
     setPreferencesData({
       ...preferencesData,

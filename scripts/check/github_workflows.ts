@@ -86,7 +86,7 @@ files.forEach((file) => {
       const task = isStepInvalid(step);
       if (task) {
         console.error(
-          `Task "${task}", used in step "${step.name}" in action "${file}", isn't an NPM script or a gulp task.`
+          `Task "${task}", used in step "${step.name}" in action "${file}", isn't an NPM script or a gulp task.`,
         );
         process.exit(1);
       }
@@ -96,7 +96,7 @@ files.forEach((file) => {
         const task = isStepInvalid(step);
         if (task) {
           console.error(
-            `Task "${task}", used in job "${label}" at step "${step.name}" in workflow "${file}", isn't an NPM script or a gulp task.`
+            `Task "${task}", used in job "${label}" at step "${step.name}" in workflow "${file}", isn't an NPM script or a gulp task.`,
           );
           process.exit(1);
         }

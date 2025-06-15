@@ -11,9 +11,9 @@ import { AppUpdater, UpdateInfo } from 'electron-updater';
 
 export class UpdateManager implements Manager {
   public static readonly IGNORED_VERSIONS_KEY = 'ignored-electron-versions';
-  private static readonly INSTALL_UPDATE_DIALOG_TAG =
+  public static readonly INSTALL_UPDATE_DIALOG_TAG =
     'update-manager-update-dialog';
-  private static readonly UPDATE_DOWNLOADED_DIALOG_TAG =
+  public static readonly UPDATE_DOWNLOADED_DIALOG_TAG =
     'update-manager-update-downloaded-dialog';
 
   private updateInfo: UpdateInfo;
@@ -24,7 +24,7 @@ export class UpdateManager implements Manager {
     private appUpdater: AppUpdater,
     private httpClient: HttpClient,
     private releaseHelper: ReleaseHelper,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   public register(): void {
@@ -34,7 +34,7 @@ export class UpdateManager implements Manager {
 
   private onRendererReady = async () => {
     const releaseData = await this.releaseHelper.getLatestDownloadableRelease(
-      process.env.APP_VERSION
+      process.env.APP_VERSION,
     );
 
     if (releaseData?.baseDownloadUrl) {
@@ -62,7 +62,7 @@ export class UpdateManager implements Manager {
     this.appUpdater
       .checkForUpdates()
       .catch((reason) =>
-        this.logger.warn('Failed to check for updates', reason)
+        this.logger.warn('Failed to check for updates', reason),
       );
   };
 
@@ -74,13 +74,13 @@ export class UpdateManager implements Manager {
     const ignoredVersions = await this.getIgnoredVersionsOrDefault();
     if (ignoredVersions.includes(updateInfo.version)) {
       this.logger.info(
-        `Ignoring update to ${updateInfo.version} since user requested not to update to it.`
+        `Ignoring update to ${updateInfo.version} since user requested not to update to it.`,
       );
       return;
     }
     this.updateInfo = updateInfo;
     const releaseData = await this.releaseHelper.getLatestDownloadableRelease(
-      process.env.APP_VERSION
+      process.env.APP_VERSION,
     );
     this.rendererDelegate.send('show-dialog', {
       tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
@@ -95,7 +95,7 @@ export class UpdateManager implements Manager {
     });
   };
 
-  private onUpdaterError = (error: any) => {
+  private onUpdaterError = (error: unknown) => {
     this.logger.warn('An error occurred with the auto updater.', error);
     // If updateInfo doesn't exist, we never prompted the user that an update was available so don't show anything.
     if (this.updateInfo) {
@@ -139,12 +139,12 @@ export class UpdateManager implements Manager {
 
   private onDialogInteraction = async (
     dialogTag: string,
-    interactionData: DialogInteractionData
+    interactionData: DialogInteractionData,
   ) => {
     switch (dialogTag) {
       case UpdateManager.INSTALL_UPDATE_DIALOG_TAG:
         await this.onUpdateAvailableDialogClicked(
-          interactionData.selectedButton
+          interactionData.selectedButton,
         );
         break;
       case UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG:
@@ -159,14 +159,15 @@ export class UpdateManager implements Manager {
         this.appUpdater
           .downloadUpdate()
           .catch((reason) =>
-            this.logger.warn('Failed to download updates.', reason)
+            this.logger.warn('Failed to download updates.', reason),
           );
         break;
-      case 'Never':
+      case 'Never': {
         const ignoredVersions = await this.getIgnoredVersionsOrDefault();
         ignoredVersions.push(this.updateInfo.version);
         this.appData.set(UpdateManager.IGNORED_VERSIONS_KEY, ignoredVersions);
         break;
+      }
     }
   };
 
@@ -184,7 +185,7 @@ export class UpdateManager implements Manager {
     }
 
     const result: Serializable = await this.appData.get(
-      UpdateManager.IGNORED_VERSIONS_KEY
+      UpdateManager.IGNORED_VERSIONS_KEY,
     );
 
     if (

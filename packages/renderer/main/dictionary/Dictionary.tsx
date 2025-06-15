@@ -96,7 +96,7 @@ const MeaningList = React.memo(
         ))}
       </Box>
     </Box>
-  )
+  ),
 );
 
 const VisualMeaning = (props: {
@@ -164,15 +164,15 @@ const RelatedTextLists = (props: {
 }) => {
   const shouldHide = useMemo(
     () => !(props.antonyms?.length > 0 || props.synonyms?.length > 0),
-    [props.synonyms, props.antonyms]
+    [props.synonyms, props.antonyms],
   );
   const synonyms = useMemo(
     () => [...new Set(props.synonyms)],
-    [props.synonyms]
+    [props.synonyms],
   );
   const antonyms = useMemo(
     () => [...new Set(props.antonyms)],
-    [props.antonyms]
+    [props.antonyms],
   );
   const hasSynonyms = synonyms.length > 0;
   const hasAntonyms = antonyms.length > 0;

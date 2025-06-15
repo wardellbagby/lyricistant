@@ -43,8 +43,7 @@ const PlatformDownloadOptions = (props: {
       props.releases.map((release) => (
         <Grid
           key={`${release.platform}/${release.asset}/${release.url}`}
-          item
-          xs={6}
+          sx={{ xs: 6 }}
         >
           <DownloadButton
             release={release}
@@ -54,20 +53,19 @@ const PlatformDownloadOptions = (props: {
           />
         </Grid>
       )),
-    [props.releases, props.onClick]
+    [props.releases, props.onClick],
   );
 
   if (props.releases.length > 1) {
     return (
       <Grid
-        item
         container
-        xs={12}
+        sx={{ xs: 12 }}
         spacing={1}
         alignItems={'center'}
         justifyContent={'center'}
       >
-        <Grid item xs={12}>
+        <Grid sx={{ xs: 12 }}>
           <Accordion
             key={props.platform + 'accordion'}
             sx={{ padding: '0px', boxShadow: 'unset' }}
@@ -177,7 +175,7 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
       window.open(url, '_blank');
       props.onClose();
     },
-    [state.context.releaseData?.baseDownloadUrl]
+    [state.context.releaseData?.baseDownloadUrl],
   );
 
   const releases = useMemo(
@@ -187,7 +185,7 @@ export const ChooseDownloadDialog = (props: ChooseDownloadDialogProps) => {
         map.set(release.platform, [...list, release]);
         return map;
       }, new Map<string, Release[]>()),
-    []
+    [],
   );
 
   return (

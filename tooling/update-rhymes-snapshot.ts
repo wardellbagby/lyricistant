@@ -43,10 +43,10 @@ const output = path.resolve(
   'packages',
   'rhyme-generator',
   'test',
-  'snapshot.json'
+  'snapshot.json',
 );
 
-const result: Record<string, any> = {};
+const result: Record<string, unknown> = {};
 
 words.forEach((word) => {
   const rhymes = generateRhymes(word);

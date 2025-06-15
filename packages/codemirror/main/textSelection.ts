@@ -13,7 +13,7 @@ export interface TextSelectionData {
 }
 
 export const textSelection = (
-  onTextSelected: (word: TextSelectionData) => void
+  onTextSelected: (word: TextSelectionData) => void,
 ) => [
   EditorView.updateListener.of((update) => {
     if (update.selectionSet) {
@@ -27,12 +27,12 @@ export const textSelection = (
         nodes = getLyricNodesBetween(
           update.state,
           selectionRange.from,
-          selectionRange.to
+          selectionRange.to,
         );
       }
 
       const hasLyricSelection = nodes.find((node) =>
-        doesNodeContainSelection(node, selectionRange)
+        doesNodeContainSelection(node, selectionRange),
       );
 
       if (hasLyricSelection) {

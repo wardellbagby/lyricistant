@@ -11,22 +11,22 @@ import { fake, stub } from 'sinon';
 export class MockRendererDelegate implements RendererDelegate {
   public on: <Channel extends PlatformChannel>(
     channel: Channel,
-    listener: RendererToPlatformListener[Channel]
-  ) => this = fake((channel: any, listener: any) => {
+    listener: RendererToPlatformListener[Channel],
+  ) => this = fake((channel, listener) => {
     this.listeners.set(channel, listener);
     return this;
   });
   public send: () => void = stub();
   public addRendererListenerSetListener: <Channel extends RendererChannel>(
     channel: Channel,
-    onRendererListenerSet: () => void
-  ) => this = fake((channel: any, listener: any) => {
+    onRendererListenerSet: () => void,
+  ) => this = fake((channel, listener) => {
     this.rendererListenerSetListeners.set(channel, listener);
     return this;
   });
 
   private listeners = new RendererListeners();
-  private rendererListenerSetListeners = new Map<string, any>();
+  private rendererListenerSetListeners = new Map<string, () => void>();
 
   /** Clears all listeners that have been set on this renderer delegate. */
   public clear = () => {
@@ -36,7 +36,7 @@ export class MockRendererDelegate implements RendererDelegate {
 
   public removeListener<Channel extends PlatformChannel>(
     channel: Channel,
-    listener: RendererToPlatformListener[Channel]
+    listener: RendererToPlatformListener[Channel],
   ): this {
     this.listeners.remove(channel, listener);
     return this;
@@ -75,15 +75,15 @@ export class MockRendererDelegate implements RendererDelegate {
    * @see addRendererListenerSetListener
    */
   public invokeRendererListenerSetListener = async <
-    Channel extends RendererChannel
+    Channel extends RendererChannel,
   >(
-    channel: Channel
+    channel: Channel,
   ): Promise<void> => {
     const listener = this.rendererListenerSetListeners.get(channel);
     if (!listener) {
       throw new Error(`No renderer listener set for channel ${channel}`);
     } else {
-      await listener();
+      listener();
     }
   };
 }

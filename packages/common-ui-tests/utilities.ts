@@ -38,7 +38,7 @@ export const BURY_ME_LOOSE_V1_FILE_HISTORY: DroppableFile = {
     path: 'burymeloose-v1filehistory.lyrics',
   },
   data: readFileSync(
-    path.resolve(resourcesDir, 'burymeloose-v1filehistory.lyrics')
+    path.resolve(resourcesDir, 'burymeloose-v1filehistory.lyrics'),
   ),
 };
 /**
@@ -53,7 +53,7 @@ export const BURY_ME_LOOSE_V2_FILE_HISTORY: DroppableFile = {
     path: 'burymeloose-v2filehistory.lyrics',
   },
   data: readFileSync(
-    path.resolve(resourcesDir, 'burymeloose-v2filehistory.lyrics')
+    path.resolve(resourcesDir, 'burymeloose-v2filehistory.lyrics'),
   ),
 };
 
@@ -66,7 +66,7 @@ export const getEditor = async (screen: PlaywrightScreen) =>
 export const findMenuButton = async (
   screen: PlaywrightScreen,
   name: string,
-  isSmallLayout: boolean
+  isSmallLayout: boolean,
 ) => {
   if (isSmallLayout) {
     // Assume its hiding in the overflow menu.
@@ -88,7 +88,7 @@ export const findMenuButton = async (
 export const dropFile = async (
   page: Page,
   screen: PlaywrightScreen,
-  droppableFile: DroppableFile
+  droppableFile: DroppableFile,
 ) => {
   const editor = await getEditor(screen);
 
@@ -115,7 +115,7 @@ export const dropFile = async (
       dt.items.add(file);
       return dt;
     },
-    [droppableFile.metadata, data]
+    [droppableFile.metadata, data],
   );
 
   await Promise.all([

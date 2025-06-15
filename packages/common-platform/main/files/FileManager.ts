@@ -59,7 +59,7 @@ export class FileManager implements Manager {
     private fileHandlers: FileHandlers,
     private fileDataExtensions: FileDataExtensions,
     private preferences: Preferences,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   private static generateDefaultFileName = (fileHandler: FileHandler) =>
@@ -73,7 +73,7 @@ export class FileManager implements Manager {
   }
 
   public addOnFileChangedListener = (
-    listener: (currentFilename: string | null, recentFiles: string[]) => void
+    listener: (currentFilename: string | null, recentFiles: string[]) => void,
   ) => {
     this.fileChangedListeners.push(listener);
   };
@@ -100,7 +100,7 @@ export class FileManager implements Manager {
     if (!this.isRendererReady && file) {
       this.logger.verbose(
         'Received a file before renderer ready; delaying open',
-        file.metadata
+        file.metadata,
       );
       this.initialFile = file;
       return;
@@ -144,7 +144,7 @@ export class FileManager implements Manager {
       // need to make any platform-specific changes before we open it.
       const platformFile = await makeCancellable(
         this.files.openFile(file),
-        cancelSignal
+        cancelSignal,
       );
       if (platformFile) {
         await this.openFileActual(platformFile);
@@ -157,7 +157,7 @@ export class FileManager implements Manager {
     } finally {
       this.rendererDelegate.send(
         'close-dialog',
-        FileManager.OPEN_FILE_DIALOG_TAG
+        FileManager.OPEN_FILE_DIALOG_TAG,
       );
     }
   };
@@ -169,7 +169,7 @@ export class FileManager implements Manager {
     if (this.initialFile) {
       this.logger.verbose(
         'Renderer ready; opening delayed file',
-        this.initialFile.metadata
+        this.initialFile.metadata,
       );
       await this.onOpenFile(this.initialFile);
       this.initialFile = null;
@@ -184,7 +184,7 @@ export class FileManager implements Manager {
   };
 
   private getUserSelectedFileName = async (
-    fileHandler: FileHandler
+    fileHandler: FileHandler,
   ): Promise<string | null> => {
     const defaultFileName = FileManager.generateDefaultFileName(fileHandler);
     const interactionData = await showRendererDialog(this.rendererDelegate, {
@@ -216,12 +216,12 @@ export class FileManager implements Manager {
       this.logger.debug('Saving file with lyrics', { path, lyrics });
 
       this.fileDataExtensions.forEach((extension) =>
-        extension.onBeforeSerialization?.(lyrics)
+        extension.onBeforeSerialization?.(lyrics),
       );
       const extensions: SerializedExtensions = {};
       for (const extension of this.fileDataExtensions) {
         extensions[extension.key] = this.buffers.stringToBuffer(
-          JSON.stringify(await extension.serialize())
+          JSON.stringify(await extension.serialize()),
         );
       }
 
@@ -258,7 +258,7 @@ export class FileManager implements Manager {
       const cancelSignal = this.showLoadingDialog('save', true);
       const newFileMetadata = await makeCancellable(
         this.files.saveFile(serializedFileData, defaultFileName, path),
-        cancelSignal
+        cancelSignal,
       );
       if (newFileMetadata && newFileMetadata.path) {
         this.showLoadingDialog('save');
@@ -270,7 +270,7 @@ export class FileManager implements Manager {
         this.rendererDelegate.send('file-opened', undefined, lyrics, true);
         this.addRecentFile(newFileMetadata.path);
         this.fileChangedListeners.forEach((listener) =>
-          listener(fileTitle, this.recentFiles.getRecentFiles())
+          listener(fileTitle, this.recentFiles.getRecentFiles()),
         );
         this.rendererDelegate.send('file-save-ended', null, fileTitle);
       } else {
@@ -281,7 +281,7 @@ export class FileManager implements Manager {
     } finally {
       this.rendererDelegate.send(
         'close-dialog',
-        FileManager.SAVE_FILE_DIALOG_TAG
+        FileManager.SAVE_FILE_DIALOG_TAG,
       );
     }
   };
@@ -297,7 +297,7 @@ export class FileManager implements Manager {
 
     for (const extension of this.fileDataExtensions) {
       const data = this.buffers.bufferToString(
-        fileData.extensions?.[extension.key]
+        fileData.extensions?.[extension.key],
       );
       if (data?.length > 0) {
         await extension.deserialize(JSON.parse(data));
@@ -309,15 +309,15 @@ export class FileManager implements Manager {
       'file-opened',
       undefined,
       fileData?.lyrics ?? '',
-      true
+      true,
     );
     this.addRecentFile(this.currentFile.path);
     const updatedRecentFiles = this.recentFiles.getRecentFiles();
     this.fileChangedListeners.forEach((listener) =>
       listener(
         platformFile.metadata.name ?? platformFile.metadata.path,
-        updatedRecentFiles
-      )
+        updatedRecentFiles,
+      ),
     );
   };
 
@@ -326,7 +326,7 @@ export class FileManager implements Manager {
     this.rendererDelegate.send('new-file-created');
     this.fileDataExtensions.forEach((extension) => extension.reset());
     this.fileChangedListeners.forEach((listener) =>
-      listener(null, this.recentFiles.getRecentFiles())
+      listener(null, this.recentFiles.getRecentFiles()),
     );
   };
 
@@ -392,7 +392,7 @@ export class FileManager implements Manager {
    */
   private showLoadingDialog = (
     type: 'open' | 'save',
-    cancelable = false
+    cancelable = false,
   ): CancelSignal | null => {
     const tag =
       type === 'open'
@@ -420,10 +420,10 @@ export class FileManager implements Manager {
 
   private promptFileHandlerSelection = async (): Promise<FileHandler> => {
     const lyricsHandler = this.fileHandlers.find(
-      (handler) => handler.extension === 'lyrics'
+      (handler) => handler.extension === 'lyrics',
     );
     const textHandler = this.fileHandlers.find(
-      (handler) => handler.extension === 'txt'
+      (handler) => handler.extension === 'txt',
     );
 
     const lyricsOption = 'Lyricistant file (.lyrics)';
@@ -444,7 +444,7 @@ export class FileManager implements Manager {
 
     if (interactionData.checkboxes?.[neverAskAgainLabel]) {
       const preferencesData = await getPreferencesDataOrDefault(
-        this.preferences
+        this.preferences,
       );
       await this.preferences.setPreferences({
         ...preferencesData,
@@ -463,10 +463,10 @@ export class FileManager implements Manager {
   private getDefaultFileHandler = async (): Promise<FileHandler> => {
     const preferencesData = await getPreferencesDataOrDefault(this.preferences);
     const textFileHandler = this.fileHandlers.find(
-      (handler) => handler.extension === 'txt'
+      (handler) => handler.extension === 'txt',
     );
     const lyricsFileHandler = this.fileHandlers.find(
-      (handler) => handler.extension === 'lyrics'
+      (handler) => handler.extension === 'lyrics',
     );
 
     switch (preferencesData.defaultFileType) {

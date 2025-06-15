@@ -1,13 +1,12 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { promisify } from 'util';
 import rendererWebpackConfig from '@lyricistant/renderer/webpack.config';
 import {
   getOutputDirectory as getOutDir,
   spawn,
 } from '@tooling/common-tasks.gulp';
 import defaultWebpackConfig from '@tooling/default.webpack.config';
-import del from 'del';
+import { deleteAsync as del } from 'del';
 import { glob } from 'glob';
 import { series } from 'gulp';
 import { Configuration, webpack } from 'webpack';
@@ -32,7 +31,7 @@ const createWebpackConfig = async () =>
       },
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig('production', 'Screenshotter')
+    defaultWebpackConfig('production', 'Screenshotter'),
   );
 
 const bundleScreenshotter = async () => {
@@ -54,25 +53,25 @@ const copyResources = async () => {
   await fs.mkdir(outputDir, { recursive: true });
   await fs.copyFile(
     path.resolve('packages/renderer/main/index.html'),
-    path.resolve(outputDir, 'index.html')
+    path.resolve(outputDir, 'index.html'),
   );
 };
 
 export const buildScreenshotter = series(
   cleanScreenshotter,
   copyResources,
-  bundleScreenshotter
+  bundleScreenshotter,
 );
 
 const exportScreenshots = async () => {
-  const images = await promisify(glob)('apps/screenshotter/runner/dist/*.png');
+  const images = await glob('apps/screenshotter/runner/dist/*.png');
 
   const androidImageDir = path.resolve(
     'fastlane',
     'metadata',
     'android',
     'en-US',
-    'images'
+    'images',
   );
   const androidPhoneDir = path.resolve(androidImageDir, 'phoneScreenshots');
   const androidTabletDir = path.resolve(androidImageDir, 'tenInchScreenshots');
@@ -122,5 +121,5 @@ const runScreenshotter = () =>
 export const refreshScreenshots = series(
   buildScreenshotter,
   runScreenshotter,
-  exportScreenshots
+  exportScreenshots,
 );

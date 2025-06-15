@@ -71,7 +71,7 @@ export interface RendererToPlatformListener {
    */
   'dialog-interaction': (
     dialogTag: string,
-    interactionData: DialogInteractionData
+    interactionData: DialogInteractionData,
   ) => void;
   /**
    * Fired when a dialog shown by {@link show-dialog} has been closed by an
@@ -252,7 +252,7 @@ export interface RendererDelegate {
    */
   addRendererListenerSetListener<Channel extends RendererChannel>(
     channel: Channel,
-    onRendererListenerSet: () => void
+    onRendererListenerSet: () => void,
   ): void;
 
   /**
@@ -263,7 +263,7 @@ export interface RendererDelegate {
    */
   on<Channel extends PlatformChannel>(
     channel: Channel,
-    listener: RendererToPlatformListener[Channel]
+    listener: RendererToPlatformListener[Channel],
   ): this;
 
   /**
@@ -274,7 +274,7 @@ export interface RendererDelegate {
    */
   removeListener<Channel extends PlatformChannel>(
     channel: Channel,
-    listener: RendererToPlatformListener[Channel]
+    listener: RendererToPlatformListener[Channel],
   ): this;
 }
 
@@ -299,7 +299,7 @@ export interface PlatformDelegate {
    */
   on<Channel extends RendererChannel>(
     channel: Channel,
-    listener: PlatformToRendererListener[Channel]
+    listener: PlatformToRendererListener[Channel],
   ): this;
 
   /**
@@ -310,6 +310,6 @@ export interface PlatformDelegate {
    */
   removeListener<Channel extends RendererChannel>(
     channel: Channel,
-    listener: PlatformToRendererListener[Channel]
+    listener: PlatformToRendererListener[Channel],
   ): this;
 }

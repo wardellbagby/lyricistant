@@ -14,7 +14,7 @@ export interface Preferences {
 }
 
 export const getPreferencesDataOrDefault = async (
-  preferences: Preferences
+  preferences: Preferences,
 ): Promise<PreferencesData> => {
   const savedPreferencesData =
     (await preferences.getPreferences()) as Partial<PreferencesData>;

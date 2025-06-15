@@ -18,7 +18,7 @@ window.onerror = (message, url, line, col, error) => {
     `Url: ${url}\n`,
     `Line: ${line}\n`,
     `Column: ${col}\n`,
-    error
+    error,
   );
   alert(
     [
@@ -27,7 +27,7 @@ window.onerror = (message, url, line, col, error) => {
       '',
       `App version: ${process.env.APP_VERSION}`,
       `Homepage: ${process.env.APP_HOMEPAGE}`,
-    ].join('\n')
+    ].join('\n'),
   );
 };
 window.onunhandledrejection = (event) => window.onerror(event.reason);

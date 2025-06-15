@@ -13,12 +13,12 @@ export interface Instant {
 const createInstant = (
   dateTime: DateTime,
   locale?: LocaleOptions,
-  zone?: string
+  zone?: string,
 ): Instant => ({
   formatLocal: (option) =>
     dateTime.toLocaleString(
       { ...option, timeZone: zone ?? option.timeZone },
-      locale
+      locale,
     ),
   formatIso: () => dateTime.toISO(),
 });
@@ -42,12 +42,12 @@ export class FakeClock implements Clock {
           second: 0,
           millisecond: 0,
         },
-        { zone: 'America/Los_Angeles' }
+        { zone: 'America/Los_Angeles' },
       ),
       {
         locale: 'en-US',
       },
-      'America/Los_Angeles'
+      'America/Los_Angeles',
     );
   public fromIso = (isoString: string) =>
     createInstant(
@@ -55,6 +55,6 @@ export class FakeClock implements Clock {
       {
         locale: 'en-US',
       },
-      'America/Los_Angeles'
+      'America/Los_Angeles',
     );
 }

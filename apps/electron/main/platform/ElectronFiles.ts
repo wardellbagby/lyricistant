@@ -14,7 +14,7 @@ export class ElectronFiles implements Files {
   public constructor(
     private dialog: ElectronDialog,
     private fs: FileSystem,
-    private window: BrowserWindow
+    private window: BrowserWindow,
   ) {}
 
   public supportsChoosingFileName = () => true;
@@ -43,7 +43,7 @@ export class ElectronFiles implements Files {
   public saveFile = async (
     data: ArrayBuffer,
     defaultFileName: string,
-    path?: string
+    path?: string,
   ): Promise<FileMetadata> => {
     const buffer = Buffer.from(data);
     if (path) {

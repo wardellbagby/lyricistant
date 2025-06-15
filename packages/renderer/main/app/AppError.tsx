@@ -10,7 +10,7 @@ import {
 import React, { useCallback, useEffect } from 'react';
 
 interface AppErrorProps {
-  error: any;
+  error: unknown;
   editorText: string;
 }
 
@@ -25,7 +25,7 @@ export function AppError({ error, editorText }: AppErrorProps) {
   const onClose = useCallback(() => window.location.reload(), []);
   const onCopy = useCallback(
     () => window.navigator.clipboard.writeText(editorText),
-    []
+    [],
   );
   const onDownloadLogs = useCallback(() => {
     platformDelegate.send('save-logs');
@@ -38,7 +38,7 @@ export function AppError({ error, editorText }: AppErrorProps) {
     <Dialog onClose={onClose} open>
       <DialogTitle>Application error</DialogTitle>
       <Box paddingLeft={'32px'} paddingRight={'32px'} paddingBottom={'24px'}>
-        <Typography paragraph>
+        <Typography component="p">
           Sorry, an error has occurred in Lyricistant. Press reload to continue,
           but any unsaved data may be lost. You can also copy your current
           lyrics to the clipboard, and attempt to download logs.

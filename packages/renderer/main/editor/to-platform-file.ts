@@ -27,7 +27,7 @@ type FileWithPath = File & { path?: string };
  * @param data The File or DataTransferItem to convert.
  */
 export const toPlatformFile = async (
-  data: FSApiDataTransferItem | FileWithPath
+  data: FSApiDataTransferItem | FileWithPath,
 ): Promise<PlatformFile> => {
   const file: FileWithPath = data instanceof File ? data : data.getAsFile();
   const handle =

@@ -23,7 +23,7 @@ const DefaultWrapper = ({ children }: PropsWithChildren<unknown>) => (
 
 export const render = (
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'queries'>
+  options?: Omit<RenderOptions, 'queries'>,
 ) => realRender(ui, { ...options, wrapper: DefaultWrapper });
 
 export const wait = async (timeout: number) =>
@@ -40,7 +40,7 @@ export const nestedElementTextMatcher: (text: string) => MatcherFunction =
   (text) => (_, element) => {
     const isRootMatch = element.textContent === text;
     const hasChildMatch = Array.from(element?.children || []).some(
-      (child) => child.textContent === text
+      (child) => child.textContent === text,
     );
 
     return isRootMatch && !hasChildMatch;

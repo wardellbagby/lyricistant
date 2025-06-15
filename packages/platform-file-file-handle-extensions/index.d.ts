@@ -11,3 +11,4 @@ declare module '@lyricistant/common/files/PlatformFile' {
     };
   }
 }
+export {};

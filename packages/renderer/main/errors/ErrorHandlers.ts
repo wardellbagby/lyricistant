@@ -4,17 +4,20 @@
  * @param message The error to look through.
  * @returns An error, or an error message.
  */
-export const getRootError = (message: any) => {
+export const getRootError = (message: unknown) => {
   if (!message) {
     return message;
   }
+
   let current = message;
-  while (message.stack || message.reason) {
-    if (current === (message.stack || message.reason)) {
-      break;
+  do {
+    if (current instanceof Error && 'reason' in current) {
+      if (current === (current.stack || current.reason)) {
+        break;
+      }
+      current = current.stack || current.reason;
     }
-    current = message.stack || message.reason;
-  }
+  } while (current instanceof Error && 'reason' in current);
 
   return current;
 };
@@ -25,7 +28,7 @@ export const getRootError = (message: any) => {
  * @param message The error, or error message, to check.
  * @param url An optional url given by a window.onerror callback.
  */
-export const isReportableError = (message: any, url?: string) => {
+export const isReportableError = (message: unknown, url?: string) => {
   if (typeof message === 'string' && message.includes('ResizeObserver')) {
     // https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
     return false;
@@ -52,7 +55,7 @@ export const setWindowErrorHandler = () => {
     availableLogger.error(JSON.stringify(rootError), { url, line, col }, error);
 
     if (oldOnError) {
-      oldOnError(rootError, url, line, col, error);
+      oldOnError('Error in Lyricistant', url, line, col, error);
     } else {
       alert(
         [
@@ -61,7 +64,7 @@ export const setWindowErrorHandler = () => {
           '',
           `App version: ${process.env.APP_VERSION}`,
           `Homepage: ${process.env.APP_HOMEPAGE}`,
-        ].join('\n')
+        ].join('\n'),
       );
     }
   };
