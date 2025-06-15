@@ -27,11 +27,11 @@ const options: Options = {
     depcheck.special.webpack,
     depcheck.special.mocha,
     depcheck.special.react17,
-    depcheck.special.ttypescript,
     depcheck.special.prettier,
     depcheck.special.tslint,
     depcheck.special.husky,
   ],
+  ignorePatterns: ['*lyrics.grammar.d.ts'],
   ignoreMatches: [
     TYPES_MATCH,
     '@capacitor/android',
@@ -44,7 +44,6 @@ const options: Options = {
     'ts-loader',
     'raw-loader',
     '@svgr/webpack',
-    'ttypescript',
     'url-loader',
     'tslib',
     '@fontsource/roboto',
@@ -60,12 +59,19 @@ const options: Options = {
     'http-server',
     'jest-extended',
     'husky',
+    'eslint',
+    'eslint-config-prettier',
+    'eslint-plugin-jest',
+    'eslint-plugin-react',
+    'typescript-eslint',
+    'webpack-env',
+    '@eslint/js',
   ],
 };
 
 const logIfExists = (
   label: string,
-  values: string[] | Record<string, string>
+  values: string[] | Record<string, string>,
 ) => {
   if (check(values)) {
     console.log(label);
@@ -82,7 +88,7 @@ const logIfExists = (
   }
 };
 
-const check = (value: any) => value && Object.keys(value).length > 0;
+const check = (value: unknown) => value && Object.keys(value).length > 0;
 
 depcheck(path.resolve(__dirname, '../../'), options).then(
   ({
@@ -103,7 +109,7 @@ depcheck(path.resolve(__dirname, '../../'), options).then(
     ) {
       process.exit(1);
     }
-  }
+  },
 );
 
 options.ignoreMatches.forEach((dep) => {
@@ -112,7 +118,7 @@ options.ignoreMatches.forEach((dep) => {
   }
   if (!(dep in dependencies || dep in devDependencies)) {
     console.log(
-      `"${dep}" is explicitly ignored from dependency checks but is no longer installed. Please remove from "${__filename}"`
+      `"${dep}" is explicitly ignored from dependency checks but is no longer installed. Please remove from "${__filename}"`,
     );
   }
 });

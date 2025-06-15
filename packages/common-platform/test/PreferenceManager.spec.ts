@@ -29,7 +29,7 @@ describe('Preference Manager', () => {
   const rendererDelegate = new MockRendererDelegate();
   let systemThemeChangeListener: (
     systemTheme: SystemTheme,
-    systemPalette?: SystemPalette
+    systemPalette?: SystemPalette,
   ) => void;
 
   beforeEach(() => {
@@ -42,7 +42,7 @@ describe('Preference Manager', () => {
     manager = new PreferenceManager(
       rendererDelegate,
       systemThemeProvider,
-      preferences
+      preferences,
     );
   });
 
@@ -55,10 +55,10 @@ describe('Preference Manager', () => {
 
     expect(rendererDelegate.on).to.have.been.calledWith('save-prefs');
     expect(
-      rendererDelegate.addRendererListenerSetListener
+      rendererDelegate.addRendererListenerSetListener,
     ).to.have.been.calledWith('prefs-updated');
     expect(
-      rendererDelegate.addRendererListenerSetListener
+      rendererDelegate.addRendererListenerSetListener,
     ).to.have.been.calledWith('theme-updated');
   });
 
@@ -94,7 +94,7 @@ describe('Preference Manager', () => {
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'prefs-updated',
-      prefs
+      prefs,
     );
   });
 
@@ -120,11 +120,11 @@ describe('Preference Manager', () => {
     expect(preferences.setPreferences).to.have.been.calledWith(prefs);
     expect(rendererDelegate.send).to.have.been.calledWith(
       'prefs-updated',
-      prefs
+      prefs,
     );
     expect(rendererDelegate.send).to.have.been.calledWith(
       'theme-updated',
-      theme
+      theme,
     );
   });
 
@@ -137,7 +137,7 @@ describe('Preference Manager', () => {
       'theme-updated',
       sinon.match({
         colorScheme: ColorScheme.Light,
-      })
+      }),
     );
 
     await systemThemeChangeListener(SystemTheme.Dark);
@@ -146,7 +146,7 @@ describe('Preference Manager', () => {
       'theme-updated',
       sinon.match({
         colorScheme: ColorScheme.Dark,
-      })
+      }),
     );
   });
 
@@ -160,7 +160,7 @@ describe('Preference Manager', () => {
       sinon.match({
         colorScheme: ColorScheme.Light,
         systemPalette: { primary: '#121212' },
-      })
+      }),
     );
 
     await systemThemeChangeListener(SystemTheme.Dark, { surface: '#434343' });
@@ -170,7 +170,7 @@ describe('Preference Manager', () => {
       sinon.match({
         colorScheme: ColorScheme.Dark,
         systemPalette: { surface: '#434343' },
-      })
+      }),
     );
   });
 });

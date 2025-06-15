@@ -14,14 +14,6 @@ const logger = appComponent.get<Logger>();
 
 window.logger = logger;
 window.platformDelegate = platformDelegate;
-
-declare global {
-  interface Window {
-    rendererDelegate: RendererDelegate;
-    fileHistory: FileHistory;
-    preferences: ScreenshotterPreferences;
-  }
-}
 window.rendererDelegate = appComponent.get<RendererDelegate>();
 window.fileHistory = appComponent.get<FileHistory>();
 window.preferences = appComponent.get<ScreenshotterPreferences>();

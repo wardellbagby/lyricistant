@@ -43,7 +43,7 @@ export const generateRhymes = (input: string): Rhyme[] => {
       const result = compare(
         wordPronunciation,
         pronunciations[dictWord],
-        match
+        match,
       );
       if (result) {
         generatedRhymes.push(result);
@@ -56,7 +56,8 @@ export const generateRhymes = (input: string): Rhyme[] => {
     .slice(0, MAX_RHYMES_COUNT)
     .filter(
       (left, index) =>
-        index === generatedRhymes.findIndex((right) => left.word === right.word)
+        index ===
+        generatedRhymes.findIndex((right) => left.word === right.word),
     );
 
   cache.set(input, results);
@@ -75,7 +76,7 @@ const removeStress = (syllable: string) => syllable.replace(/[0-9]/g, '');
 const calculateScore = (input: string, match: string) => {
   const inputSyllables = reverseSyllables(input);
   const inputStressedIndex = inputSyllables.findIndex((value) =>
-    value.includes('1')
+    value.includes('1'),
   );
   const matchSyllables = reverseSyllables(match);
   const length = Math.min(inputSyllables.length, matchSyllables.length);
@@ -110,7 +111,7 @@ const calculateScore = (input: string, match: string) => {
 const compare = (
   inputPronunciation: Pronunciation,
   matchPronunciation: Pronunciation,
-  matchWord: string
+  matchWord: string,
 ) => {
   let score = calculateScore(inputPronunciation[0], matchPronunciation[0]);
 

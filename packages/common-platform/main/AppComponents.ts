@@ -85,7 +85,7 @@ export const registerCommonManagers = (
  */
 export const registerCommonPlatform = (
   dependencies: PlatformDependencies,
-  component: DIContainer
+  component: DIContainer,
 ): DIContainer => {
   component.registerTransient<Files>(dependencies.files);
   component.registerTransient<Logger>(dependencies.logger);
@@ -93,7 +93,7 @@ export const registerCommonPlatform = (
   component.registerTransient<Preferences>(dependencies.preferences);
   component.registerTransient<RecentFiles>(dependencies.recentFiles);
   component.registerTransient<SystemThemeProvider>(
-    dependencies.systemThemeProvider
+    dependencies.systemThemeProvider,
   );
   component.registerTransient<AppData>(dependencies.appData);
   component.registerTransient<Buffers>(dependencies.buffers);

@@ -2,7 +2,7 @@ import {
   ReleaseData,
   ReleaseHelper,
 } from '@lyricistant/common/releases/ReleaseHelper';
-import { assign, createMachine, EventObject } from 'xstate';
+import { assign, createMachine, EventObject, fromPromise } from 'xstate';
 
 let releaseHelper: ReleaseHelper = null;
 const lazyReleaseHelper = () => {
@@ -15,7 +15,7 @@ const lazyReleaseHelper = () => {
 
 interface LatestReleaseContext {
   releaseData?: ReleaseData;
-  error?: any;
+  error?: unknown;
 }
 
 interface LatestReleaseEvent extends EventObject {
@@ -23,11 +23,11 @@ interface LatestReleaseEvent extends EventObject {
   currentVersion: string;
 }
 
-export const latestReleaseMachine = createMachine<
-  LatestReleaseContext,
-  LatestReleaseEvent
->({
-  predictableActionArguments: true,
+export const latestReleaseMachine = createMachine({
+  types: {} as {
+    context: LatestReleaseContext;
+    events: LatestReleaseEvent;
+  },
   id: 'latest-release',
   initial: 'inactive',
   context: {
@@ -44,19 +44,21 @@ export const latestReleaseMachine = createMachine<
     inactive: {},
     loading: {
       invoke: {
-        src: async (_, event) =>
+        input: ({ event }) => event,
+        src: fromPromise<ReleaseData, LatestReleaseEvent>(async ({ input }) =>
           lazyReleaseHelper().getLatestDownloadableRelease(
-            event.currentVersion,
+            input.currentVersion,
             {
               includeCurrentVersion: true,
-            }
+            },
           ),
+        ),
         onDone: [
           {
             target: 'loaded',
-            cond: (context, event) => event.data != null,
+            guard: (args) => args.event.output != null,
             actions: assign({
-              releaseData: (context, event) => event.data,
+              releaseData: (args) => args.event.output,
             }),
           },
           { target: 'error' },
@@ -64,7 +66,7 @@ export const latestReleaseMachine = createMachine<
         onError: {
           target: 'error',
           actions: assign({
-            releaseData: () => null,
+            releaseData: (): null => null,
           }),
         },
       },

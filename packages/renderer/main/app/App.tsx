@@ -26,10 +26,10 @@ import { useEventCallback } from '@mui/material';
 import { sample, startCase } from 'lodash-es';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { useBeforeunload as useBeforeUnload } from 'react-beforeunload';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { ResponsiveMainDetailLayout } from './ResponsiveMainDetailLayout';
 import { ReadOnlyModeContext } from './useReadOnlyMode';
+import { useBeforeUnload } from '@lyricistant/renderer/app/useBeforeUnload';
 
 const MINIMUM_IDLE_TIME = 15_000;
 
@@ -49,7 +49,7 @@ export function App() {
     text: Text.empty,
     isTransactional: false,
   });
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<unknown>(null);
   const [selectedText, setSelectedText] = useState<TextSelectionData>();
   const [isModified, setIsModified] = useState(false);
   const navigate = useNavigation();
@@ -62,7 +62,7 @@ export function App() {
     useState<DOMRect>(null);
   const [selectedDiagnosticKey, incrementKey] = useReducer(
     (value) => value + 1,
-    0
+    0,
   );
   const [isReadOnly, setReadOnly] = useState(false);
 
@@ -74,16 +74,16 @@ export function App() {
     () =>
       platformDelegate.send(
         'save-file-attempt',
-        editorTextData.text.toString()
+        editorTextData.text.toString(),
       ),
-    [editorTextData.text]
+    [editorTextData.text],
   );
 
   const onPartialEditorTextDataUpdate = useCallback(
     (data: Partial<EditorTextData>) => {
       setEditorTextData((textData) => ({ ...textData, ...data }));
     },
-    [setEditorTextData]
+    [setEditorTextData],
   );
   const onTextReplacement = useEventCallback((text: string) => {
     if (isReadOnly) {
@@ -114,7 +114,7 @@ export function App() {
   useChannel('app-title-changed', (title) => (document.title = title));
 
   useFileEvents(isModified, onPartialEditorTextDataUpdate, () =>
-    setSelectedText({ from: 0, to: 0, text: '' })
+    setSelectedText({ from: 0, to: 0, text: '' }),
   );
   useBeforeUnload(() => {
     if (uiConfig?.promptOnUrlChange && isModified) {
@@ -161,22 +161,22 @@ export function App() {
         editorText={editorTextData.text.toString()}
       />
     ),
-    [editorTextData.text]
+    [editorTextData.text],
   );
 
   const onDownloadClicked = useEventCallback(() => navigate('/download'));
   const onFileHistoryClicked = useEventCallback(() =>
-    navigate('/file-history')
+    navigate('/file-history'),
   );
   const onPreferencesClicked = useEventCallback(() => navigate('/preferences'));
   const onNewClicked = useEventCallback(() =>
-    platformDelegate.send('new-file-attempt')
+    platformDelegate.send('new-file-attempt'),
   );
   const onOpenClicked = useEventCallback(() =>
-    platformDelegate.send('open-file-attempt')
+    platformDelegate.send('open-file-attempt'),
   );
   const onRhymeClicked = useEventCallback((rhyme: Rhyme) =>
-    onTextReplacement(rhyme.word)
+    onTextReplacement(rhyme.word),
   );
 
   const { onInspirationButtonClicked, isInspirationButtonEnabled } =
@@ -184,14 +184,14 @@ export function App() {
       editorTextData,
       isReadOnly,
       setEditorTextData,
-      setSelectedText
+      setSelectedText,
     );
 
   const { onProposalAccepted } = useProposalAcceptance(
     editorTextData,
     isReadOnly,
     setEditorTextData,
-    setSelectedText
+    setSelectedText,
   );
 
   if (error) {
@@ -278,7 +278,7 @@ const useProposalAcceptance = (
   editorTextData: EditorTextData,
   isReadOnly: boolean,
   setEditorTextData: (data: EditorTextData) => void,
-  setSelectedText: (data: TextSelectionData) => void
+  setSelectedText: (data: TextSelectionData) => void,
 ) => {
   const onProposalAccepted = useEventCallback(
     (proposal: string, diagnostic: Diagnostic) => {
@@ -291,7 +291,7 @@ const useProposalAcceptance = (
         text: editorTextData.text.replace(
           diagnostic.from,
           diagnostic.to,
-          Text.of([proposal])
+          Text.of([proposal]),
         ),
       });
       setSelectedText({
@@ -299,7 +299,7 @@ const useProposalAcceptance = (
         from: diagnostic.from,
         to: diagnostic.from + proposal.length,
       });
-    }
+    },
   );
 
   return {
@@ -323,7 +323,7 @@ const useInspirationButton = (
   editorTextData: EditorTextData,
   isReadOnly: boolean,
   setEditorTextData: (data: EditorTextData) => void,
-  setSelectedText: (data: TextSelectionData) => void
+  setSelectedText: (data: TextSelectionData) => void,
 ) => {
   const inspirationWords = useInspirationWords();
   const onInspirationButtonClicked = useEventCallback(() => {
@@ -390,7 +390,7 @@ const useInspirationButton = (
 const useFileEvents = (
   isModified: boolean,
   setEditorText: (text: Partial<EditorTextData>) => void,
-  resetTextSelection: () => void
+  resetTextSelection: () => void,
 ) => {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -400,7 +400,7 @@ const useFileEvents = (
     };
     platformDelegate.on('check-file-modified', onCheckFileModified);
 
-    const onFileSaveEnded = (error: any, path: string) => {
+    const onFileSaveEnded = (_: never, path: string) => {
       setEditorText({ isTransactional: false });
 
       if (path) {
@@ -418,7 +418,7 @@ const useFileEvents = (
     const onFileOpened = (
       error: Error,
       fileContents: string,
-      clearHistory: boolean
+      clearHistory: boolean,
     ) => {
       if (error) {
         enqueueSnackbar("Couldn't open selected file.", {
@@ -437,7 +437,7 @@ const useFileEvents = (
     return () => {
       platformDelegate.removeListener(
         'check-file-modified',
-        onCheckFileModified
+        onCheckFileModified,
       );
       platformDelegate.removeListener('file-save-ended', onFileSaveEnded);
       platformDelegate.removeListener('new-file-created', onNewFileCreated);

@@ -36,7 +36,7 @@ const start = () => {
 const getRendererDelegate = () =>
   appComponent.get<RendererDelegate>() as WebRendererDelegate;
 
-export const receive = (channel: string, args: any[]) => {
+export const receive = (channel: string, args: unknown[]) => {
   getRendererDelegate().receive(channel, args);
 };
 

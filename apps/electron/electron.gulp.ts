@@ -11,7 +11,7 @@ import defaultWebpackConfig, {
   webpackMode,
 } from '@tooling/default.webpack.config';
 import { capitalCase } from 'change-case';
-import del from 'del';
+import { deleteAsync as del } from 'del';
 import { parallel, series } from 'gulp';
 import kill from 'tree-kill';
 import { Configuration, DefinePlugin, webpack } from 'webpack';
@@ -44,7 +44,7 @@ const createRendererWebpackConfig = async (mode: Mode) =>
       },
     },
     rendererWebpackConfig(),
-    defaultWebpackConfig(mode, 'Electron')
+    defaultWebpackConfig(mode, 'Electron'),
   );
 
 const createMainWebpackConfig = async (mode: Mode, useDevServer: boolean) =>
@@ -71,7 +71,7 @@ const createMainWebpackConfig = async (mode: Mode, useDevServer: boolean) =>
         minimize: false,
       },
     },
-    defaultWebpackConfig(mode, 'Electron')
+    defaultWebpackConfig(mode, 'Electron'),
   );
 
 const createPreloadWebpackConfig = async (mode: Mode) =>
@@ -88,7 +88,7 @@ const createPreloadWebpackConfig = async (mode: Mode) =>
         minimize: false,
       },
     },
-    defaultWebpackConfig(mode, 'Electron')
+    defaultWebpackConfig(mode, 'Electron'),
   );
 
 const copyElectronHtmlFile = (mode: Mode) => {
@@ -96,7 +96,7 @@ const copyElectronHtmlFile = (mode: Mode) => {
     await fs.mkdir(getOutputDirectory(mode), { recursive: true });
     await fs.copyFile(
       'packages/renderer/main/index.html',
-      path.resolve(getOutputDirectory(mode), 'index.html')
+      path.resolve(getOutputDirectory(mode), 'index.html'),
     );
   };
   curried.displayName = `copy${capitalCase(mode)}ElectronHtmlFile`;
@@ -143,18 +143,10 @@ const runElectronServer = async () => {
     devMiddleware: {
       publicPath: '/',
     },
+    port: 9080,
+    host: 'localhost',
   };
-  return new Promise<unknown>((_, reject) => {
-    new WebpackDevServer(serverConfig, webpack(config)).listen(
-      9080,
-      'localhost',
-      (error) => {
-        if (error) {
-          reject();
-        }
-      }
-    );
-  });
+  return new WebpackDevServer(serverConfig, webpack(config)).start();
 };
 
 const webpackAsync = async (config: Configuration) =>
@@ -200,32 +192,32 @@ export const startElectron = series(
   coreTasks('development'),
   parallel(
     runElectronServer,
-    series(bundleMainAndPreload, startElectronApp(false))
-  )
+    series(bundleMainAndPreload, startElectronApp(false)),
+  ),
 );
 export const startDebugElectron = series(
   coreTasks('development'),
   parallel(
     runElectronServer,
-    series(bundleMainAndPreload, startElectronApp(true))
-  )
+    series(bundleMainAndPreload, startElectronApp(true)),
+  ),
 );
 export const buildElectron = series(
   coreTasks('production'),
-  bundleElectron('production')
+  bundleElectron('production'),
 );
 
 export const buildTestElectron = series(
   coreTasks('test'),
-  bundleElectron('test')
+  bundleElectron('test'),
 );
 export const buildAllElectronApps = series(
   coreTasks('production'),
   bundleElectron('production'),
-  runElectronBuilder('production', false)
+  runElectronBuilder('production', false),
 );
 export const buildCurrentElectronApp = series(
   coreTasks('production'),
   bundleElectron('production'),
-  runElectronBuilder('production', true)
+  runElectronBuilder('production', true),
 );

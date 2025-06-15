@@ -65,7 +65,7 @@ interface Mark {
 }
 
 const textChanged = (
-  onTextChanged: (text: Text, cursorPosition: number) => void
+  onTextChanged: (text: Text, cursorPosition: number) => void,
 ) =>
   EditorView.updateListener.of((update) => {
     if (update.docChanged || update.selectionSet) {
@@ -83,7 +83,7 @@ const fileDropped = (onFileDropped: (item: DataTransferItem | File) => void) =>
         event.dataTransfer?.files?.length > 0
       ) {
         onFileDropped(
-          event.dataTransfer?.items?.[0] || event.dataTransfer?.files?.[0]
+          event.dataTransfer?.items?.[0] || event.dataTransfer?.files?.[0],
         );
       }
     },
@@ -96,7 +96,7 @@ interface ReconfigurableExtension {
 
 const useReconfigurableExtension = (
   view: EditorView,
-  configs: ReconfigurableExtension[]
+  configs: ReconfigurableExtension[],
 ) => {
   const [lastConfigs, setLastConfigs] = useState<ReconfigurableExtension[]>([]);
   useLayoutEffect(() => {
@@ -109,7 +109,7 @@ const useReconfigurableExtension = (
     if (changedConfigs.length > 0) {
       view.dispatch({
         effects: changedConfigs.map(({ compartment, extension }) =>
-          compartment.reconfigure(extension)
+          compartment.reconfigure(extension),
         ),
       });
       setLastConfigs(configs);
@@ -144,7 +144,7 @@ const setMark = StateEffect.define<Mark | null>({
 
 const isApplicableAddMarkEffect = (
   effect: StateEffect<Mark>,
-  doc: Text
+  doc: Text,
 ): boolean =>
   effect.value &&
   effect.value.from < doc.length &&
@@ -162,7 +162,7 @@ const markStateField = StateField.define<DecorationSet>({
         isApplicableAddMarkEffect(effect, tr.state.doc)
       ) {
         return RangeSet.of(
-          markDecoration.range(effect.value.from, effect.value.to)
+          markDecoration.range(effect.value.from, effect.value.to),
         );
       } else if (effect.is(setMark) && !effect.value) {
         return Decoration.none;
@@ -187,26 +187,26 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
 
   const themeExtension = useMemo(
     () => editorTheme(appTheme, props.font),
-    [appTheme.palette, appTheme.typography, props.font]
+    [appTheme.palette, appTheme.typography, props.font],
   );
   const textChangedExtension = useMemo(
     () => textChanged(props.onTextChanged),
-    [props.onTextChanged]
+    [props.onTextChanged],
   );
   const selectionExtension = useMemo(
     () => textSelection(props.onTextSelected),
-    [props.onTextSelected]
+    [props.onTextSelected],
   );
   const fileDroppedExtension = useMemo(
     () => fileDropped(props.onFileDropped),
-    [props.onFileDropped]
+    [props.onFileDropped],
   );
   const readOnlyExtension = useMemo(
     () => [
       EditorState.readOnly.of(props.isReadOnly),
       EditorView.editable.of(!props.isReadOnly),
     ],
-    [props.isReadOnly]
+    [props.isReadOnly],
   );
 
   useEffect(() => {
@@ -261,7 +261,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       selectionExtension,
       fileDroppedExtension,
       resetCount,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -276,7 +276,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       EditorState.create({
         ...defaultConfig,
         doc: props.text,
-      })
+      }),
     );
     setView(newView);
 
@@ -295,7 +295,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
         setView(undefined);
       }
     },
-    [view]
+    [view],
   );
 
   useEffect(() => {
@@ -360,7 +360,7 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       fileDroppedExtension,
       readOnlyCompartment,
       readOnlyExtension,
-    ]
+    ],
   );
   useReconfigurableExtension(view, reconfigurableExtensions);
 
@@ -373,21 +373,21 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
       (element) => {
         element.setAttribute('autocorrect', 'on');
         element.setAttribute('autocapitalize', 'on');
-      }
+      },
     );
   }, [container]);
 
   const resetHistory = useCallback(() => {
     setResetCount((count) => count + 1);
     return view?.setState(
-      EditorState.create({ ...defaultConfig, doc: props.text })
+      EditorState.create({ ...defaultConfig, doc: props.text }),
     );
   }, [view, defaultConfig, props.text]);
   const undo = useCallback(() => undoTextChange(view), [view]);
   const redo = useCallback(() => redoTextChange(view), [view]);
   const openFindReplaceDialog = useCallback(
     () => openSearchPanel(view),
-    [view]
+    [view],
   );
 
   useEffect(() => {

@@ -55,7 +55,7 @@ describe('App component', () => {
       'file-opened',
       new Error('oh no!'),
       undefined,
-      false
+      false,
     );
 
     expect(screen.getByText("Couldn't open selected file.")).toBeTruthy();
@@ -68,7 +68,7 @@ describe('App component', () => {
     await userEvent.type(editor, 'Initially here');
 
     await expect(
-      screen.getByText(nestedElementTextMatcher('Initially here'))
+      screen.getByText(nestedElementTextMatcher('Initially here')),
     ).toBeTruthy();
 
     await platformDelegate.invoke('file-save-ended', undefined, 'apath.txt');
@@ -77,7 +77,7 @@ describe('App component', () => {
 
     await platformDelegate.invoke('undo');
     expect(
-      screen.getByText(nestedElementTextMatcher('Initially here'))
+      screen.getByText(nestedElementTextMatcher('Initially here')),
     ).toBeTruthy();
   });
 
@@ -88,7 +88,7 @@ describe('App component', () => {
 
     expect(platformDelegate.send).toHaveBeenCalledWith(
       'is-file-modified',
-      false
+      false,
     );
   });
 
@@ -102,7 +102,7 @@ describe('App component', () => {
 
     expect(platformDelegate.send).toHaveBeenCalledWith(
       'is-file-modified',
-      true
+      true,
     );
   });
 
@@ -113,7 +113,7 @@ describe('App component', () => {
     await userEvent.type(editor, 'my loco pinocchio');
 
     await expect(
-      await screen.findByText(nestedElementTextMatcher('my loco pinocchio'))
+      await screen.findByText(nestedElementTextMatcher('my loco pinocchio')),
     ).toBeTruthy();
 
     await platformDelegate.invoke('new-file-created');
@@ -129,18 +129,18 @@ describe('App component', () => {
     await userEvent.type(editor, 'ok! coo!');
 
     await expect(
-      screen.getByText(nestedElementTextMatcher('ok! coo!'))
+      screen.getByText(nestedElementTextMatcher('ok! coo!')),
     ).toBeTruthy();
 
     await platformDelegate.invoke('file-opened', null, 'coo coo...', true);
 
     await expect(
-      await screen.findByText(nestedElementTextMatcher('coo coo...'))
+      await screen.findByText(nestedElementTextMatcher('coo coo...')),
     ).toBeTruthy();
 
     await platformDelegate.invoke('undo');
     await expect(
-      await screen.findByText(nestedElementTextMatcher('coo coo...'))
+      await screen.findByText(nestedElementTextMatcher('coo coo...')),
     ).toBeTruthy();
   });
 
@@ -150,7 +150,7 @@ describe('App component', () => {
     const editor = await screen.findByRole('textbox');
     await userEvent.type(editor, 'dot buzz backslash tight!');
     await expect(
-      screen.getByText(nestedElementTextMatcher('dot buzz backslash tight!'))
+      screen.getByText(nestedElementTextMatcher('dot buzz backslash tight!')),
     ).toBeTruthy();
     // We need to wait here for CodeMirror to update its undo cache.
     await wait(1000);
@@ -162,7 +162,7 @@ describe('App component', () => {
 
     await platformDelegate.invoke('undo');
     await expect(
-      await screen.findByText('dot buzz backslash tight!')
+      await screen.findByText('dot buzz backslash tight!'),
     ).toBeTruthy();
   });
 
@@ -176,7 +176,7 @@ describe('App component', () => {
 
     expect(platformDelegate.send).toHaveBeenCalledWith(
       'editor-text',
-      'and the oscar goes to...'
+      'and the oscar goes to...',
     );
   });
 
@@ -202,8 +202,8 @@ describe('App component', () => {
 
     expect(
       await screen.findByText(
-        nestedElementTextMatcher('and the oscar goes to Test Rhyme 1...')
-      )
+        nestedElementTextMatcher('and the oscar goes to Test Rhyme 1...'),
+      ),
     ).toBeTruthy();
 
     await userEvent.click(screen.getByText('Test Rhyme 2'));
@@ -211,9 +211,9 @@ describe('App component', () => {
     expect(
       await screen.findByText(
         nestedElementTextMatcher(
-          'and the oscar goes to Test Rhyme Test Rhyme 2...'
-        )
-      )
+          'and the oscar goes to Test Rhyme Test Rhyme 2...',
+        ),
+      ),
     ).toBeTruthy();
   });
 

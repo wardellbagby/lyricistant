@@ -35,11 +35,13 @@ const getIDEARunConfigFile = (taskName: string) =>
 const vsCodeLaunchFile = path.resolve('.vscode/launch.json');
 
 const getGulpTasks = () => Object.keys(gulpFile).sort();
-const vsCodeLaunch = JSON.parse(fs.readFileSync(vsCodeLaunchFile, 'utf8'));
+const vsCodeLaunch: typeof import('../../.vscode/launch.json') = JSON.parse(
+  fs.readFileSync(vsCodeLaunchFile, 'utf8'),
+);
 
 const verifyVSCodeTask = (taskName: string): boolean =>
   vsCodeLaunch['configurations']
-    .map((config: Record<string, any>) => config.args[0])
+    .map((config) => config.args[0])
     .includes(taskName);
 const verifyIDEATask = (taskName: string): boolean => {
   const file = getIDEARunConfigFile(taskName);
@@ -67,13 +69,13 @@ const check = () => {
 
   if (hasFailed) {
     console.error(
-      'Try running "npm run lint-fix" to generate missing run configurations.'
+      'Try running "npm run lint-fix" to generate missing run configurations.',
     );
     process.exit(1);
   }
 };
 
-const generate = () => {
+const generate = async () => {
   const ideaRunConfigTemplate = `<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="{CONFIG_NAME}" type="js.build_tools.gulp" folderName="{FOLDER_NAME}">
     <node-interpreter>project</node-interpreter>
@@ -100,7 +102,7 @@ const generate = () => {
   clearIdeaDirectories();
   clearVSCodeDirectories();
 
-  const vsCodeConfigs: Array<Record<string, any>> = [];
+  const vsCodeConfigs: Array<Record<string, unknown>> = [];
   getGulpTasks().forEach((taskName) => {
     const folderName = getGroup(taskName);
     const displayName = capitalCase(taskName).replace('Ios', 'iOS').trim();
@@ -125,15 +127,15 @@ const generate = () => {
 
   fs.writeFileSync(
     vsCodeLaunchFile,
-    prettier.format(
+    await prettier.format(
       JSON.stringify({
         version: '0.2.0',
         configurations: vsCodeConfigs,
       }),
       {
         parser: 'json',
-      }
-    )
+      },
+    ),
   );
 };
 

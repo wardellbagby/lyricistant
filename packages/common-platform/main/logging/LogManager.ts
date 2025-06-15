@@ -9,7 +9,7 @@ export class LogManager implements Manager {
     private rendererDelegate: RendererDelegate,
     private files: Files,
     private buffers: Buffers,
-    private logger: PlatformLogger
+    private logger: PlatformLogger,
   ) {}
 
   public register() {
@@ -18,7 +18,7 @@ export class LogManager implements Manager {
 
       await this.files.saveFile(
         this.buffers.stringToBuffer(logs.join('\n')),
-        'logs.txt'
+        'logs.txt',
       );
     });
   }

@@ -4,7 +4,10 @@ import { Serializable } from '@lyricistant/common/Serializable';
 import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 
 export class ElectronAppData implements AppData {
-  public constructor(private fs: FileSystem, private logger: Logger) {}
+  public constructor(
+    private fs: FileSystem,
+    private logger: Logger,
+  ) {}
 
   public set = (key: string, data: Serializable) => {
     this.fs
@@ -13,8 +16,8 @@ export class ElectronAppData implements AppData {
         this.logger.warn(
           'Failed to save app data!',
           reason,
-          this.getAppDataFile(key)
-        )
+          this.getAppDataFile(key),
+        ),
       );
   };
   public get = async (key: string) => {
@@ -41,8 +44,8 @@ export class ElectronAppData implements AppData {
           this.logger.warn(
             'Failed to delete app data!',
             reason,
-            this.getAppDataFile(key)
-          )
+            this.getAppDataFile(key),
+          ),
         );
     }
   };
@@ -50,6 +53,6 @@ export class ElectronAppData implements AppData {
   private getAppDataFile = (key: string) =>
     this.fs.resolve(
       this.fs.getDataDirectory('userData'),
-      `${key.replaceAll(/[ #%&{}\\<>*?\/$!'":@]/g, '_')}.json`
+      `${key.replaceAll(/[ #%&{}\\<>*?/$!'":@]/g, '_')}.json`,
     );
 }

@@ -78,7 +78,7 @@ const loadCmuPronunciations = async (): Promise<Pronunciations> => {
 const loadAdditionalPronunciations = async (): Promise<Pronunciations> => {
   const data = await fs.promises.readFile(
     path.resolve(__dirname, 'additional_pronounciations.dict'),
-    'utf8'
+    'utf8',
   );
 
   return loadFromDictionaryFile(data);
@@ -135,7 +135,7 @@ const writeSupportedWords = async (pronunciations: Pronunciations) => {
 
   // Get rid of any potential duplicates after we've filtered out words we don't have words for.
   const output = uniq(
-    popularWords.filter((word) => wordsWithPronunciations.has(word))
+    popularWords.filter((word) => wordsWithPronunciations.has(word)),
   )
     // Filter out any word that is less than 3 letters after getting rid of common symbols.
     .filter((word) => word.trim().replace(/['."-]/, '').length > 3)
@@ -146,7 +146,7 @@ const writeSupportedWords = async (pronunciations: Pronunciations) => {
 
   writeFileSync(
     'packages/renderer/main/app/inspiration_words.json',
-    JSON.stringify(output)
+    JSON.stringify(output),
   );
 };
 
@@ -159,7 +159,7 @@ const writeSupportedWords = async (pronunciations: Pronunciations) => {
  */
 const writePronunciations = async (
   pronunciations: Pronunciations,
-  indexedPopularWords: Record<string, number>
+  indexedPopularWords: Record<string, number>,
 ) => {
   const output: Output = Object.create(null);
 
@@ -177,7 +177,7 @@ const writePronunciations = async (
   }
   writeFileSync(
     'packages/rhyme-generator/main/pronunciations.json',
-    JSON.stringify(output)
+    JSON.stringify(output),
   );
 };
 

@@ -5,7 +5,7 @@ import { getEditorText, Manager } from '@lyricistant/common-platform/Manager';
 export class FileHistoryManager implements Manager {
   public constructor(
     private rendererDelegate: RendererDelegate,
-    private fileHistory: FileHistory
+    private fileHistory: FileHistory,
   ) {}
   public register() {
     this.rendererDelegate.on('apply-file-history', (history) => {
@@ -17,9 +17,9 @@ export class FileHistoryManager implements Manager {
       async () => {
         this.rendererDelegate.send(
           'file-history',
-          await this.getIncrementalHistory()
+          await this.getIncrementalHistory(),
         );
-      }
+      },
     );
   }
 

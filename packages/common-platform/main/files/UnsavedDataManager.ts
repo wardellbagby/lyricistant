@@ -9,6 +9,7 @@ import {
   showRendererDialog,
 } from '@lyricistant/common-platform/Manager';
 import { Times } from '@lyricistant/common-platform/time/Times';
+import { Serializable } from '@lyricistant/common/Serializable';
 
 export class UnsavedDataManager implements Manager {
   public static readonly UNSAVED_LYRICS_KEY = 'unsaved-lyrics-key';
@@ -25,7 +26,7 @@ export class UnsavedDataManager implements Manager {
     private appData: AppData,
     private fileHistory: FileHistory,
     private times: Times,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   public register = (): void => {
@@ -41,7 +42,7 @@ export class UnsavedDataManager implements Manager {
   private checkForUnsavedData = async () => {
     this.logger.verbose('Checking for unsaved data...');
     const hasTemporaryData = await this.appData.exists(
-      UnsavedDataManager.UNSAVED_LYRICS_KEY
+      UnsavedDataManager.UNSAVED_LYRICS_KEY,
     );
     const hasUnsavedData =
       hasTemporaryData &&
@@ -58,7 +59,7 @@ export class UnsavedDataManager implements Manager {
       });
       await this.onDialogClicked(
         UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
-        interactionData.selectedButton
+        interactionData.selectedButton,
       );
     } else {
       this.hasPromptedUnsavedDataRecovery = true;
@@ -74,7 +75,7 @@ export class UnsavedDataManager implements Manager {
           'file-opened',
           undefined,
           this.fileHistory.getParsedHistory(),
-          false
+          false,
         );
       }
       this.hasPromptedUnsavedDataRecovery = true;
@@ -88,7 +89,7 @@ export class UnsavedDataManager implements Manager {
       await this.performFileSave(text);
     } else {
       this.logger.verbose(
-        'Editor is idle but unsaved data save was too recent. Skipping.'
+        'Editor is idle but unsaved data save was too recent. Skipping.',
       );
     }
   };
@@ -96,7 +97,7 @@ export class UnsavedDataManager implements Manager {
   private startAutomaticFileSaver = () => {
     setTimeout(
       this.onAutomaticFileSaveTriggered,
-      UnsavedDataManager.AUTOMATIC_FILE_SAVE_MS
+      UnsavedDataManager.AUTOMATIC_FILE_SAVE_MS,
     );
   };
 
@@ -107,7 +108,7 @@ export class UnsavedDataManager implements Manager {
 
       setTimeout(
         this.onAutomaticFileSaveTriggered,
-        UnsavedDataManager.AUTOMATIC_FILE_SAVE_MS
+        UnsavedDataManager.AUTOMATIC_FILE_SAVE_MS,
       );
     };
 
@@ -117,9 +118,9 @@ export class UnsavedDataManager implements Manager {
 
   private performFileSave = async (text: string) => {
     this.fileHistory.add(text);
-    await this.appData.set(
+    this.appData.set(
       UnsavedDataManager.UNSAVED_LYRICS_KEY,
-      await this.fileHistory.serialize()
+      await this.fileHistory.serialize(),
     );
     this.lastFileSaveMs = this.times.elapsed();
   };
@@ -130,6 +131,6 @@ export class UnsavedDataManager implements Manager {
     this.times.elapsed() - this.lastFileSaveMs >=
       UnsavedDataManager.MINIMUM_FILE_SAVE_ELAPSED_TIME_MS;
 
-  private getUnsavedData = (): Promise<any> =>
+  private getUnsavedData = (): Promise<Serializable> =>
     this.appData.get(UnsavedDataManager.UNSAVED_LYRICS_KEY);
 }

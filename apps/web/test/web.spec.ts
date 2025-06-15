@@ -37,13 +37,13 @@ describe.each(specs)(
           'apps',
           'web',
           'dist',
-          'test'
+          'test',
         )}" --port ${port} -a ${host}`,
         port,
         usedPortAction: 'error',
       });
       browserContext = await browser.type.launchPersistentContext('', {
-        headless: !!!process.env.PWDEBUG,
+        headless: !process.env.PWDEBUG,
         viewport,
         args: browser.args,
       });
@@ -78,7 +78,7 @@ describe.each(specs)(
 
     it('has a title of Lyricistant', async () => {
       await waitForExpect(
-        async () => await expect(page.title()).resolves.toBe('Lyricistant')
+        async () => await expect(page.title()).resolves.toBe('Lyricistant'),
       );
     });
 
@@ -91,25 +91,25 @@ describe.each(specs)(
 
       for (const component of components) {
         await waitForExpect(
-          async () => await expect(component.isVisible()).resolves.toBeTruthy()
+          async () => await expect(component.isVisible()).resolves.toBeTruthy(),
         );
       }
     });
 
     it('shows downloads', async () => {
       await expect(
-        screen.queryByText('Download Lyricistant')
+        screen.queryByText('Download Lyricistant'),
       ).resolves.toBeNull();
 
       const settings = await findMenuButton(
         screen,
         'Download Lyricistant',
-        viewport.isSmallLayout
+        viewport.isSmallLayout,
       );
       await settings.click();
 
       await expect(
-        screen.queryAllByText('Download Lyricistant')
+        screen.queryAllByText('Download Lyricistant'),
       ).resolves.toBeTruthy();
 
       const close = await screen.findByRole('button', { name: 'Close' });
@@ -117,8 +117,8 @@ describe.each(specs)(
 
       await waitFor(async () =>
         expect(
-          screen.queryAllByText('Download Lyricistant')
-        ).resolves.toBeEmpty()
+          screen.queryAllByText('Download Lyricistant'),
+        ).resolves.toBeEmpty(),
       );
     });
 
@@ -127,5 +127,5 @@ describe.each(specs)(
       screen,
       isSmallLayout: viewport.isSmallLayout,
     }));
-  }
+  },
 );

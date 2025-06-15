@@ -33,7 +33,7 @@ export class LyricistantFileHandler implements FileHandler {
     // ZIP file magic number header.
     isEqual(
       new Uint8Array(file.data).subarray(0, 4),
-      Uint8Array.from([80, 75, 3, 4])
+      Uint8Array.from([80, 75, 3, 4]),
     ) ||
     file.metadata.path.endsWith(LYRICS_EXTENSION) ||
     file.metadata?.name?.endsWith(LYRICS_EXTENSION);
@@ -53,7 +53,7 @@ export class LyricistantFileHandler implements FileHandler {
     }
 
     throw new Error(
-      `This file is not compatible with this version of Lyricistant. Try using version ${createdWith}`
+      `This file is not compatible with this version of Lyricistant. Try using version ${createdWith}`,
     );
   };
 
@@ -77,7 +77,7 @@ export class LyricistantFileHandler implements FileHandler {
   };
 
   private readVersion = async (
-    archive: LyricsArchive
+    archive: LyricsArchive,
   ): Promise<VersioningData> =>
     JSON.parse(await archive.file(VERSION_FILE).async('string'));
 

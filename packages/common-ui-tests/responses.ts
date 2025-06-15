@@ -8,7 +8,7 @@ export const useMockRhymes = async (browserContext: BrowserContext) =>
     route.fulfill({
       status: 200,
       body: await getRhymesResponse(request.url()),
-    })
+    }),
   );
 
 export const useMockDefinitions = async (browserContext: BrowserContext) =>
@@ -16,7 +16,7 @@ export const useMockDefinitions = async (browserContext: BrowserContext) =>
     route.fulfill({
       status: 200,
       body: await getDefinitionResponse(request.url()),
-    })
+    }),
   );
 
 const getRhymesResponse = async (url: string): Promise<string> => {

@@ -17,8 +17,8 @@ describe('Unsaved Data Manager', () => {
   let fileHistory: StubbedInstance<FileHistory>;
   let times: StubbedInstance<Times>;
   const rendererDelegate = new MockRendererDelegate();
-  let fileChangedListener: (...args: any[]) => void;
-  let initialFileLoadedListener: (...args: any[]) => void;
+  let fileChangedListener: (...args: unknown[]) => void;
+  let initialFileLoadedListener: (...args: unknown[]) => void;
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -44,7 +44,7 @@ describe('Unsaved Data Manager', () => {
       appData,
       fileHistory,
       times,
-      stubInterface()
+      stubInterface(),
     );
   });
 
@@ -65,7 +65,7 @@ describe('Unsaved Data Manager', () => {
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
-      { selectedButton: 'No' }
+      { selectedButton: 'No' },
     );
     manager.register();
     await initialFileLoadedListener();
@@ -73,9 +73,9 @@ describe('Unsaved Data Manager', () => {
     expect(rendererDelegate.send).to.have.been.calledWith(
       'show-dialog',
       sinon.match({
-        tag: (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
+        tag: UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
         title: 'Recover unsaved lyrics',
-      })
+      }),
     );
   });
 
@@ -105,8 +105,8 @@ describe('Unsaved Data Manager', () => {
     manager.register();
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
-      (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
-      { selectedButton: 'Yes' }
+      UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
+      { selectedButton: 'Yes' },
     );
     await initialFileLoadedListener();
 
@@ -114,7 +114,7 @@ describe('Unsaved Data Manager', () => {
       'file-opened',
       undefined,
       'Unsaved data',
-      false
+      false,
     );
   });
 
@@ -124,8 +124,8 @@ describe('Unsaved Data Manager', () => {
     manager.register();
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
-      (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
-      { selectedButton: 'No' }
+      UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
+      { selectedButton: 'No' },
     );
     await initialFileLoadedListener();
 
@@ -133,7 +133,7 @@ describe('Unsaved Data Manager', () => {
       'file-opened',
       undefined,
       'Unsaved data',
-      false
+      false,
     );
   });
 
@@ -153,8 +153,8 @@ describe('Unsaved Data Manager', () => {
     manager.register();
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
-      (UnsavedDataManager as any).RECOVER_UNSAVED_LYRICS_TAG,
-      { selectedButton: 'No' }
+      UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
+      { selectedButton: 'No' },
     );
     await initialFileLoadedListener();
 

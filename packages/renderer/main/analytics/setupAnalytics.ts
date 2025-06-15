@@ -21,11 +21,11 @@ export const setupAnalytics = () => {
   analyticsScript.setAttribute('async', 'true');
   analyticsScript.setAttribute(
     'data-goatcounter',
-    'https://lyricistant.goatcounter.com/count'
+    'https://lyricistant.goatcounter.com/count',
   );
   analyticsScript.setAttribute(
     'data-goatcounter-settings',
-    JSON.stringify(settings)
+    JSON.stringify(settings),
   );
   document.head.append(analyticsScript);
 

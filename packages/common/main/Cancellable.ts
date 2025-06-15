@@ -63,14 +63,14 @@ export class Cancellable {
  */
 export const makeCancellable = <T>(
   promise: Promise<T>,
-  signal: CancelSignal
+  signal: CancelSignal,
 ) => {
   if (!promise || !(promise instanceof Promise)) {
     throw new Error('Invalid promise');
   }
-  return new Promise<T>(async (resolve, reject) => {
+  return new Promise<T>((resolve, reject) => {
     signal.addOnCancelListener(() =>
-      reject(new CancelError('Promise cancelled'))
+      reject(new CancelError('Promise cancelled')),
     );
 
     promise.then(resolve, reject).catch(reject);

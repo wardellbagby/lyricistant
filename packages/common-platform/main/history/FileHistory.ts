@@ -8,6 +8,7 @@ import {
   FileDataExtension,
   HistoryData,
   onVersion,
+  VersionedExtensionData,
 } from '@lyricistant/common-platform/files/extensions/FileDataExtension';
 import {
   isHistoryData,
@@ -32,18 +33,21 @@ export class FileHistory implements FileDataExtension<'history'> {
   private delta: HistoryData[] = [];
   private lastKnownLyrics = '';
 
-  public constructor(private clock: Clock, private logger: Logger) {}
+  public constructor(
+    private clock: Clock,
+    private logger: Logger,
+  ) {}
 
   public onBeforeSerialization = (lyrics: string) => {
     this.add(lyrics);
   };
 
-  public serialize = async () => ({
+  public serialize = async (): Promise<VersionedExtensionData<'history'>> => ({
     version: CURRENT_VERSION,
     data: this.delta,
   });
 
-  public deserialize = async (extensionData: any) => {
+  public deserialize = async (extensionData: unknown) => {
     this.lastKnownLyrics = '';
 
     this.delta = await this.loadFromSerialized(extensionData);
@@ -55,7 +59,7 @@ export class FileHistory implements FileDataExtension<'history'> {
     this.delta = [];
   };
 
-  public isNonEmptyHistory = async (extensionData: any): Promise<boolean> =>
+  public isNonEmptyHistory = async (extensionData: unknown): Promise<boolean> =>
     (await this.loadFromSerialized(extensionData)).length > 0;
 
   public add = (lyrics: string) => {
@@ -102,7 +106,7 @@ export class FileHistory implements FileDataExtension<'history'> {
         if (options?.includeChunks) {
           chunks = createChunks(
             options.includeChunks.base,
-            this.createChanges(options.includeChunks.base, text)
+            this.createChanges(options.includeChunks.base, text),
           );
         } else {
           chunks = [];
@@ -130,12 +134,12 @@ export class FileHistory implements FileDataExtension<'history'> {
   };
 
   private loadFromSerialized = async (
-    extensionData: unknown
+    extensionData: unknown,
   ): Promise<HistoryData[]> =>
     await onVersion(extensionData, this.logger, {
       1: async (data) => this.migrateV1ToV2(await this.loadV1(data)),
       2: (data) => this.loadV2(data),
-      invalid: () => [],
+      invalid: (): HistoryData[] => [],
     });
 
   private loadV1 = async (data: unknown): Promise<HistoryDataV1[]> => {
@@ -149,15 +153,16 @@ export class FileHistory implements FileDataExtension<'history'> {
     }
 
     // V1 included an extra unnecessary JSON stringify.
-    const historyDataV1 = JSON.parse(data);
+    const historyDataV1: unknown = JSON.parse(data);
     if (
       Array.isArray(historyDataV1) &&
-      historyDataV1.every((datum) => !isHistoryDataV1(datum))
+      historyDataV1.every((datum) => isHistoryDataV1(datum))
     ) {
+      return historyDataV1;
+    } else {
       this.logger.warn('Invalid history data', historyDataV1);
       return [];
     }
-    return historyDataV1;
   };
 
   private loadV2 = async (data: unknown): Promise<HistoryData[]> => {
@@ -169,7 +174,7 @@ export class FileHistory implements FileDataExtension<'history'> {
   };
 
   private migrateV1ToV2 = async (
-    data: HistoryDataV1[]
+    data: HistoryDataV1[],
   ): Promise<HistoryData[]> => {
     let last = '';
 
@@ -222,7 +227,7 @@ export class FileHistory implements FileDataExtension<'history'> {
             type: 1,
             line: sourceLineIndex + additionIndex,
             value: line,
-          })
+          }),
         );
         changes.push(...additions);
         expectedOffset += additions.length;
@@ -254,8 +259,8 @@ export class FileHistory implements FileDataExtension<'history'> {
           type: 1,
           line: sourceLines.length + additionIndex + expectedOffset,
           value: line,
-        })
-      )
+        }),
+      ),
     );
 
     return changes;

@@ -36,7 +36,7 @@ export class ReleaseHelper {
     currentVersion: string,
     options: { includeCurrentVersion?: boolean } = {
       includeCurrentVersion: false,
-    }
+    },
   ): Promise<ReleaseData> => {
     if (isUnderTest) {
       return null;
@@ -45,7 +45,7 @@ export class ReleaseHelper {
     this.logger.debug('Checking for new GitHub releases', { currentVersion });
     const releases = await this.getGitHubReleases(
       currentVersion,
-      options.includeCurrentVersion ?? false
+      options.includeCurrentVersion ?? false,
     );
 
     if (releases.length === 0) {
@@ -65,7 +65,7 @@ export class ReleaseHelper {
 
   private getGitHubReleases = async (
     currentVersion: string,
-    includeCurrentVersion: boolean
+    includeCurrentVersion: boolean,
   ) => {
     if (this.cachedReleases.length > 0) {
       this.logger.debug('Returning cached releases', {
@@ -76,7 +76,7 @@ export class ReleaseHelper {
 
     try {
       const result = await this.octokit.rest.repos.listReleases(
-        ReleaseHelper.LYRICISTANT_REPO
+        ReleaseHelper.LYRICISTANT_REPO,
       );
 
       for (const release of result.data) {
@@ -105,7 +105,7 @@ export class ReleaseHelper {
 
   private isReleaseNewerThanCurrent = (
     currentVersion: string,
-    release: GitHubRelease
+    release: GitHubRelease,
   ): boolean => {
     const current = semver.coerce(currentVersion);
     const next = semver.coerce(release.tag_name);
@@ -128,7 +128,7 @@ export class ReleaseHelper {
     releases.reduce(
       (changelog: string, release) =>
         `##${release.name}\n\n${release.body}\n\n${changelog}`,
-      ''
+      '',
     );
 
   /**

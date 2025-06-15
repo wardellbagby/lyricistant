@@ -15,7 +15,7 @@ import {
  * @param themeData The optional theme data to generate a palette for.
  */
 export const getThemePalette = (
-  themeData?: ThemeData
+  themeData?: ThemeData,
 ): { palette: Palette; isDark: boolean } => {
   const useDarkTheme = !themeData || themeData.colorScheme === ColorScheme.Dark;
 
@@ -66,7 +66,7 @@ export const createTheme = (themeData?: ThemeData): Theme => {
             fontSize: themeData.textSize,
           }
         : undefined,
-    })
+    }),
   );
 };
 

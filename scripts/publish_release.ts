@@ -7,10 +7,10 @@ import { SemVer } from 'semver';
 
 const requireSuccessful = <
   ResultT extends boolean | SpawnSyncReturns<T>,
-  T = string | Buffer
+  T = string | Buffer,
 >(
   result: ResultT,
-  onFailure: (result?: SpawnSyncReturns<T>) => void
+  onFailure: (result?: SpawnSyncReturns<T>) => void,
 ): ResultT => {
   if (typeof result === 'boolean') {
     if (result) {
@@ -59,7 +59,7 @@ const updateMobileAppVersions = (version: string) => {
     }),
     () => {
       console.error('Failed to update iOS build number');
-    }
+    },
   );
   requireSuccessful(
     spawnSync(`xcrun agvtool new-marketing-version ${version}`, {
@@ -68,12 +68,12 @@ const updateMobileAppVersions = (version: string) => {
     }),
     () => {
       console.error('Failed to update iOS version string');
-    }
+    },
   );
 
   fs.writeFileSync(
     'fastlane/metadata/ios/copyright.txt',
-    `${DateTime.local().year} Wardell Bagby`
+    `${DateTime.local().year} Wardell Bagby`,
   );
 
   const androidVersions = fs
@@ -83,12 +83,12 @@ const updateMobileAppVersions = (version: string) => {
     Number(
       androidVersions
         .find((line) => line.startsWith('versionCode='))
-        .split('=')[1]
+        .split('=')[1],
     ) + 1;
 
   fs.writeFileSync(
     'apps/mobile/android/app/versions.properties',
-    `versionCode=${versionCode}\nversionName=${version}`
+    `versionCode=${versionCode}\nversionName=${version}`,
   );
 };
 
@@ -142,7 +142,7 @@ const commit = (message: string) => {
     spawnSync('git', ['commit', '--all', '-m', message]),
     () => {
       console.error('Failed to create commit');
-    }
+    },
   );
 };
 
@@ -160,13 +160,13 @@ const checkForExistingGitTagsForVersion = (version: string) => {
   console.log(`Checking for existing Git tags for version ${version}...`);
   const localTags = requireSuccessful(
     spawnSync('git', ['tag', '--list', `v${version}*`]),
-    () => console.error('Failed to list local git tags')
+    () => console.error('Failed to list local git tags'),
   )
     .stdout.toString()
     .trim();
   const remoteTags = requireSuccessful(
     spawnSync('git', ['ls-remote', '--tags', '--exit-code', '--refs']),
-    () => console.error('Failed to list local git tags')
+    () => console.error('Failed to list local git tags'),
   )
     .stdout.toString()
     .trim()
@@ -176,13 +176,13 @@ const checkForExistingGitTagsForVersion = (version: string) => {
 
   requireSuccessful(localTags.length === 0, () =>
     console.error(
-      `Error: Found existing local tag for new version ${version}: \n${localTags}`
-    )
+      `Error: Found existing local tag for new version ${version}: \n${localTags}`,
+    ),
   );
   requireSuccessful(remoteTags.length === 0, () =>
     console.error(
-      `Error: Found existing remote tag for new version ${version}: \n${remoteTags}`
-    )
+      `Error: Found existing remote tag for new version ${version}: \n${remoteTags}`,
+    ),
   );
 };
 
@@ -196,11 +196,11 @@ inquirer.prompt(questions).then(async (answers) => {
   const currentVersion = JSON.parse(
     requireSuccessful(spawnSync('npm', ['pkg', 'get', 'version']), () =>
       console.error(
-        'Failed to fetch current app version from NPM. Is the NPM cli available?'
-      )
+        'Failed to fetch current app version from NPM. Is the NPM cli available?',
+      ),
     )
       .stdout.toString()
-      .trim()
+      .trim(),
   );
 
   const newVersion = getNewVersion(currentVersion, versionBumpType);
@@ -235,7 +235,7 @@ inquirer.prompt(questions).then(async (answers) => {
 
   requireSuccessful(setNpmVersion === newVersion, () => {
     console.error(
-      `Expected ${setNpmVersion} to equal ${newVersion}; Did NPM set a bad version?`
+      `Expected ${setNpmVersion} to equal ${newVersion}; Did NPM set a bad version?`,
     );
   });
   console.log('Set new version in package.json');
@@ -260,7 +260,7 @@ inquirer.prompt(questions).then(async (answers) => {
       }),
       () => {
         console.error('Failed to push tags');
-      }
+      },
     );
   } else {
     console.log('Run "git push --follow-tags" to push changes manually.');

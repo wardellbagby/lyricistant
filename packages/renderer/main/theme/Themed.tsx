@@ -60,7 +60,7 @@ export const Themed: FunctionComponent<
           logger.warn('Failed to load fonts', reason);
         });
     },
-    [setTheme]
+    [setTheme],
   );
 
   useEffect(() => {

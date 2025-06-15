@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { Logger } from '@lyricistant/common/Logger';
 import { Serializable } from '@lyricistant/common/Serializable';
 import { isVersionedExtensionData } from '@lyricistant/common-platform/files/extensions/FileDataExtension.guard';
@@ -39,13 +38,13 @@ export interface ExtensionData extends Record<string, Serializable> {
 export type FileDataExtensionKey = keyof ExtensionData;
 
 /** Represents some serialized data for a file extension that has an associated version. */
-export interface VersionedExtensionData<
+export type VersionedExtensionData<
   KeyT extends FileDataExtensionKey,
-  DataT = ExtensionData[KeyT]
-> {
+  DataT = ExtensionData[KeyT],
+> = {
   version: number;
   data?: DataT;
-}
+};
 
 /**
  * Given some versioned extension data and an object mapping versions to
@@ -74,17 +73,17 @@ export interface VersionedExtensionData<
  * @param handlers An object mapping versions to handler functions.
  */
 export const onVersion = async <R = void>(
-  extensionData: any,
+  extensionData: unknown,
   logger: Logger,
   handlers: {
     [version: number]: (data: unknown) => R | Promise<R>;
     invalid: () => R | Promise<R>;
-  }
+  },
 ): Promise<R> => {
   if (!isVersionedExtensionData(extensionData)) {
     logger.warn(
       "Tried to load extension data that didn't conform to the VersionedExtensionData type.",
-      extensionData
+      extensionData,
     );
     return handlers.invalid();
   }
@@ -100,7 +99,7 @@ export const onVersion = async <R = void>(
   } else {
     logger.warn(
       'No handler registered to handle extension data',
-      extensionData
+      extensionData,
     );
     return handlers.invalid();
   }
@@ -108,7 +107,7 @@ export const onVersion = async <R = void>(
 
 /** Represents an optional extension onto {@link FileData}. */
 export interface FileDataExtension<
-  KeyT extends FileDataExtensionKey = FileDataExtensionKey
+  KeyT extends FileDataExtensionKey = FileDataExtensionKey,
 > {
   readonly key: KeyT;
   /**

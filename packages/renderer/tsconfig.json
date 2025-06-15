@@ -9,7 +9,7 @@
       "../renderer-window",
       "../platform-file-file-handle-extensions"
     ],
-    "typeRoots": ["**/node_modules/@types"],
+//    "typeRoots": ["**/node_modules/@types"],
     "composite": true
   },
   "references": [

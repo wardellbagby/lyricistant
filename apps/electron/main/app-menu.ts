@@ -22,7 +22,7 @@ export const createAppMenu = (
   appName: string,
   platform: Platform,
   handlers: MenuItemHandlers,
-  recentFiles?: string[]
+  recentFiles?: string[],
 ): MenuItemConstructorOptions[] => {
   (Object.keys({ ...handlers }) as Array<keyof MenuItemHandlers>)
     .filter((name) => name.startsWith('on'))
@@ -51,7 +51,7 @@ const createFileMenu = (
   showPrefs: boolean,
   showQuit: boolean,
   showAbout: boolean,
-  recentFiles?: string[]
+  recentFiles?: string[],
 ): MenuItemConstructorOptions => {
   const prefsSection: MenuItemConstructorOptions[] = showPrefs
     ? [
@@ -120,7 +120,7 @@ const createFileMenu = (
 };
 
 const createEditMenu = (
-  handlers: MenuItemHandlers
+  handlers: MenuItemHandlers,
 ): MenuItemConstructorOptions => ({
   label: 'Edit',
   submenu: [
@@ -154,7 +154,7 @@ const createEditMenu = (
 
 const createRecentFilesSubmenu = (
   handlers: MenuItemHandlers,
-  recentFiles?: string[]
+  recentFiles?: string[],
 ): MenuItemConstructorOptions[] => {
   if (!recentFiles) {
     return [
@@ -172,7 +172,7 @@ const createRecentFilesSubmenu = (
 
 const createMacMenu = (
   appName: string,
-  handlers: MenuItemHandlers
+  handlers: MenuItemHandlers,
 ): MenuItemConstructorOptions => ({
   label: appName,
   submenu: [
@@ -200,9 +200,9 @@ const createMacMenu = (
   ],
 });
 
-const debounce = (callback: (...args: any[]) => void) => {
+const debounce = (callback: (...args: unknown[]) => void) => {
   let timeout: Timeout;
-  return (...args: any[]) => {
+  return (...args: unknown[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => callback.apply(this, args), 200);
   };

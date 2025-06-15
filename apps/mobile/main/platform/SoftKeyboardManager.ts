@@ -12,7 +12,7 @@ export class SoftKeyboardManager implements Manager {
 
   public constructor(
     private rendererDelegate: RendererDelegate,
-    private preferences: Preferences
+    private preferences: Preferences,
   ) {}
 
   public register(): void {

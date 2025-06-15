@@ -17,6 +17,6 @@ declare module 'standard-changelog' {
     writerOptions: {
       transform: (commit: RawCommit) => RawCommit | null;
       mainTemplate: string;
-    }
+    },
   ): NodeJS.ReadStream;
 }

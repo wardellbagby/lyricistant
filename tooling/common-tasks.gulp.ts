@@ -1,7 +1,7 @@
 import { ChildProcess, spawn as nodeSpawn, SpawnOptions } from 'child_process';
 import path from 'path';
 import { Config } from '@jest/types';
-import del from 'del';
+import { deleteAsync as del } from 'del';
 import { pathsToModuleNameMapper } from 'ts-jest';
 import { compilerOptions } from '../tsconfig.json';
 
@@ -11,7 +11,7 @@ export type Mode = 'development' | 'production' | 'test';
 export const getOutputDirectory = (mode: Mode, appDirectory: string) =>
   path.resolve(appDirectory, 'dist', mode);
 
-export const cleanBuildDirectory = async () =>
+export const cleanBuildDirectory = () =>
   del(path.resolve(__dirname, '..', 'build'));
 
 type TestType = 'node' | 'jsdom' | 'browser';
@@ -141,7 +141,7 @@ export const jest = (project: string, env?: NodeJS.ProcessEnv) =>
 export const spawn = (
   command: string,
   args?: string[],
-  options?: SpawnOptions
+  options?: SpawnOptions,
 ): ChildProcess => {
   const optionsWithCwd: SpawnOptions = {
     cwd: rootDirectory,

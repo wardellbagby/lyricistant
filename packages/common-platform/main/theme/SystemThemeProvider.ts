@@ -5,6 +5,6 @@ import {
 
 export interface SystemThemeProvider {
   onChange: (
-    listener: (theme: SystemTheme, palette?: SystemPalette) => void
+    listener: (theme: SystemTheme, palette?: SystemPalette) => void,
   ) => void;
 }

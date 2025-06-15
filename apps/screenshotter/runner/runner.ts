@@ -138,20 +138,20 @@ devices.forEach((device) => {
       page = await browser.newPage();
       await page.goto(
         pathToFileURL(
-          path.resolve('apps/screenshotter/dist/development/index.html')
+          path.resolve('apps/screenshotter/dist/development/index.html'),
         ).toString(),
         {
           waitUntil: 'networkidle',
-        }
+        },
       );
       rendererDelegate = (await page.evaluateHandle(
-        () => (window as any).rendererDelegate
+        () => window.rendererDelegate,
       )) as JSHandle<RendererDelegate>;
       fileHistory = (await page.evaluateHandle(
-        () => (window as any).fileHistory
+        () => window.fileHistory,
       )) as JSHandle<FileHistory>;
       await page.evaluate((mobile) => {
-        const prefs: ScreenshotterPreferences = (window as any).preferences;
+        const prefs: ScreenshotterPreferences = window.preferences;
         prefs.showToggleButton(!!mobile);
       }, device.isMobile);
     });
@@ -175,7 +175,7 @@ devices.forEach((device) => {
           colorScheme: ColorScheme.Dark,
           font: Font.Roboto,
           textSize: 16,
-        } as ThemeData
+        } as ThemeData,
       );
 
       const editorTextArea = await page.$('.cm-content');
@@ -183,7 +183,7 @@ devices.forEach((device) => {
       await page.waitForTimeout(2000);
 
       await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics
+        expectedLyrics,
       );
 
       await screenshot(1);
@@ -198,7 +198,7 @@ devices.forEach((device) => {
           colorScheme: ColorScheme.Light,
           font: Font.Roboto,
           textSize: 16,
-        } as ThemeData
+        } as ThemeData,
       );
 
       const editorTextArea = await page.$('.cm-content');
@@ -206,7 +206,7 @@ devices.forEach((device) => {
       await page.waitForTimeout(2000);
 
       await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics
+        expectedLyrics,
       );
 
       await screenshot(2);
@@ -218,7 +218,7 @@ devices.forEach((device) => {
       await page.waitForTimeout(2000);
 
       await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics
+        expectedLyrics,
       );
 
       await page.click("[aria-label='Dictionary Tab']");
@@ -233,7 +233,7 @@ devices.forEach((device) => {
       await page.waitForTimeout(2000);
 
       await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics
+        expectedLyrics,
       );
 
       await fileHistory.evaluate(
@@ -272,11 +272,11 @@ devices.forEach((device) => {
             time: screenshotDate,
             patches: [],
           },
-        ])
+        ]),
       );
 
       const overflowMenuButton = await page.locator(
-        "[aria-label='Additional Menu Buttons']"
+        "[aria-label='Additional Menu Buttons']",
       );
       if (await overflowMenuButton.isVisible()) {
         await overflowMenuButton.click();
@@ -290,7 +290,7 @@ devices.forEach((device) => {
 
     it('screenshots preferences', async () => {
       const overflowMenuButton = await page.locator(
-        "[aria-label='Additional Menu Buttons']"
+        "[aria-label='Additional Menu Buttons']",
       );
       if (await overflowMenuButton.isVisible()) {
         await overflowMenuButton.click();

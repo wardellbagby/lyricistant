@@ -12,7 +12,7 @@ const depsToUpdate = Object.keys(dependencies)
 
 if (!filter) {
   console.error(
-    'usage: install-latest.ts filter [version]\nexample: install-latest.ts @codemirror 18.1.0'
+    'usage: install-latest.ts filter [version]\nexample: install-latest.ts @codemirror 18.1.0',
   );
   process.exit(1);
 }
@@ -23,12 +23,12 @@ if (depsToUpdate.length === 0) {
 }
 
 console.log(
-  `Updating deps: \n\n${depsToUpdate.join('\n')} \n\nto version: ${version}`
+  `Updating deps: \n\n${depsToUpdate.join('\n')} \n\nto version: ${version}`,
 );
 spawnSync(
   'npm',
   ['install'].concat(depsToUpdate.map((it) => `${it}@${version}`)),
   {
     stdio: 'inherit',
-  }
+  },
 );

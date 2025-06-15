@@ -1,12 +1,10 @@
 import { createAppMenu, MenuItemHandlers } from '@electron-app/app-menu';
 import { expect, use } from 'chai';
-import chaiSubset from 'chai-subset';
 import { MenuItemConstructorOptions } from 'electron';
 import sinonChai from 'sinon-chai';
 import { StubbedInstance, stubObject } from 'ts-sinon';
 
 use(sinonChai);
-use(chaiSubset);
 
 describe('Create Electron App Menu', () => {
   const handlerObj: MenuItemHandlers = {
@@ -31,7 +29,7 @@ describe('Create Electron App Menu', () => {
     Object.keys(handlerObj)
       .filter((name) => name.startsWith('on'))
       .forEach((funcName) => {
-        // @ts-ignore
+        // @ts-expect-error types are lost here due to stubbing
         handlers[funcName]
           .onSecondCall()
           .throws(new Error(`${funcName} was registered multiple times!`));
@@ -146,7 +144,7 @@ describe('Create Electron App Menu', () => {
   it("doesn't show recent files when there aren't any", () => {
     const fileMenu = createAppMenu('MyApp', 'linux', handlers)[0];
     const recents = (fileMenu.submenu as MenuItemConstructorOptions[]).find(
-      ({ label }) => label === 'Open recent'
+      ({ label }) => label === 'Open recent',
     );
 
     expect(recents).to.exist;
@@ -162,7 +160,7 @@ describe('Create Electron App Menu', () => {
     const recentFiles = ['myfile', 'myfile2'];
     const fileMenu = createAppMenu('MyApp', 'linux', handlers, recentFiles)[0];
     const recents = (fileMenu.submenu as MenuItemConstructorOptions[]).find(
-      ({ label }) => label === 'Open recent'
+      ({ label }) => label === 'Open recent',
     );
 
     expect(recents).to.exist;

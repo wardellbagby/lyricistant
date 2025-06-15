@@ -45,7 +45,7 @@ const createComponent = (): DIContainer => {
       uiConfigProvider: () => provideUiConfig,
       times: () => component.get<DOMTimes>(),
     },
-    component
+    component,
   );
   component.registerSingleton<UnloadManager>();
 

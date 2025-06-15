@@ -14,14 +14,14 @@ export class MockPlatformDelegate implements PlatformDelegate {
 
   public on = <Channel extends RendererChannel>(
     channel: Channel,
-    listener: PlatformToRendererListener[Channel]
+    listener: PlatformToRendererListener[Channel],
   ): this => {
     this.listeners.set(channel, listener);
     return this;
   };
   public removeListener = <Channel extends RendererChannel>(
     channel: Channel,
-    listener: PlatformToRendererListener[Channel]
+    listener: PlatformToRendererListener[Channel],
   ): this => {
     this.listeners.remove(channel, listener);
     return this;

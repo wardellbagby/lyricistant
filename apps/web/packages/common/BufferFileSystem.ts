@@ -3,7 +3,7 @@ export interface BufferFileSystem {
   saveFile: (
     buffer: ArrayBuffer,
     defaultFileName: string,
-    handle?: FileSystemFileHandle
+    handle?: FileSystemFileHandle,
   ) => Promise<{ handle?: FileSystemFileHandle; cancelled: boolean }>;
   openFile: () => Promise<{
     path: string;

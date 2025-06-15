@@ -24,7 +24,7 @@ export const editorTheme = (appTheme: Theme, font: string): Extension => [
         color: appTheme.palette.primary.main,
         ...textColorSelectionStyle(appTheme),
       },
-    ])
+    ]),
   ),
   EditorView.theme(
     {
@@ -70,7 +70,7 @@ export const editorTheme = (appTheme: Theme, font: string): Extension => [
       '.cm-panel': {
         backgroundColor: appTheme.palette.background.paper,
         color: appTheme.palette.getContrastText(
-          appTheme.palette.background.paper
+          appTheme.palette.background.paper,
         ),
       },
       '.cm-searchMatch': {
@@ -133,6 +133,6 @@ export const editorTheme = (appTheme: Theme, font: string): Extension => [
     },
     {
       dark: appTheme.palette.mode === 'dark',
-    }
+    },
   ),
 ];

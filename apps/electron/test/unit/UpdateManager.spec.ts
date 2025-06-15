@@ -41,7 +41,7 @@ describe('Update Manager', () => {
       appUpdater,
       stubInterface(),
       releaseHelper,
-      stubInterface()
+      stubInterface(),
     );
   });
 
@@ -66,14 +66,14 @@ describe('Update Manager', () => {
     });
 
     expect(appUpdater.setFeedURL).to.have.been.calledWith(
-      'https://example.com/'
+      'https://example.com/',
     );
     expect(rendererDelegate.send).to.have.been.calledWith(
       'show-dialog',
       sinon.match({
-        tag: (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
+        tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
         title: 'Update available',
-      })
+      }),
     );
   });
 
@@ -98,8 +98,8 @@ describe('Update Manager', () => {
     });
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      { selectedButton: 'Yes' }
+      UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      { selectedButton: 'Yes' },
     );
 
     expect(appUpdater.downloadUpdate).to.have.been.called;
@@ -115,14 +115,14 @@ describe('Update Manager', () => {
     });
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      { selectedButton: 'Never' }
+      UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      { selectedButton: 'Never' },
     );
 
     expect(appUpdater.downloadUpdate).to.have.not.been.called;
     expect(appData.set).to.have.been.calledWith(
       UpdateManager.IGNORED_VERSIONS_KEY,
-      ['9.9.9']
+      ['9.9.9'],
     );
   });
 
@@ -136,8 +136,8 @@ describe('Update Manager', () => {
     });
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      { selectedButton: 'No' }
+      UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      { selectedButton: 'No' },
     );
 
     expect(appUpdater.downloadUpdate).to.have.not.been.called;
@@ -154,8 +154,8 @@ describe('Update Manager', () => {
     });
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      { selectedButton: 'Yes' }
+      UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      { selectedButton: 'Yes' },
     );
     await appUpdaterListeners.invoke('download-progress', {
       transferred: 1,
@@ -166,7 +166,7 @@ describe('Update Manager', () => {
       sinon.match({
         title: 'Downloading update',
         progress: 1,
-      })
+      }),
     );
 
     await appUpdaterListeners.invoke('download-progress', {
@@ -178,7 +178,7 @@ describe('Update Manager', () => {
       sinon.match({
         title: 'Downloading update',
         progress: 80,
-      })
+      }),
     );
   });
 
@@ -192,17 +192,17 @@ describe('Update Manager', () => {
     });
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      { selectedButton: 'Yes' }
+      UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      { selectedButton: 'Yes' },
     );
     await appUpdaterListeners.invoke('update-downloaded');
 
     expect(rendererDelegate.send).to.have.been.calledWith(
       'show-dialog',
       sinon.match({
-        tag: (UpdateManager as any).UPDATE_DOWNLOADED_DIALOG_TAG,
+        tag: UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG,
         title: 'Update downloaded',
-      })
+      }),
     );
   });
 
@@ -216,14 +216,14 @@ describe('Update Manager', () => {
     });
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      { selectedButton: 'Yes' }
+      UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      { selectedButton: 'Yes' },
     );
     await appUpdaterListeners.invoke('update-downloaded');
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).UPDATE_DOWNLOADED_DIALOG_TAG,
-      { selectedButton: 'Restart' }
+      UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG,
+      { selectedButton: 'Restart' },
     );
 
     expect(appUpdater.quitAndInstall).to.have.been.called;
@@ -239,14 +239,14 @@ describe('Update Manager', () => {
     });
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).INSTALL_UPDATE_DIALOG_TAG,
-      { selectedButton: 'Yes' }
+      UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
+      { selectedButton: 'Yes' },
     );
     await appUpdaterListeners.invoke('update-downloaded');
     await rendererDelegate.invoke(
       'dialog-interaction',
-      (UpdateManager as any).UPDATE_DOWNLOADED_DIALOG_TAG,
-      { selectedButton: 'Later' }
+      UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG,
+      { selectedButton: 'Later' },
     );
 
     expect(appUpdater.quitAndInstall).to.have.not.been.called;

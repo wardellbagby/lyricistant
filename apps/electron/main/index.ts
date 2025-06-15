@@ -36,13 +36,13 @@ if (isDevelopment || isUnderTest) {
   });
 }
 
-const crash = (reason: any) => {
+const crash = (reason: unknown) => {
   const availableLogger = logger ?? console;
 
   availableLogger?.error(
     'Error loading the webpage',
     reason,
-    path.join(__dirname, 'index.html')
+    path.join(__dirname, 'index.html'),
   );
 
   dialog.showErrorBox(
@@ -53,7 +53,7 @@ const crash = (reason: any) => {
       `App version: ${process.env.APP_VERSION}`,
       `Homepage: ${process.env.APP_HOMEPAGE}`,
       `Log location: ${logger?.getLogDirectory() ?? 'No logs available'}`,
-    ].join('\n')
+    ].join('\n'),
   );
   if (!isDevelopment) {
     mainWindow.destroy();
@@ -114,7 +114,7 @@ const setMenu = (recentFiles?: string[]): void => {
       },
       onUndoClicked: undoHandler,
     },
-    recentFiles
+    recentFiles,
   );
 
   const mainMenu: Menu = Menu.buildFromTemplate(menuTemplate);
@@ -128,7 +128,7 @@ const onAppComponentCreated = () => {
   fileManager.addOnFileChangedListener(
     (_: undefined, recentFiles: string[]) => {
       setMenu(recentFiles);
-    }
+    },
   );
 
   if (initialFilePath) {
@@ -136,8 +136,8 @@ const onAppComponentCreated = () => {
       .get<Files>()
       .readFile(initialFilePath)
       .then(appComponent.get<FileManager>().onOpenFile)
-      .catch((reason: any) =>
-        logger.error('Failed to open initial file', initialFilePath, reason)
+      .catch((reason: unknown) =>
+        logger.error('Failed to open initial file', initialFilePath, reason),
       );
   }
 };
@@ -151,7 +151,7 @@ const setupSpellcheck = (window: BrowserWindow) => {
         new MenuItem({
           label: suggestion,
           click: () => window.webContents.replaceMisspelling(suggestion),
-        })
+        }),
       );
     }
 
@@ -162,9 +162,9 @@ const setupSpellcheck = (window: BrowserWindow) => {
           label: 'Add to dictionary',
           click: () =>
             window.webContents.session.addWordToSpellCheckerDictionary(
-              params.misspelledWord
+              params.misspelledWord,
             ),
-        })
+        }),
       );
     }
     menu.popup();
@@ -259,8 +259,8 @@ app.on('open-file', (event, filePath) => {
       .get<Files>()
       .readFile(filePath)
       .then(appComponent.get<FileManager>().onOpenFile)
-      .catch((reason: any) =>
-        logger.error('Failed to open initial file', initialFilePath, reason)
+      .catch((reason: unknown) =>
+        logger.error('Failed to open initial file', initialFilePath, reason),
       );
   } else {
     initialFilePath = filePath;

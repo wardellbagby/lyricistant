@@ -159,7 +159,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
         setExpanded(true);
       }
     },
-    [showToggleButton]
+    [showToggleButton],
   );
 
   useChannel(
@@ -169,7 +169,7 @@ export const DetailPane: React.FC<DetailPaneProps> = (props) => {
         setExpanded(false);
       }
     },
-    [showToggleButton]
+    [showToggleButton],
   );
 
   useEffect(() => {
@@ -342,7 +342,7 @@ const ExpandedDetailPane = ({
         isRhymesTab: index === 0,
       });
     },
-    [setTabIndex, onTabChanged]
+    [setTabIndex, onTabChanged],
   );
 
   useEffect(() => {

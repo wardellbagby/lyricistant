@@ -3,7 +3,7 @@ import path from 'path';
 import { generateRhymes } from '@lyricistant/rhyme-generator/rhyme-generator';
 
 const snapshot = JSON.parse(
-  readFileSync(path.resolve(__dirname, 'snapshot.json'), 'utf8')
+  readFileSync(path.resolve(__dirname, 'snapshot.json'), 'utf8'),
 );
 
 describe('Offline rhymes', () => {
@@ -19,9 +19,9 @@ describe('Offline rhymes', () => {
       expect(expected).not.toBeEmpty();
       try {
         expect(actual).toEqual(expected);
-      } catch (e) {
+      } catch {
         throw new Error(
-          `unexpected rhymes for ${word}. Do you need to update the snapshot? Update snapshot with ./tooling/update-rhymes-snapshot.ts`
+          `unexpected rhymes for ${word}. Do you need to update the snapshot? Update snapshot with ./tooling/update-rhymes-snapshot.ts`,
         );
       }
     });

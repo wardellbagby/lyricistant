@@ -26,7 +26,7 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
 
   logger.debug(`Fetching ${type} rhymes for word: ${word}`);
   const response = await fetch(
-    `${url}/words?${param}=${word}&max=${getMaxRhymeCount(type)}`
+    `${url}/words?${param}=${word}&max=${getMaxRhymeCount(type)}`,
   );
 
   if (response.ok && response.status < 400) {
@@ -35,14 +35,14 @@ const asyncRhymes = async (word: string, type: RhymeType): Promise<Rhyme[]> => {
     try {
       return JSON.parse(text);
     } catch (e) {
-      logger.error("Couldn't parse rhymes response to JSON!", word, text);
+      logger.error("Couldn't parse rhymes response to JSON!", word, text, e);
       return [];
     }
   }
   logger.error(
     'Failed to fetch rhymes! Returning an empty list.',
     word,
-    response
+    response,
   );
   return [];
 };
@@ -63,8 +63,8 @@ export const fetchRhymes = async (word: string): Promise<Rhyme[]> => {
     asyncRhymes(word, 'sounds-like'),
   ]).then((results) =>
     distinct(flatten(results), (rhyme) => rhyme.word).sort(
-      (left: Rhyme, right: Rhyme) => right.score - left.score
-    )
+      (left: Rhyme, right: Rhyme) => right.score - left.score,
+    ),
   );
 };
 
@@ -76,7 +76,7 @@ const flatten: <T>(input: T[][]) => T[] = (array) =>
 
 const distinct: <T, R>(input: T[], by: (value: T) => R) => T[] = (
   input,
-  by
+  by,
 ) => {
   const map = new Map();
   const results = [];

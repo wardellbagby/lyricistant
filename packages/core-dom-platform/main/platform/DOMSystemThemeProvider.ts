@@ -8,7 +8,7 @@ export class DOMSystemThemeProvider implements SystemThemeProvider {
 }
 
 export const setColorSchemeListener = (
-  listener: (theme: SystemTheme) => void
+  listener: (theme: SystemTheme) => void,
 ) => {
   if (self.matchMedia) {
     if (self.matchMedia('(prefers-color-scheme: dark)').matches) {

@@ -6,7 +6,7 @@ import { Manager } from '@lyricistant/common-platform/Manager';
 export class UnloadManager implements Manager {
   public constructor(
     private appData: AppData,
-    private logger: PlatformLogger
+    private logger: PlatformLogger,
   ) {}
 
   public register = () => {

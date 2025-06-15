@@ -7,7 +7,7 @@ import { PreferenceManager } from '@lyricistant/common-platform/preferences/Pref
 export class StatusBarManager implements Manager {
   public constructor(
     private preferenceManager: PreferenceManager,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 
   public register() {
@@ -31,7 +31,7 @@ export class StatusBarManager implements Manager {
       StatusBar.setStyle({ style })
         .then(() => StatusBar.setBackgroundColor({ color }))
         .catch((reason) =>
-          this.logger.info('Failed to update status bar style', reason)
+          this.logger.info('Failed to update status bar style', reason),
         );
     });
   }

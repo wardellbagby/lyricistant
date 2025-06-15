@@ -62,7 +62,7 @@ export interface EditorTextData {
 }
 
 export interface SelectableDiagnostic extends Diagnostic {
-  key: any;
+  key: unknown;
 }
 
 /** The props for the {@link Editor} component. */
@@ -103,7 +103,7 @@ export interface EditorProps {
 }
 
 export const Editor: React.FC<EditorProps> = (props) => {
-  const editor = useRef();
+  const editor = useRef<HTMLDivElement>(null);
   const [themeData] = useChannelData('theme-updated');
   const theme = useTheme();
   const onFileDropped = useCallback((item: DataTransferItem | File) => {
@@ -123,7 +123,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
         isTransactional: true,
       });
     },
-    [props.onTextChanged]
+    [props.onTextChanged],
   );
 
   const {
@@ -216,7 +216,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
 const useTextActionEvents = (
   undo: () => void,
   redo: () => void,
-  openFindReplaceModal: () => void
+  openFindReplaceModal: () => void,
 ) => {
   useEffect(() => {
     platformDelegate.on('undo', undo);

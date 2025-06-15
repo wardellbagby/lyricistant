@@ -11,7 +11,6 @@ expression { Line }
 
 @detectDelim`;
 
-// eslint-disable-next-line no-eval
 const parser = eval(buildParserFile(grammar, { moduleStyle: 'cjs' }).parser);
 
 module.exports = { parser };

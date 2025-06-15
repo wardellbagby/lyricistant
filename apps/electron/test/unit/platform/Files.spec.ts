@@ -5,14 +5,12 @@ import { PlatformFile } from '@lyricistant/common/files/PlatformFile';
 import { Files } from '@lyricistant/common-platform/files/Files';
 import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import chaiSubset from 'chai-subset';
 import { BrowserWindow, Dialog } from 'electron';
 import sinonChai from 'sinon-chai';
 import sinon, { stubInterface } from 'ts-sinon';
 
 use(sinonChai);
 use(chaiAsPromised);
-use(chaiSubset);
 
 const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
 
@@ -52,7 +50,7 @@ describe('Files', () => {
           { extensions: ['txt'], name: 'Text files' },
           { extensions: ['*'], name: 'All files' },
         ],
-      })
+      }),
     );
     expect(fs.readFile).to.have.been.calledWith('mycoollyrics.txt');
   });
@@ -87,7 +85,7 @@ describe('Files', () => {
     });
     expect(fs.writeFile).to.have.been.calledWith(
       expected.path,
-      Buffer.from(encode('oh wow!'))
+      Buffer.from(encode('oh wow!')),
     );
   });
 
@@ -98,14 +96,14 @@ describe('Files', () => {
     const actual = await files.saveFile(
       encode('oh wow!'),
       'lyrics.txt',
-      'mycoollyrics.txt'
+      'mycoollyrics.txt',
     );
 
     expect(expected).to.deep.equal(actual);
     expect(dialogs.showSaveDialog).to.have.not.been.called;
     expect(fs.writeFile).to.have.been.calledWith(
       'mycoollyrics.txt',
-      Buffer.from(encode('oh wow!'))
+      Buffer.from(encode('oh wow!')),
     );
   });
 

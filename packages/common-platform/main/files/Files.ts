@@ -63,7 +63,7 @@ export interface Files {
   saveFile: (
     data: ArrayBuffer,
     defaultFileName: string,
-    path?: string
+    path?: string,
   ) => Promise<FileMetadata>;
   /**
    * Optional functionality that platforms are not required to implement that

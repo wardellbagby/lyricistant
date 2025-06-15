@@ -19,7 +19,7 @@ import { DependencyList, useEffect, useState } from 'react';
 export const useChannel: <Channel extends RendererChannel>(
   channel: Channel,
   listener: PlatformToRendererListener[Channel],
-  deps?: DependencyList
+  deps?: DependencyList,
 ) => void = (channel, listener, deps) => {
   useEffect(() => {
     platformDelegate.on(channel, listener);
@@ -44,10 +44,10 @@ export const useChannel: <Channel extends RendererChannel>(
  */
 export const useChannelData: <Channel extends RendererChannel>(
   channel: Channel,
-  shouldRegister?: boolean
+  shouldRegister?: boolean,
 ) => Parameters<PlatformToRendererListener[Channel]> = (
   channel,
-  shouldRegister
+  shouldRegister,
 ) => {
   const [result, setResult] = useState([]);
   useEffect(() => {
@@ -62,5 +62,8 @@ export const useChannelData: <Channel extends RendererChannel>(
       platformDelegate.removeListener(channel, listener);
     };
   }, [shouldRegister]);
+  // Disable no explicit any here since Typescript can't know that the types
+  // work out here due to generics erasure.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return result as any;
 };

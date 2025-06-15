@@ -17,9 +17,9 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import React, { ReactChild } from 'react';
+import React from 'react';
 
-const aboutInfo: Record<string, ReactChild> = {
+const aboutInfo: Record<string, React.JSX.Element> = {
   'Code repository': (
     <Link target="_blank" rel="noopener" href={APP_HOMEPAGE}>
       GitHub
@@ -39,7 +39,7 @@ const aboutInfo: Record<string, ReactChild> = {
       Issues
     </Link>
   ),
-};
+} as const;
 
 const DividerlessTableCell = (props: TableCellProps) => (
   <TableCell sx={{ borderBottom: 'none' }} {...props} />
@@ -76,17 +76,17 @@ export const AboutDialog = (props: AboutDialogProps) => {
           justifyContent="center"
           alignItems="center"
         >
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Logo
               height={'96px'}
               width={'96px'}
               fill={theme.palette.primary.main}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Typography variant={'h6'}>Lyricistant - {APP_VERSION}</Typography>
           </Grid>
-          <Grid item xs={8}>
+          <Grid size={{ xs: 8 }}>
             <p>
               Hey! I'm Wardell, and I created Lyricistant! This app is
               completely free to use and entirely open-source. Make your own
@@ -123,13 +123,13 @@ export const AboutDialog = (props: AboutDialogProps) => {
             </p>
             <p>Enjoy using Lyricistant!</p>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <TableContainer>
               <Table size={'small'}>
                 <TableBody>
                   {Object.keys(aboutInfo)
                     .map((key: keyof typeof aboutInfo) => [key, aboutInfo[key]])
-                    .map(([key, value]: [string, ReactChild]) => (
+                    .map(([key, value]: [string, React.JSX.Element]) => (
                       <TableRow key={key}>
                         <DividerlessTableCell>{key}</DividerlessTableCell>
                         <DividerlessTableCell>{value}</DividerlessTableCell>
@@ -140,7 +140,7 @@ export const AboutDialog = (props: AboutDialogProps) => {
             </TableContainer>
           </Grid>
           <Box height={'8px'} />
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Button
               variant={'outlined'}
               onClick={() => platformDelegate.send('save-logs')}

@@ -73,7 +73,7 @@ describe('Editor component', function () {
     expect(await file.arrayBuffer()).toEqual(platformFile.data);
     expect(platformDelegate.send).toHaveBeenCalledWith(
       'open-file-attempt',
-      platformFile
+      platformFile,
     );
   });
 
@@ -177,7 +177,7 @@ describe('Editor component', function () {
           text: Text.of(["I'm willing to bet it all"]),
           isTransactional: false,
         }}
-      />
+      />,
     );
 
     expect(screen.getByText("I'm willing to bet it all")).toBeTruthy();

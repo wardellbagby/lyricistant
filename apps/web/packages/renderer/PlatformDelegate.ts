@@ -11,7 +11,7 @@ import { platform } from './platform';
 class WebPlatformDelegate implements PlatformDelegate {
   private listeners: ListenerManager = new ListenerManager();
 
-  public receive = (channel: string, args: any[]) => {
+  public receive = (channel: string, args: unknown[]) => {
     this.listeners.getListeners(channel).forEach((listener) => {
       Promise.resolve(listener(...args)).catch((reason) => {
         logger.error('Uncaught exception in listener', reason);
@@ -22,7 +22,7 @@ class WebPlatformDelegate implements PlatformDelegate {
 
   public on<Channel extends RendererChannel>(
     channel: Channel,
-    listener: PlatformToRendererListener[Channel]
+    listener: PlatformToRendererListener[Channel],
   ): this {
     this.listeners.addListener(channel, listener);
     platform.onRendererListenerSet(channel);
@@ -31,7 +31,7 @@ class WebPlatformDelegate implements PlatformDelegate {
 
   public removeListener<Channel extends RendererChannel>(
     channel: Channel,
-    listener: PlatformToRendererListener[Channel]
+    listener: PlatformToRendererListener[Channel],
   ): this {
     this.listeners.removeListener(channel, listener);
     return this;

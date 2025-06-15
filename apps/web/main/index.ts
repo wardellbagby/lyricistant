@@ -45,7 +45,7 @@ const start = async () => {
   await import('@lyricistant/renderer/index');
 };
 
-start().catch((reason: any) => {
+start().catch((reason: unknown) => {
   if (reason instanceof Error) {
     throw reason;
   }

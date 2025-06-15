@@ -128,10 +128,10 @@ describe('File History', () => {
     fileHistory.add("It's your boy\nMr. Doctor.");
     fileHistory.add("It's your boy\n\nMr. Doctor.");
     fileHistory.add(
-      "It's your boy\n\nIt's your guy!\nIt's your man!\nMr. Doctor."
+      "It's your boy\n\nIt's your guy!\nIt's your man!\nMr. Doctor.",
     );
     fileHistory.add(
-      "It's your boy\n\nIt's your guy!\nIt's your man!\nMr. Doctor. Professor!"
+      "It's your boy\n\nIt's your guy!\nIt's your man!\nMr. Doctor. Professor!",
     );
     fileHistory.add(expected);
 

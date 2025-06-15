@@ -33,7 +33,7 @@ describe('Recent Files', () => {
 
   it('caches recents when recents have been set', () => {
     fs.readFileSync.returns(
-      JSON.stringify(['blueoceanfloor.txt', 'mirror.txt'])
+      JSON.stringify(['blueoceanfloor.txt', 'mirror.txt']),
     );
     fs.existsSync.returns(true);
 
@@ -43,7 +43,7 @@ describe('Recent Files', () => {
     recentFiles.getRecentFiles();
 
     expect(fs.readFileSync).to.have.been.calledOnceWith(
-      'user/recent_files.json'
+      'user/recent_files.json',
     );
   });
 

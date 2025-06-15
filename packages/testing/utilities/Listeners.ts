@@ -5,21 +5,21 @@ import {
   RendererToPlatformListener,
 } from '@lyricistant/common/Delegates';
 
-type Listener = (...args: any[]) => any;
+type Listener = (...args: unknown[]) => unknown;
 
-const add = (key: string, value: any, map: Map<string, any[]>) => {
+const add = (key: string, value: unknown, map: Map<string, unknown[]>) => {
   const currentValues = map.get(key) ?? [];
   map.set(key, [...currentValues, value]);
 };
-const remove = (key: string, value: any, map: Map<string, any[]>) => {
+const remove = (key: string, value: unknown, map: Map<string, unknown[]>) => {
   const currentValues = map.get(key) ?? [];
   currentValues.splice(currentValues.indexOf(value), 1);
   map.set(key, currentValues);
 };
 const invokeAll = async (
   key: string,
-  args: any[],
-  map: Map<string, Listener[]>
+  args: unknown[],
+  map: Map<string, Listener[]>,
 ) => {
   if (!map.has(key)) {
     throw new Error(`Listener for event type ${key} was never registered!`);
@@ -33,7 +33,7 @@ const invokeAll = async (
 
 export class RendererListeners {
   private listeners: Map<PlatformChannel, Listener[]> = new Map();
-  private delayedInvokes: Map<PlatformChannel, any[][]> = new Map();
+  private delayedInvokes: Map<PlatformChannel, unknown[][]> = new Map();
   public clear = () => {
     this.listeners.clear();
     this.delayedInvokes.clear();
@@ -58,12 +58,12 @@ export class RendererListeners {
 
   public set = <Channel extends PlatformChannel>(
     key: Channel,
-    value: RendererToPlatformListener[Channel]
+    value: RendererToPlatformListener[Channel],
   ) => {
     add(key, value, this.listeners);
     if (this.delayedInvokes.has(key)) {
       for (const args of this.delayedInvokes.get(key)) {
-        this.invoke(key, ...(args as any));
+        this.invoke(key, ...(args as never));
       }
       jest.runAllTimers();
       this.delayedInvokes.delete(key);
@@ -72,7 +72,7 @@ export class RendererListeners {
 
   public remove = <Channel extends PlatformChannel>(
     key: Channel,
-    value: RendererToPlatformListener[Channel]
+    value: RendererToPlatformListener[Channel],
   ) => {
     remove(key, value, this.listeners);
   };
@@ -89,12 +89,12 @@ export class PlatformListeners {
 
   public set = <Channel extends RendererChannel>(
     key: Channel,
-    value: PlatformToRendererListener[Channel]
+    value: PlatformToRendererListener[Channel],
   ) => add(key, value, this.listeners);
 
   public remove = <Channel extends RendererChannel>(
     key: Channel,
-    value: PlatformToRendererListener[Channel]
+    value: PlatformToRendererListener[Channel],
   ) => {
     remove(key, value, this.listeners);
   };
@@ -104,7 +104,7 @@ export class EventListeners {
   private listeners: Map<string, Listener[]> = new Map();
   public clear = () => this.listeners.clear();
 
-  public invoke = async (key: string, ...args: any[]): Promise<void> =>
+  public invoke = async (key: string, ...args: unknown[]): Promise<void> =>
     invokeAll(key, args, this.listeners);
 
   public set = (key: string, value: Listener) =>

@@ -4,7 +4,7 @@ import { WordChip } from '@lyricistant/renderer/detail/WordChip';
 import { RhymesState } from '@lyricistant/renderer/rhymes/RhymesMachine';
 import { Box, Chip } from '@mui/material';
 import React, { useCallback, useEffect } from 'react';
-import { useErrorHandler } from 'react-error-boundary';
+import { useErrorBoundary } from 'react-error-boundary';
 import { Rhyme } from './rhyme';
 
 interface RhymesListProps {
@@ -65,7 +65,7 @@ export interface RhymesProps extends DetailPaneChildProps {
 export const Rhymes: React.FC<RhymesProps> = (props) => {
   const state = props.state;
 
-  const handleError = useErrorHandler();
+  const { showBoundary: handleError } = useErrorBoundary();
 
   useEffect(() => {
     if (state.matches('error')) {

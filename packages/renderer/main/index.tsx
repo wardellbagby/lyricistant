@@ -21,7 +21,7 @@ const container: HTMLElement = document.getElementById('app');
 const root = ReactDOM.createRoot(container);
 
 const hashLocation = () => window.location.hash.replace(/^#/, '') || '/';
-const hashNavigate = (to: string, ...args: any[]) => {
+const hashNavigate = (to: string, ...args: unknown[]) => {
   if (to) {
     navigate('#' + to, ...args);
   } else {
@@ -64,5 +64,5 @@ root.render(
         </SnackbarProvider>
       </Themed>
     </PlatformEventsReadyHandler>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
