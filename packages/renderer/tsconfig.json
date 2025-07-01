@@ -1,5 +1,9 @@
 {
-  "include": ["main/**/*", "main/**/*.json"],
+  "include": [
+    "main/**/*",
+    "main/**/*.json",
+    "../platform-file-file-handle-extensions/index.d.ts"
+  ],
   "exclude": ["main/**/webpack.config.ts"],
   "compilerOptions": {
     "outDir": "build",
@@ -9,7 +13,6 @@
       "../renderer-window",
       "../platform-file-file-handle-extensions"
     ],
-//    "typeRoots": ["**/node_modules/@types"],
     "composite": true
   },
   "references": [

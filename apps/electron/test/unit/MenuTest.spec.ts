@@ -1,70 +1,53 @@
+import expect from 'expect';
 import { createAppMenu, MenuItemHandlers } from '@electron-app/app-menu';
-import { expect, use } from 'chai';
 import { MenuItemConstructorOptions } from 'electron';
-import sinonChai from 'sinon-chai';
-import { StubbedInstance, stubObject } from 'ts-sinon';
-
-use(sinonChai);
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 
 describe('Create Electron App Menu', () => {
-  const handlerObj: MenuItemHandlers = {
-    onFindClicked: () => undefined,
-    onNewClicked: () => undefined,
-    onOpenClicked: () => undefined,
-    onOpenRecentClicked: () => undefined,
-    onPreferencesClicked: () => undefined,
-    onAboutClicked: () => undefined,
-    onQuitClicked: () => undefined,
-    onRedoClicked: () => undefined,
-    onReplaceClicked: () => undefined,
-    onSaveAsClicked: () => undefined,
-    onSaveClicked: () => undefined,
-    onUndoClicked: () => undefined,
-  };
-  let handlers: StubbedInstance<MenuItemHandlers>;
+  let handlers: DeepMockProxy<MenuItemHandlers>;
 
   beforeEach(() => {
-    handlers = stubObject<MenuItemHandlers>(handlerObj);
+    jest.resetAllMocks();
+    handlers = mockDeep<MenuItemHandlers>();
 
-    Object.keys(handlerObj)
+    Object.keys(handlers)
       .filter((name) => name.startsWith('on'))
-      .forEach((funcName) => {
-        // @ts-expect-error types are lost here due to stubbing
-        handlers[funcName]
-          .onSecondCall()
-          .throws(new Error(`${funcName} was registered multiple times!`));
+      .forEach((funcName: keyof MenuItemHandlers) => {
+        handlers[funcName].mockReturnValueOnce().mockImplementation(() => {
+          new Error(`${funcName} was registered multiple times!`);
+        });
       });
   });
 
   it('actually creates a menu', () => {
     const actual = createAppMenu('MyApp', 'linux', handlers);
 
-    expect(actual).to.not.be.null;
-    expect(actual).to.not.be.empty;
+    expect(actual).not.toBeNull();
+    expect(Object.keys(actual)).not.toHaveLength(0);
   });
 
   it('includes the Mac menu when on Mac', () => {
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
-    expect(actual[0].label).to.be.equal('MyApp');
+    expect(actual[0].label).toBe('MyApp');
   });
 
   it("doesn't show prefs in File when on Mac", () => {
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
-    expect(actual[1].submenu).to.not.containSubset([{ label: 'Preferences' }]);
+    expect(actual[1].submenu).not.toContainEqual([{ label: 'Preferences' }]);
   });
 
   it("doesn't show quit in File when on Mac", () => {
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
-    expect(actual[1].submenu).to.not.containSubset([{ label: 'Quit' }]);
+    expect(actual[1].submenu).not.toContainEqual([{ label: 'Quit' }]);
   });
 
   it("doesn't show about in File when on Mac", () => {
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
-    expect(actual[1].submenu).to.not.containSubset([
+    expect(actual[1].submenu).not.toContainEqual([
       { label: 'About Lyricistant...' },
     ]);
   });
@@ -72,41 +55,49 @@ describe('Create Electron App Menu', () => {
   it('does show about in Mac menu when on Mac', () => {
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
-    expect(actual[0].submenu).to.containSubset([
-      { label: 'About Lyricistant...' },
-    ]);
+    expect(actual[0].submenu).toContainEqual(
+      expect.objectContaining({ label: 'About Lyricistant...' }),
+    );
   });
 
   it('does show prefs in File when on Windows', () => {
     const actual = createAppMenu('MyApp', 'win32', handlers);
 
-    expect(actual[0].submenu).to.containSubset([{ label: 'Preferences' }]);
+    expect(actual[0].submenu).toContainEqual(
+      expect.objectContaining({ label: 'Preferences' }),
+    );
   });
 
   it('does show quit in File when on Windows', () => {
     const actual = createAppMenu('MyApp', 'win32', handlers);
 
-    expect(actual[0].submenu).to.containSubset([{ label: 'Quit' }]);
+    expect(actual[0].submenu).toContainEqual(
+      expect.objectContaining({ label: 'Quit' }),
+    );
   });
 
   it('does show about in File when on Windows', () => {
     const actual = createAppMenu('MyApp', 'win32', handlers);
 
-    expect(actual[0].submenu).to.containSubset([
-      { label: 'About Lyricistant...' },
-    ]);
+    expect(actual[0].submenu).toContainEqual(
+      expect.objectContaining({ label: 'About Lyricistant...' }),
+    );
   });
 
   it('does show prefs in File when on Linux', () => {
     const actual = createAppMenu('MyApp', 'linux', handlers);
 
-    expect(actual[0].submenu).to.containSubset([{ label: 'Preferences' }]);
+    expect(actual[0].submenu).toContainEqual(
+      expect.objectContaining({ label: 'Preferences' }),
+    );
   });
 
   it('does show quit in File when on Linux', () => {
     const actual = createAppMenu('MyApp', 'linux', handlers);
 
-    expect(actual[0].submenu).to.containSubset([{ label: 'Quit' }]);
+    expect(actual[0].submenu).toContainEqual(
+      expect.objectContaining({ label: 'Quit' }),
+    );
   });
 
   it('includes all of the major sections on Mac', () => {
@@ -119,7 +110,7 @@ describe('Create Electron App Menu', () => {
     const actual = createAppMenu('MyApp', 'darwin', handlers);
 
     actual.forEach((menu, index) => {
-      expect(menu).to.include(expected[index]);
+      expect(menu).toMatchObject(expected[index]);
     });
   });
 
@@ -128,7 +119,7 @@ describe('Create Electron App Menu', () => {
     const actual = createAppMenu('MyApp', 'linux', handlers);
 
     actual.forEach((menu, index) => {
-      expect(menu).to.include(expected[index]);
+      expect(menu).toMatchObject(expected[index]);
     });
   });
 
@@ -137,7 +128,7 @@ describe('Create Electron App Menu', () => {
     const actual = createAppMenu('MyApp', 'win32', handlers);
 
     actual.forEach((menu, index) => {
-      expect(menu).to.include(expected[index]);
+      expect(menu).toMatchObject(expected[index]);
     });
   });
 
@@ -147,8 +138,8 @@ describe('Create Electron App Menu', () => {
       ({ label }) => label === 'Open recent',
     );
 
-    expect(recents).to.exist;
-    expect(recents.submenu).to.eql([
+    expect(recents).toBeDefined();
+    expect(recents.submenu).toEqual([
       {
         label: '<No recent files>',
         enabled: false,
@@ -163,9 +154,9 @@ describe('Create Electron App Menu', () => {
       ({ label }) => label === 'Open recent',
     );
 
-    expect(recents).to.exist;
+    expect(recents).toBeDefined();
     (recents.submenu as MenuItemConstructorOptions[]).forEach((menu, index) => {
-      expect(menu).to.include({ label: recentFiles[index] });
+      expect(menu).toMatchObject({ label: recentFiles[index] });
     });
   });
 

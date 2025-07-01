@@ -166,7 +166,13 @@ export class FileHistory implements FileDataExtension<'history'> {
   };
 
   private loadV2 = async (data: unknown): Promise<HistoryData[]> => {
-    if (!Array.isArray(data) || !data.every((datum) => isHistoryData(datum))) {
+    if (
+      !Array.isArray(data) ||
+      !data.every((datum) => {
+        return isHistoryData(datum);
+      })
+    ) {
+      this.logger.warn('Failed to successfully parse file history', data);
       return [];
     }
 

@@ -1,10 +1,9 @@
 import { flatMap, groupBy } from 'lodash';
-import { BrowserType, chromium, firefox, webkit } from 'playwright';
+import { BrowserType, chromium, firefox } from 'playwright';
 
 interface Viewport {
   width: number;
   height: number;
-  isSmallLayout: boolean;
 }
 
 interface Browser {
@@ -17,17 +16,17 @@ const viewports: Viewport[] = [
   {
     width: 360,
     height: 780,
-    isSmallLayout: true,
   },
   {
     width: 1200,
     height: 1200,
-    isSmallLayout: false,
   },
 ];
 
 const browsers: Browser[] = [
-  { type: webkit, label: 'WebKit' },
+  // TODO renable once we switch to Playright test runner; it bugs out with
+  // launchPersistentContext
+  //  { type: webkit, label: 'WebKit' },
   { type: firefox, label: 'Firefox' },
   {
     type: chromium,

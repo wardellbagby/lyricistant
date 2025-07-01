@@ -1,36 +1,39 @@
+import expect from 'expect';
 import { UpdateManager } from '@electron-app/platform/UpdateManager';
 import { ReleaseHelper } from '@lyricistant/common/releases/ReleaseHelper';
 import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { EventListeners } from '@testing/utilities/Listeners';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
-import { expect, use } from 'chai';
 import { AppUpdater } from 'electron-updater';
-import sinonChai from 'sinon-chai';
-import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
-
-use(sinonChai);
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 
 describe('Update Manager', () => {
   let manager: UpdateManager;
-  let appData: StubbedInstance<AppData>;
-  let appUpdater: StubbedInstance<AppUpdater>;
-  let releaseHelper: StubbedInstance<ReleaseHelper>;
-  const rendererDelegate = new MockRendererDelegate();
+  let appData: DeepMockProxy<AppData>;
+  let appUpdater: DeepMockProxy<AppUpdater>;
+  let releaseHelper: DeepMockProxy<ReleaseHelper>;
+  let rendererDelegate: MockRendererDelegate;
   const appUpdaterListeners = new EventListeners();
 
   beforeEach(() => {
-    sinon.reset();
-    appData = stubInterface<AppData>();
-    appData.get.withArgs(UpdateManager.IGNORED_VERSIONS_KEY).resolves(null);
-    appUpdater = stubInterface();
-    appUpdater.checkForUpdates.resolves(null);
-    appUpdater.downloadUpdate.resolves(null);
-    appUpdater.on.callsFake(function (event, listener) {
+    jest.resetAllMocks();
+    rendererDelegate = new MockRendererDelegate();
+    appData = mockDeep();
+    appData.get.mockImplementation((key) => {
+      if (key == UpdateManager.IGNORED_VERSIONS_KEY) {
+        return Promise.resolve(null);
+      }
+    });
+
+    appUpdater = mockDeep();
+    appUpdater.checkForUpdates.mockResolvedValue(null);
+    appUpdater.downloadUpdate.mockResolvedValue(null);
+    appUpdater.on.mockImplementation(function (event, listener) {
       appUpdaterListeners.set(event as string, listener);
       return this;
     });
-    releaseHelper = stubInterface();
-    releaseHelper.getLatestDownloadableRelease.resolves({
+    releaseHelper = mockDeep();
+    releaseHelper.getLatestDownloadableRelease.mockResolvedValue({
       changelog: 'Hello!',
       baseDownloadUrl: 'https://example.com/',
     });
@@ -39,9 +42,9 @@ describe('Update Manager', () => {
       rendererDelegate,
       appData,
       appUpdater,
-      stubInterface(),
+      mockDeep(),
       releaseHelper,
-      stubInterface(),
+      mockDeep(),
     );
   });
 
@@ -53,7 +56,10 @@ describe('Update Manager', () => {
   it('registers for dialog button clicks on register', async () => {
     manager.register();
 
-    expect(rendererDelegate.on).to.have.been.calledWith('dialog-interaction');
+    expect(rendererDelegate.on).toHaveBeenCalledWith(
+      'dialog-interaction',
+      expect.anything(),
+    );
   });
 
   it('checks for update when the renderer is ready', async () => {
@@ -65,12 +71,10 @@ describe('Update Manager', () => {
       version: '9.9.9',
     });
 
-    expect(appUpdater.setFeedURL).to.have.been.calledWith(
-      'https://example.com/',
-    );
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(appUpdater.setFeedURL).toHaveBeenCalledWith('https://example.com/');
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'show-dialog',
-      sinon.match({
+      expect.objectContaining({
         tag: UpdateManager.INSTALL_UPDATE_DIALOG_TAG,
         title: 'Update available',
       }),
@@ -79,13 +83,13 @@ describe('Update Manager', () => {
 
   it('does not check for updates when there is no new release', async () => {
     manager.register();
-    releaseHelper.getLatestDownloadableRelease.resolves(null);
+    releaseHelper.getLatestDownloadableRelease.mockResolvedValue(null);
 
     await rendererDelegate.invoke('ready-for-events', { isDeepLink: false });
 
-    expect(appUpdater.checkForUpdates).to.have.not.been.called;
-    expect(appUpdater.setFeedURL).to.have.not.been.called;
-    expect(rendererDelegate.send).to.have.not.been.called;
+    expect(appUpdater.checkForUpdates).not.toHaveBeenCalled();
+    expect(appUpdater.setFeedURL).not.toHaveBeenCalled();
+    expect(rendererDelegate.send).not.toHaveBeenCalled();
   });
 
   it('starts downloading an update when user clicks yes', async () => {
@@ -102,7 +106,7 @@ describe('Update Manager', () => {
       { selectedButton: 'Yes' },
     );
 
-    expect(appUpdater.downloadUpdate).to.have.been.called;
+    expect(appUpdater.downloadUpdate).toHaveBeenCalled();
   });
 
   it('ignores this version when user clicks never', async () => {
@@ -119,8 +123,10 @@ describe('Update Manager', () => {
       { selectedButton: 'Never' },
     );
 
-    expect(appUpdater.downloadUpdate).to.have.not.been.called;
-    expect(appData.set).to.have.been.calledWith(
+    expect(appUpdater.downloadUpdate).not.toHaveBeenCalled();
+
+    // @ts-expect-error recursive typing hell
+    expect(appData.set).toHaveBeenCalledWith(
       UpdateManager.IGNORED_VERSIONS_KEY,
       ['9.9.9'],
     );
@@ -140,8 +146,8 @@ describe('Update Manager', () => {
       { selectedButton: 'No' },
     );
 
-    expect(appUpdater.downloadUpdate).to.have.not.been.called;
-    expect(appData.set).to.have.not.been.called;
+    expect(appUpdater.downloadUpdate).not.toHaveBeenCalled();
+    expect(appData.set).not.toHaveBeenCalled();
   });
 
   it('shows download progress', async () => {
@@ -161,9 +167,9 @@ describe('Update Manager', () => {
       transferred: 1,
       total: 100,
     });
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'show-dialog',
-      sinon.match({
+      expect.objectContaining({
         title: 'Downloading update',
         progress: 1,
       }),
@@ -173,9 +179,9 @@ describe('Update Manager', () => {
       transferred: 80,
       total: 100,
     });
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'show-dialog',
-      sinon.match({
+      expect.objectContaining({
         title: 'Downloading update',
         progress: 80,
       }),
@@ -197,9 +203,9 @@ describe('Update Manager', () => {
     );
     await appUpdaterListeners.invoke('update-downloaded');
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'show-dialog',
-      sinon.match({
+      expect.objectContaining({
         tag: UpdateManager.UPDATE_DOWNLOADED_DIALOG_TAG,
         title: 'Update downloaded',
       }),
@@ -226,7 +232,7 @@ describe('Update Manager', () => {
       { selectedButton: 'Restart' },
     );
 
-    expect(appUpdater.quitAndInstall).to.have.been.called;
+    expect(appUpdater.quitAndInstall).toHaveBeenCalled();
   });
 
   it('the app does nothing when user clicks Later', async () => {
@@ -249,6 +255,6 @@ describe('Update Manager', () => {
       { selectedButton: 'Later' },
     );
 
-    expect(appUpdater.quitAndInstall).to.have.not.been.called;
+    expect(appUpdater.quitAndInstall).not.toHaveBeenCalled();
   });
 });

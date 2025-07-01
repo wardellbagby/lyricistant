@@ -1,3 +1,4 @@
+import expect from 'expect';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { UiConfigManager } from '@lyricistant/common-platform/ui/UiConfigManager';
 import {
@@ -5,16 +6,11 @@ import {
   UiConfigProvider,
 } from '@lyricistant/common-platform/ui/UiConfigProviders';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
-import { expect, use } from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import { StubbedInstance, stubInterface } from 'ts-sinon';
-
-use(sinonChai);
+import { mockDeep, MockProxy } from 'jest-mock-extended';
 
 describe('Ui Config Manager', () => {
   let manager: UiConfigManager;
-  let fileManager: StubbedInstance<FileManager>;
+  let fileManager: MockProxy<FileManager>;
   let uiConfigProvider: UiConfigProvider;
   let formatTitle: TitleFormatter;
 
@@ -22,15 +18,15 @@ describe('Ui Config Manager', () => {
   let fileChangedListener: (filename: string, recents: string[]) => void;
 
   beforeEach(() => {
-    fileManager = stubInterface<FileManager>();
-    fileManager.addOnFileChangedListener.callsFake((listener) => {
+    fileManager = mockDeep<FileManager>();
+    fileManager.addOnFileChangedListener.mockImplementation((listener) => {
       fileChangedListener = listener;
     });
-    uiConfigProvider = sinon.fake.returns({
+    uiConfigProvider = jest.fn().mockReturnValue({
       showDownload: true,
       showOpen: true,
     });
-    formatTitle = sinon.fake.returns('Wow!');
+    formatTitle = jest.fn().mockReturnValue('Wow!');
 
     manager = new UiConfigManager(
       rendererDelegate,
@@ -49,7 +45,7 @@ describe('Ui Config Manager', () => {
 
     expect(
       rendererDelegate.addRendererListenerSetListener,
-    ).to.have.been.calledWith('ui-config');
+    ).toHaveBeenCalledWith('ui-config', expect.anything());
   });
 
   it('sends ui config when requested', () => {
@@ -57,7 +53,7 @@ describe('Ui Config Manager', () => {
 
     rendererDelegate.invokeRendererListenerSetListener('ui-config');
 
-    expect(rendererDelegate.send).to.have.been.calledWith('ui-config', {
+    expect(rendererDelegate.send).toHaveBeenCalledWith('ui-config', {
       showDownload: true,
       showOpen: true,
     });
@@ -68,7 +64,7 @@ describe('Ui Config Manager', () => {
 
     fileChangedListener('new file!', []);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'app-title-changed',
       'Wow!',
     );

@@ -5,28 +5,33 @@ import {
   RendererToPlatformListener,
 } from '@lyricistant/common/Delegates';
 import { RendererListeners } from '@testing/utilities/Listeners';
-import { fake, stub } from 'sinon';
 
 /** An implementation of a Renderer Delegate useful for tests. */
 export class MockRendererDelegate implements RendererDelegate {
   public on: <Channel extends PlatformChannel>(
     channel: Channel,
     listener: RendererToPlatformListener[Channel],
-  ) => this = fake((channel, listener) => {
+  ) => this = jest.fn((channel, listener) => {
     this.listeners.set(channel, listener);
     return this;
   });
-  public send: () => void = stub();
+
+  // Purposefully loose with the types here for verification, since we can do
+  // things like expect.objectContaining, which can never match fully.
+  public send = jest.fn();
   public addRendererListenerSetListener: <Channel extends RendererChannel>(
     channel: Channel,
     onRendererListenerSet: () => void,
-  ) => this = fake((channel, listener) => {
+  ) => this = jest.fn((channel, listener) => {
     this.rendererListenerSetListeners.set(channel, listener);
     return this;
   });
 
   private listeners = new RendererListeners();
-  private rendererListenerSetListeners = new Map<string, () => void>();
+  private rendererListenerSetListeners = new Map<
+    string,
+    () => void | Promise<void>
+  >();
 
   /** Clears all listeners that have been set on this renderer delegate. */
   public clear = () => {
@@ -83,7 +88,7 @@ export class MockRendererDelegate implements RendererDelegate {
     if (!listener) {
       throw new Error(`No renderer listener set for channel ${channel}`);
     } else {
-      listener();
+      await listener();
     }
   };
 }

@@ -1,3 +1,4 @@
+import expect from 'expect';
 import { TextDecoder, TextEncoder } from 'util';
 import {
   ColorScheme,
@@ -16,11 +17,7 @@ import { LyricistantFileHandler } from '@lyricistant/common-platform/files/handl
 import { RecentFiles } from '@lyricistant/common-platform/files/RecentFiles';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
-import { expect, use } from 'chai';
-import sinonChai from 'sinon-chai';
-import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
-
-use(sinonChai);
+import { mock, MockProxy } from 'jest-mock-extended';
 
 const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
 const decode = (buffer: ArrayBuffer): string =>
@@ -31,14 +28,14 @@ type Writable<T> = {
 };
 describe('File Manager', () => {
   let manager: FileManager;
-  let files: StubbedInstance<Files>;
-  let recentFiles: StubbedInstance<RecentFiles>;
-  let lyricsFileHandler: StubbedInstance<FileHandler>;
-  let textFileHandler: StubbedInstance<FileHandler>;
-  let preferences: StubbedInstance<Preferences>;
-  let buffers: StubbedInstance<Buffers>;
-  let mockExtension: StubbedInstance<Writable<FileDataExtension>>;
-  const rendererDelegate = new MockRendererDelegate();
+  let files: MockProxy<Files>;
+  let recentFiles: MockProxy<RecentFiles>;
+  let lyricsFileHandler: MockProxy<FileHandler>;
+  let textFileHandler: MockProxy<FileHandler>;
+  let preferences: MockProxy<Preferences>;
+  let buffers: MockProxy<Buffers>;
+  let mockExtension: MockProxy<Writable<FileDataExtension>>;
+  let rendererDelegate: MockRendererDelegate;
   const defaultPreferences: PreferencesData = {
     defaultFileType: DefaultFileType.Lyricistant_Lyrics,
     font: Font.Roboto_Mono,
@@ -49,9 +46,13 @@ describe('File Manager', () => {
   };
 
   beforeEach(() => {
-    sinon.reset();
-    files = stubInterface<Files>({
-      openFile: Promise.resolve({
+    jest.resetAllMocks();
+
+    rendererDelegate = new MockRendererDelegate();
+
+    files = mock();
+    files.openFile.mockImplementation(() =>
+      Promise.resolve({
         metadata: {
           path: '/path/test',
           name: 'test',
@@ -59,45 +60,49 @@ describe('File Manager', () => {
         data: encode(''),
         type: 'text/plain',
       }),
-      saveFile: Promise.resolve({ path: '/path/test2' }),
-      supportsChoosingFileName: Promise.resolve(true),
-    });
+    );
+    files.saveFile.mockImplementation(() =>
+      Promise.resolve({ path: '/path/test2' }),
+    );
+    files.supportsChoosingFileName.mockImplementation(() =>
+      Promise.resolve(true),
+    );
 
-    recentFiles = stubInterface<RecentFiles>({
-      setRecentFiles: undefined,
-      getRecentFiles: ['1', '2', '3'],
-    });
+    recentFiles = mock();
+    recentFiles.getRecentFiles.mockReturnValue(['1', '2', '3']);
 
-    lyricsFileHandler = stubInterface<FileHandler>({
-      canHandle: true,
-    });
+    lyricsFileHandler = mock<FileHandler>();
+    lyricsFileHandler.canHandle.mockReturnValue(true);
 
-    textFileHandler = stubInterface<LyricistantFileHandler>({
-      canHandle: true,
-    });
+    textFileHandler = mock<LyricistantFileHandler>();
+    textFileHandler.canHandle.mockReturnValue(true);
 
-    preferences = stubInterface();
-    preferences.getPreferences.resolves({
+    preferences = mock();
+    preferences.getPreferences.mockResolvedValue({
       ...defaultPreferences,
       defaultFileType: DefaultFileType.Lyricistant_Lyrics,
     });
 
-    buffers = stubInterface();
-    buffers.stringToBuffer.callsFake(encode);
-    buffers.bufferToString.callsFake(decode);
+    buffers = mock();
+    buffers.stringToBuffer.mockImplementation(encode);
+    buffers.bufferToString.mockImplementation(decode);
 
     lyricsFileHandler.extension = 'lyrics';
-    lyricsFileHandler.load.callsFake(async (file) => ({
+    lyricsFileHandler.load.mockImplementation(async (file) => ({
       lyrics: decode(file.data),
     }));
-    lyricsFileHandler.create.callsFake(async (file) => encode(file.lyrics));
+    lyricsFileHandler.create.mockImplementation(async (file) =>
+      encode(file.lyrics),
+    );
 
     textFileHandler.extension = 'txt';
-    textFileHandler.create.callsFake(async (file) => encode(file.lyrics));
+    textFileHandler.create.mockImplementation(async (file) =>
+      encode(file.lyrics),
+    );
 
-    mockExtension = stubInterface<FileDataExtension>();
+    mockExtension = mock<FileDataExtension>();
     mockExtension.key = 'hello';
-    mockExtension.serialize.resolves({ version: 1, data: 'world' });
+    mockExtension.serialize.mockResolvedValue({ version: 1, data: 'world' });
 
     manager = new FileManager(
       rendererDelegate,
@@ -107,7 +112,7 @@ describe('File Manager', () => {
       [lyricsFileHandler, textFileHandler],
       [mockExtension],
       preferences,
-      stubInterface(),
+      mock(),
     );
   });
 
@@ -116,13 +121,13 @@ describe('File Manager', () => {
   });
 
   it("doesn't save duplicates to recent files", async () => {
-    recentFiles.getRecentFiles.returns(['1', '2', '3', '/path/test']);
+    recentFiles.getRecentFiles.mockReturnValue(['1', '2', '3', '/path/test']);
     manager.register();
 
     await manager.onOpenFile();
     await rendererDelegate.invoke('is-file-modified', false);
 
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/path/test',
       '1',
       '2',
@@ -131,7 +136,7 @@ describe('File Manager', () => {
   });
 
   it('caps the max recents to 10', async () => {
-    recentFiles.getRecentFiles.returns([
+    recentFiles.getRecentFiles.mockReturnValue([
       '1',
       '2',
       '3',
@@ -148,8 +153,8 @@ describe('File Manager', () => {
     await manager.onOpenFile();
     await rendererDelegate.invoke('is-file-modified', false);
 
-    expect(recentFiles.setRecentFiles).to.have.been.called;
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(recentFiles.setRecentFiles).toHaveBeenCalled();
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/path/test',
       '1',
       '2',
@@ -164,15 +169,15 @@ describe('File Manager', () => {
   });
 
   it("doesn't add to recent files when a file is not opened", async () => {
-    recentFiles.getRecentFiles.returns(['1', '2', '3', 'test']);
-    files.openFile.resolves(undefined);
+    recentFiles.getRecentFiles.mockReturnValue(['1', '2', '3', 'test']);
+    files.openFile.mockResolvedValue(undefined);
 
     manager.register();
 
     await manager.onOpenFile();
     await rendererDelegate.invoke('is-file-modified', false);
 
-    expect(recentFiles.setRecentFiles).to.have.not.been.called;
+    expect(recentFiles.setRecentFiles).not.toHaveBeenCalled();
   });
 
   it('asks the renderer if its okay for a new file when asked by platform', async () => {
@@ -180,9 +185,7 @@ describe('File Manager', () => {
 
     manager.onNewFile();
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
-      'check-file-modified',
-    );
+    expect(rendererDelegate.send).toHaveBeenCalledWith('check-file-modified');
   });
 
   it('asks the renderer if its okay for a new file when asked by renderer', async () => {
@@ -190,9 +193,7 @@ describe('File Manager', () => {
 
     await rendererDelegate.invoke('new-file-attempt');
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
-      'check-file-modified',
-    );
+    expect(rendererDelegate.send).toHaveBeenCalledWith('check-file-modified');
   });
 
   it('shows a prompt when creating a new file and the renderer says current file has modifications', async () => {
@@ -208,9 +209,12 @@ describe('File Manager', () => {
 
     await rendererDelegate.invoke('is-file-modified', true);
 
-    expect(rendererDelegate.send).to.have.been.calledWithMatch('show-dialog', {
-      tag: FileManager.CONFIRM_NEW_FILE_TAG,
-    });
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
+      'show-dialog',
+      expect.objectContaining({
+        tag: FileManager.CONFIRM_NEW_FILE_TAG,
+      }),
+    );
   });
 
   it('shows a prompt when opening a file and the renderer says current file has modifications', async () => {
@@ -228,9 +232,12 @@ describe('File Manager', () => {
 
     await rendererDelegate.invoke('is-file-modified', true);
 
-    expect(rendererDelegate.send).to.have.been.calledWithMatch('show-dialog', {
-      tag: FileManager.CONFIRM_OPEN_FILE_TAG,
-    });
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
+      'show-dialog',
+      expect.objectContaining({
+        tag: FileManager.CONFIRM_OPEN_FILE_TAG,
+      }),
+    );
   });
 
   it('creates a new file when prompt dialog says yes was chosen', async () => {
@@ -244,8 +251,8 @@ describe('File Manager', () => {
     await manager.onNewFile();
     await rendererDelegate.invoke('is-file-modified', true);
 
-    expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
-    expect(mockExtension.reset).to.have.been.called;
+    expect(rendererDelegate.send).toHaveBeenCalledWith('new-file-created');
+    expect(mockExtension.reset).toHaveBeenCalled();
   });
 
   it("does nothing when prompt dialog doesn't say yes was chosen", async () => {
@@ -259,10 +266,8 @@ describe('File Manager', () => {
     await manager.onNewFile();
     await rendererDelegate.invoke('is-file-modified', true);
 
-    expect(files.openFile).to.not.have.been.called;
-    expect(rendererDelegate.send).to.have.not.been.calledWithMatch(
-      'file-opened',
-    );
+    expect(files.openFile).not.toHaveBeenCalled();
+    expect(rendererDelegate.send).not.toHaveBeenCalledWith('file-opened');
   });
 
   it('creates a new file when the renderer says new file is okay', async () => {
@@ -270,14 +275,12 @@ describe('File Manager', () => {
     await manager.onNewFile();
     await rendererDelegate.invoke('is-file-modified', false);
 
-    expect(rendererDelegate.send).to.have.not.been.calledWithMatch(
-      'show-dialog',
-    );
-    expect(rendererDelegate.send).to.have.been.calledWith('new-file-created');
+    expect(rendererDelegate.send).not.toHaveBeenCalledWith('show-dialog');
+    expect(rendererDelegate.send).toHaveBeenCalledWith('new-file-created');
   });
 
   it('opens the file when prompt dialog says yes was chosen', async () => {
-    files.openFile.callsFake((file) => Promise.resolve(file));
+    files.openFile.mockImplementation((file) => Promise.resolve(file));
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
       FileManager.CONFIRM_OPEN_FILE_TAG,
@@ -295,12 +298,13 @@ describe('File Manager', () => {
     });
     await rendererDelegate.invoke('is-file-modified', true);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'file-opened',
       undefined,
       'This water',
+      true,
     );
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       'whitetuxedo.txt',
       '1',
       '2',
@@ -313,14 +317,12 @@ describe('File Manager', () => {
 
     manager.onSaveFile(false);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
-      'request-editor-text',
-    );
+    expect(rendererDelegate.send).toHaveBeenCalledWith('request-editor-text');
   });
 
-  it('saves the file when the renderer returns the editor text', async () => {
+  it('saves the file when the renderer mockReturnValue the editor text', async () => {
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
-      sinon.fake();
+      jest.fn();
     manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
@@ -328,12 +330,13 @@ describe('File Manager', () => {
 
     await rendererDelegate.invoke('editor-text', 'Reeboks on; just do it!');
 
-    expect(files.saveFile).to.have.been.calledWith(
+    expect(files.saveFile).toHaveBeenCalledWith(
       encode('Reeboks on; just do it!'),
       'Lyrics.lyrics',
+      undefined,
     );
-    expect(fileChangeListener).to.have.been.called;
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(fileChangeListener).toHaveBeenCalled();
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/path/test2',
       '1',
       '2',
@@ -341,9 +344,9 @@ describe('File Manager', () => {
     ]);
   });
 
-  it('saves as the file when the renderer returns the editor text', async () => {
+  it('saves as the file when the renderer mockReturnValue the editor text', async () => {
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
-      sinon.fake();
+      jest.fn();
     manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
@@ -351,11 +354,13 @@ describe('File Manager', () => {
 
     await rendererDelegate.invoke('editor-text', 'Reeboks on; just do it!');
 
-    expect(files.saveFile).to.have.been.calledWith(
+    expect(files.saveFile).toHaveBeenCalledWith(
       encode('Reeboks on; just do it!'),
+      'Lyrics.lyrics',
+      null,
     );
-    expect(fileChangeListener).to.have.been.called;
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(fileChangeListener).toHaveBeenCalled();
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/path/test2',
       '1',
       '2',
@@ -365,17 +370,19 @@ describe('File Manager', () => {
 
   it('saves a new file when the renderer says to save with no file loaded', async () => {
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
-      sinon.fake();
+      jest.fn();
     manager.addOnFileChangedListener(fileChangeListener);
     manager.register();
 
     await rendererDelegate.invoke('save-file-attempt', 'Blessings, blessings.');
 
-    expect(files.saveFile).to.have.been.calledWith(
+    expect(files.saveFile).toHaveBeenCalledWith(
       encode('Blessings, blessings.'),
+      'Lyrics.lyrics',
+      undefined,
     );
-    expect(fileChangeListener).to.have.been.called;
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(fileChangeListener).toHaveBeenCalled();
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/path/test2',
       '1',
       '2',
@@ -385,9 +392,9 @@ describe('File Manager', () => {
 
   it('saves the current file when the renderer says to save with a file loaded', async () => {
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
-      sinon.fake();
+      jest.fn();
     manager.addOnFileChangedListener(fileChangeListener);
-    files.openFile.returns(
+    files.openFile.mockReturnValue(
       Promise.resolve({
         metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
         data: encode('This water'),
@@ -400,13 +407,13 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('is-file-modified', false);
     await rendererDelegate.invoke('save-file-attempt', 'Blessings, blessings.');
 
-    expect(files.saveFile).to.have.been.calledWith(
+    expect(files.saveFile).toHaveBeenCalledWith(
       encode('Blessings, blessings.'),
       'Lyrics.lyrics',
       '/Desktop/whitetuxedo.txt',
     );
-    expect(fileChangeListener).to.have.been.called;
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(fileChangeListener).toHaveBeenCalled();
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/Desktop/whitetuxedo.txt',
       '1',
       '2',
@@ -414,18 +421,18 @@ describe('File Manager', () => {
     ]);
   });
 
-  it('updates the current file when the platform returns a new file path', async () => {
+  it('updates the current file when the platform mockReturnValue a new file path', async () => {
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
-      sinon.fake();
+      jest.fn();
     manager.addOnFileChangedListener(fileChangeListener);
-    files.openFile.returns(
+    files.openFile.mockReturnValue(
       Promise.resolve({
         metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
         data: encode('This water'),
         type: '',
       }),
     );
-    files.saveFile.returns(
+    files.saveFile.mockReturnValue(
       Promise.resolve({
         name: 'whitetuxedo.txt',
         path: '/Desktop/whitetuxedo2.txt',
@@ -438,13 +445,13 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('save-file-attempt', 'Blessings, blessings.');
     await rendererDelegate.invoke('save-file-attempt', 'Blessings, blessings.');
 
-    expect(files.saveFile).to.have.been.calledWith(
+    expect(files.saveFile).toHaveBeenCalledWith(
       encode('Blessings, blessings.'),
       'Lyrics.lyrics',
       '/Desktop/whitetuxedo2.txt',
     );
-    expect(fileChangeListener).to.have.been.called.callCount(3);
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(fileChangeListener).toHaveBeenCalledTimes(3);
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/Desktop/whitetuxedo2.txt',
       '/Desktop/whitetuxedo.txt',
       '1',
@@ -454,7 +461,7 @@ describe('File Manager', () => {
   });
 
   it('updates the renderer when a file is opened by the platform', async () => {
-    files.openFile.returns(
+    files.openFile.mockReturnValue(
       Promise.resolve({
         metadata: { name: 'whitetuxedo.txt', path: '/Desktop/whitetuxedo.txt' },
         data: encode('This water'),
@@ -462,7 +469,7 @@ describe('File Manager', () => {
       }),
     );
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
-      sinon.fake();
+      jest.fn();
     manager.addOnFileChangedListener(fileChangeListener);
 
     manager.register();
@@ -470,24 +477,25 @@ describe('File Manager', () => {
     await manager.onOpenFile();
     await rendererDelegate.invoke('is-file-modified', false);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'file-opened',
       undefined,
       'This water',
+      true,
     );
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/Desktop/whitetuxedo.txt',
       '1',
       '2',
       '3',
     ]);
-    expect(fileChangeListener).to.have.been.called;
+    expect(fileChangeListener).toHaveBeenCalled();
   });
 
   it('updates the renderer when a file is opened by the platform directly', async () => {
-    files.openFile.resolvesArg(0);
+    files.openFile.mockImplementation((file) => Promise.resolve(file));
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
-      sinon.fake();
+      jest.fn();
     manager.addOnFileChangedListener(fileChangeListener);
 
     manager.register();
@@ -500,25 +508,25 @@ describe('File Manager', () => {
     });
     await rendererDelegate.invoke('is-file-modified', false);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'file-opened',
       undefined,
       'This water',
       true,
     );
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/Desktop/whitetuxedo.txt',
       '1',
       '2',
       '3',
     ]);
-    expect(fileChangeListener).to.have.been.called;
+    expect(fileChangeListener).toHaveBeenCalled();
   });
 
   it('updates the renderer when a file is opened by the renderer', async () => {
-    files.openFile.resolvesArg(0);
+    files.openFile.mockImplementation((file) => Promise.resolve(file));
     const fileChangeListener: (currentFile: string, recents: string[]) => void =
-      sinon.fake();
+      jest.fn();
     manager.addOnFileChangedListener(fileChangeListener);
 
     manager.register();
@@ -531,24 +539,27 @@ describe('File Manager', () => {
     });
     await rendererDelegate.invoke('is-file-modified', false);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'file-opened',
       undefined,
       'This water',
+      true,
     );
-    expect(recentFiles.setRecentFiles).to.have.been.calledWith([
+    expect(recentFiles.setRecentFiles).toHaveBeenCalledWith([
       '/Desktop/whitetuxedo.txt',
       '1',
       '2',
       '3',
     ]);
-    expect(fileChangeListener).to.have.been.called;
+    expect(fileChangeListener).toHaveBeenCalled();
   });
 
   it('saves opened files with the same file handler that opened them', async () => {
-    lyricsFileHandler.canHandle.callsFake((file) => file.type === 'mytype');
-    textFileHandler.canHandle.returns(false);
-    files.openFile.returns(
+    lyricsFileHandler.canHandle.mockImplementation(
+      (file) => file.type === 'mytype',
+    );
+    textFileHandler.canHandle.mockReturnValue(false);
+    files.openFile.mockReturnValue(
       Promise.resolve({
         metadata: { name: 'anewdress.txt', path: '121' },
         data: encode('Double headed monster with a mind of its own.'),
@@ -560,18 +571,19 @@ describe('File Manager', () => {
     await rendererDelegate.invoke('open-file-attempt');
     await rendererDelegate.invoke('is-file-modified', false);
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'file-opened',
       undefined,
       'Double headed monster with a mind of its own.',
+      true,
     );
 
     await rendererDelegate.invoke('save-file-attempt', 'Cherry Red Chariot');
 
-    expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
+    expect(mockExtension.onBeforeSerialization).toHaveBeenCalledWith(
       'Cherry Red Chariot',
     );
-    expect(lyricsFileHandler.create).to.have.been.calledWith({
+    expect(lyricsFileHandler.create).toHaveBeenCalledWith({
       lyrics: 'Cherry Red Chariot',
       extensions: {
         hello: encode(JSON.stringify(await mockExtension.serialize())),
@@ -580,28 +592,30 @@ describe('File Manager', () => {
   });
 
   it('saves saved files with the same file handler that saved them', async () => {
-    lyricsFileHandler.canHandle.callsFake((file) => file.type === 'mytype');
-    textFileHandler.canHandle.returns(false);
-    lyricsFileHandler.create.resolves(encode('Hello'));
-    files.saveFile.resolves({ path: 'a/path.lyrics' });
+    lyricsFileHandler.canHandle.mockImplementation(
+      (file) => file.type === 'mytype',
+    );
+    textFileHandler.canHandle.mockReturnValue(false);
+    lyricsFileHandler.create.mockResolvedValue(encode('Hello'));
+    files.saveFile.mockResolvedValue({ path: 'a/path.lyrics' });
 
     manager.register();
 
     await rendererDelegate.invoke('save-file-attempt', 'Hello');
-    expect(files.saveFile).to.have.been.calledWith(
+    expect(files.saveFile).toHaveBeenCalledWith(
       encode('Hello'),
       'Lyrics.lyrics',
+      undefined,
     );
     await rendererDelegate.invoke('save-file-attempt', 'Hello');
-    expect(files.saveFile).to.have.been.calledWith(
+    expect(files.saveFile).toHaveBeenCalledWith(
       encode('Hello'),
       'Lyrics.lyrics',
+      'a/path.lyrics',
     );
 
-    expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
-      'Hello',
-    );
-    expect(lyricsFileHandler.create).to.have.been.calledWith({
+    expect(mockExtension.onBeforeSerialization).toHaveBeenCalledWith('Hello');
+    expect(lyricsFileHandler.create).toHaveBeenCalledWith({
       lyrics: 'Hello',
       extensions: {
         hello: encode(JSON.stringify(await mockExtension.serialize())),
@@ -610,7 +624,7 @@ describe('File Manager', () => {
   });
 
   it('prompts the user for their chosen file handler - lyrics', async () => {
-    preferences.getPreferences.resolves({
+    preferences.getPreferences.mockResolvedValue({
       ...defaultPreferences,
       defaultFileType: DefaultFileType.Always_Ask,
     });
@@ -623,10 +637,10 @@ describe('File Manager', () => {
     manager.register();
     await rendererDelegate.invoke('save-file-attempt', 'Hiiipower');
 
-    expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
+    expect(mockExtension.onBeforeSerialization).toHaveBeenCalledWith(
       'Hiiipower',
     );
-    expect(lyricsFileHandler.create).to.have.been.calledWith({
+    expect(lyricsFileHandler.create).toHaveBeenCalledWith({
       lyrics: 'Hiiipower',
       extensions: {
         hello: encode(JSON.stringify(await mockExtension.serialize())),
@@ -634,7 +648,7 @@ describe('File Manager', () => {
     });
   });
   it('prompts the user for their chosen file handler - text', async () => {
-    preferences.getPreferences.resolves({
+    preferences.getPreferences.mockResolvedValue({
       ...defaultPreferences,
       defaultFileType: DefaultFileType.Always_Ask,
     });
@@ -647,10 +661,10 @@ describe('File Manager', () => {
     manager.register();
     await rendererDelegate.invoke('save-file-attempt', 'Hiiipower');
 
-    expect(mockExtension.onBeforeSerialization).to.have.been.calledWith(
+    expect(mockExtension.onBeforeSerialization).toHaveBeenCalledWith(
       'Hiiipower',
     );
-    expect(textFileHandler.create).to.have.been.calledWith({
+    expect(textFileHandler.create).toHaveBeenCalledWith({
       lyrics: 'Hiiipower',
       extensions: {
         hello: encode(JSON.stringify(await mockExtension.serialize())),
@@ -659,7 +673,7 @@ describe('File Manager', () => {
   });
 
   it('saves the default file handler', async () => {
-    preferences.getPreferences.resolves({
+    preferences.getPreferences.mockResolvedValue({
       ...defaultPreferences,
       defaultFileType: DefaultFileType.Always_Ask,
     });
@@ -678,7 +692,7 @@ describe('File Manager', () => {
     manager.register();
     await rendererDelegate.invoke('save-file-attempt', 'Hiiipower');
 
-    expect(preferences.setPreferences).to.have.been.calledWith({
+    expect(preferences.setPreferences).toHaveBeenCalledWith({
       ...defaultPreferences,
       defaultFileType: DefaultFileType.Plain_Text,
     });
@@ -693,15 +707,16 @@ describe('File Manager', () => {
         textField: 'gnx.lyrics',
       },
     );
-    files.supportsChoosingFileName.resolves(false);
+    files.supportsChoosingFileName.mockResolvedValue(false);
 
     manager.register();
 
     await rendererDelegate.invoke('save-file-attempt', 'Peekaboo');
 
-    expect(files.saveFile).to.have.been.calledWith(
+    expect(files.saveFile).toHaveBeenCalledWith(
       encode('Peekaboo'),
       'gnx.lyrics',
+      undefined,
     );
   });
 
@@ -713,12 +728,12 @@ describe('File Manager', () => {
         selectedButton: 'Cancel',
       },
     );
-    files.supportsChoosingFileName.resolves(false);
+    files.supportsChoosingFileName.mockResolvedValue(false);
 
     manager.register();
 
     await rendererDelegate.invoke('save-file-attempt', 'Peekaboo');
 
-    expect(files.saveFile).to.not.have.been.called;
+    expect(files.saveFile).not.toHaveBeenCalled();
   });
 });

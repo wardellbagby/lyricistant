@@ -2,12 +2,12 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { FileMetadata } from '@lyricistant/common/files/PlatformFile';
 import { Page } from 'playwright';
-import { PlaywrightScreen } from './index';
 
 interface DroppableFile {
   metadata: FileMetadata;
   data: string | ArrayBuffer;
 }
+
 export const resourcesDir = path.resolve(__dirname, 'resources');
 
 /** A plain text file with the text "Hello World!" */
@@ -27,70 +27,51 @@ export const HELLO_WORLD_LYRICS_V1_FILE: DroppableFile = {
 };
 
 /**
- * A Lyrics file that uses the legacy V1 File History format.
- *
- * Contains at least two file history, with the second most recent change being
- * a change that changes the first line to match
- * {@link BURY_ME_LOOSE_PRE_LYRICS}, but otherwise will match {@link BURY_ME_LOOSE_LYRICS}
- */
-export const BURY_ME_LOOSE_V1_FILE_HISTORY: DroppableFile = {
-  metadata: {
-    path: 'burymeloose-v1filehistory.lyrics',
-  },
-  data: readFileSync(
-    path.resolve(resourcesDir, 'burymeloose-v1filehistory.lyrics'),
-  ),
-};
-/**
  * A Lyrics file that uses the V2 File History format.
  *
  * Contains at least two file history, with the second most recent change being
- * a change that changes the first line to match
- * {@link BURY_ME_LOOSE_PRE_LYRICS}, but otherwise will match {@link BURY_ME_LOOSE_LYRICS}
+ * a change that changes it such that {@link DECENT_LYRICS} is no longer in the
+ * file.
  */
-export const BURY_ME_LOOSE_V2_FILE_HISTORY: DroppableFile = {
+export const DECENT_FILE_HISTORY: DroppableFile = {
   metadata: {
-    path: 'burymeloose-v2filehistory.lyrics',
+    path: 'decent-filehistory.lyrics',
   },
-  data: readFileSync(
-    path.resolve(resourcesDir, 'burymeloose-v2filehistory.lyrics'),
-  ),
+  data: readFileSync(path.resolve(resourcesDir, 'decent-filehistory.lyrics')),
 };
 
-export const BURY_ME_LOOSE_LYRICS = "Tell 'em bury me loose";
-export const BURY_ME_LOOSE_PRE_LYRICS = 'Bury me loose';
+export const DECENT_LYRICS = "Maybe I'm still grieving.";
 
-export const getEditor = async (screen: PlaywrightScreen) =>
-  await screen.findByRole('textbox');
+export const getEditor = (screen: Page) => screen.getByRole('textbox');
 
-export const findMenuButton = async (
-  screen: PlaywrightScreen,
-  name: string,
-  isSmallLayout: boolean,
-) => {
-  if (isSmallLayout) {
-    // Assume its hiding in the overflow menu.
-    const overflowButton = await screen.findByRole('button', {
-      name: 'Additional Menu Buttons',
-    });
-    await overflowButton.click();
+export const findMenuButton = async (page: Page, name: string) => {
+  const overflowButton = page.getByRole('button', {
+    name: 'Additional Menu Buttons',
+  });
+  const possibleMenuBarButton = page.getByRole('button', {
+    name,
+  });
 
-    return screen.findByRole('menuitem', {
-      name,
-    });
-  } else {
-    return screen.findByRole('button', {
-      name,
-    });
+  if (await possibleMenuBarButton.isVisible()) {
+    return possibleMenuBarButton;
   }
+
+  if (!(await overflowButton.isVisible())) {
+    throw new Error(
+      `Failed to find menu button "${name}" and overflow button isn't visible.`,
+    );
+  }
+
+  // Assume its hiding in the overflow menu.
+  await overflowButton.click();
+
+  return page.getByRole('menuitem', {
+    name,
+  });
 };
 
-export const dropFile = async (
-  page: Page,
-  screen: PlaywrightScreen,
-  droppableFile: DroppableFile,
-) => {
-  const editor = await getEditor(screen);
+export const dropFile = async (page: Page, droppableFile: DroppableFile) => {
+  const editor = getEditor(page);
 
   let data: string | number[];
 
@@ -118,8 +99,8 @@ export const dropFile = async (
     [droppableFile.metadata, data],
   );
 
-  await Promise.all([
-    editor.dispatchEvent('drop', { dataTransfer }),
-    page.waitForSelector('[role=presentation]', { state: 'hidden' }),
-  ]);
+  await editor.dispatchEvent('drop', { dataTransfer });
+  const loadingOverlay = page.getByRole('presentation');
+  await loadingOverlay.waitFor({ state: 'attached' });
+  await loadingOverlay.waitFor({ state: 'detached' });
 };

@@ -43,6 +43,11 @@ const modulesToTransform = [
   'unist-util-position',
   'nlcst-is-literal',
   'quotation',
+  '@octokit/.+',
+  'universal-user-agent',
+  'before-after-hook',
+  'devlop',
+  'react-error-boundary',
 ];
 
 const getLabel = (type: TestType): string => {
@@ -104,6 +109,7 @@ export const getBaseJestConfig = (options: {
       rootDir: '.',
       transform: {
         '^.+\\.ts$': 'ts-jest',
+        '\\.jsx?$': 'babel-jest',
       },
     };
   }
@@ -122,7 +128,7 @@ export const getBaseJestConfig = (options: {
       enableGlobally: true,
     },
     transformIgnorePatterns: [
-      `.+node_modules/(?!${modulesToTransform.join('|')})`,
+      `.*/?node_modules/(?!${modulesToTransform.join('|')})`,
     ],
     transform: {
       '\\.[jt]sx?$': 'ts-jest',
