@@ -1,3 +1,4 @@
+import expect from 'expect';
 import { ElectronPreferences } from '@electron-app/platform/ElectronPreferences';
 import { FileSystem } from '@electron-app/wrappers/FileSystem';
 import {
@@ -9,23 +10,17 @@ import {
   RhymeSource,
 } from '@lyricistant/common/preferences/PreferencesData';
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import sinonChai from 'sinon-chai';
-import sinon, { stubInterface } from 'ts-sinon';
-
-use(sinonChai);
-use(chaiAsPromised);
+import { mockDeep } from 'jest-mock-extended';
 
 describe('Preferences', () => {
-  const fs = stubInterface<FileSystem>();
+  const fs = mockDeep<FileSystem>();
   let preferences: Preferences;
 
   beforeEach(() => {
-    sinon.reset();
-    fs.getDataDirectory.returns('user');
-    fs.resolve.callsFake((...args: string[]) => args.join('/'));
-    preferences = new ElectronPreferences(fs, stubInterface());
+    jest.resetAllMocks();
+    fs.getDataDirectory.mockReturnValue('user');
+    fs.resolve.mockImplementation((...args: string[]) => args.join('/'));
+    preferences = new ElectronPreferences(fs, mockDeep());
   });
 
   it('gets preferences when preferences have been set', async () => {
@@ -37,54 +32,63 @@ describe('Preferences', () => {
       defaultFileType: DefaultFileType.Always_Ask,
       detailPaneVisibility: DetailPaneVisibility.Toggleable,
     };
-    fs.existsSync.returns(true);
-    fs.readFileSync.returns(JSON.stringify(expected));
+    fs.existsSync.mockReturnValue(true);
+    fs.readFileSync.mockReturnValue(JSON.stringify(expected));
 
     const actual = await preferences.getPreferences();
 
-    expect(actual).to.deep.equal(expected);
-    expect(fs.readFileSync).to.have.been.calledWith('user/preferences.json');
+    expect(actual).toEqual(expected);
+    expect(fs.readFileSync).toHaveBeenCalledWith(
+      'user/preferences.json',
+      'utf8',
+    );
   });
 
   it('caches preferences when preferences have been set', async () => {
-    fs.readFileSync.returns(JSON.stringify({ textSize: 2 }));
-    fs.existsSync.returns(true);
+    fs.readFileSync.mockReturnValue(JSON.stringify({ textSize: 2 }));
+    fs.existsSync.mockReturnValue(true);
 
     await preferences.getPreferences();
     await preferences.getPreferences();
     await preferences.getPreferences();
     await preferences.getPreferences();
 
-    expect(fs.readFileSync).to.have.been.calledOnceWith(
+    expect(fs.readFileSync).toHaveBeenCalledWith(
       'user/preferences.json',
+      'utf8',
     );
   });
 
   it('returns nothing when preferences have not been set', async () => {
-    fs.existsSync.returns(false);
+    fs.existsSync.mockReturnValue(false);
 
-    expect(await preferences.getPreferences()).to.be.undefined;
+    expect(await preferences.getPreferences()).toBeUndefined();
 
-    expect(fs.readFileSync).to.have.not.been.called;
+    expect(fs.readFileSync).not.toHaveBeenCalled();
   });
 
   it('sets the preferences', async () => {
-    fs.writeFile.resolves();
+    fs.writeFile.mockResolvedValue();
 
-    await preferences.setPreferences({
+    const preferencesData = {
       textSize: 2,
       rhymeSource: RhymeSource.Datamuse,
       colorScheme: ColorScheme.Dark,
       font: Font.Roboto,
       defaultFileType: DefaultFileType.Always_Ask,
       detailPaneVisibility: DetailPaneVisibility.Toggleable,
-    });
+    };
 
-    expect(fs.writeFile).to.have.been.calledWith('user/preferences.json');
+    await preferences.setPreferences(preferencesData);
+
+    expect(fs.writeFile).toHaveBeenCalledWith(
+      'user/preferences.json',
+      JSON.stringify(preferencesData),
+    );
   });
 
   it('caches the preferences after setting them', async () => {
-    fs.writeFile.resolves();
+    fs.writeFile.mockResolvedValue();
 
     await preferences.setPreferences({
       textSize: 2,
@@ -96,6 +100,6 @@ describe('Preferences', () => {
     });
     await preferences.getPreferences();
 
-    expect(fs.readFileSync).to.have.not.been.called;
+    expect(fs.readFileSync).not.toHaveBeenCalled();
   });
 });

@@ -44,7 +44,9 @@ export class RendererListeners {
     ...args: Parameters<RendererToPlatformListener[Channel]>
   ): Promise<void> => {
     if (!this.listeners.has(key)) {
-      throw new Error(`Listener for channel ${key} was never registered!`);
+      throw new Error(
+        `Listener for channel ${key} was never registered! Did you reset Jest mocks without recreating your Mock Renderer/Platform Delegate?`,
+      );
     }
     return invokeAll(key, args, this.listeners);
   };

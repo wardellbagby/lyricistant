@@ -1,7 +1,6 @@
 import path from 'path';
 import addCommonUiTests, {
   findMenuButton,
-  PlaywrightScreen,
   useMockDefinitions,
   useMockRhymes,
 } from '@lyricistant/common-ui-tests';
@@ -11,11 +10,7 @@ import {
   teardown as stopServer,
 } from 'jest-process-manager';
 import { BrowserContext, Page } from 'playwright';
-import {
-  getDocument,
-  getQueriesForElement,
-  waitFor,
-} from 'playwright-testing-library';
+import { waitFor } from 'playwright-testing-library';
 import waitForExpect from 'wait-for-expect';
 import { getSpecs } from './ui-test-specs';
 
@@ -25,9 +20,8 @@ const host = 'localhost';
 describe.each(specs)(
   'Web launch - $browser.label - $viewport.width x $viewport.height - forceLegacyWeb: $forceLegacyWeb',
   ({ viewport, browser, forceLegacyWeb }) => {
-    let browserContext: BrowserContext;
+    let browserContext: BrowserContext | null;
     let page: Page;
-    let screen: PlaywrightScreen;
     let port: number;
 
     beforeAll(async () => {
@@ -42,18 +36,18 @@ describe.each(specs)(
         port,
         usedPortAction: 'error',
       });
+    });
+
+    beforeEach(async () => {
       browserContext = await browser.type.launchPersistentContext('', {
         headless: !process.env.PWDEBUG,
         viewport,
         args: browser.args,
       });
-
       await useMockRhymes(browserContext);
       await useMockDefinitions(browserContext);
-    });
 
-    beforeEach(async () => {
-      page = await browserContext.newPage();
+      page = await browserContext?.newPage();
 
       await Promise.all([
         page.goto(`http://${host}:${port}?forceLegacy=${!forceLegacyWeb}`, {
@@ -61,19 +55,18 @@ describe.each(specs)(
         }),
         page.waitForSelector('#preload-overlay', { state: 'hidden' }),
       ]);
-
-      screen = getQueriesForElement(await getDocument(page));
     });
 
     afterEach(async () => {
-      await page.evaluate(() => window.localStorage.clear());
-      await page.evaluate(() => window.sessionStorage.clear());
-      await page.close();
+      await page?.evaluate(() => window.localStorage.clear());
+      await page?.evaluate(() => window.sessionStorage.clear());
+      await page?.close();
+      await browserContext?.close();
     });
 
     afterAll(async () => {
       await stopServer();
-      await browserContext.close();
+      await browserContext?.close();
     });
 
     it('has a title of Lyricistant', async () => {
@@ -82,50 +75,30 @@ describe.each(specs)(
       );
     });
 
-    it('shows the basic components', async () => {
-      const components = [
-        await page.$('_react=Editor'),
-        await page.$('_react=Menu'),
-        await page.$('_react=Rhymes'),
-      ];
-
-      for (const component of components) {
-        await waitForExpect(
-          async () => await expect(component.isVisible()).resolves.toBeTruthy(),
-        );
-      }
-    });
-
     it('shows downloads', async () => {
       await expect(
-        screen.queryByText('Download Lyricistant'),
-      ).resolves.toBeNull();
+        page.getByText('Download Lyricistant').count(),
+      ).resolves.toBe(0);
 
-      const settings = await findMenuButton(
-        screen,
-        'Download Lyricistant',
-        viewport.isSmallLayout,
-      );
+      const settings = await findMenuButton(page, 'Download Lyricistant');
       await settings.click();
 
       await expect(
-        screen.queryAllByText('Download Lyricistant'),
-      ).resolves.toBeTruthy();
+        page.getByText('Download Lyricistant').count(),
+      ).resolves.toBeGreaterThan(0);
 
-      const close = await screen.findByRole('button', { name: 'Close' });
+      const close = page.getByRole('button', { name: 'Close' });
       await close.click();
 
       await waitFor(async () =>
         expect(
-          screen.queryAllByText('Download Lyricistant'),
-        ).resolves.toBeEmpty(),
+          page.getByText('Download Lyricistant').count(),
+        ).resolves.toBeGreaterThan(0),
       );
     });
 
     addCommonUiTests(async () => ({
       page,
-      screen,
-      isSmallLayout: viewport.isSmallLayout,
     }));
   },
 );

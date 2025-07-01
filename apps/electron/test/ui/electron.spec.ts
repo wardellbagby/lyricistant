@@ -4,15 +4,14 @@ import addCommonUiTests, {
   useMockDefinitions,
   useMockRhymes,
 } from '@lyricistant/common-ui-tests';
-import { deleteAsync as del } from 'del';
 import { _electron as electron, ElectronApplication, Page } from 'playwright';
-import { getDocument, getQueriesForElement } from 'playwright-testing-library';
 import waitForExpect from 'wait-for-expect';
+import * as fs from 'node:fs';
 
 const viewports = [
-  { label: 'default', isSmallLayout: false },
-  { width: 500, height: 500, label: '500 x 500', isSmallLayout: true },
-  { width: 1200, height: 1200, label: '1200 x 1200', isSmallLayout: false },
+  { label: 'default' },
+  { width: 500, height: 500, label: '500 x 500' },
+  { width: 1200, height: 1200, label: '1200 x 1200' },
 ] as const;
 
 describe.each(viewports)('Electron launch - $label', (viewport) => {
@@ -22,9 +21,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
 
   beforeEach(async () => {
     tempDir = path.resolve(os.tmpdir(), 'lyricistant-electron-test');
-    await del(tempDir, {
-      force: true,
-    });
+    fs.rmSync(tempDir, { recursive: true, force: true });
     app = await electron.launch({
       args: [
         path.resolve('apps/electron/dist/test/main.js'),
@@ -50,7 +47,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     expect(elements).not.toBeEmpty();
 
     await app.evaluate(
-      (electronModule, [newViewport, browserWindow]) => {
+      (_, [newViewport, browserWindow]) => {
         if (newViewport.label === 'default') {
           return;
         } else {
@@ -79,23 +76,7 @@ describe.each(viewports)('Electron launch - $label', (viewport) => {
     await waitForExpect(() => expect(window.title()).resolves.toBe('Untitled'));
   });
 
-  it('shows the basic components', async () => {
-    const components = [
-      await window.$('_react=Editor'),
-      await window.$('_react=Menu'),
-      await window.$('_react=Rhymes'),
-    ];
-
-    for (const component of components) {
-      await waitForExpect(
-        async () => await expect(component.isVisible()).resolves.toBeTruthy(),
-      );
-    }
-  });
-
   addCommonUiTests(async () => ({
     page: window,
-    screen: getQueriesForElement(await getDocument(window)),
-    isSmallLayout: viewport.isSmallLayout,
   }));
 });

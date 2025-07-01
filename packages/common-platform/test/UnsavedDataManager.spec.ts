@@ -1,40 +1,40 @@
+import expect from 'expect';
 import { AppData } from '@lyricistant/common-platform/appdata/AppData';
 import { FileManager } from '@lyricistant/common-platform/files/FileManager';
 import { UnsavedDataManager } from '@lyricistant/common-platform/files/UnsavedDataManager';
 import { FileHistory } from '@lyricistant/common-platform/history/FileHistory';
 import { Times } from '@lyricistant/common-platform/time/Times';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
-import { expect, use } from 'chai';
-import sinonChai from 'sinon-chai';
-import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
-
-use(sinonChai);
+import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('Unsaved Data Manager', () => {
   let manager: UnsavedDataManager;
-  let fileManager: StubbedInstance<FileManager>;
-  let appData: StubbedInstance<AppData>;
-  let fileHistory: StubbedInstance<FileHistory>;
-  let times: StubbedInstance<Times>;
-  const rendererDelegate = new MockRendererDelegate();
+  let fileManager: MockProxy<FileManager>;
+  let appData: MockProxy<AppData>;
+  let fileHistory: MockProxy<FileHistory>;
+  let times: MockProxy<Times>;
+  let rendererDelegate: MockRendererDelegate;
+
   let fileChangedListener: (...args: unknown[]) => void;
   let initialFileLoadedListener: (...args: unknown[]) => void;
 
   beforeEach(() => {
     jest.useFakeTimers();
-    sinon.reset();
-    appData = stubInterface<AppData>({
-      get: Promise.resolve('{}'),
-    });
-    fileHistory = stubInterface<FileHistory>({
-      getParsedHistory: 'Unsaved data',
-      isNonEmptyHistory: Promise.resolve(true),
-    });
-    fileManager = stubInterface<FileManager>();
-    fileManager.addOnFileChangedListener.callsFake((listener) => {
+    jest.resetAllMocks();
+
+    rendererDelegate = new MockRendererDelegate();
+    appData = mock<AppData>();
+    appData.get.mockResolvedValue(Promise.resolve('{}'));
+
+    fileHistory = mock<FileHistory>();
+    fileHistory.getParsedHistory.mockReturnValue('Unsaved data');
+    fileHistory.isNonEmptyHistory.mockResolvedValue(true);
+
+    fileManager = mock<FileManager>();
+    fileManager.addOnFileChangedListener.mockImplementation((listener) => {
       fileChangedListener = listener;
     });
-    fileManager.setInitialFileLoadedListener.callsFake((listener) => {
+    fileManager.setInitialFileLoadedListener.mockImplementation((listener) => {
       initialFileLoadedListener = listener;
     });
 
@@ -44,7 +44,7 @@ describe('Unsaved Data Manager', () => {
       appData,
       fileHistory,
       times,
-      stubInterface(),
+      mock(),
     );
   });
 
@@ -55,12 +55,12 @@ describe('Unsaved Data Manager', () => {
   it('sets the initial file loaded listener on the FileManager', async () => {
     manager.register();
 
-    expect(initialFileLoadedListener).to.not.be.null;
+    expect(initialFileLoadedListener).not.toBeNull();
   });
 
   it('prompts if unsaved data is found', async () => {
-    appData.exists.resolves(true);
-    fileHistory.isNonEmptyHistory.resolves(true);
+    appData.exists.mockResolvedValue(true);
+    fileHistory.isNonEmptyHistory.mockResolvedValue(true);
 
     rendererDelegate.invokeOnSet(
       'dialog-interaction',
@@ -70,9 +70,9 @@ describe('Unsaved Data Manager', () => {
     manager.register();
     await initialFileLoadedListener();
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'show-dialog',
-      sinon.match({
+      expect.objectContaining({
         tag: UnsavedDataManager.RECOVER_UNSAVED_LYRICS_TAG,
         title: 'Recover unsaved lyrics',
       }),
@@ -80,27 +80,27 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('does not prompt if unsaved data is not found', async () => {
-    appData.exists.resolves(false);
-    fileHistory.isNonEmptyHistory.resolves(false);
+    appData.exists.mockResolvedValue(false);
+    fileHistory.isNonEmptyHistory.mockResolvedValue(false);
 
     manager.register();
     await initialFileLoadedListener();
 
-    expect(rendererDelegate.send).to.have.not.been.called;
+    expect(rendererDelegate.send).not.toHaveBeenCalled();
   });
 
   it('does not prompt if unsaved data is found but is not valid', async () => {
-    appData.exists.resolves(true);
-    fileHistory.isNonEmptyHistory.resolves(false);
+    appData.exists.mockResolvedValue(true);
+    fileHistory.isNonEmptyHistory.mockResolvedValue(false);
 
     manager.register();
     await initialFileLoadedListener();
 
-    expect(rendererDelegate.send).to.have.not.been.called;
+    expect(rendererDelegate.send).not.toHaveBeenCalled();
   });
 
   it('loads the unsaved data if user selects to', async () => {
-    appData.exists.resolves(true);
+    appData.exists.mockResolvedValue(true);
 
     manager.register();
     rendererDelegate.invokeOnSet(
@@ -110,7 +110,7 @@ describe('Unsaved Data Manager', () => {
     );
     await initialFileLoadedListener();
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'file-opened',
       undefined,
       'Unsaved data',
@@ -119,7 +119,7 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('does not load the unsaved data if user selects to', async () => {
-    appData.exists.resolves(true);
+    appData.exists.mockResolvedValue(true);
 
     manager.register();
     rendererDelegate.invokeOnSet(
@@ -129,7 +129,7 @@ describe('Unsaved Data Manager', () => {
     );
     await initialFileLoadedListener();
 
-    expect(rendererDelegate.send).to.have.not.been.calledWith(
+    expect(rendererDelegate.send).not.toHaveBeenCalledWith(
       'file-opened',
       undefined,
       'Unsaved data',
@@ -138,17 +138,17 @@ describe('Unsaved Data Manager', () => {
   });
 
   it('deletes the unsaved data on file change', async () => {
-    appData.exists.resolves(false);
+    appData.exists.mockResolvedValue(false);
 
     manager.register();
     await initialFileLoadedListener();
     fileChangedListener();
 
-    expect(appData.delete).to.have.been.called;
+    expect(appData.delete).toHaveBeenCalled();
   });
 
   it('deletes the unsaved data on file change after user did not load unsaved data', async () => {
-    appData.exists.resolves(true);
+    appData.exists.mockResolvedValue(true);
 
     manager.register();
     rendererDelegate.invokeOnSet(
@@ -160,6 +160,6 @@ describe('Unsaved Data Manager', () => {
 
     fileChangedListener();
 
-    expect(appData.delete).to.have.been.called;
+    expect(appData.delete).toHaveBeenCalled();
   });
 });

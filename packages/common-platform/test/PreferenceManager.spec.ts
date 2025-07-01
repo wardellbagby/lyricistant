@@ -1,3 +1,4 @@
+import expect from 'expect';
 import {
   ColorScheme,
   DefaultFileType,
@@ -15,16 +16,12 @@ import { PreferenceManager } from '@lyricistant/common-platform/preferences/Pref
 import { Preferences } from '@lyricistant/common-platform/preferences/Preferences';
 import { SystemThemeProvider } from '@lyricistant/common-platform/theme/SystemThemeProvider';
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
-import { expect, use } from 'chai';
-import sinonChai from 'sinon-chai';
-import sinon, { StubbedInstance, stubInterface } from 'ts-sinon';
-
-use(sinonChai);
+import { mock, MockProxy } from 'jest-mock-extended';
 
 describe('Preference Manager', () => {
   let manager: PreferenceManager;
-  let preferences: StubbedInstance<Preferences>;
-  let systemThemeProvider: StubbedInstance<SystemThemeProvider>;
+  let preferences: MockProxy<Preferences>;
+  let systemThemeProvider: MockProxy<SystemThemeProvider>;
 
   const rendererDelegate = new MockRendererDelegate();
   let systemThemeChangeListener: (
@@ -33,9 +30,9 @@ describe('Preference Manager', () => {
   ) => void;
 
   beforeEach(() => {
-    preferences = stubInterface<Preferences>();
-    systemThemeProvider = stubInterface<SystemThemeProvider>();
-    systemThemeProvider.onChange.callsFake((listener) => {
+    preferences = mock<Preferences>();
+    systemThemeProvider = mock<SystemThemeProvider>();
+    systemThemeProvider.onChange.mockImplementation((listener) => {
       systemThemeChangeListener = listener;
     });
 
@@ -53,13 +50,16 @@ describe('Preference Manager', () => {
   it('registers on the renderer delegate the events it cares about', () => {
     manager.register();
 
-    expect(rendererDelegate.on).to.have.been.calledWith('save-prefs');
+    expect(rendererDelegate.on).toHaveBeenCalledWith(
+      'save-prefs',
+      expect.anything(),
+    );
     expect(
       rendererDelegate.addRendererListenerSetListener,
-    ).to.have.been.calledWith('prefs-updated');
+    ).toHaveBeenCalledWith('prefs-updated', expect.anything());
     expect(
       rendererDelegate.addRendererListenerSetListener,
-    ).to.have.been.calledWith('theme-updated');
+    ).toHaveBeenCalledWith('theme-updated', expect.anything());
   });
 
   it('sends prefs when the renderer registers for updates', async () => {
@@ -67,7 +67,7 @@ describe('Preference Manager', () => {
 
     await rendererDelegate.invokeRendererListenerSetListener('prefs-updated');
 
-    expect(rendererDelegate.send).to.have.been.calledWith('prefs-updated', {
+    expect(rendererDelegate.send).toHaveBeenCalledWith('prefs-updated', {
       textSize: 16,
       colorScheme: ColorScheme.System,
       rhymeSource: RhymeSource.Datamuse,
@@ -86,16 +86,13 @@ describe('Preference Manager', () => {
       defaultFileType: DefaultFileType.Plain_Text,
       detailPaneVisibility: DetailPaneVisibility.Toggleable,
     };
-    preferences.getPreferences.resolves(prefs);
+    preferences.getPreferences.mockResolvedValue(prefs);
 
     manager.register();
 
     await rendererDelegate.invokeRendererListenerSetListener('prefs-updated');
 
-    expect(rendererDelegate.send).to.have.been.calledWith(
-      'prefs-updated',
-      prefs,
-    );
+    expect(rendererDelegate.send).toHaveBeenCalledWith('prefs-updated', prefs);
   });
 
   it('saves prefs to the platform', async () => {
@@ -117,15 +114,9 @@ describe('Preference Manager', () => {
 
     await rendererDelegate.invoke('save-prefs', prefs);
 
-    expect(preferences.setPreferences).to.have.been.calledWith(prefs);
-    expect(rendererDelegate.send).to.have.been.calledWith(
-      'prefs-updated',
-      prefs,
-    );
-    expect(rendererDelegate.send).to.have.been.calledWith(
-      'theme-updated',
-      theme,
-    );
+    expect(preferences.setPreferences).toHaveBeenCalledWith(prefs);
+    expect(rendererDelegate.send).toHaveBeenCalledWith('prefs-updated', prefs);
+    expect(rendererDelegate.send).toHaveBeenCalledWith('theme-updated', theme);
   });
 
   it('responds to system theme changes', async () => {
@@ -133,18 +124,18 @@ describe('Preference Manager', () => {
 
     await systemThemeChangeListener(SystemTheme.Light);
 
-    expect(rendererDelegate.send).to.have.been.calledWithMatch(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'theme-updated',
-      sinon.match({
+      expect.objectContaining({
         colorScheme: ColorScheme.Light,
       }),
     );
 
     await systemThemeChangeListener(SystemTheme.Dark);
 
-    expect(rendererDelegate.send).to.have.been.calledWithMatch(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'theme-updated',
-      sinon.match({
+      expect.objectContaining({
         colorScheme: ColorScheme.Dark,
       }),
     );
@@ -155,9 +146,9 @@ describe('Preference Manager', () => {
 
     await systemThemeChangeListener(SystemTheme.Light, { primary: '#121212' });
 
-    expect(rendererDelegate.send).to.have.been.calledWithMatch(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'theme-updated',
-      sinon.match({
+      expect.objectContaining({
         colorScheme: ColorScheme.Light,
         systemPalette: { primary: '#121212' },
       }),
@@ -165,9 +156,9 @@ describe('Preference Manager', () => {
 
     await systemThemeChangeListener(SystemTheme.Dark, { surface: '#434343' });
 
-    expect(rendererDelegate.send).to.have.been.calledWithMatch(
+    expect(rendererDelegate.send).toHaveBeenCalledWith(
       'theme-updated',
-      sinon.match({
+      expect.objectContaining({
         colorScheme: ColorScheme.Dark,
         systemPalette: { surface: '#434343' },
       }),

@@ -9,7 +9,6 @@ import { configure, fireEvent, screen } from '@testing-library/dom';
 import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { restore } from 'sinon';
 import { MockLogger } from './MockLogger';
 import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { render as render, wait } from './Wrappers';
@@ -45,7 +44,7 @@ describe('Editor component', function () {
 
   afterEach(() => {
     platformDelegate.clear();
-    restore();
+    jest.resetAllMocks();
   });
 
   it('tells the platform when user drops a file', async () => {

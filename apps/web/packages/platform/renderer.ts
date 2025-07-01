@@ -1,4 +1,4 @@
 import { Renderer } from '@web-common/Renderer';
-import { wrap } from 'comlink';
+import { Endpoint, wrap } from 'comlink';
 
-export const renderer: Renderer = wrap(self);
+export const renderer: Renderer = wrap(self as Endpoint);

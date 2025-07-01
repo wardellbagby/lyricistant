@@ -1,3 +1,4 @@
+import expect from 'expect';
 import path from 'path';
 import { pathToFileURL } from 'url';
 import { RendererDelegate } from '@lyricistant/common/Delegates';
@@ -12,7 +13,6 @@ import {
   useMockRhymes,
 } from '@lyricistant/common-ui-tests';
 import { ScreenshotterPreferences } from '@screenshotter-app/platform/Preferences';
-import { expect, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { DateTime } from 'luxon';
 import { BrowserContext, chromium, JSHandle, Page } from 'playwright';
@@ -119,7 +119,7 @@ devices.forEach((device) => {
       });
     };
 
-    before(async () => {
+    beforeAll(async () => {
       browser = await chromium.launchPersistentContext('', {
         ...device,
         args: [
@@ -162,7 +162,7 @@ devices.forEach((device) => {
       await page.close();
     });
 
-    after(async () => {
+    afterAll(async () => {
       await browser.close();
     });
 
@@ -182,9 +182,7 @@ devices.forEach((device) => {
       await editorTextArea.type(lyrics, { delay: 10 });
       await page.waitForTimeout(2000);
 
-      await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics,
-      );
+      await expect(editorTextArea.textContent()).toBe(expectedLyrics);
 
       await screenshot(1);
     });
@@ -205,9 +203,7 @@ devices.forEach((device) => {
       await editorTextArea.type(lyrics, { delay: 10 });
       await page.waitForTimeout(2000);
 
-      await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics,
-      );
+      await expect(editorTextArea.textContent()).toBe(expectedLyrics);
 
       await screenshot(2);
     });
@@ -217,9 +213,7 @@ devices.forEach((device) => {
       await editorTextArea.type(lyrics, { delay: 10 });
       await page.waitForTimeout(2000);
 
-      await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics,
-      );
+      await expect(editorTextArea.textContent()).toBe(expectedLyrics);
 
       await page.click("[aria-label='Dictionary Tab']");
       await page.waitForTimeout(2000);
@@ -232,9 +226,7 @@ devices.forEach((device) => {
       await editorTextArea.type(lyrics, { delay: 10 });
       await page.waitForTimeout(2000);
 
-      await expect(editorTextArea.textContent()).to.eventually.equal(
-        expectedLyrics,
-      );
+      await expect(editorTextArea.textContent()).toBe(expectedLyrics);
 
       await fileHistory.evaluate(
         (history, data) => {

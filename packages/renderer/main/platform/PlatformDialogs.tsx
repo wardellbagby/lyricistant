@@ -33,13 +33,16 @@ import {
   Typography,
 } from '@mui/material';
 import * as React from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+const MINIMUM_DIALOG_DISPLAY_MILLIS = 500;
 
 /** Displays dialogs that the platform has requested to be shown. */
 export function PlatformDialogs() {
   const [dialogData, setDialogData] = useState<DialogData>(null);
   const [closeDialogTag, setCloseDialogTag] = useState<string>(null);
   const [open, setOpen] = useState(false);
+  const lastOpenedDialogTime = useRef<number | null>(null);
 
   const onDialogInteraction = useCallback(
     (interactionData: DialogInteractionData) => {
@@ -66,10 +69,32 @@ export function PlatformDialogs() {
   useChannel('close-dialog', setCloseDialogTag);
 
   useEffect(() => {
+    if (dialogData != null) {
+      lastOpenedDialogTime.current = performance.now();
+    }
+  }, [dialogData]);
+
+  useEffect(() => {
     if (closeDialogTag && closeDialogTag === dialogData?.tag) {
-      setOpen(false);
-      setCloseDialogTag(null);
-      platformDelegate.send('dialog-closed', dialogData.tag);
+      const close = () => {
+        setOpen(false);
+        setCloseDialogTag(null);
+        platformDelegate.send('dialog-closed', dialogData.tag);
+      };
+
+      const delta = performance.now() - lastOpenedDialogTime.current;
+      // MUI has a bug where showing a full screen dialog for a single frame will keep it displayed but invisible.
+      // This gets around that and improves the UX anyway by keeping a dialog open for at least a bit which prevents
+      // frame flicker. Only full screens dialogs suffer from this since other types rely on user input and so will
+      // exist long enough to be interacted with. As of writing this, anyway.
+      if (
+        dialogData.type === 'fullscreen' &&
+        delta <= MINIMUM_DIALOG_DISPLAY_MILLIS
+      ) {
+        setTimeout(close, delta);
+      } else {
+        close();
+      }
     }
   }, [closeDialogTag, dialogData]);
 
@@ -116,14 +141,18 @@ const FullscreenDialog = ({
 }) => (
   <Dialog
     open={open}
+    onTransitionCancel={onCancel}
     fullScreen
     sx={{
       overflow: 'none',
     }}
-    TransitionComponent={Grow}
-    PaperProps={{
-      sx: {
-        backgroundColor: (theme) => alpha(theme.palette.background.paper, 0.5),
+    slotProps={{
+      transition: Grow,
+      paper: {
+        sx: {
+          backgroundColor: (theme) =>
+            alpha(theme.palette.background.paper, 0.5),
+        },
       },
     }}
   >

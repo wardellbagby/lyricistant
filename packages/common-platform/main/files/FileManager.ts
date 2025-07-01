@@ -394,6 +394,7 @@ export class FileManager implements Manager {
     type: 'open' | 'save',
     cancelable = false,
   ): CancelSignal | null => {
+    this.logger.debug(`Showing ${type} dialog`);
     const tag =
       type === 'open'
         ? FileManager.OPEN_FILE_DIALOG_TAG
@@ -409,6 +410,7 @@ export class FileManager implements Manager {
       const cancellable = new Cancellable();
       const onDialogClosed = (closedTag: string) => {
         if (closedTag === tag) {
+          this.logger.debug(`Stopping ${type} dialog`);
           this.rendererDelegate.removeListener('dialog-closed', onDialogClosed);
           cancellable.cancel();
         }

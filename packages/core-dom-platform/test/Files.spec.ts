@@ -80,6 +80,7 @@ describe('Files', () => {
       kind: 'file',
       isSameEntry: undefined,
       getFile: undefined,
+      createWritable: undefined,
     });
 
     const actual = await files.saveFile(data, 'MyLyrics.lyrics');
@@ -103,6 +104,7 @@ describe('Files', () => {
       kind: 'file',
       isSameEntry: () => undefined,
       getFile: () => undefined,
+      createWritable: undefined,
     };
 
     const file: FileWithHandle = new File(['oh'], 'mycoollyrics.lyrics', {
@@ -122,6 +124,7 @@ describe('Files', () => {
       kind: 'file',
       isSameEntry: undefined,
       getFile: undefined,
+      createWritable: undefined,
     });
 
     const actual = await files.saveFile(
