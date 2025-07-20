@@ -4,18 +4,18 @@ Unlike other apps with a focus on rhyming, Lyricistant is first and foremost a w
 
 Its features include:
 
-Showing the amount of syllables per line.
-Contextually displaying rhymes as you type or select words.
-Easily saving and reopening lyrics that you've made.
-Showing you the history of your file.
-Both a light and dark theme that it can automatically switch between.
-Total offline support.
+* Showing the amount of syllables per line.
+* Contextually displaying rhymes as you type or select words.
+* Easily saving and reopening lyrics that you've made.
+* Showing you the history of your file.
+* Both a light and dark theme that it can automatically switch between.
+* Total offline support.
 
 What's up with the name?
 
 It's a combination of two words:
 
-Lyricist
-Assistant
+* Lyricist
+* Assistant
 
 Lyricistant!
