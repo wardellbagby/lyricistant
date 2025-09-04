@@ -76,7 +76,7 @@
     "del": "^8.0.0",
     "depcheck": "^1.4.7",
     "dotenv": "^16.5.0",
-    "electron": "^36.4.0",
+    "electron": "^36.8.1",
     "electron-builder": "^26.0.12",
     "electron-updater": "^6.6.2",
     "eslint": "^9.28.0",
