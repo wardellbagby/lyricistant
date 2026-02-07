@@ -120,7 +120,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.0",
     "url-loader": "^4.1.1",
-    "webpack": "^5.99.9",
+    "webpack": "^5.105.0",
     "webpack-dev-server": "^5.2.2",
     "webpack-env": "^0.8.0",
     "webpack-merge": "^6.0.1"
