@@ -149,7 +149,7 @@
     "@octokit/rest": "^22.0.0",
     "@wessberg/di": "^3.0.2",
     "@xstate/react": "^5.0.5",
-    "axios": "^1.9.0",
+    "axios": "^1.13.5",
     "browser-fs-access": "^0.37.0",
     "comlink": "^4.4.2",
     "dictionary-en": "^3.2.0",
