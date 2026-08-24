@@ -8,7 +8,8 @@ import { BrowserWindow, Dialog } from 'electron';
 import { mockDeep } from 'jest-mock-extended';
 import { Buffer } from 'memfs/lib/internal/buffer';
 
-const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
+const encode = (text: string): ArrayBuffer =>
+  new TextEncoder().encode(text).slice().buffer;
 
 declare module 'expect' {
   // Annoying bug in the typing for objectContaining which fails for interfaces,
@@ -33,7 +34,7 @@ describe('Files', () => {
   it('shows a dialog to choose a file', async () => {
     const expected: PlatformFile = {
       metadata: { path: 'mycoollyrics.txt' },
-      data: Buffer.from(encode('Here are lyrics!')),
+      data: encode('Here are lyrics!'),
       type: '',
     };
     dialogs.showOpenDialog.mockResolvedValue({
@@ -63,7 +64,7 @@ describe('Files', () => {
   it('loads a droppable file', async () => {
     const expected: PlatformFile = {
       metadata: { path: 'mycoollyrics.txt' },
-      data: Buffer.from(encode('Here are lyrics!')),
+      data: encode('Here are lyrics!'),
     };
     fs.isText.mockReturnValue(true);
 

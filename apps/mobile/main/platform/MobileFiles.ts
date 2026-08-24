@@ -27,7 +27,7 @@ export class MobileFiles implements Files {
     const result = await mobileFilesPlugin.openFile();
     if (result) {
       const { data, path, name } = result;
-      return { metadata: { path, name }, data: new Uint8Array(data) };
+      return { metadata: { path, name }, data: new Uint8Array(data).buffer };
     } else {
       this.logger.debug('File open cancelled.');
     }

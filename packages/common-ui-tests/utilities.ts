@@ -8,6 +8,12 @@ interface DroppableFile {
   data: string | ArrayBuffer;
 }
 
+const bufferToArrayBuffer = (buffer: Buffer): ArrayBuffer =>
+  buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength,
+  ) as ArrayBuffer;
+
 export const resourcesDir = path.resolve(__dirname, 'resources');
 
 /** A plain text file with the text "Hello World!" */
@@ -23,7 +29,9 @@ export const HELLO_WORLD_LYRICS_V1_FILE: DroppableFile = {
   metadata: {
     path: 'helloworld.lyrics',
   },
-  data: readFileSync(path.resolve(resourcesDir, 'helloworld.lyrics')),
+  data: bufferToArrayBuffer(
+    readFileSync(path.resolve(resourcesDir, 'helloworld.lyrics')),
+  ),
 };
 
 /**
@@ -37,7 +45,9 @@ export const DECENT_FILE_HISTORY: DroppableFile = {
   metadata: {
     path: 'decent-filehistory.lyrics',
   },
-  data: readFileSync(path.resolve(resourcesDir, 'decent-filehistory.lyrics')),
+  data: bufferToArrayBuffer(
+    readFileSync(path.resolve(resourcesDir, 'decent-filehistory.lyrics')),
+  ),
 };
 
 export const DECENT_LYRICS = "Maybe I'm still grieving.";
