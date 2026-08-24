@@ -24,7 +24,7 @@ describe('Unsaved Data Manager', () => {
 
     rendererDelegate = new MockRendererDelegate();
     appData = mock<AppData>();
-    appData.get.mockResolvedValue(Promise.resolve('{}'));
+    appData.get.mockResolvedValue('{}');
 
     fileHistory = mock<FileHistory>();
     fileHistory.getParsedHistory.mockReturnValue('Unsaved data');

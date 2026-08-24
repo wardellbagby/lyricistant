@@ -708,7 +708,9 @@ describe('File Manager', () => {
         textField: 'gnx.lyrics',
       },
     );
-    files.supportsChoosingFileName.mockResolvedValue(false);
+    files.supportsChoosingFileName.mockImplementation(() =>
+      Promise.resolve(false),
+    );
 
     manager.register();
 
@@ -729,7 +731,9 @@ describe('File Manager', () => {
         selectedButton: 'Cancel',
       },
     );
-    files.supportsChoosingFileName.mockResolvedValue(false);
+    files.supportsChoosingFileName.mockImplementation(() =>
+      Promise.resolve(false),
+    );
 
     manager.register();
 
