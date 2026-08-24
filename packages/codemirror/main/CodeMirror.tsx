@@ -120,6 +120,17 @@ const useReconfigurableExtension = (
 export interface CodeMirrorEditorProps {
   isReadOnly: boolean;
   text: Text;
+  /**
+   * Whether {@link text} is an incremental change to what's already in the
+   * editor, or a brand new document.
+   *
+   * When this is false the caller is expected to follow up with
+   * {@link useCodeMirror.resetHistory}, which installs the document via
+   * EditorState.create. Installing it here as well would parse, measure and
+   * render the whole document twice and leave behind an undo entry that the
+   * subsequent setState immediately discards.
+   */
+  isTransactional?: boolean;
   cursorPosition?: number;
   font: string;
   markedText?: Mark;
@@ -300,16 +311,28 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
 
   useEffect(() => {
     const currentText = view ? view.state.doc : Text.empty;
-    if (view && !props.text.eq(currentText)) {
-      view.dispatch({
-        changes: {
-          from: 0,
-          to: currentText.length,
-          insert: props.text ?? Text.empty,
-        },
-      });
+    if (!view || props.text.eq(currentText)) {
+      return;
     }
-  }, [props.text, view]);
+
+    /*
+    A non-transactional update is about to be installed by resetHistory via
+    view.setState. Replacing the document here too would parse, measure and
+    render the whole document a second time for no benefit, and would leave
+    behind an undo entry that setState then throws away.
+     */
+    if (props.isTransactional === false) {
+      return;
+    }
+
+    view.dispatch({
+      changes: {
+        from: 0,
+        to: currentText.length,
+        insert: props.text ?? Text.empty,
+      },
+    });
+  }, [props.text, props.isTransactional, view]);
 
   useEffect(() => {
     if (
@@ -394,7 +417,12 @@ export const useCodeMirror = (props: CodeMirrorEditorProps) => {
     if (view?.state) {
       view.dispatch(setDiagnostics(view.state, props.diagnostics));
     }
-  }, [props.diagnostics, view?.state]);
+    /*
+    Deliberately keyed on the view rather than view.state: state is a new
+    object after every transaction, and this effect dispatches one, so keying
+    on it means re-dispatching the same diagnostics on every render.
+     */
+  }, [props.diagnostics, view]);
 
   return {
     view,

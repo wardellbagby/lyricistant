@@ -18,7 +18,8 @@
   "references": [
     { "path": "../common" },
     { "path": "../codemirror" },
-    { "path": "../rhyme-generator" }
+    { "path": "../rhyme-generator" },
+    { "path": "../diagnostics-generator" }
   ],
   "extends": "../../tsconfig.json"
 }

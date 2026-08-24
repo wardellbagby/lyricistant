@@ -12,16 +12,6 @@ declare module '*.svg' {
   export default value;
 }
 
-declare module '*.dic' {
-  const value: Uint8Array;
-  export default value;
-}
-
-declare module '*.aff' {
-  const value: Uint8Array;
-  export default value;
-}
-
 declare module 'retext-usage' {
   export default function retextUsage(): import('unified').Transformer<
     import('nlcst').Root,

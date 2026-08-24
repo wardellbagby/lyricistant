@@ -17,6 +17,7 @@ import { MockPlatformDelegate } from './MockPlatformDelegate';
 import { nestedElementTextMatcher, render, wait } from './Wrappers';
 
 jest.mock('@lyricistant/rhyme-generator');
+jest.mock('@lyricistant/diagnostics-generator');
 
 describe('App component', () => {
   let platformDelegate: MockPlatformDelegate;

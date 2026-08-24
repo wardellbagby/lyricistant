@@ -1,11 +1,6 @@
 import { Text } from '@codemirror/state';
 import { isUnderTest } from '@lyricistant/common/BuildModes';
-import { retext } from 'retext';
-import retextIndefiniteArticle from 'retext-indefinite-article';
-import retextRepeatedWords from 'retext-repeated-words';
-import retextSpell, { Dictionary } from 'retext-spell';
-import { VFile, DictionaryOnLoad } from 'retext-spell/lib';
-import { VFileMessage } from 'vfile-message';
+import { RetextDiagnostic } from '@lyricistant/diagnostics-generator/diagnostics-generator';
 import { assign, createMachine, EventObject, fromPromise } from 'xstate';
 
 export interface Diagnostic {
@@ -16,57 +11,49 @@ export interface Diagnostic {
   proposals?: string[];
 }
 
-const backticksToQuotes = (value: string): string => value.replace(/`/g, '"');
+type DiagnosticsGenerator =
+  (typeof import('@lyricistant/diagnostics-generator'))['diagnosticsGenerator']['generateDiagnostics'];
 
-const toDisplayMessage = (report: VFileMessage): string => {
-  if (report.source === 'retext-spell') {
-    return `"${report.actual}" is misspelled`;
-  }
-  return backticksToQuotes(report.message);
-};
-const toDiagnostics = (file: VFile, text: Text): Diagnostic[] =>
-  file.messages
+const generateDiagnostics: (
+  ...args: Parameters<DiagnosticsGenerator>
+) => Promise<RetextDiagnostic[]> = (...args) =>
+  import('@lyricistant/diagnostics-generator').then(
+    ({ diagnosticsGenerator }) =>
+      diagnosticsGenerator.generateDiagnostics(...args),
+  );
+
+/**
+ * Converts the worker's line/column based diagnostics into the document
+ * offsets that CodeMirror needs. Cheap enough to stay on the UI thread since
+ * it's O(reported problems), not O(document).
+ */
+const toDiagnostics = (raw: RetextDiagnostic[], text: Text): Diagnostic[] =>
+  raw
     .map((report): Diagnostic => {
       const line = text.line(report.line);
       const from = line.from + report.column - 1;
       const to =
-        'end' in report.place ? line.from + report.place.end.column - 1 : from;
+        report.endColumn !== undefined
+          ? line.from + report.endColumn - 1
+          : from;
 
       return {
         from,
         to,
-        severity: report.fatal ? 'error' : 'warning',
-        message: toDisplayMessage(report),
-        proposals: report.expected,
+        severity: report.severity,
+        message: report.message,
+        proposals: report.proposals,
       };
     })
     .sort((left, right) => left.from - right.from);
 
-const loadDictionaryAsync: () => Promise<Dictionary> = async () => ({
-  dic: (await import('dictionary-en/index.dic')).default,
-  aff: (await import('dictionary-en/index.aff')).default,
-});
-const loadDictionary = (callback: DictionaryOnLoad) =>
-  loadDictionaryAsync()
-    .then((result) => callback(null, result))
-    .catch((e) => callback(e));
-
-const retextDiagnostics = async (text: Text | null): Promise<Diagnostic[]> => {
+const createDiagnostics = async (text: Text | null): Promise<Diagnostic[]> => {
   if (!text || text.length === 0) {
     return [];
   }
 
-  const result = await retext()
-    .use(retextSpell, loadDictionary)
-    .use(retextRepeatedWords)
-    .use(retextIndefiniteArticle)
-    .process(text.toString());
-
-  return toDiagnostics(result, text);
+  return toDiagnostics(await generateDiagnostics(text.toString()), text);
 };
-
-const createDiagnostics = async (text: Text | null): Promise<Diagnostic[]> =>
-  retextDiagnostics(text);
 
 interface DiagnosticsContext {
   input?: Text;

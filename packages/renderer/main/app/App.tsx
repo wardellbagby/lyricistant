@@ -4,6 +4,7 @@ import { AppError } from '@lyricistant/renderer/app/AppError';
 import { Modals } from '@lyricistant/renderer/app/Modals';
 import { useNavigation } from '@lyricistant/renderer/app/Navigation';
 import { useSmallLayout } from '@lyricistant/renderer/app/useSmallLayout';
+import { useWarmWorkers } from '@lyricistant/renderer/app/useWarmWorkers';
 import { DetailPane } from '@lyricistant/renderer/detail/DetailPane';
 import { DiagnosticActionPopover } from '@lyricistant/renderer/diagnostics/Diagnostics';
 import { Diagnostic } from '@lyricistant/renderer/diagnostics/DiagnosticsMachine';
@@ -112,6 +113,8 @@ export function App() {
   });
 
   useChannel('app-title-changed', (title) => (document.title = title));
+
+  useWarmWorkers();
 
   useFileEvents(isModified, onPartialEditorTextDataUpdate, () =>
     setSelectedText({ from: 0, to: 0, text: '' }),

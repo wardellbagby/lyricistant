@@ -36,6 +36,12 @@
         "packages/rhyme-generator/main/index.ts"
       ],
       "@lyricistant/rhyme-generator/*": ["packages/rhyme-generator/main/*"],
+      "@lyricistant/diagnostics-generator": [
+        "packages/diagnostics-generator/main/index.ts"
+      ],
+      "@lyricistant/diagnostics-generator/*": [
+        "packages/diagnostics-generator/main/*"
+      ],
       "@tooling/*": ["tooling/*"],
       "@testing/utilities/*": ["packages/testing/utilities/*"],
       "@web-renderer/*": ["apps/web/packages/renderer/*"],
