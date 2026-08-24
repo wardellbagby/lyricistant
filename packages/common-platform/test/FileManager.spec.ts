@@ -19,7 +19,8 @@ import { Preferences } from '@lyricistant/common-platform/preferences/Preference
 import { MockRendererDelegate } from '@testing/utilities/MockRendererDelegate';
 import { mock, MockProxy } from 'jest-mock-extended';
 
-const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
+const encode = (text: string): ArrayBuffer =>
+  new TextEncoder().encode(text).slice().buffer;
 const decode = (buffer: ArrayBuffer): string =>
   new TextDecoder().decode(buffer);
 

@@ -16,7 +16,8 @@ type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };
 
-const encode = (text: string): ArrayBuffer => new TextEncoder().encode(text);
+const encode = (text: string): ArrayBuffer =>
+  new TextEncoder().encode(text).slice().buffer;
 
 describe('Files', () => {
   let fs: MockProxy<FileSystem>;

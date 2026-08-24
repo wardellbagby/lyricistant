@@ -65,7 +65,10 @@ export class ElectronFiles implements Files {
     const data = await this.fs.readFile(path);
     return {
       metadata: { path },
-      data,
+      data: data.buffer.slice(
+        data.byteOffset,
+        data.byteOffset + data.byteLength,
+      ) as ArrayBuffer,
       type: '',
     };
   };

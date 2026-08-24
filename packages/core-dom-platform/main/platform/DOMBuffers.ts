@@ -7,5 +7,6 @@ export class DOMBuffers implements Buffers {
   public bufferToString = (buffer: ArrayBuffer): string =>
     decoder.decode(buffer);
 
-  public stringToBuffer = (input: string): ArrayBuffer => encoder.encode(input);
+  public stringToBuffer = (input: string): ArrayBuffer =>
+    encoder.encode(input).slice().buffer;
 }
