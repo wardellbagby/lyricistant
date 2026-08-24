@@ -137,6 +137,7 @@ export const Editor: React.FC<EditorProps> = (props) => {
   } = useCodeMirror({
     isReadOnly: useReadOnlyMode(),
     text: props.value.text,
+    isTransactional: props.value.isTransactional,
     markedText: props.selectedText && {
       from: props.selectedText.from,
       to: props.selectedText.to,
@@ -162,7 +163,11 @@ export const Editor: React.FC<EditorProps> = (props) => {
     if (!props.value.isTransactional) {
       resetHistory();
     }
-  }, [props.value]);
+    /*
+    Keyed on the fields we actually read rather than the whole value object,
+    which is recreated on every keystroke and so re-ran this on every edit.
+     */
+  }, [props.value.text, props.value.isTransactional]);
 
   useEffect(() => {
     if (!view || !props.selectedDiagnostic) {
